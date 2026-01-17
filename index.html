@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samuel Bates | AI Engineering Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #111113;
+            --bg-card: #161618;
+            --bg-card-hover: #1a1a1d;
+            --text-primary: #f5f5f7;
+            --text-secondary: #a1a1a6;
+            --text-muted: #6e6e73;
+            --accent-warm: #e8a87c;
+            --accent-warm-dim: rgba(232, 168, 124, 0.15);
+            --accent-blue: #5eb3f0;
+            --accent-blue-dim: rgba(94, 179, 240, 0.12);
+            --accent-green: #7dd3a8;
+            --accent-teal: #2dd4bf;
+            --accent-teal-dim: rgba(45, 212, 191, 0.12);
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Subtle grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            padding: 80px 0 60px;
+            position: relative;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 40px;
+        }
+
+        .header-text h1 {
+            font-size: 3.2rem;
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-text .tagline {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            max-width: 500px;
+        }
+
+        .header-text .tagline span {
+            color: var(--accent-warm);
+        }
+
+        .contact-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 100px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            margin-top: 24px;
+        }
+
+        .contact-pill:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+        }
+
+        .contact-pill svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Section titles */
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-subtle);
+        }
+
+        /* Project Cards */
+        .projects {
+            padding: 40px 0 80px;
+        }
+
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 32px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-warm), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .project-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+
+        .project-card:hover::before {
+            opacity: 1;
+        }
+
+        .project-card.blue-accent::before {
+            background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
+        }
+
+        .project-card.teal-accent::before {
+            background: linear-gradient(90deg, transparent, var(--accent-teal), transparent);
+        }
+
+        .badge.teal {
+            background: var(--accent-teal-dim);
+            color: var(--accent-teal);
+        }
+
+        .pro-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--accent-teal);
+            background: var(--accent-teal-dim);
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+
+        .project-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .project-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 5px 10px;
+            border-radius: 6px;
+            background: var(--accent-warm-dim);
+            color: var(--accent-warm);
+            font-weight: 500;
+        }
+
+        .badge.blue {
+            background: var(--accent-blue-dim);
+            color: var(--accent-blue);
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            margin-bottom: 28px;
+            max-width: 700px;
+        }
+
+        /* Architecture Diagram */
+        .architecture {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 28px;
+            overflow-x: auto;
+        }
+
+        .architecture pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            white-space: pre;
+        }
+
+        .architecture .highlight {
+            color: var(--accent-warm);
+        }
+
+        .architecture .highlight-blue {
+            color: var(--accent-blue);
+        }
+
+        .architecture .dim {
+            color: var(--text-muted);
+        }
+
+        /* Feature Grid */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .feature {
+            padding: 16px 20px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            border: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+
+        .feature:hover {
+            border-color: var(--border-subtle);
+        }
+
+        .feature-title {
+            font-weight: 500;
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-title .icon {
+            font-size: 1.1rem;
+        }
+
+        .feature-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Media Preview */
+        .media-preview {
+            margin-bottom: 28px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .media-preview iframe {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border: none;
+            display: block;
+        }
+
+        .media-preview img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .media-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2px;
+        }
+
+        .media-gallery img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .media-gallery img:hover {
+            transform: scale(1.02);
+        }
+
+        .media-caption {
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .media-caption a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        .media-caption a:hover {
+            text-decoration: underline;
+        }
+
+        /* Mosaic Mockup UI */
+        .mosaic-mockup .mockup-ui {
+            background: #fff;
+            color: #191919;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: 13px;
+        }
+
+        .mockup-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e5e5e5;
+            margin-bottom: 16px;
+        }
+
+        .mockup-logo {
+            font-size: 24px;
+        }
+
+        .mockup-search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .mockup-label {
+            color: #666;
+        }
+
+        .mockup-dropdown {
+            background: #f5f5f5;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .mockup-input {
+            background: #f5f5f5;
+            padding: 6px 16px;
+            border-radius: 4px;
+            flex: 1;
+            max-width: 200px;
+            color: #999;
+            letter-spacing: 2px;
+        }
+
+        .mockup-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .mockup-btn.primary {
+            background: #eb1700;
+            color: white;
+        }
+
+        .mockup-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .mockup-banner {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mockup-banner.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .mockup-panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .mockup-panel {
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .mockup-panel-header {
+            background: #fafafa;
+            padding: 12px 16px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .mockup-panel-content {
+            padding: 16px;
+        }
+
+        .mockup-field {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .mockup-field:last-child {
+            border-bottom: none;
+        }
+
+        .mockup-field span:first-child {
+            color: #666;
+        }
+
+        .mockup-field .tag {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .mockup-tools {
+            display: flex;
+            gap: 8px;
+            padding: 16px;
+            flex-wrap: wrap;
+        }
+
+        .mockup-tool {
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 12px 16px;
+            text-align: center;
+            font-size: 12px;
+            min-width: 80px;
+            transition: all 0.2s;
+        }
+
+        .mockup-tool:hover {
+            background: #f0f0f0;
+            border-color: #ccc;
+        }
+
+        @media (max-width: 768px) {
+            .mockup-panels {
+                grid-template-columns: 1fr;
+            }
+            .mockup-header {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* Research System Mockup UI */
+        .research-mockup .research-ui {
+            background: linear-gradient(160deg, #0d3d2e 0%, #1a5c4a 30%, #0f4a3a 70%, #0a2e23 100%);
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', sans-serif;
+            font-size: 13px;
+            color: #fff;
+            min-height: 380px;
+        }
+
+        .research-query {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .research-panel {
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 16px;
+            border-left: 3px solid #4ade80;
+        }
+
+        .research-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .sparkle {
+            color: #fbbf24;
+        }
+
+        .step-count {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .agent-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 12px;
+        }
+
+        .agent-step {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .agent-step:last-child {
+            border-bottom: none;
+        }
+
+        .agent-icon {
+            margin-right: 4px;
+        }
+
+        .agent-name {
+            font-weight: 600;
+            color: #4ade80;
+        }
+
+        .agent-name.searcher { color: #60a5fa; }
+        .agent-name.reader { color: #60a5fa; }
+        .agent-name.analyzer { color: #f472b6; }
+        .agent-name.verifier { color: #a78bfa; }
+
+        .step-status {
+            color: #4ade80;
+            float: right;
+        }
+
+        .step-spinner {
+            color: #60a5fa;
+            float: right;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .step-detail {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+            display: block;
+            margin-top: 2px;
+        }
+
+        .sources {
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+            display: block;
+            margin-top: 4px;
+        }
+
+        .agent-step.active {
+            background: rgba(96, 165, 250, 0.1);
+            margin: 0 -16px;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+
+        .research-terminal {
+            margin-top: 16px;
+            background: #1a1a2e;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            background: #2d2d44;
+            padding: 8px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .terminal-content {
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #4ade80;
+        }
+
+        /* Expandable Code Preview */
+        .code-preview {
+            margin-top: 24px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .code-preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: var(--bg-secondary);
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .code-preview-header:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .code-preview-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+
+        .code-preview-title .icon {
+            font-size: 1.1rem;
+        }
+
+        .code-preview-toggle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            transition: transform 0.3s ease;
+        }
+
+        .code-preview.expanded .code-preview-toggle {
+            transform: rotate(180deg);
+        }
+
+        .code-preview-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .code-preview.expanded .code-preview-content {
+            max-height: 2000px;
+        }
+
+        .code-preview-inner {
+            padding: 20px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .code-section {
+            margin-bottom: 24px;
+        }
+
+        .code-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .code-section-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .code-block {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .code-block .keyword { color: #c678dd; }
+        .code-block .function { color: #61afef; }
+        .code-block .string { color: #98c379; }
+        .code-block .comment { color: var(--text-muted); font-style: italic; }
+        .code-block .decorator { color: #e5c07b; }
+        .code-block .class { color: #e5c07b; }
+
+        .code-file-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Tech Stack Pills */
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tech-pill {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 6px 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            color: var(--text-muted);
+        }
+
+        /* Stats Section */
+        .stats-row {
+            display: flex;
+            gap: 40px;
+            padding: 24px 0;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 8px;
+        }
+
+        .stat {
+            text-align: left;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Links */
+        .project-links {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .project-link:hover {
+            border-color: var(--accent-warm);
+            color: var(--accent-warm);
+        }
+
+        .project-link.primary {
+            background: var(--accent-warm);
+            border-color: var(--accent-warm);
+            color: var(--bg-primary);
+        }
+
+        .project-link.primary:hover {
+            background: #d4956b;
+            border-color: #d4956b;
+        }
+
+        /* About Section */
+        .about {
+            padding: 60px 0 100px;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+
+        .about-text p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+        }
+
+        .about-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .about-text strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .skills-list {
+            list-style: none;
+        }
+
+        .skills-list li {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .skills-list li:last-child {
+            border-bottom: none;
+        }
+
+        .skills-list .skill-level {
+            color: var(--accent-green);
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border-subtle);
+            text-align: center;
+        }
+
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        footer a:hover {
+            color: var(--accent-warm);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+
+            .header-text h1 {
+                font-size: 2.4rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .project-card {
+                padding: 28px;
+            }
+
+            .stats-row {
+                flex-wrap: wrap;
+                gap: 24px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="header-text animate-in">
+                    <h1>Samuel Bates</h1>
+                    <p class="tagline">Building <span>AI systems that actually work</span> — offline, local-first, production-ready.</p>
+                    <a href="https://github.com/NebulaNinjaCoder" class="contact-pill" target="_blank">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        GitHub
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <section class="projects">
+            <div class="section-label animate-in delay-1">Featured Projects</div>
+
+            <!-- Athena -->
+            <article class="project-card blue-accent animate-in delay-2">
+                <div class="project-header">
+                    <h2 class="project-title">Athena</h2>
+                    <div class="project-badges">
+                        <span class="badge blue">6 Agents</span>
+                        <span class="badge blue">Offline</span>
+                        <span class="badge blue">Cited Sources</span>
+                    </div>
+                </div>
+                <p class="project-description">
+                    A multi-agent research system that thinks before it answers. Decomposes complex queries into sub-tasks, 
+                    searches in parallel, verifies findings, and synthesizes responses with proper citations.
+                </p>
+
+                <div class="media-preview research-mockup">
+                    <div class="research-ui">
+                        <div class="research-query">"Do a simple search of fun things to do in cave creek Arizona"</div>
+                        <div class="research-panel">
+                            <div class="research-panel-header">
+                                <span class="sparkle">✨</span> Hide thinking <span class="step-count">5/6</span>
+                            </div>
+                            <div class="agent-label">AGENT STEPS</div>
+                            <div class="agent-step done"><span class="agent-icon">⚙️</span> <span class="agent-name">Planner</span> <span class="step-status">✓</span><br><span class="step-detail">Research plan created</span></div>
+                            <div class="agent-step done"><span class="agent-icon">🔍</span> <span class="agent-name searcher">Searcher</span> <span class="step-status">✓</span><br><span class="step-detail">Found 14 relevant sources</span><br><span class="sources">🌐 wolfsongblog.com · tripadvisor.com · worldatlas.com +more</span></div>
+                            <div class="agent-step done"><span class="agent-icon">📖</span> <span class="agent-name reader">Reader</span> <span class="step-status">✓</span><br><span class="step-detail">Extracted content from 3 sources</span></div>
+                            <div class="agent-step done"><span class="agent-icon">📊</span> <span class="agent-name analyzer">Analyzer</span> <span class="step-status">✓</span><br><span class="step-detail">Analysis complete</span></div>
+                            <div class="agent-step active"><span class="agent-icon">⚙️</span> <span class="agent-name verifier">Verifier</span> <span class="step-spinner">◐</span><br><span class="step-detail">Verifying facts and checking for contradictions</span></div>
+                        </div>
+                        <div class="research-terminal">
+                            <div class="terminal-header">● ● ● AGENT TERMINAL</div>
+                            <div class="terminal-content">→Verifying facts and checking for contradictions_</div>
+                        </div>
+                    </div>
+                    <div class="media-caption">
+                        <span>📱</span> Mobile UI showing real-time agent orchestration with live terminal feedback
+                    </div>
+                </div>
+
+                <div class="architecture">
+                    <pre><span class="highlight-blue">Query</span> → <span class="highlight-blue">Orchestrator</span>
+   │
+   ├─ <span class="highlight-blue">1. PlannerAgent</span>    <span class="dim">// Query decomposition into sub-questions</span>
+   ├─ <span class="highlight-blue">2. SearcherAgent</span>   <span class="dim">// HyDE + Multi-Query expansion → web search</span>
+   ├─ <span class="highlight-blue">3. ReaderAgent</span>     <span class="dim">// Content extraction, compression</span>
+   ├─ <span class="highlight-blue">4. AnalyzerAgent</span>   <span class="dim">// Reasoning, gap detection</span>
+   │      └─ <span class="dim">(loops back to Searcher if gaps found)</span>
+   ├─ <span class="highlight-blue">5. VerifierAgent</span>   <span class="dim">// Consistency & coverage validation</span>
+   └─ <span class="highlight-blue">6. WriterAgent</span>     <span class="dim">// Synthesis with citations</span></pre>
+                </div>
+
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-title"><span class="icon">🔀</span> Swarm-Style Handoffs</div>
+                        <div class="feature-desc">Agents dynamically route to each other based on findings — Analyzer can loop back to Searcher when gaps detected.</div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-title"><span class="icon">🔍</span> Hybrid Search</div>
+                        <div class="feature-desc">Dense vectors (ChromaDB) + BM25 sparse retrieval + Reciprocal Rank Fusion + Cross-encoder reranking.</div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-title"><span class="icon">🧠</span> Multi-Layer Memory</div>
+                        <div class="feature-desc">User preferences, episodic memory, session context, and working memory with automatic consolidation.</div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-title"><span class="icon">⚡</span> Parallel Execution</div>
+                        <div class="feature-desc">SubagentManager runs concurrent sub-queries. 4 research modes from Fast (15s) to Expert (120s).</div>
+                    </div>
+                </div>
+
+                <div class="tech-stack">
+                    <span class="tech-pill">Python</span>
+                    <span class="tech-pill">FastAPI</span>
+                    <span class="tech-pill">ChromaDB</span>
+                    <span class="tech-pill">Ollama</span>
+                    <span class="tech-pill">Next.js</span>
+                    <span class="tech-pill">TypeScript</span>
+                    <span class="tech-pill">NDJSON Streaming</span>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">Specialized Agents</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">1500+</div>
+                        <div class="stat-label">Lines in Orchestrator</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Research Modes</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">20+</div>
+                        <div class="stat-label">Supported Formats</div>
+                    </div>
+                </div>
+
+                <div class="code-preview" onclick="this.classList.toggle('expanded')">
+                    <div class="code-preview-header">
+                        <span class="code-preview-title">
+                            <span class="icon">📐</span> Architecture & Code
+                        </span>
+                        <span class="code-preview-toggle">▼</span>
+                    </div>
+                    <div class="code-preview-content">
+                        <div class="code-preview-inner">
+                            <div class="code-section">
+                                <div class="code-section-title">Agent Orchestration Flow</div>
+                                <div class="code-block">
+<pre><span class="comment"># Swarm-style agent handoffs with dynamic routing</span>
+<span class="keyword">async def</span> <span class="function">_route_to_next_agent</span>(self, state: AgentState) -> AgentState:
+    <span class="keyword">match</span> state.current_agent:
+        <span class="keyword">case</span> <span class="string">"planner"</span>:
+            <span class="keyword">return await</span> self._run_searcher(state)
+        <span class="keyword">case</span> <span class="string">"analyzer"</span>:
+            <span class="keyword">if</span> state.needs_more_info:
+                <span class="keyword">return await</span> self._run_searcher(state)  <span class="comment"># Loop back</span>
+            <span class="keyword">return await</span> self._run_verifier(state)
+        <span class="keyword">case</span> <span class="string">"verifier"</span>:
+            <span class="keyword">if not</span> state.verified:
+                <span class="keyword">return await</span> self._run_analyzer(state)  <span class="comment"># Re-analyze</span>
+            <span class="keyword">return await</span> self._run_writer(state)</pre>
+                                </div>
+                            </div>
+                            <div class="code-section">
+                                <div class="code-section-title">Hybrid Search with Fusion</div>
+                                <div class="code-block">
+<pre><span class="comment"># Reciprocal Rank Fusion combining dense + sparse retrieval</span>
+<span class="keyword">def</span> <span class="function">hybrid_search</span>(query: str, k: int = <span class="string">10</span>) -> List[Document]:
+    dense_results = chroma_db.similarity_search(query, k=k*<span class="string">2</span>)
+    sparse_results = bm25_index.search(query, k=k*<span class="string">2</span>)
+    
+    <span class="comment"># RRF fusion with cross-encoder reranking</span>
+    fused = reciprocal_rank_fusion(dense_results, sparse_results)
+    <span class="keyword">return</span> cross_encoder.rerank(query, fused)[:k]</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-links">
+                    <a href="https://github.com/NebulaNinjaCoder/Gemini-RAG" class="project-link primary" target="_blank">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        Full Repository
+                    </a>
+                </div>
+            </article>
+
+            <!-- Mosaic Support Page -->
+            <article class="project-card teal-accent animate-in delay-2">
+                <span class="pro-label">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+                    DoorDash · Professional Work
+                </span>
+                <div class="project-header">
+                    <h2 class="project-title">Mosaic Support Page</h2>
+                    <div class="project-badges">
+                        <span class="badge teal">Enterprise App</span>
+                        <span class="badge teal">AI Integration</span>
+                        <span class="badge teal">Production</span>
+                    </div>
+                </div>
+                <p class="project-description">
+                    An internal support tool for DoorDash's Integration Ops team. Features AI-powered troubleshooting, 
+                    Salesforce case integration, guided checklists, and automated investigation notes generation.
+                </p>
+
+                <div class="media-preview mosaic-mockup">
+                    <div class="mockup-ui">
+                        <div class="mockup-header">
+                            <div class="mockup-logo">🚪</div>
+                            <div class="mockup-search">
+                                <span class="mockup-label">Search by</span>
+                                <span class="mockup-dropdown">Case Number ▾</span>
+                                <span class="mockup-input">••••••••</span>
+                            </div>
+                            <button class="mockup-btn primary">Look Up Store</button>
+                        </div>
+                        <div class="mockup-title">Support Dashboard</div>
+                        <div class="mockup-banner success">
+                            <span>✓</span> Found Case #••••••••• | Store: ████████ | Status: Closed | Owner: ████████
+                        </div>
+                        <div class="mockup-panels">
+                            <div class="mockup-panel">
+                                <div class="mockup-panel-header">Case Overview <span>▾</span></div>
+                                <div class="mockup-panel-content">
+                                    <div class="mockup-field"><span>Case Number</span><span>•••••••••</span></div>
+                                    <div class="mockup-field"><span>Status</span><span class="tag">Closed</span></div>
+                                    <div class="mockup-field"><span>Issue Category</span><span>Item Unavailable</span></div>
+                                    <div class="mockup-field"><span>Case Age</span><span>67d ago</span></div>
+                                </div>
+                            </div>
+                            <div class="mockup-panel">
+                                <div class="mockup-panel-header">Quick Tools</div>
+                                <div class="mockup-tools">
+                                    <div class="mockup-tool">🏪<br>Store Details</div>
+                                    <div class="mockup-tool">📋<br>Menu Payload</div>
+                                    <div class="mockup-tool">📊<br>Dev Event Log</div>
+                                    <div class="mockup-tool">📚<br>Provider Docs</div>
+                                    <div class="mockup-tool">⚠️<br>Status Page</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="media-caption">
+                        <span>🔒</span> Production interface (sensitive data redacted) — Salesforce integration + Quick Tools
+                    </div>
+                </div>
+
+                <div class="architecture">
+                    <pre><span class="highlight-blue">Support Agent</span> → <span class="highlight-blue">Case/Store Lookup</span>
+   │
+   ├─ <span class="highlight-blue">Salesforce Integration</span>   <span class="dim">// Full case details, email threading, related cases</span>
+   ├─ <span class="highlight-blue">CHIP AI Assistant</span>        <span class="dim">// Glean SDK for context-aware Q&A</span>
+   ├─ <span class="highlight-blue">Quick Toolbelt</span>           <span class="dim">// Embedded dev logs, MINT, runbooks</span>
+   ├─ <span class="highlight-blue">Guided Checklists</span>        <span class="dim">// Theme-based (Menu/Orders/Onboarding)</span>
+   └─ <span class="highlight-blue">Notes Generator</span>          <span class="dim">// PPP format auto-generated from checklist</span></pre>
+                </div>
+
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-title"><span class="icon">🤖</span> AI-Powered CHIP Assistant</div>
+                        <div class="feature-desc">Integrated Glean SDK with store context awareness. Suggested questions, source citations, expandable chat interface.</div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-title"><span class="icon">☁️</span> Salesforce Deep Integration</div>
+                        <div class="feature-desc">Full case lifecycle view with email correspondence threading, related cases navigation, and GraphQL API integration.</div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-title"><span class="icon">📋</span> Theme-Based Checklists</div>
+                        <div class="feature-desc">Dynamic checklists for Menu Issues, Orders, Onboarding with embedded tool panels and cross-theme related steps.</div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-title"><span class="icon">📝</span> PPP Notes Generator</div>
+                        <div class="feature-desc">Auto-generates investigation notes from completed checklist items in Purpose/Process/Pay-It-Forward format.</div>
+                    </div>
+                </div>
+
+                <div class="tech-stack">
+                    <span class="tech-pill">React</span>
+                    <span class="tech-pill">TypeScript</span>
+                    <span class="tech-pill">styled-components</span>
+                    <span class="tech-pill">GraphQL</span>
+                    <span class="tech-pill">Glean SDK</span>
+                    <span class="tech-pill">Prism Design System</span>
+                    <span class="tech-pill">Redux</span>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat">
+                        <div class="stat-value">5+</div>
+                        <div class="stat-label">Integrated Systems</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">15+</div>
+                        <div class="stat-label">React Components</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Issue Themes</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">Live</div>
+                        <div class="stat-label">Production Status</div>
+                    </div>
+                </div>
+
+                <div class="code-preview" onclick="this.classList.toggle('expanded')">
+                    <div class="code-preview-header">
+                        <span class="code-preview-title">
+                            <span class="icon">📐</span> Architecture & Patterns
+                        </span>
+                        <span class="code-preview-toggle">▼</span>
+                    </div>
+                    <div class="code-preview-content">
+                        <div class="code-preview-inner">
+                            <div class="code-section">
+                                <div class="code-section-title">Salesforce Case Integration</div>
+                                <div class="code-block">
+<pre><span class="comment">// GraphQL query for case details with related data</span>
+<span class="keyword">const</span> result = <span class="keyword">await</span> <span class="function">getSalesforceCaseSummaryQuery</span>({
+  caseNum: [caseNumber]
+});
+
+<span class="comment">// Extract and navigate related cases</span>
+<span class="keyword">const</span> caseInfo = result.data?.caseSummary[<span class="string">0</span>];
+setCaseLookupInfo({
+  caseNumber: caseInfo.caseNumber,
+  storeId: caseInfo.storeId,
+  status: caseInfo.status,
+  relatedCases: caseInfo.relatedCases,  <span class="comment">// Clickable navigation</span>
+  emailThread: caseInfo.correspondence
+});</pre>
+                                </div>
+                            </div>
+                            <div class="code-section">
+                                <div class="code-section-title">PPP Notes Auto-Generation</div>
+                                <div class="code-block">
+<pre><span class="comment">// Auto-generate investigation notes from checklist progress</span>
+<span class="keyword">const</span> <span class="function">generateNotes</span> = (): string => {
+  <span class="keyword">let</span> notes = <span class="string">`Store ID: ${store.storeId}\n\n`</span>;
+  
+  notes += <span class="string">`PURPOSE:\n${purposeNotes || defaultPurpose}\n\n`</span>;
+  notes += <span class="string">`PROCESS:\n`</span>;
+  
+  completedItems.<span class="function">forEach</span>((item, i) => {
+    notes += <span class="string">`${i + 1}. ${item.title}\n`</span>;
+  });
+  
+  <span class="keyword">if</span> (payItForwardNotes) {
+    notes += <span class="string">`\nPAY IT FORWARD:\n${payItForwardNotes}`</span>;
+  }
+  <span class="keyword">return</span> notes;
+};</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-links">
+                    <span class="project-link" style="cursor: default; opacity: 0.6;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                        Internal DoorDash Code
+                    </span>
+                </div>
+            </article>
+
+            <!-- Samantha -->
+            <article class="project-card animate-in delay-3">
+                <div class="project-header">
+                    <h2 class="project-title">Samantha</h2>
+                    <div class="project-badges">
+                        <span class="badge">Voice AI</span>
+                        <span class="badge">100% Offline</span>
+                        <span class="badge">Self-Improving</span>
+                    </div>
+                </div>
+                <p class="project-description">
+                    A fully offline voice conversation system inspired by "Her". Real-time voice interaction with zero-shot voice cloning, 
+                    self-improving memory via Trilium Notes integration, and a GPU-optimized pipeline that fits in 8GB VRAM.
+                </p>
+
+                <div class="media-preview">
+                    <iframe 
+                        src="https://www.youtube.com/embed/_4_-0YiA5H0?rel=0&modestbranding=1" 
+                        title="Samantha Voice AI Demo" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                    <div class="media-caption">
+                        <span>🎬</span> Demo: SoulOrb transitions through LISTENING → THINKING → SPEAKING states
+                    </div>
+                </div>
+
+                <div class="architecture">
+                    <pre><span class="highlight">Microphone</span> → <span class="highlight">VAD</span> → <span class="highlight">Whisper STT</span> → <span class="highlight">Ollama LLM</span> → <span class="highlight">F5-TTS</span> → <span class="highlight">Speaker</span>
+             <span class="dim">(CPU)</span>    <span class="dim">(CPU, int8)</span>      <span class="dim">(GPU)</span>       <span class="dim">(GPU)</span>
+                          ↓
+                   <span class="highlight">WebSocket</span> → <span class="highlight">SoulOrb Visualization</span> <span class="dim">(React + Three.js)</span>
+                          ↓
+                   <span class="highlight">Trilium Notes</span> <span class="dim">(Tool Calling for Memory)</span></pre>
+                </div>
+
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-title"><span class="icon">🎤</span> Voice Cloning</div>
+                        <div class="feature-desc">Zero-shot F5-TTS from 10-30 second audio sample. No cloud services required.</div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-title"><span class="icon">📝</span> Self-Improving Memory</div>
+                        <div class="feature-desc">Trilium Notes integration with LLM tool calling. Learns preferences, topic mappings, frequently used folders.</div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-title"><span class="icon">🔮</span> SoulOrb Visualization</div>
+                        <div class="feature-desc">Custom GLSL shaders with 3 states (LISTENING → THINKING → SPEAKING). 4-second organic morphs, amplitude-reactive.</div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-title"><span class="icon">⚙️</span> GPU Optimized</div>
+                        <div class="feature-desc">Whisper on CPU (int8), LLM + TTS on GPU. Fits in 8GB VRAM with 1.2GB headroom for WebGL.</div>
+                    </div>
+                </div>
+
+                <div class="tech-stack">
+                    <span class="tech-pill">Python</span>
+                    <span class="tech-pill">Ollama</span>
+                    <span class="tech-pill">Whisper</span>
+                    <span class="tech-pill">F5-TTS</span>
+                    <span class="tech-pill">React</span>
+                    <span class="tech-pill">Three.js</span>
+                    <span class="tech-pill">GLSL</span>
+                    <span class="tech-pill">WebSocket</span>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat">
+                        <div class="stat-value">~3.5s</div>
+                        <div class="stat-label">End-to-End Latency</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">1500+</div>
+                        <div class="stat-label">Lines in Trilium Integration</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Cloud Dependencies</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">8GB</div>
+                        <div class="stat-label">VRAM Budget</div>
+                    </div>
+                </div>
+
+                <div class="code-preview" onclick="this.classList.toggle('expanded')">
+                    <div class="code-preview-header">
+                        <span class="code-preview-title">
+                            <span class="icon">📐</span> Architecture & Code
+                        </span>
+                        <span class="code-preview-toggle">▼</span>
+                    </div>
+                    <div class="code-preview-content">
+                        <div class="code-preview-inner">
+                            <div class="code-section">
+                                <div class="code-section-title">GLSL Shader - Organic Morph</div>
+                                <div class="code-block">
+<pre><span class="comment">// Smooth 4-second state transitions with organic distortion</span>
+<span class="keyword">vec3</span> <span class="function">morphPosition</span>(<span class="keyword">vec3</span> pos, <span class="keyword">float</span> t, <span class="keyword">int</span> state) {
+  <span class="keyword">float</span> noise = <span class="function">snoise</span>(pos * <span class="string">2.0</span> + time * <span class="string">0.3</span>);
+  <span class="keyword">float</span> amplitude = <span class="function">mix</span>(
+    stateAmplitudes[prevState],
+    stateAmplitudes[state],
+    <span class="function">smoothstep</span>(<span class="string">0.0</span>, <span class="string">1.0</span>, t)  <span class="comment">// 4s ease</span>
+  );
+  <span class="keyword">return</span> pos + normal * noise * amplitude;
+}</pre>
+                                </div>
+                            </div>
+                            <div class="code-section">
+                                <div class="code-section-title">Trilium Notes Tool Calling</div>
+                                <div class="code-block">
+<pre><span class="comment"># LLM-driven memory with self-improving context</span>
+<span class="decorator">@tool</span>
+<span class="keyword">async def</span> <span class="function">search_notes</span>(query: str) -> List[Note]:
+    <span class="string">"""Search personal knowledge base for relevant context."""</span>
+    results = trilium.search(query, limit=<span class="string">5</span>)
+    <span class="comment"># Track successful retrievals for preference learning</span>
+    <span class="keyword">await</span> self.<span class="function">update_retrieval_stats</span>(query, results)
+    <span class="keyword">return</span> results
+
+<span class="decorator">@tool</span>  
+<span class="keyword">async def</span> <span class="function">create_note</span>(title: str, content: str, parent: str):
+    <span class="string">"""Create new note - learns folder preferences over time."""</span>
+    folder = <span class="keyword">await</span> self.<span class="function">predict_best_folder</span>(title, content)
+    <span class="keyword">return</span> trilium.<span class="function">create_note</span>(title, content, folder)</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-links">
+                    <a href="https://github.com/NebulaNinjaCoder/Samantha" class="project-link primary" target="_blank">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        Full Repository
+                    </a>
+                </div>
+            </article>
+        </section>
+
+        <section class="about">
+            <div class="section-label animate-in delay-4">About</div>
+            <div class="about-content">
+                <div class="about-text animate-in delay-4">
+                    <p>
+                        I build <strong>AI systems that run locally, work offline, and solve real problems</strong>. 
+                        Not demos — production-quality code with proper error handling, caching, and architecture.
+                    </p>
+                    <p>
+                        Currently at <strong>DoorDash</strong> building internal tools for Integration Ops, including 
+                        AI-powered support systems with Glean integration, Salesforce case management, and guided troubleshooting workflows.
+                    </p>
+                    <p>
+                        My focus is on <strong>multi-agent orchestration</strong>, <strong>memory systems</strong>, and 
+                        <strong>developer experience</strong>. I'm particularly interested in how AI systems can learn 
+                        and adapt from user interactions without cloud dependencies.
+                    </p>
+                    <p>
+                        Exploring opportunities in <strong>AI Engineering</strong> and <strong>Developer Experience</strong> roles 
+                        where I can build tools that make AI more accessible and useful.
+                    </p>
+                </div>
+                <div class="animate-in delay-4">
+                    <ul class="skills-list">
+                        <li>Multi-Agent Systems <span class="skill-level">●●●</span></li>
+                        <li>RAG & Vector Search <span class="skill-level">●●●</span></li>
+                        <li>Python / FastAPI <span class="skill-level">●●●</span></li>
+                        <li>React / TypeScript <span class="skill-level">●●●</span></li>
+                        <li>LLM Integration <span class="skill-level">●●●</span></li>
+                        <li>Enterprise Tooling <span class="skill-level">●●●</span></li>
+                        <li>Voice AI / TTS / STT <span class="skill-level">●●○</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>
+                <a href="https://github.com/NebulaNinjaCoder" target="_blank">GitHub</a> · 
+                Built with curiosity · 2026
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
