@@ -342,7 +342,8 @@ section {
 .glass-card h4 {
     color: #ffffff;
     /* Override to bright white for high contrast backgrounds */
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    text-shadow: 0 4px 16px rgba(0, 0, 0, 0.7), 0 1px 3px rgba(0, 0, 0, 0.9);
+    /* Heavy, stacked shadow for maximum contrast */
 }
 
 .glass-panel p,
@@ -353,7 +354,8 @@ section {
 .glass-card span:not(.accent):not(.text-gradient) {
     color: #f1f5f9;
     /* Bright off-white */
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+    /* Stronger shadow for body text */
     font-weight: 500;
 }
 
@@ -698,11 +700,14 @@ section {
     margin: 2rem auto 2.5rem;
     padding: 3rem;
     border-radius: 24px;
-    background: rgba(var(--glass-color-rgb), 0.15);
-    /* Increased opacity for readability */
+    background: rgba(var(--glass-color-rgb), 0.35);
+    /* Significantly increased opacity to wash out background noise */
+    backdrop-filter: blur(24px) saturate(var(--glass-saturate));
+    /* Doubled blur to abstract background details */
+    -webkit-backdrop-filter: blur(24px) saturate(var(--glass-saturate));
     box-shadow:
-        0 20px 40px -10px rgba(0, 0, 0, 0.3),
-        inset 0 1px 1px rgba(255, 255, 255, 0.2);
+        0 20px 40px -10px rgba(0, 0, 0, 0.4),
+        inset 0 1px 1px rgba(255, 255, 255, 0.4);
 }
 
 @media (max-width: 768px) {
