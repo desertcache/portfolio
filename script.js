@@ -39,18 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('hero').classList.add('active');
     }, 100);
 
-    // Liquid Glass spotlight tracking
-    const glassCards = document.querySelectorAll('.glass-card');
-    glassCards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
 
-            card.style.setProperty('--x', `${x}px`);
-            card.style.setProperty('--y', `${y}px`);
-        });
-    });
 
     // -----------------------------------------
     // Glass Controls Logic

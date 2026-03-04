@@ -345,22 +345,42 @@ section {
     --y: 50%;
 }
 
+/* Minimal Edge Shimmer on Hover */
 .glass-card::after {
     content: "";
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    /* Much softer, smaller gradient that blends better */
-    background: radial-gradient(400px circle at var(--x) var(--y), rgba(255, 255, 255, 0.15), transparent 40%);
-    mix-blend-mode: overlay;
+    padding: 1px;
+    /* Subtle 1px border */
+    background: linear-gradient(var(--angle, 0deg),
+            transparent 60%,
+            rgba(255, 255, 255, 0.4) 80%,
+            transparent 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
     opacity: 0;
-    transition: opacity var(--transition-smooth);
+    transition: opacity 0.3s ease;
     pointer-events: none;
     z-index: 5;
 }
 
+@property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@keyframes rotateGradient {
+    to {
+        --angle: 360deg;
+    }
+}
+
 .glass-card:hover::after {
     opacity: 1;
+    animation: rotateGradient 4s linear infinite;
 }
 
 .glass-card::before {
