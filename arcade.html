@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcade | Samuel Bates</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Portfolio of Samuel Bates, a Full-Stack Engineer specializing in AI integrations, data pipelines, and frontend applications.">
+    <meta name="keywords" content="Software Engineer, Full-Stack, React, Snowflake, AI, Python, TypeScript">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css?v=9">
+
+    <!-- Boxicons (for sleek icons) -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+
+<body>
+
+
+    <!-- Ambient Background Effects for Liquid Glass -->
+    <div class="ambient-mesh"></div>
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    <div class="background-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <nav class="navbar glass-panel">
+        <div class="nav-content container">
+            <span class="logo">sb<span class="accent">.</span></span>
+            <ul class="nav-links">
+                <li><a href="index.html#work">Work</a></li>
+                <li><a href="index.html#skills">Skills</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="#" style="color: var(--text-primary); font-weight: 700;">Arcade</a></li>
+                <li><a href="index.html#contact" class="btn-primary-small">Contact Me</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section id="arcade-section" class="hero container reveal">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    The <span class="text-gradient">Arcade</span>.
+                </h1>
+                <p class="hero-subtitle">
+                    Take a break. Play some games built entirely with raw HTML5 Canvas and vanilla JavaScript physics.
+                </p>
+            </div>
+
+            <div class="arcade-cabinet glass-card"
+                style="margin-top: 2rem; padding: 1rem; position: relative; overflow: hidden; min-height: 500px; display: flex; align-items: center; justify-content: center;">
+                <canvas id="gameCanvas" width="800" height="500"
+                    style="background: rgba(15, 23, 42, 0.6); border-radius: 8px; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); z-index: 10;"></canvas>
+
+                <!-- Main Menu Overlay -->
+                <div id="arcade-menu" style="position: absolute; z-index: 20; text-align: center; color: white;">
+                    <h2 style="font-size: 2.5rem; margin-bottom: 2rem; text-shadow: 0 0 10px rgba(255,255,255,0.5);">
+                        Select Game</h2>
+                    <div style="display: flex; gap: 1.5rem; justify-content: center;">
+                        <button id="btn-snake" class="btn-primary" style="background: rgba(37, 99, 235, 0.8);">Neon
+                            Snake</button>
+                        <button id="btn-flappy" class="btn-primary" style="background: rgba(139, 92, 246, 0.8);">Flappy
+                            UFO</button>
+                    </div>
+                </div>
+
+                <!-- Game Over Overlay -->
+                <div id="game-over-screen"
+                    style="position: absolute; z-index: 20; text-align: center; color: white; display: none;">
+                    <h2
+                        style="font-size: 3rem; color: #ef4444; text-shadow: 0 0 15px rgba(239, 68, 68, 0.6); margin-bottom: 0.5rem;">
+                        GAME OVER</h2>
+                    <p id="final-score" style="font-size: 1.5rem; margin-bottom: 2rem;">Score: 0</p>
+                    <div style="display: flex; gap: 1rem; justify-content: center;">
+                        <button id="btn-restart" class="btn-primary">Play Again</button>
+                        <button id="btn-menu" class="btn-secondary glass-btn">Main Menu</button>
+                    </div>
+                </div>
+
+                <!-- Runtime Score Display -->
+                <div id="hud-score"
+                    style="position: absolute; top: 2rem; left: 3rem; z-index: 15; color: rgba(255,255,255,0.8); font-family: monospace; font-size: 1.5rem; font-weight: bold; display: none;">
+                    Score: <span id="current-score">0</span>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">
+                <p>Use keyboard <strong>Arrow Keys</strong> or <strong>Spacebar</strong> to play.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; 2026 Samuel Bates. All rights reserved.</p>
+            <p class="footer-note">Designed and built with Vanilla HTML, CSS, & JS.</p>
+        </div>
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="arcade.js?v=9"></script>
+</body>
+
+</html>
