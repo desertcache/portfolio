@@ -350,9 +350,11 @@ section {
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: radial-gradient(500px circle at var(--x) var(--y), rgba(255, 255, 255, 0.5), transparent 40%);
+    /* Much softer, smaller gradient that blends better */
+    background: radial-gradient(400px circle at var(--x) var(--y), rgba(255, 255, 255, 0.15), transparent 40%);
+    mix-blend-mode: overlay;
     opacity: 0;
-    transition: opacity var(--transition-fast);
+    transition: opacity var(--transition-smooth);
     pointer-events: none;
     z-index: 5;
 }
