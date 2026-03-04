@@ -211,8 +211,9 @@ p,
 li,
 .hero-subtitle,
 .section-desc {
-    color: #cbd5e1;
-    /* Slate 300 for readability on dark backgrounds */
+    color: #334155;
+    /* Darker slate for readability on bright backgrounds */
+    font-weight: 500;
 }
 
 /* Base link colors for dark bg */
