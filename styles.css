@@ -309,6 +309,28 @@ section {
     color: var(--accent-blue);
 }
 
+/* Mobile Menu Toggle */
+.mobile-menu-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    background: var(--bg-surface);
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    transition: var(--transition-fast);
+    z-index: 1002;
+}
+
+.mobile-menu-toggle:hover {
+    background: var(--bg-base);
+    border-color: var(--text-tertiary);
+}
+
 /* =========================================
    Hero Section
    ========================================= */
@@ -613,6 +635,99 @@ section {
 }
 
 /* =========================================
+   Side Projects Section
+   ========================================= */
+.side-projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.side-project-card {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-left: 3px solid var(--accent-purple);
+}
+
+.side-project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+}
+
+.side-project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.side-project-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(37, 99, 235, 0.1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.side-project-icon i {
+    font-size: 1.4rem;
+    color: var(--accent-purple);
+}
+
+.side-project-link {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    transition: var(--transition-fast);
+    text-decoration: none;
+}
+
+.side-project-link:hover {
+    color: var(--text-primary);
+    background: var(--bg-base);
+}
+
+.side-project-link i {
+    font-size: 1.3rem;
+}
+
+.side-project-card h3 {
+    font-size: 1.3rem;
+}
+
+.side-project-card p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    flex-grow: 1;
+}
+
+/* Social Links */
+.social-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Tech Pill Hover */
+.tech-pill {
+    transition: var(--transition-fast);
+}
+
+.tech-pill:hover {
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+    transform: translateY(-1px);
+}
+
+/* =========================================
    Contact/Footer Section
    ========================================= */
 .contact-card {
@@ -717,9 +832,35 @@ section {
 }
 
 @media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: flex;
+    }
+
     .nav-links {
-        display: none;
-        /* Hide for simple mobile */
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        transform: translateY(-100%);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 1001;
+    }
+
+    .nav-links.open {
+        transform: translateY(0);
+    }
+
+    .nav-links a:not(.btn-primary-small) {
+        font-size: 1.5rem;
     }
 
     .hero-title {
@@ -747,5 +888,9 @@ section {
 
     .contact-card {
         padding: 3rem 1.5rem;
+    }
+
+    .side-projects-grid {
+        grid-template-columns: 1fr;
     }
 }

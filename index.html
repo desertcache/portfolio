@@ -8,7 +8,20 @@
     <!-- SEO Meta Tags -->
     <meta name="description" content="Portfolio of Samuel Bates, a Full-Stack Engineer specializing in AI integrations, data pipelines, and frontend applications.">
     <meta name="keywords" content="Software Engineer, Full-Stack, React, Snowflake, AI, Python, TypeScript">
-    
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Samuel Bates | Full-Stack Engineer">
+    <meta property="og:description" content="Former EMT turned engineer. Built 3 production apps at DoorDash, shipped 68K+ lines of TypeScript, protected $21M/mo in merchant revenue.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://desertcache.github.io/portfolio/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Samuel Bates | Full-Stack Engineer">
+    <meta name="twitter:description" content="Former EMT turned engineer. Built 3 production apps at DoorDash, shipped 68K+ lines of TypeScript, protected $21M/mo in merchant revenue.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <meta name="theme-color" content="#FAFAFA">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,8 +43,12 @@
     <nav class="navbar glass-panel">
         <div class="nav-content container">
             <span class="logo">sb<span class="accent">.</span></span>
+            <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                <i class='bx bx-menu'></i>
+            </button>
             <ul class="nav-links">
                 <li><a href="#work">Work</a></li>
+                <li><a href="#projects">Projects</a></li>
                 <li><a href="#skills">Skills</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#contact" class="btn-primary-small">Contact Me</a></li>
@@ -53,7 +70,7 @@
                 </h1>
                 
                 <p class="hero-subtitle">
-                    Full-Stack Engineer with a non-traditional background (EMT to Code). Most recently protecting $21M/mo in GMV and building production AI tools at DoorDash. Product-minded, data-driven, and obsessed with clean UX.
+                    Former EMT turned full-stack engineer. At DoorDash, I built 3 production apps from scratch, shipped 68K lines of TypeScript to a 30M-line monorepo, and led a migration that protected $21M/mo in merchant revenue. Now building AI agents and open-source developer tools.
                 </p>
                 
                 <div class="hero-actions">
@@ -110,7 +127,7 @@
                         A massive 22-component unified troubleshooting interface deployed inside DoorDash's internal admin portal for 4,000+ support agents. Features an embedded custom Glean AI agent (CHIP) for contextual diagnosis.
                     </p>
                     <ul class="project-highlights">
-                        <li><i class='bx bx-check'></i> Replaces 5+ disparate tabs with one streamlined workflow</li>
+                        <li><i class='bx bx-check'></i> Consolidated 5 disconnected workflows into a single interface for 4,000+ agents</li>
                         <li><i class='bx bx-check'></i> Deep integration with Salesforce GraphQL & internal APIs</li>
                         <li><i class='bx bx-check'></i> Built entirely in React 18, TypeScript, and Redux</li>
                     </ul>
@@ -128,7 +145,7 @@
                     <div class="project-header">
                         <span class="project-tag">Full-Stack Application</span>
                         <div class="project-links">
-                            <i class='bx bbx-layer'></i>
+                            <i class='bx bx-layer'></i>
                         </div>
                     </div>
                     <h3 class="project-title">WFM Dashboard 2.0</h3>
@@ -136,7 +153,7 @@
                         17-page workforce management platform replacing a $50K/yr external vendor tool. Tracks real-time SLAs, agent adherence, and ML forecasts across 139 support queues and 6 vendor networks. Built in 17 days.
                     </p>
                     <ul class="project-highlights">
-                        <li><i class='bx bx-check'></i> Created published shared React component library (v0.1.6)</li>
+                        <li><i class='bx bx-check'></i> Published reusable component library adopted across teams</li>
                         <li><i class='bx bx-check'></i> Real-time Snowflake metrics polling integration</li>
                         <li><i class='bx bx-check'></i> Custom Erlang C staffing prediction algorithms</li>
                     </ul>
@@ -158,8 +175,8 @@
                         A dual-stack mapping platform managing hundreds of account assignments. Built the frontend React UI and the backend Node.js Fastify BFF (Backend-for-Frontend) mapping workflows into Snowflake.
                     </p>
                     <ul class="project-highlights">
-                        <li><i class='bx bx-check'></i> 50+ Typescript files across 7 pages and 11 features</li>
-                        <li><i class='bx bx-check'></i> Handled SDK bugs around connection locking & auth</li>
+                        <li><i class='bx bx-check'></i> Full CRUD platform managing hundreds of account assignments across quarterly, weekly, and ad-hoc workflows</li>
+                        <li><i class='bx bx-check'></i> Diagnosed and fixed Snowflake SDK connection lifecycle and authentication concurrency bugs</li>
                         <li><i class='bx bx-check'></i> Instrumenting custom Prometheus metrics</li>
                     </ul>
                     <div class="tech-stack-flex">
@@ -180,7 +197,7 @@
                         Took a high-risk technical deprecation and built a data-driven migration engine. Authored the business case, secured $90k in funding, built Snowflake tracking dashboards, and led the team to save massive revenue.
                     </p>
                     <ul class="project-highlights">
-                        <li><i class='bx bx-trending-up'></i> Saved ~94% of at-risk GMV (~$20.1M/mo) under budget</li>
+                        <li><i class='bx bx-trending-up'></i> Saved ~94% of at-risk GMV (~$20.1M/mo), delivered at 78% of approved spend</li>
                         <li><i class='bx bx-check'></i> Dropped technical escalations from 20+/day to near zero</li>
                     </ul>
                      <div class="tech-stack-flex">
@@ -190,6 +207,64 @@
                     </div>
                 </article>
 
+            </div>
+        </section>
+
+        <!-- SIDE PROJECTS SECTION -->
+        <section id="projects" class="side-projects-section container reveal">
+            <div class="section-header">
+                <h2 class="section-title">Building in <span class="accent">Public</span></h2>
+                <p class="section-desc">Open-source tools and experiments I build outside of work.</p>
+            </div>
+
+            <div class="side-projects-grid">
+                <article class="side-project-card glass-card">
+                    <div class="side-project-header">
+                        <div class="side-project-icon"><i class='bx bx-terminal'></i></div>
+                        <a href="https://github.com/desertcache/agent-os" target="_blank" class="side-project-link" aria-label="View Agent-OS on GitHub">
+                            <i class='bx bxl-github'></i>
+                        </a>
+                    </div>
+                    <h3>Agent-OS</h3>
+                    <p>Open-source hooks, skills, and memory system for Claude Code. Gives AI agents persistent context, custom workflows, and vault-backed memory.</p>
+                    <div class="tech-stack-flex">
+                        <span class="tech-pill">TypeScript</span>
+                        <span class="tech-pill">Claude Code</span>
+                        <span class="tech-pill">Git Hooks</span>
+                    </div>
+                </article>
+
+                <article class="side-project-card glass-card">
+                    <div class="side-project-header">
+                        <div class="side-project-icon"><i class='bx bx-cube-alt'></i></div>
+                        <a href="https://github.com/desertcache/samantha-ui" target="_blank" class="side-project-link" aria-label="View Samantha UI on GitHub">
+                            <i class='bx bxl-github'></i>
+                        </a>
+                    </div>
+                    <h3>Samantha UI</h3>
+                    <p>Audio-reactive 3D interface with React 19, Three.js, and custom GLSL shaders. Built-in demo mode for instant interaction.</p>
+                    <div class="tech-stack-flex">
+                        <span class="tech-pill">React 19</span>
+                        <span class="tech-pill">Three.js</span>
+                        <span class="tech-pill">GLSL</span>
+                    </div>
+                </article>
+
+                <article class="side-project-card glass-card">
+                    <div class="side-project-header">
+                        <div class="side-project-icon"><i class='bx bx-microphone'></i></div>
+                        <a href="https://github.com/desertcache/velvet" target="_blank" class="side-project-link" aria-label="View Velvet on GitHub">
+                            <i class='bx bxl-github'></i>
+                        </a>
+                    </div>
+                    <h3>Velvet</h3>
+                    <p>Local-first speech-to-text with Electron, faster-whisper, and Three.js visualization. No API keys, no cloud.</p>
+                    <div class="tech-stack-flex">
+                        <span class="tech-pill">Electron</span>
+                        <span class="tech-pill">Python</span>
+                        <span class="tech-pill">faster-whisper</span>
+                    </div>
+                </article>
             </div>
         </section>
 
@@ -237,7 +312,7 @@
                         I transitioned into tech by teaching myself to code, eventually landing at DoorDash where I quickly moved from operational roles into core engineering spaces—often writing the very tools my operations team used daily. I thrive at the intersection of business logic, high-pressure execution, and clean, reliable code. 
                     </p>
                     <p>
-                        When I'm not coding, I'm building side projects like AI meeting note apps (Kernel), learning 3D game engines, or studying statistics.
+                        Outside of work, I build open-source tools for AI engineering workflows, experiment with WebGL and real-time audio visualization, and contribute to projects that push the boundaries of human-computer interaction.
                     </p>
                 </div>
                 
@@ -248,11 +323,11 @@
                     </div>
                      <div class="about-stat-item glass-card">
                         <h4>Focus</h4>
-                        <p>Full-Stack Web, AI Integrations</p>
+                        <p>Full-Stack Web, AI Engineering</p>
                     </div>
                      <div class="about-stat-item glass-card">
                         <h4>Side Projects</h4>
-                        <p>Kernel, SVAS Shield, Velvet</p>
+                        <p>Agent-OS, Samantha UI, Velvet</p>
                     </div>
                 </div>
             </div>
@@ -262,11 +337,11 @@
         <section id="contact" class="contact-section container reveal">
             <div class="contact-card glass-card">
                 <h2 class="section-title">Let's build something <span class="text-gradient">incredible</span>.</h2>
-                <p>I'm currently open to new opportunities as a Software Engineer, Full-Stack Developer, or Technical Integration Specialist.</p>
+                <p>I'm currently open to new opportunities as a Software Engineer, Full-Stack Developer, or AI Engineer.</p>
                 
                 <div class="social-links mt-4">
                     <a href="https://github.com/desertcache" target="_blank" class="social-btn glass-btn"><i class='bx bxl-github'></i> GitHub</a>
-                    <a href="mailto:samuel.bates@example.com" class="social-btn btn-primary"><i class='bx bx-envelope'></i> Email Me</a>
+                    <a href="mailto:batessambates@gmail.com" class="social-btn btn-primary"><i class='bx bx-envelope'></i> Email Me</a>
                 </div>
             </div>
         </section>
