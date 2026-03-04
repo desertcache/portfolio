@@ -19,7 +19,7 @@
         rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css?v=6">
+    <link rel="stylesheet" href="styles.css?v=8">
 
     <!-- Boxicons (for sleek icons) -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
@@ -27,60 +27,6 @@
 
 <body>
 
-    <!-- LIQUID GLASS CONTROL PANEL -->
-    <div id="glass-controls" class="glass-card">
-        <div class="responsive-edge"></div>
-        <div class="controls-header" id="controls-drag-handle">
-            <span>Glass Engine Tweaks</span>
-            <i class='bx bx-move'></i>
-        </div>
-        <div class="controls-body">
-            <div class="slider-row">
-                <div class="slider-header">
-                    <label>Blur</label>
-                    <span id="readout-blur">30px</span>
-                </div>
-                <input type="range" id="slider-blur" min="0" max="100" value="30">
-            </div>
-            <div class="slider-row">
-                <div class="slider-header">
-                    <label>Saturate</label>
-                    <span id="readout-saturate">150%</span>
-                </div>
-                <input type="range" id="slider-saturate" min="0" max="300" value="150">
-            </div>
-            <div class="slider-row">
-                <div class="slider-header">
-                    <label>Opacity</label>
-                    <span id="readout-opacity">0.10</span>
-                </div>
-                <input type="range" id="slider-opacity" min="0" max="1" step="0.01" value="0.10">
-            </div>
-            <div class="slider-row">
-                <div class="slider-header">
-                    <label>Noise</label>
-                    <span id="readout-noise">0.15</span>
-                </div>
-                <input type="range" id="slider-noise" min="0" max="1" step="0.01" value="0.15">
-            </div>
-            <div class="slider-row">
-                <div class="slider-header">
-                    <label>Prism Edge</label>
-                    <span id="readout-prism">0.30</span>
-                </div>
-                <input type="range" id="slider-prism" min="0" max="1" step="0.01" value="0.30">
-            </div>
-            <div class="slider-row">
-                <div class="slider-header">
-                    <label>Edge Light</label>
-                    <span id="readout-edge-light">0.30</span>
-                </div>
-                <input type="range" id="slider-edge-light" min="0" max="1" step="0.01" value="0.30">
-            </div>
-            <button id="close-controls" class="btn-primary-small" style="width: 100%; margin-top: 10px;">Hide
-                Controls</button>
-        </div>
-    </div>
 
     <!-- Ambient Background Effects for Liquid Glass -->
     <div class="ambient-mesh"></div>
