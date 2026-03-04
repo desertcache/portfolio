@@ -1,4 +1,36 @@
+// 1. Premium Pre-loader (Fires when all assets/images are fully loaded)
+window.addEventListener('load', () => {
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        preloader.style.opacity = '0';
+        preloader.style.visibility = 'hidden';
+        setTimeout(() => {
+            preloader.remove(); // Remove from DOM after transition
+        }, 800);
+    }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
+
+    // 3. Magnetic Buttons
+    const magneticElements = document.querySelectorAll('.magnetic');
+
+    magneticElements.forEach((el) => {
+        el.addEventListener('mousemove', (e) => {
+            const position = el.getBoundingClientRect();
+            const x = e.clientX - position.left - position.width / 2;
+            const y = e.clientY - position.top - position.height / 2;
+
+            // Adjust the denominator to change the intensity of the pull
+            el.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+        });
+
+        el.addEventListener('mouseout', () => {
+            // Smoothly snap back into place
+            el.style.transform = 'translate(0px, 0px)';
+        });
+    });
+
 
     // Navbar scroll effect
     const navbar = document.querySelector('.navbar');
@@ -38,7 +70,37 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         document.getElementById('hero').classList.add('active');
     }, 100);
+    // 2. Rotating Hero Text Animation
+    const typingText = document.querySelector('.typing-text');
+    if (typingText) {
+        const phrases = [
+            "I build complex systems that scale.",
+            "I craft resilient backend pipelines.",
+            "I integrate sophisticated AI workflows.",
+            "I design pristine user experiences."
+        ];
 
+        let phraseIndex = 0;
 
+        setInterval(() => {
+            // Slide/fade out
+            typingText.classList.add('fade-out');
 
+            setTimeout(() => {
+                // Change text while invisible
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                typingText.textContent = phrases[phraseIndex];
+
+                // Reset transform/opacity
+                typingText.classList.remove('fade-out');
+                typingText.classList.add('fade-in');
+
+                // Slide/fade back in
+                setTimeout(() => {
+                    typingText.classList.remove('fade-in');
+                }, 50); // Small delay to allow CSS to register the starting block
+
+            }, 400); // Wait for the fade-out CSS duration (0.4s)
+        }, 3500); // Rotate every 3.5 seconds
+    }
 });

@@ -43,7 +43,7 @@
     --glass-blur: 12px;
     --glass-saturate: 115%;
     --glass-opacity: 0.00;
-    --glass-noise: 0.00;
+    --glass-noise: 0.15;
     --glass-prism: 0.11;
     --glass-edge-light: 0.00;
     --glass-color-rgb: 255, 255, 255;
@@ -59,6 +59,61 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+/* =========================================
+   Wow Factor Premium Effects
+   ========================================= */
+
+/* 1. Minimalist Pre-loader */
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0d1117;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+}
+
+#preloader .logo {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #f8fafc;
+    animation: pulse-logo 1.5s infinite alternate ease-in-out;
+}
+
+@keyframes pulse-logo {
+    0% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+
+    100% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}
+
+/* 2. Rotating Hero Text */
+.typing-text {
+    display: inline-block;
+    min-width: 20px;
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.typing-text.fade-out {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.typing-text.fade-in {
+    opacity: 0;
+    transform: translateY(10px);
 }
 
 html {
@@ -315,7 +370,8 @@ section {
     z-index: 10;
 }
 
-.glass-panel::before {
+.glass-panel::before,
+.glass-card::before {
     content: "";
     position: absolute;
     inset: 0;
