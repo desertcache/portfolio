@@ -285,9 +285,9 @@ section {
     color: var(--text-secondary);
 }
 
-/* Ensure Logo in navbar remains crisp on dark backgrounds */
+/* Ensure Logo in navbar remains crisp on bright backgrounds */
 .navbar:not(.scrolled) .logo {
-    color: #f8fafc;
+    color: var(--text-primary);
 }
 
 .navbar.scrolled .logo {
@@ -295,7 +295,8 @@ section {
 }
 
 .navbar:not(.scrolled) .nav-links a:not(.btn-primary-small) {
-    color: #cbd5e1;
+    color: var(--text-primary);
+    font-weight: 600;
 }
 
 .glass-panel {
@@ -585,7 +586,8 @@ section {
 
 .hero-subtitle {
     font-size: 1.25rem;
-    color: var(--text-secondary);
+    color: #f8fafc;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
     max-width: 700px;
     margin: 0 auto 2.5rem;
 }
