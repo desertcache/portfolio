@@ -40,7 +40,7 @@
     --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
     /* Liquid Glass Variables (from User Widget) */
-    --glass-blur: 8px;
+    --glass-blur: 12px;
     --glass-saturate: 115%;
     --glass-opacity: 0.00;
     --glass-noise: 0.00;
