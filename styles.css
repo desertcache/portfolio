@@ -259,7 +259,7 @@ a {
 }
 
 section {
-    padding: 6rem 0;
+    padding: 8rem 0;
 }
 
 /* =========================================
@@ -702,18 +702,21 @@ section {
 
 .project-tag {
     font-size: 0.8rem;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--accent-blue);
-    background: rgba(37, 99, 235, 0.1);
+    color: #eff6ff;
+    background: rgba(37, 99, 235, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     padding: 0.4rem 0.8rem;
     border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .tag-orange {
-    color: var(--accent-orange);
-    background: rgba(234, 88, 12, 0.1);
+    color: #fff7ed;
+    background: rgba(234, 88, 12, 0.6);
 }
 
 .project-links i {
