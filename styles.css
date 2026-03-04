@@ -103,6 +103,7 @@
 .typing-text {
     display: inline-block;
     min-width: 20px;
+    color: #f8fafc;
     transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
