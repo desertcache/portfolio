@@ -41,15 +41,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    // -----------------------------------------
-    // Glass Controls Logic
-    // -----------------------------------------
-
-    // Sliders to CSS Variables Map
-    const glassControlsMap = {
-        'slider-blur': { prop: '--glass-blur', suffix: 'px', readOut: 'readout-blur' },
-        'slider-saturate': { prop: '--glass-saturate', suffix: '%', readOut: 'readout-saturate' },
-        'slider-opacity': { prop: '--glass-opacity', suffix: '', readOut: 'readout-opacity' },
-        'slider-noise': { prop: '--glass-noise', suffix: '', readOut: 'readout-noise' },
-        'slider-prism': { prop: '--glass-prism', suffix: '', readOut: 'readout-prism' },
-    });
+});
