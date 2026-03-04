@@ -74,10 +74,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const typingText = document.querySelector('.typing-text');
     if (typingText) {
         const phrases = [
-            "I build complex systems that scale.",
-            "I craft resilient backend pipelines.",
-            "I integrate sophisticated AI workflows.",
-            "I design pristine user experiences."
+            "I build complex systems that <span class='text-gradient'>scale</span>.",
+            "I craft resilient backend <span class='text-gradient'>pipelines</span>.",
+            "I integrate sophisticated AI <span class='text-gradient'>workflows</span>.",
+            "I design pristine user <span class='text-gradient'>experiences</span>."
         ];
 
         let phraseIndex = 0;
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 // Change text while invisible
                 phraseIndex = (phraseIndex + 1) % phrases.length;
-                typingText.textContent = phrases[phraseIndex];
+                typingText.innerHTML = phrases[phraseIndex];
 
                 // Reset transform/opacity
                 typingText.classList.remove('fade-out');
