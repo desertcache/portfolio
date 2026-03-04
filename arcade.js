@@ -1,5 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // Mobile Hamburger Menu Toggle
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.querySelector('.nav-links');
+    if (hamburger && navLinks) {
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('open');
+        });
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('open');
+            });
+        });
+    }
+
     // Same baseline UI behavior (navbar scroll)
     const navbar = document.querySelector('.navbar');
     window.addEventListener('scroll', () => {
@@ -24,6 +40,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
+
+    // --- Responsive Canvas ---
+    function resizeCanvas() {
+        const container = canvas.parentElement;
+        const maxW = container.clientWidth - 32; // account for padding
+        const ratio = 800 / 500; // original aspect ratio
+        let w = Math.min(maxW, 800);
+        let h = w / ratio;
+        canvas.width = Math.floor(w);
+        canvas.height = Math.floor(h);
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
     // UI Elements
     const menuScreen = document.getElementById('arcade-menu');
@@ -131,6 +160,29 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
+        // Touch Swipe Controls for Snake
+        let touchStartX = 0, touchStartY = 0;
+        canvas.ontouchstart = function (e) {
+            e.preventDefault();
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        };
+        canvas.ontouchend = function (e) {
+            e.preventDefault();
+            let dx = e.changedTouches[0].clientX - touchStartX;
+            let dy = e.changedTouches[0].clientY - touchStartY;
+
+            if (Math.abs(dx) > Math.abs(dy)) {
+                // Horizontal swipe
+                if (dx > 20 && snake.dx === 0) { snake.dx = grid; snake.dy = 0; }
+                else if (dx < -20 && snake.dx === 0) { snake.dx = -grid; snake.dy = 0; }
+            } else {
+                // Vertical swipe
+                if (dy > 20 && snake.dy === 0) { snake.dy = grid; snake.dx = 0; }
+                else if (dy < -20 && snake.dy === 0) { snake.dy = -grid; snake.dx = 0; }
+            }
+        };
+
         function loop() {
             gameLoopRef = requestAnimationFrame(loop);
 
@@ -231,6 +283,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 ufo.velocity = jumpThrust;
             }
         };
+
+        // Touch Tap Controls for Flappy UFO
+        canvas.ontouchstart = function (e) {
+            e.preventDefault();
+            ufo.velocity = jumpThrust;
+        };
+        canvas.ontouchend = null; // clear snake swipe handler
 
         function loop() {
             gameLoopRef = requestAnimationFrame(loop);

@@ -620,6 +620,11 @@ section {
     transition: var(--transition-fast);
 }
 
+/* Hide hamburger on desktop */
+.hamburger {
+    display: none;
+}
+
 .nav-links a:not(.btn-primary-small):hover {
     color: var(--accent-blue);
 }
@@ -672,6 +677,7 @@ section {
     font-weight: 800;
     letter-spacing: -0.03em;
     margin: 1.5rem 0;
+    color: #f8fafc;
 }
 
 .hero-subtitle {
@@ -1153,11 +1159,71 @@ input[type=range]::-webkit-slider-thumb:hover {
 }
 
 @media (max-width: 768px) {
-    .nav-links {
-        display: none;
-        /* Hide for simple mobile */
+
+    /* Hamburger Button */
+    .hamburger {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        z-index: 1001;
     }
 
+    .hamburger span {
+        width: 24px;
+        height: 2px;
+        background: var(--text-primary);
+        border-radius: 2px;
+        transition: all 0.3s ease;
+    }
+
+    .hamburger.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    /* Mobile Nav Drawer */
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        background: rgba(var(--glass-color-rgb), 0.15);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        padding: 1.5rem 2rem;
+        gap: 0.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-links.open {
+        display: flex;
+    }
+
+    .nav-links li {
+        text-align: center;
+    }
+
+    .nav-links a {
+        padding: 0.75rem 0;
+        display: block;
+        font-size: 1.1rem;
+    }
+
+    /* Layout Fixes */
     .hero-title {
         font-size: 2.5rem;
     }
@@ -1177,11 +1243,24 @@ input[type=range]::-webkit-slider-thumb:hover {
         padding: 4rem 0;
     }
 
+    .about-grid {
+        grid-template-columns: 1fr;
+    }
+
     .about-text {
         padding: 2rem;
     }
 
     .contact-card {
         padding: 3rem 1.5rem;
+    }
+
+    .impact-grid,
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-glass-panel {
+        padding: 2rem 1.5rem;
     }
 }
