@@ -30,6 +30,20 @@
     <div id="preloader">
         <div class="logo">sb<span class="accent">.</span></div>
     </div>
+    <script>
+        // Inline preloader dismiss (works on all pages, no external JS dependency)
+        function dismissPreloader() {
+            var p = document.getElementById('preloader');
+            if (p && p.style.opacity !== '0') {
+                p.style.opacity = '0';
+                p.style.visibility = 'hidden';
+                setTimeout(function () { p.remove(); }, 800);
+            }
+        }
+        window.addEventListener('load', dismissPreloader);
+        // Failsafe: dismiss after 3s even if load event hasn't fired
+        setTimeout(dismissPreloader, 3000);
+    </script>
     <!-- Ambient Background Effects for Liquid Glass -->
     <div class="ambient-mesh"></div>
     <div class="ambient-glow glow-1"></div>

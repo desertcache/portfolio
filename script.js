@@ -1,14 +1,3 @@
-// 1. Premium Pre-loader (Fires when all assets/images are fully loaded)
-window.addEventListener('load', () => {
-    const preloader = document.getElementById('preloader');
-    if (preloader) {
-        preloader.style.opacity = '0';
-        preloader.style.visibility = 'hidden';
-        setTimeout(() => {
-            preloader.remove(); // Remove from DOM after transition
-        }, 800);
-    }
-});
 
 document.addEventListener('DOMContentLoaded', () => {
 
