@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const grid = 20;
         let count = 0;
         let score = 0;
-        let speedControl = 4; // Higher is slower (frames per move)
+        let speedControl = 8; // Higher is slower (frames per move)
         updateHUDScore(0);
 
         let snake = {
@@ -173,8 +173,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     score += 10;
                     updateHUDScore(score);
 
-                    // Increase speed slightly every 50 points
-                    if (score % 50 === 0 && speedControl > 1) { speedControl--; }
+                    // Increase speed slightly every 100 points
+                    if (score % 100 === 0 && speedControl > 2) { speedControl--; }
 
                     // Respawn Apple
                     apple.x = Math.floor(Math.random() * (canvas.width / grid)) * grid;
@@ -202,11 +202,11 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         // Settings
-        const gravity = 0.25;
-        const jumpThrust = -5.5;
-        const speed = 3;
+        const gravity = 0.15;
+        const jumpThrust = -4.5;
+        const speed = 2;
         const pipeWidth = 60;
-        const pipeGap = 150;
+        const pipeGap = 200;
 
         let score = 0;
         let lastPipeVal = 0; // tracking for scored pipes
