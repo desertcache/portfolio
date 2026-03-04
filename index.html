@@ -1,54 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Samuel Bates | Full-Stack Engineer</title>
-    
+
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Portfolio of Samuel Bates, a Full-Stack Engineer specializing in AI integrations, data pipelines, and frontend applications.">
+    <meta name="description"
+        content="Portfolio of Samuel Bates, a Full-Stack Engineer specializing in AI integrations, data pipelines, and frontend applications.">
     <meta name="keywords" content="Software Engineer, Full-Stack, React, Snowflake, AI, Python, TypeScript">
-
-    <!-- Open Graph -->
-    <meta property="og:title" content="Samuel Bates | Full-Stack Engineer">
-    <meta property="og:description" content="Former EMT turned engineer. Built 3 production apps at DoorDash, shipped 68K+ lines of TypeScript, protected $21M/mo in merchant revenue.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://desertcache.github.io/portfolio/">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Samuel Bates | Full-Stack Engineer">
-    <meta name="twitter:description" content="Former EMT turned engineer. Built 3 production apps at DoorDash, shipped 68K+ lines of TypeScript, protected $21M/mo in merchant revenue.">
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <meta name="theme-color" content="#FAFAFA">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles.css">
-    
+
     <!-- Boxicons (for sleek icons) -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
+
 <body>
 
-    <!-- Ambient Background Effects -->
+    <!-- LIQUID GLASS CONTROL PANEL -->
+    <div id="glass-controls" class="glass-card">
+        <div class="responsive-edge"></div>
+        <div class="controls-header" id="controls-drag-handle">
+            <span>Glass Engine Tweaks</span>
+            <i class='bx bx-move'></i>
+        </div>
+        <div class="controls-body">
+            <div class="slider-row">
+                <div class="slider-header">
+                    <label>Blur</label>
+                    <span id="readout-blur">30px</span>
+                </div>
+                <input type="range" id="slider-blur" min="0" max="100" value="30">
+            </div>
+            <div class="slider-row">
+                <div class="slider-header">
+                    <label>Saturate</label>
+                    <span id="readout-saturate">150%</span>
+                </div>
+                <input type="range" id="slider-saturate" min="0" max="300" value="150">
+            </div>
+            <div class="slider-row">
+                <div class="slider-header">
+                    <label>Opacity</label>
+                    <span id="readout-opacity">0.10</span>
+                </div>
+                <input type="range" id="slider-opacity" min="0" max="1" step="0.01" value="0.10">
+            </div>
+            <div class="slider-row">
+                <div class="slider-header">
+                    <label>Noise</label>
+                    <span id="readout-noise">0.15</span>
+                </div>
+                <input type="range" id="slider-noise" min="0" max="1" step="0.01" value="0.15">
+            </div>
+            <div class="slider-row">
+                <div class="slider-header">
+                    <label>Prism Edge</label>
+                    <span id="readout-prism">0.30</span>
+                </div>
+                <input type="range" id="slider-prism" min="0" max="1" step="0.01" value="0.30">
+            </div>
+            <div class="slider-row">
+                <div class="slider-header">
+                    <label>Edge Light</label>
+                    <span id="readout-edge-light">0.30</span>
+                </div>
+                <input type="range" id="slider-edge-light" min="0" max="1" step="0.01" value="0.30">
+            </div>
+            <button id="close-controls" class="btn-primary-small" style="width: 100%; margin-top: 10px;">Hide
+                Controls</button>
+        </div>
+    </div>
+
+    <!-- Ambient Background Effects for Liquid Glass -->
     <div class="ambient-mesh"></div>
     <div class="ambient-glow glow-1"></div>
     <div class="ambient-glow glow-2"></div>
-    
+    <div class="background-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
     <nav class="navbar glass-panel">
         <div class="nav-content container">
             <span class="logo">sb<span class="accent">.</span></span>
-            <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
-                <i class='bx bx-menu'></i>
-            </button>
             <ul class="nav-links">
                 <li><a href="#work">Work</a></li>
-                <li><a href="#projects">Projects</a></li>
                 <li><a href="#skills">Skills</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#contact" class="btn-primary-small">Contact Me</a></li>
@@ -63,16 +111,18 @@
                 <div class="availability-badge glass-pill">
                     <span class="status-dot"></span> Available for new opportunities
                 </div>
-                
+
                 <h1 class="hero-title">
                     Hi, I'm <span class="text-gradient">Samuel</span>. <br>
                     I build complex systems that scale.
                 </h1>
-                
+
                 <p class="hero-subtitle">
-                    Former EMT turned full-stack engineer. At DoorDash, I built 3 production apps from scratch, shipped 68K lines of TypeScript to a 30M-line monorepo, and led a migration that protected $21M/mo in merchant revenue. Now building AI agents and open-source developer tools.
+                    Full-Stack Engineer with a non-traditional background (EMT to Code). Most recently protecting
+                    $21M/mo in GMV and building production AI tools at DoorDash. Product-minded, data-driven, and
+                    obsessed with clean UX.
                 </p>
-                
+
                 <div class="hero-actions">
                     <a href="#work" class="btn-primary">View My Work <i class='bx bx-right-arrow-alt'></i></a>
                     <a href="#contact" class="btn-secondary glass-btn">Get In Touch</a>
@@ -82,21 +132,25 @@
             <!-- Power Stats Dashboard Cards -->
             <div class="power-stats-grid mt-4">
                 <div class="stat-card glass-card float-anim delay-1">
+                    <div class="responsive-edge"></div>
                     <div class="stat-icon"><i class='bx bx-code-alt'></i></div>
                     <div class="stat-value">68K+</div>
                     <div class="stat-label">Lines of Code Deployed</div>
                 </div>
                 <div class="stat-card glass-card float-anim delay-2">
+                    <div class="responsive-edge"></div>
                     <div class="stat-icon"><i class='bx bx-shield-quarter'></i></div>
                     <div class="stat-value">$21M</div>
                     <div class="stat-label">Monthly GMV Protected</div>
                 </div>
                 <div class="stat-card glass-card float-anim delay-3">
+                    <div class="responsive-edge"></div>
                     <div class="stat-icon"><i class='bx bx-git-merge'></i></div>
                     <div class="stat-value">277+</div>
                     <div class="stat-label">Production Commits</div>
                 </div>
                 <div class="stat-card glass-card float-anim delay-4">
+                    <div class="responsive-edge"></div>
                     <div class="stat-icon"><i class='bx bx-award'></i></div>
                     <div class="stat-value">2x</div>
                     <div class="stat-label">Excellence Awards</div>
@@ -112,9 +166,10 @@
             </div>
 
             <div class="projects-grid">
-                
+
                 <!-- Project 1: Mosaic -->
                 <article class="project-card glass-card">
+                    <div class="responsive-edge"></div>
                     <div class="project-header">
                         <span class="project-tag">Frontend & AI Integration</span>
                         <div class="project-links">
@@ -124,10 +179,12 @@
                     </div>
                     <h3 class="project-title">Mosaic Support Platform</h3>
                     <p class="project-desc">
-                        A massive 22-component unified troubleshooting interface deployed inside DoorDash's internal admin portal for 4,000+ support agents. Features an embedded custom Glean AI agent (CHIP) for contextual diagnosis.
+                        A massive 22-component unified troubleshooting interface deployed inside DoorDash's internal
+                        admin portal for 4,000+ support agents. Features an embedded custom Glean AI agent (CHIP) for
+                        contextual diagnosis.
                     </p>
                     <ul class="project-highlights">
-                        <li><i class='bx bx-check'></i> Consolidated 5 disconnected workflows into a single interface for 4,000+ agents</li>
+                        <li><i class='bx bx-check'></i> Replaces 5+ disparate tabs with one streamlined workflow</li>
                         <li><i class='bx bx-check'></i> Deep integration with Salesforce GraphQL & internal APIs</li>
                         <li><i class='bx bx-check'></i> Built entirely in React 18, TypeScript, and Redux</li>
                     </ul>
@@ -142,18 +199,21 @@
 
                 <!-- Project 2: WFM Dashboard -->
                 <article class="project-card glass-card">
+                    <div class="responsive-edge"></div>
                     <div class="project-header">
                         <span class="project-tag">Full-Stack Application</span>
                         <div class="project-links">
-                            <i class='bx bx-layer'></i>
+                            <i class='bx bbx-layer'></i>
                         </div>
                     </div>
                     <h3 class="project-title">WFM Dashboard 2.0</h3>
                     <p class="project-desc">
-                        17-page workforce management platform replacing a $50K/yr external vendor tool. Tracks real-time SLAs, agent adherence, and ML forecasts across 139 support queues and 6 vendor networks. Built in 17 days.
+                        17-page workforce management platform replacing a $50K/yr external vendor tool. Tracks real-time
+                        SLAs, agent adherence, and ML forecasts across 139 support queues and 6 vendor networks. Built
+                        in 17 days.
                     </p>
                     <ul class="project-highlights">
-                        <li><i class='bx bx-check'></i> Published reusable component library adopted across teams</li>
+                        <li><i class='bx bx-check'></i> Created published shared React component library (v0.1.6)</li>
                         <li><i class='bx bx-check'></i> Real-time Snowflake metrics polling integration</li>
                         <li><i class='bx bx-check'></i> Custom Erlang C staffing prediction algorithms</li>
                     </ul>
@@ -165,18 +225,20 @@
                     </div>
                 </article>
 
-                 <!-- Project 3: IME -->
+                <!-- Project 3: IME -->
                 <article class="project-card glass-card">
+                    <div class="responsive-edge"></div>
                     <div class="project-header">
                         <span class="project-tag">Full-Stack Platform</span>
                     </div>
                     <h3 class="project-title">Intelligent Mapping Engine (IME)</h3>
                     <p class="project-desc">
-                        A dual-stack mapping platform managing hundreds of account assignments. Built the frontend React UI and the backend Node.js Fastify BFF (Backend-for-Frontend) mapping workflows into Snowflake.
+                        A dual-stack mapping platform managing hundreds of account assignments. Built the frontend React
+                        UI and the backend Node.js Fastify BFF (Backend-for-Frontend) mapping workflows into Snowflake.
                     </p>
                     <ul class="project-highlights">
-                        <li><i class='bx bx-check'></i> Full CRUD platform managing hundreds of account assignments across quarterly, weekly, and ad-hoc workflows</li>
-                        <li><i class='bx bx-check'></i> Diagnosed and fixed Snowflake SDK connection lifecycle and authentication concurrency bugs</li>
+                        <li><i class='bx bx-check'></i> 50+ Typescript files across 7 pages and 11 features</li>
+                        <li><i class='bx bx-check'></i> Handled SDK bugs around connection locking & auth</li>
                         <li><i class='bx bx-check'></i> Instrumenting custom Prometheus metrics</li>
                     </ul>
                     <div class="tech-stack-flex">
@@ -189,82 +251,27 @@
 
                 <!-- Project 4: V1 to V2 -->
                 <article class="project-card glass-card impact-card">
+                    <div class="responsive-edge"></div>
                     <div class="project-header">
                         <span class="project-tag tag-orange">Program Management & Data</span>
                     </div>
                     <h3 class="project-title">Square V1→V2 Migration Engine</h3>
                     <p class="project-desc">
-                        Took a high-risk technical deprecation and built a data-driven migration engine. Authored the business case, secured $90k in funding, built Snowflake tracking dashboards, and led the team to save massive revenue.
+                        Took a high-risk technical deprecation and built a data-driven migration engine. Authored the
+                        business case, secured $90k in funding, built Snowflake tracking dashboards, and led the team to
+                        save massive revenue.
                     </p>
                     <ul class="project-highlights">
-                        <li><i class='bx bx-trending-up'></i> Saved ~94% of at-risk GMV (~$20.1M/mo), delivered at 78% of approved spend</li>
+                        <li><i class='bx bx-trending-up'></i> Saved ~94% of at-risk GMV (~$20.1M/mo) under budget</li>
                         <li><i class='bx bx-check'></i> Dropped technical escalations from 20+/day to near zero</li>
                     </ul>
-                     <div class="tech-stack-flex">
+                    <div class="tech-stack-flex">
                         <span class="tech-pill">SQL Pipeline</span>
                         <span class="tech-pill">Financial Analysis</span>
                         <span class="tech-pill">Operations Strategy</span>
                     </div>
                 </article>
 
-            </div>
-        </section>
-
-        <!-- SIDE PROJECTS SECTION -->
-        <section id="projects" class="side-projects-section container reveal">
-            <div class="section-header">
-                <h2 class="section-title">Building in <span class="accent">Public</span></h2>
-                <p class="section-desc">Open-source tools and experiments I build outside of work.</p>
-            </div>
-
-            <div class="side-projects-grid">
-                <article class="side-project-card glass-card">
-                    <div class="side-project-header">
-                        <div class="side-project-icon"><i class='bx bx-terminal'></i></div>
-                        <a href="https://github.com/desertcache/agent-os" target="_blank" class="side-project-link" aria-label="View Agent-OS on GitHub">
-                            <i class='bx bxl-github'></i>
-                        </a>
-                    </div>
-                    <h3>Agent-OS</h3>
-                    <p>Open-source hooks, skills, and memory system for Claude Code. Gives AI agents persistent context, custom workflows, and vault-backed memory.</p>
-                    <div class="tech-stack-flex">
-                        <span class="tech-pill">TypeScript</span>
-                        <span class="tech-pill">Claude Code</span>
-                        <span class="tech-pill">Git Hooks</span>
-                    </div>
-                </article>
-
-                <article class="side-project-card glass-card">
-                    <div class="side-project-header">
-                        <div class="side-project-icon"><i class='bx bx-cube-alt'></i></div>
-                        <a href="https://github.com/desertcache/samantha-ui" target="_blank" class="side-project-link" aria-label="View Samantha UI on GitHub">
-                            <i class='bx bxl-github'></i>
-                        </a>
-                    </div>
-                    <h3>Samantha UI</h3>
-                    <p>Audio-reactive 3D interface with React 19, Three.js, and custom GLSL shaders. Built-in demo mode for instant interaction.</p>
-                    <div class="tech-stack-flex">
-                        <span class="tech-pill">React 19</span>
-                        <span class="tech-pill">Three.js</span>
-                        <span class="tech-pill">GLSL</span>
-                    </div>
-                </article>
-
-                <article class="side-project-card glass-card">
-                    <div class="side-project-header">
-                        <div class="side-project-icon"><i class='bx bx-microphone'></i></div>
-                        <a href="https://github.com/desertcache/velvet" target="_blank" class="side-project-link" aria-label="View Velvet on GitHub">
-                            <i class='bx bxl-github'></i>
-                        </a>
-                    </div>
-                    <h3>Velvet</h3>
-                    <p>Local-first speech-to-text with Electron, faster-whisper, and Three.js visualization. No API keys, no cloud.</p>
-                    <div class="tech-stack-flex">
-                        <span class="tech-pill">Electron</span>
-                        <span class="tech-pill">Python</span>
-                        <span class="tech-pill">faster-whisper</span>
-                    </div>
-                </article>
             </div>
         </section>
 
@@ -277,21 +284,27 @@
 
             <div class="skills-container">
                 <div class="skill-category glass-card">
+                    <div class="responsive-edge"></div>
                     <div class="skill-icon-wrap"><i class='bx bx-code-block'></i></div>
                     <h3>Frontend</h3>
-                    <p>React 18, TypeScript, JavaScript (ES6+), Redux, Zustand, React Query, Tailwind CSS, styled-components, Recharts</p>
+                    <p>React 18, TypeScript, JavaScript (ES6+), Redux, Zustand, React Query, Tailwind CSS,
+                        styled-components, Recharts</p>
                 </div>
                 <div class="skill-category glass-card">
+                    <div class="responsive-edge"></div>
                     <div class="skill-icon-wrap"><i class='bx bx-server'></i></div>
                     <h3>Backend & Data</h3>
                     <p>Node.js, Express, Fastify, GraphQL, REST, Snowflake (SQL), Sigma, Mode, Prometheus</p>
                 </div>
                 <div class="skill-category glass-card">
+                    <div class="responsive-edge"></div>
                     <div class="skill-icon-wrap"><i class='bx bx-bot'></i></div>
                     <h3>AI & Tooling</h3>
-                    <p>Prompt Engineering, custom Agent workflows, Glean Custom Agents, GPT-4/Claude integrations, Remotion</p>
+                    <p>Prompt Engineering, custom Agent workflows, Glean Custom Agents, GPT-4/Claude integrations,
+                        Remotion</p>
                 </div>
-                 <div class="skill-category glass-card">
+                <div class="skill-category glass-card">
+                    <div class="responsive-edge"></div>
                     <div class="skill-icon-wrap"><i class='bx bx-cloud'></i></div>
                     <h3>Platform & DevOps</h3>
                     <p>Rush Monorepo (pnpm), Webpack, Vite, GitHub Actions, AWS (Lambda), Jenkins/Buildkite basics</p>
@@ -303,31 +316,41 @@
         <section id="about" class="about-section container reveal">
             <div class="about-grid">
                 <div class="about-text glass-card">
+                    <div class="responsive-edge"></div>
                     <h2 class="section-title">The <span class="accent">Non-Traditional</span> Path</h2>
                     <p class="lead-text">I didn't start in computer science. I started in the back of an ambulance.</p>
                     <p>
-                        Before writing code, I was an EMT responding to 911 calls. Medicine taught me how to rapidly process information, manage chaos, and communicate clearly under pressure. I bring that exact same calm, systematic approach to software engineering and site reliability.
+                        Before writing code, I was an EMT responding to 911 calls. Medicine taught me how to rapidly
+                        process information, manage chaos, and communicate clearly under pressure. I bring that exact
+                        same calm, systematic approach to software engineering and site reliability.
                     </p>
                     <p>
-                        I transitioned into tech by teaching myself to code, eventually landing at DoorDash where I quickly moved from operational roles into core engineering spaces—often writing the very tools my operations team used daily. I thrive at the intersection of business logic, high-pressure execution, and clean, reliable code. 
+                        I transitioned into tech by teaching myself to code, eventually landing at DoorDash where I
+                        quickly moved from operational roles into core engineering spaces—often writing the very tools
+                        my operations team used daily. I thrive at the intersection of business logic, high-pressure
+                        execution, and clean, reliable code.
                     </p>
                     <p>
-                        Outside of work, I build open-source tools for AI engineering workflows, experiment with WebGL and real-time audio visualization, and contribute to projects that push the boundaries of human-computer interaction.
+                        When I'm not coding, I'm building side projects like AI meeting note apps (Kernel), learning 3D
+                        game engines, or studying statistics.
                     </p>
                 </div>
-                
+
                 <div class="about-stats">
                     <div class="about-stat-item glass-card">
+                        <div class="responsive-edge"></div>
                         <h4>Location</h4>
                         <p>Remote (US)</p>
                     </div>
-                     <div class="about-stat-item glass-card">
+                    <div class="about-stat-item glass-card">
+                        <div class="responsive-edge"></div>
                         <h4>Focus</h4>
-                        <p>Full-Stack Web, AI Engineering</p>
+                        <p>Full-Stack Web, AI Integrations</p>
                     </div>
-                     <div class="about-stat-item glass-card">
+                    <div class="about-stat-item glass-card">
+                        <div class="responsive-edge"></div>
                         <h4>Side Projects</h4>
-                        <p>Agent-OS, Samantha UI, Velvet</p>
+                        <p>Kernel, SVAS Shield, Velvet</p>
                     </div>
                 </div>
             </div>
@@ -336,12 +359,16 @@
         <!-- CONTACT / FOOTER SECTION -->
         <section id="contact" class="contact-section container reveal">
             <div class="contact-card glass-card">
+                <div class="responsive-edge"></div>
                 <h2 class="section-title">Let's build something <span class="text-gradient">incredible</span>.</h2>
-                <p>I'm currently open to new opportunities as a Software Engineer, Full-Stack Developer, or AI Engineer.</p>
-                
+                <p>I'm currently open to new opportunities as a Software Engineer, Full-Stack Developer, or Technical
+                    Integration Specialist.</p>
+
                 <div class="social-links mt-4">
-                    <a href="https://github.com/desertcache" target="_blank" class="social-btn glass-btn"><i class='bx bxl-github'></i> GitHub</a>
-                    <a href="mailto:batessambates@gmail.com" class="social-btn btn-primary"><i class='bx bx-envelope'></i> Email Me</a>
+                    <a href="https://github.com/desertcache" target="_blank" class="social-btn glass-btn"><i
+                            class='bx bxl-github'></i> GitHub</a>
+                    <a href="mailto:batessambates@gmail.com" class="social-btn btn-primary"><i
+                            class='bx bx-envelope'></i> Email Me</a>
                 </div>
             </div>
         </section>
@@ -357,4 +384,5 @@
     <!-- Custom JS -->
     <script src="script.js"></script>
 </body>
+
 </html>

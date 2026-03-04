@@ -34,29 +34,101 @@ document.addEventListener('DOMContentLoaded', () => {
         revealOnScroll.observe(el);
     });
 
-    // Mobile menu toggle
-    const menuToggle = document.querySelector('.mobile-menu-toggle');
-    const navLinks = document.querySelector('.nav-links');
-
-    if (menuToggle) {
-        menuToggle.addEventListener('click', () => {
-            const isOpen = navLinks.classList.toggle('open');
-            menuToggle.setAttribute('aria-expanded', isOpen);
-            menuToggle.querySelector('i').className = isOpen ? 'bx bx-x' : 'bx bx-menu';
-        });
-
-        // Close menu when a nav link is clicked
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('open');
-                menuToggle.setAttribute('aria-expanded', 'false');
-                menuToggle.querySelector('i').className = 'bx bx-menu';
-            });
-        });
-    }
-
     // Trigger the active class immediately on elements high up in the viewport
     setTimeout(() => {
         document.getElementById('hero').classList.add('active');
     }, 100);
+
+    // Liquid Glass spotlight tracking
+    const glassCards = document.querySelectorAll('.glass-card');
+    glassCards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            card.style.setProperty('--x', `${x}px`);
+            card.style.setProperty('--y', `${y}px`);
+        });
+    });
+
+    // -----------------------------------------
+    // Glass Controls Logic
+    // -----------------------------------------
+
+    // Sliders to CSS Variables Map
+    const glassControlsMap = {
+        'slider-blur': { prop: '--glass-blur', suffix: 'px', readOut: 'readout-blur' },
+        'slider-saturate': { prop: '--glass-saturate', suffix: '%', readOut: 'readout-saturate' },
+        'slider-opacity': { prop: '--glass-opacity', suffix: '', readOut: 'readout-opacity' },
+        'slider-noise': { prop: '--glass-noise', suffix: '', readOut: 'readout-noise' },
+        'slider-prism': { prop: '--glass-prism', suffix: '', readOut: 'readout-prism' },
+        'slider-edge-light': { prop: '--glass-edge-light', suffix: '', readOut: 'readout-edge-light' }
+    };
+
+    const rootStyle = document.documentElement.style;
+
+    Object.keys(glassControlsMap).forEach(id => {
+        const input = document.getElementById(id);
+        const mapData = glassControlsMap[id];
+        const readOut = document.getElementById(mapData.readOut);
+
+        if (input && readOut) {
+            input.addEventListener('input', (e) => {
+                const val = e.target.value;
+                // Update CSS Variable
+                rootStyle.setProperty(mapData.prop, `${val}${mapData.suffix}`);
+
+                // Format Readout Text 
+                let textVal = val;
+                if (mapData.suffix === '') { textVal = parseFloat(val).toFixed(2); } // Ensure raw floats display consistently
+                readOut.textContent = `${textVal}${mapData.suffix}`;
+            });
+        }
+    });
+
+    // Close button logic
+    const closeBtn = document.getElementById('close-controls');
+    const controlsPanel = document.getElementById('glass-controls');
+    if (closeBtn && controlsPanel) {
+        closeBtn.addEventListener('click', () => {
+            controlsPanel.style.display = 'none';
+        });
+    }
+
+    // Draggable Panel logic
+    const dragHandle = document.getElementById('controls-drag-handle');
+    let isDragging = false, startX, startY, initialX, initialY;
+
+    if (dragHandle && controlsPanel) {
+        dragHandle.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+
+            // Get computed style for current position handling logic since it uses right/top
+            const rect = controlsPanel.getBoundingClientRect();
+            initialX = rect.left;
+            initialY = rect.top;
+
+            // Switch to fixed left/top calculation instead of relying on right CSS prop
+            controlsPanel.style.right = 'auto';
+            controlsPanel.style.left = `${initialX}px`;
+            controlsPanel.style.top = `${initialY}px`;
+            // disable transitions while dragging for smooth 1:1 feel
+            controlsPanel.style.transition = 'none';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            controlsPanel.style.left = `${initialX + dx}px`;
+            controlsPanel.style.top = `${initialY + dy}px`;
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+    }
 });

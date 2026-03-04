@@ -38,6 +38,18 @@
     /* Transitions */
     --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* Liquid Glass Variables (from User Widget) */
+    --glass-blur: 8px;
+    --glass-saturate: 115%;
+    --glass-opacity: 0.00;
+    --glass-noise: 0.00;
+    --glass-prism: 0.11;
+    --glass-edge-light: 0.00;
+    --glass-color-rgb: 255, 255, 255;
+
+    /* Variables for animated backgrounds */
+    --orb-scale: 1;
 }
 
 /* =========================================
@@ -56,12 +68,31 @@ html {
 
 body {
     font-family: var(--font-sans);
-    background-color: var(--bg-base);
+    /* Vibrant 4k Fluid Abstract Background */
+    background-color: #0d1117;
+    background-image: url('assets/bg.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     color: var(--text-primary);
     line-height: 1.6;
     overflow-x: hidden;
     position: relative;
     -webkit-font-smoothing: antialiased;
+}
+
+@keyframes gradientMesh {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 /* Ambient Backgrounds */
@@ -104,6 +135,39 @@ body {
     pointer-events: none;
 }
 
+/* Background layer for liquid glass dynamic refraction */
+.background-orbs {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    mix-blend-mode: color-dodge;
+    /* Makes colors pop perfectly against dark background */
+    filter: blur(48px);
+    opacity: 0.7;
+    will-change: transform;
+    animation: float 20s linear infinite alternate;
+}
+
+/* Specific Orbs - Removed logic for new HD background image */
+.orb-1 {
+    display: none;
+}
+
+.orb-2 {
+    display: none;
+}
+
+.orb-3 {
+    display: none;
+}
+
 @keyframes drift {
     0% {
         transform: translate(0, 0) scale(1);
@@ -114,6 +178,24 @@ body {
     }
 }
 
+@keyframes float {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    33% {
+        transform: translate(5vw, -5vh) scale(1.1);
+    }
+
+    66% {
+        transform: translate(-5vw, 5vh) scale(0.95);
+    }
+
+    100% {
+        transform: translate(2vw, 2vh) scale(1.05);
+    }
+}
+
 /* Typography Classes */
 h1,
 h2,
@@ -121,7 +203,21 @@ h3,
 h4 {
     font-family: var(--font-heading);
     line-height: 1.2;
-    color: var(--text-primary);
+    color: #f8fafc;
+    /* Crisp white for dark background */
+}
+
+p,
+li,
+.hero-subtitle,
+.section-desc {
+    color: #cbd5e1;
+    /* Slate 300 for readability on dark backgrounds */
+}
+
+/* Base link colors for dark bg */
+a {
+    color: #93c5fd;
 }
 
 .section-title {
@@ -165,23 +261,150 @@ section {
 }
 
 /* =========================================
-   UI Components (Glass & Cards)
+   UI Components (Liquid Glass & Cards)
    ========================================= */
+/* Typography overrides for cards */
+.glass-panel h1,
+.glass-panel h2,
+.glass-panel h3,
+.glass-panel h4,
+.glass-card h1,
+.glass-card h2,
+.glass-card h3,
+.glass-card h4 {
+    color: var(--text-primary);
+}
+
+.glass-panel p,
+.glass-panel li,
+.glass-panel span:not(.accent):not(.text-gradient),
+.glass-card p,
+.glass-card li,
+.glass-card span:not(.accent):not(.text-gradient) {
+    color: var(--text-secondary);
+}
+
+/* Ensure Logo in navbar remains crisp on dark backgrounds */
+.navbar:not(.scrolled) .logo {
+    color: #f8fafc;
+}
+
+.navbar.scrolled .logo {
+    color: var(--text-primary);
+}
+
+.navbar:not(.scrolled) .nav-links a:not(.btn-primary-small) {
+    color: #cbd5e1;
+}
+
 .glass-panel {
-    background: var(--bg-glass);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border-light);
+    background: rgba(var(--glass-color-rgb), var(--glass-opacity));
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    box-shadow:
+        0 12px 24px -6px rgba(0, 0, 0, 0.05),
+        inset 0 1px 1px rgba(var(--glass-color-rgb), var(--glass-edge-light)),
+        inset 0 -1px 1px rgba(var(--glass-color-rgb), 0.05);
+    border-bottom: 1px solid rgba(var(--glass-color-rgb), 0.2);
+    position: relative;
+    /* ensure z-index context for pseudo elements */
+    z-index: 10;
+}
+
+.glass-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    /* Inline SVG for fractal noise to give it the physically frosted look */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: var(--glass-noise);
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    z-index: -1;
 }
 
 .glass-card {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border-glass);
-    box-shadow: var(--shadow-glass), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+    background: rgba(var(--glass-color-rgb), calc(var(--glass-opacity) + 0.3));
+    /* Slightly more opaque for content readability */
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    box-shadow:
+        0 16px 32px -8px rgba(0, 0, 0, 0.08),
+        inset 0 1px 1px rgba(var(--glass-color-rgb), var(--glass-edge-light)),
+        inset 0 -1px 1px rgba(var(--glass-color-rgb), 0.05);
+    border: 1px solid rgba(var(--glass-color-rgb), 0.4);
     border-radius: 20px;
     overflow: hidden;
+    position: relative;
     transition: var(--transition-smooth);
+    z-index: 10;
+    --x: 50%;
+    --y: 50%;
+}
+
+.glass-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(500px circle at var(--x) var(--y), rgba(255, 255, 255, 0.5), transparent 40%);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+    pointer-events: none;
+    z-index: 5;
+}
+
+.glass-card:hover::after {
+    opacity: 1;
+}
+
+.glass-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: var(--glass-noise);
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Chromatic Edge for Liquid Glass depth */
+.responsive-edge {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 2px;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.responsive-edge::before,
+.responsive-edge::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.responsive-edge::before {
+    backdrop-filter: blur(4px) saturate(300%) hue-rotate(90deg);
+    -webkit-backdrop-filter: blur(4px) saturate(300%) hue-rotate(90deg);
+    opacity: var(--glass-prism);
+    transform: translate(-1px, -1px);
+}
+
+.responsive-edge::after {
+    backdrop-filter: blur(4px) saturate(300%) hue-rotate(-90deg);
+    -webkit-backdrop-filter: blur(4px) saturate(300%) hue-rotate(-90deg);
+    opacity: var(--glass-prism);
+    transform: translate(1px, 1px);
 }
 
 .glass-pill {
@@ -307,28 +530,6 @@ section {
 
 .nav-links a:not(.btn-primary-small):hover {
     color: var(--accent-blue);
-}
-
-/* Mobile Menu Toggle */
-.mobile-menu-toggle {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border: 1px solid var(--border-light);
-    border-radius: 12px;
-    background: var(--bg-surface);
-    cursor: pointer;
-    font-size: 1.5rem;
-    color: var(--text-primary);
-    transition: var(--transition-fast);
-    z-index: 1002;
-}
-
-.mobile-menu-toggle:hover {
-    background: var(--bg-base);
-    border-color: var(--text-tertiary);
 }
 
 /* =========================================
@@ -635,105 +836,11 @@ section {
 }
 
 /* =========================================
-   Side Projects Section
-   ========================================= */
-.side-projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-}
-
-.side-project-card {
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    border-left: 3px solid var(--accent-purple);
-}
-
-.side-project-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-medium);
-}
-
-.side-project-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.side-project-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(37, 99, 235, 0.1));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.side-project-icon i {
-    font-size: 1.4rem;
-    color: var(--accent-purple);
-}
-
-.side-project-link {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-tertiary);
-    transition: var(--transition-fast);
-    text-decoration: none;
-}
-
-.side-project-link:hover {
-    color: var(--text-primary);
-    background: var(--bg-base);
-}
-
-.side-project-link i {
-    font-size: 1.3rem;
-}
-
-.side-project-card h3 {
-    font-size: 1.3rem;
-}
-
-.side-project-card p {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-    flex-grow: 1;
-}
-
-/* Social Links */
-.social-links {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-/* Tech Pill Hover */
-.tech-pill {
-    transition: var(--transition-fast);
-}
-
-.tech-pill:hover {
-    border-color: var(--accent-blue);
-    color: var(--accent-blue);
-    transform: translateY(-1px);
-}
-
-/* =========================================
    Contact/Footer Section
    ========================================= */
 .contact-card {
     padding: 5rem 3rem;
     text-align: center;
-    background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.9), rgba(245, 248, 255, 0.9));
 }
 
 .contact-card h2 {
@@ -764,6 +871,104 @@ section {
     color: var(--text-tertiary) !important;
     margin-top: 0.5rem;
 }
+
+/* =========================================
+   Glass Control Panel Widget 
+   ========================================= */
+#glass-controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    z-index: 9999;
+    /* Highest so it overlays everything */
+    padding: 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: white;
+}
+
+.controls-header {
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: grab;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #cbd5e1;
+}
+
+.controls-header:active {
+    cursor: grabbing;
+}
+
+.controls-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.slider-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.slider-header label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.slider-header span {
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+    outline: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    transition: transform 0.1s;
+}
+
+input[type=range]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 14px rgba(255, 255, 255, 0.8);
+}
+
 
 /* =========================================
    Animations & Responsive
@@ -832,35 +1037,9 @@ section {
 }
 
 @media (max-width: 768px) {
-    .mobile-menu-toggle {
-        display: flex;
-    }
-
     .nav-links {
-        display: flex;
-        flex-direction: column;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(255, 255, 255, 0.98);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        justify-content: center;
-        align-items: center;
-        gap: 2rem;
-        transform: translateY(-100%);
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        z-index: 1001;
-    }
-
-    .nav-links.open {
-        transform: translateY(0);
-    }
-
-    .nav-links a:not(.btn-primary-small) {
-        font-size: 1.5rem;
+        display: none;
+        /* Hide for simple mobile */
     }
 
     .hero-title {
@@ -888,9 +1067,5 @@ section {
 
     .contact-card {
         padding: 3rem 1.5rem;
-    }
-
-    .side-projects-grid {
-        grid-template-columns: 1fr;
     }
 }
