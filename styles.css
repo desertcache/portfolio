@@ -103,7 +103,7 @@
 .typing-text {
     display: inline-block;
     min-width: 20px;
-    color: #f8fafc;
+    color: var(--text-primary);
     transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -268,23 +268,20 @@ h3,
 h4 {
     font-family: var(--font-heading);
     line-height: 1.2;
-    color: #f8fafc;
-    /* Crisp white for dark background */
+    color: var(--text-primary);
 }
 
 p,
 li,
 .hero-subtitle,
 .section-desc {
-    color: rgba(255, 255, 255, 0.85);
-    /* Soft white for readability on dark glass backgrounds */
+    color: var(--text-secondary);
     font-weight: 500;
     font-size: 1.05rem;
 }
 
-/* Base link colors for dark bg */
 a {
-    color: #93c5fd;
+    color: var(--accent-blue);
 }
 
 .section-title {
@@ -307,7 +304,7 @@ a {
 }
 
 .section-desc {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-tertiary);
     font-size: 1.1rem;
     margin-bottom: 3rem;
 }
@@ -340,10 +337,7 @@ section {
 .glass-card h2,
 .glass-card h3,
 .glass-card h4 {
-    color: #ffffff;
-    /* Override to bright white for high contrast backgrounds */
-    text-shadow: 0 4px 16px rgba(0, 0, 0, 0.7), 0 1px 3px rgba(0, 0, 0, 0.9);
-    /* Heavy, stacked shadow for maximum contrast */
+    color: var(--text-primary);
 }
 
 .glass-panel p,
@@ -352,10 +346,7 @@ section {
 .glass-card p,
 .glass-card li,
 .glass-card span:not(.accent):not(.text-gradient) {
-    color: #f1f5f9;
-    /* Bright off-white */
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
-    /* Stronger shadow for body text */
+    color: var(--text-secondary);
     font-weight: 500;
 }
 
@@ -684,13 +675,12 @@ section {
     font-weight: 800;
     letter-spacing: -0.03em;
     margin: 1.5rem 0;
-    color: #f8fafc;
+    color: var(--text-primary);
 }
 
 .hero-subtitle {
     font-size: 1.25rem;
-    color: #f8fafc;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    color: var(--text-secondary);
     max-width: 700px;
     margin: 0 auto;
 }
