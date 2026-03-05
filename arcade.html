@@ -19,7 +19,7 @@
         rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css?v=17">
+    <link rel="stylesheet" href="styles.css?v=25">
 
     <!-- Boxicons (for sleek icons) -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
@@ -90,11 +90,11 @@
                 <div id="arcade-menu" style="position: absolute; z-index: 20; text-align: center; color: white;">
                     <h2 style="font-size: 2.5rem; margin-bottom: 2rem; text-shadow: 0 0 10px rgba(255,255,255,0.5);">
                         Select Game</h2>
-                    <div style="display: flex; gap: 1.5rem; justify-content: center;">
-                        <button id="btn-snake" class="btn-primary" style="background: rgba(37, 99, 235, 0.8);">Neon
-                            Snake</button>
-                        <button id="btn-flappy" class="btn-primary" style="background: rgba(139, 92, 246, 0.8);">Flappy
-                            UFO</button>
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <button id="btn-snake" class="btn-primary arcade-btn" style="background: rgba(37, 99, 235, 0.8);">Neon Snake</button>
+                        <button id="btn-flappy" class="btn-primary arcade-btn" style="background: rgba(139, 92, 246, 0.8);">Flappy UFO</button>
+                        <button id="btn-breakout" class="btn-primary arcade-btn" style="background: rgba(236, 72, 153, 0.8);">Breakout</button>
+                        <button id="btn-asteroids" class="btn-primary arcade-btn" style="background: rgba(6, 182, 212, 0.8);">Asteroids</button>
                     </div>
                 </div>
 
@@ -119,8 +119,7 @@
             </div>
 
             <div style="text-align: center; margin-top: 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">
-                <p><strong>Desktop:</strong> Arrow Keys / Spacebar &nbsp;|&nbsp; <strong>Mobile:</strong> Swipe (Snake)
-                    / Tap (Flappy)</p>
+                <p><strong>Desktop:</strong> Arrows / Space / Mouse &nbsp;|&nbsp; <strong>Mobile:</strong> Swipe, Tap, or Drag</p>
             </div>
         </section>
     </main>
@@ -133,7 +132,7 @@
     </footer>
 
     <!-- Custom JS -->
-    <script src="arcade.js?v=9"></script>
+    <script src="arcade.js?v=10"></script>
 </body>
 
 </html>

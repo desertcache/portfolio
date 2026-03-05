@@ -44,8 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Responsive Canvas ---
     function resizeCanvas() {
         const container = canvas.parentElement;
-        const maxW = container.clientWidth - 32; // account for padding
-        const ratio = 800 / 500; // original aspect ratio
+        const maxW = container.clientWidth - 32;
+        const ratio = 800 / 500;
         let w = Math.min(maxW, 800);
         let h = w / ratio;
         canvas.width = Math.floor(w);
@@ -64,12 +64,79 @@ document.addEventListener('DOMContentLoaded', () => {
     // Buttons
     const btnSnake = document.getElementById('btn-snake');
     const btnFlappy = document.getElementById('btn-flappy');
+    const btnBreakout = document.getElementById('btn-breakout');
+    const btnAsteroids = document.getElementById('btn-asteroids');
     const btnRestart = document.getElementById('btn-restart');
     const btnMenu = document.getElementById('btn-menu');
 
     // State Machine
     let activeGame = null;
     let gameLoopRef = null;
+
+    // ==========================================
+    // INPUT REGISTRY SYSTEM
+    // ==========================================
+    let _touchHandlers = [];
+    let _keyDownHandler = null;
+    let _keyUpHandler = null;
+    let _mouseHandlers = [];
+
+    function registerTouchHandlers(handlers) {
+        // handlers: { event: 'touchstart'|'touchmove'|'touchend', fn: Function }[]
+        clearTouchHandlers();
+        handlers.forEach(h => {
+            canvas.addEventListener(h.event, h.fn, { passive: false });
+            _touchHandlers.push(h);
+        });
+    }
+
+    function clearTouchHandlers() {
+        _touchHandlers.forEach(h => {
+            canvas.removeEventListener(h.event, h.fn);
+        });
+        _touchHandlers = [];
+    }
+
+    function registerKeyHandler(downFn, upFn) {
+        clearKeyHandler();
+        if (downFn) {
+            _keyDownHandler = downFn;
+            document.addEventListener('keydown', _keyDownHandler);
+        }
+        if (upFn) {
+            _keyUpHandler = upFn;
+            document.addEventListener('keyup', _keyUpHandler);
+        }
+    }
+
+    function clearKeyHandler() {
+        if (_keyDownHandler) {
+            document.removeEventListener('keydown', _keyDownHandler);
+            _keyDownHandler = null;
+        }
+        if (_keyUpHandler) {
+            document.removeEventListener('keyup', _keyUpHandler);
+            _keyUpHandler = null;
+        }
+    }
+
+    function registerMouseHandler(event, fn) {
+        _mouseHandlers.push({ event, fn });
+        canvas.addEventListener(event, fn);
+    }
+
+    function clearMouseHandlers() {
+        _mouseHandlers.forEach(h => {
+            canvas.removeEventListener(h.event, h.fn);
+        });
+        _mouseHandlers = [];
+    }
+
+    function clearAllInputs() {
+        clearTouchHandlers();
+        clearKeyHandler();
+        clearMouseHandlers();
+    }
 
     // --- Core Routing ---
     btnSnake.addEventListener('click', () => {
@@ -84,10 +151,24 @@ document.addEventListener('DOMContentLoaded', () => {
         startFlappy();
     });
 
+    btnBreakout.addEventListener('click', () => {
+        activeGame = 'BREAKOUT';
+        hideMenu();
+        startBreakout();
+    });
+
+    btnAsteroids.addEventListener('click', () => {
+        activeGame = 'ASTEROIDS';
+        hideMenu();
+        startAsteroids();
+    });
+
     btnRestart.addEventListener('click', () => {
         hideGameOver();
         if (activeGame === 'SNAKE') startSnake();
-        if (activeGame === 'FLAPPY') startFlappy();
+        else if (activeGame === 'FLAPPY') startFlappy();
+        else if (activeGame === 'BREAKOUT') startBreakout();
+        else if (activeGame === 'ASTEROIDS') startAsteroids();
     });
 
     btnMenu.addEventListener('click', () => {
@@ -102,14 +183,15 @@ document.addEventListener('DOMContentLoaded', () => {
         hudScore.style.display = 'block';
     }
     function showMenu() {
+        clearAllInputs();
         menuScreen.style.display = 'block';
         hudScore.style.display = 'none';
-        ctx.clearRect(0, 0, canvas.width, canvas.height); // clear board
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    // Will be called by individual games when hit boundary or died
     window.triggerGameOver = function (score) {
-        cancelAnimationFrame(gameLoopRef); // halt engine
+        cancelAnimationFrame(gameLoopRef);
+        clearAllInputs();
         finalScoreText.innerText = `Score: ${score}`;
         hudScore.style.display = 'none';
         gameOverScreen.style.display = 'block';
@@ -128,112 +210,102 @@ document.addEventListener('DOMContentLoaded', () => {
     // GAME 1: NEON SNAKE
     // ==========================================
     function startSnake() {
-        // Snake configuration
+        clearAllInputs();
         const grid = 20;
         let count = 0;
         let score = 0;
-        let speedControl = 8; // Higher is slower (frames per move)
+        let speedControl = 8;
         updateHUDScore(0);
 
         let snake = {
             x: 160, y: 160,
-            dx: grid, dy: 0, // initially move right
+            dx: grid, dy: 0,
             cells: [],
             maxCells: 4
         };
 
         let apple = { x: 320, y: 320 };
 
-        // Key Listener (Overriding any previous)
-        document.onkeydown = function (e) {
-            // Prevent default scrolling when playing
-            if ([37, 38, 39, 40, 32].includes(e.keyCode)) { e.preventDefault(); }
+        // Keyboard
+        registerKeyHandler(function (e) {
+            if ([37, 38, 39, 40, 32].includes(e.keyCode)) e.preventDefault();
+            if (e.which === 37 && snake.dx === 0) { snake.dx = -grid; snake.dy = 0; }
+            else if (e.which === 38 && snake.dy === 0) { snake.dy = -grid; snake.dx = 0; }
+            else if (e.which === 39 && snake.dx === 0) { snake.dx = grid; snake.dy = 0; }
+            else if (e.which === 40 && snake.dy === 0) { snake.dy = grid; snake.dx = 0; }
+        });
 
-            if (e.which === 37 && snake.dx === 0) { // LEFT
-                snake.dx = -grid; snake.dy = 0;
-            } else if (e.which === 38 && snake.dy === 0) { // UP
-                snake.dy = -grid; snake.dx = 0;
-            } else if (e.which === 39 && snake.dx === 0) { // RIGHT
-                snake.dx = grid; snake.dy = 0;
-            } else if (e.which === 40 && snake.dy === 0) { // DOWN
-                snake.dy = grid; snake.dx = 0;
+        // Touch: swipe via touchmove with 20px threshold
+        let touchStartX = 0, touchStartY = 0, touchCommitted = false;
+        registerTouchHandlers([
+            {
+                event: 'touchstart', fn: function (e) {
+                    e.preventDefault();
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                    touchCommitted = false;
+                }
+            },
+            {
+                event: 'touchmove', fn: function (e) {
+                    e.preventDefault();
+                    if (touchCommitted) return;
+                    let dx = e.touches[0].clientX - touchStartX;
+                    let dy = e.touches[0].clientY - touchStartY;
+                    if (Math.abs(dx) > 20 || Math.abs(dy) > 20) {
+                        touchCommitted = true;
+                        if (Math.abs(dx) > Math.abs(dy)) {
+                            if (dx > 0 && snake.dx === 0) { snake.dx = grid; snake.dy = 0; }
+                            else if (dx < 0 && snake.dx === 0) { snake.dx = -grid; snake.dy = 0; }
+                        } else {
+                            if (dy > 0 && snake.dy === 0) { snake.dy = grid; snake.dx = 0; }
+                            else if (dy < 0 && snake.dy === 0) { snake.dy = -grid; snake.dx = 0; }
+                        }
+                    }
+                }
             }
-        };
-
-        // Touch Swipe Controls for Snake
-        let touchStartX = 0, touchStartY = 0;
-        canvas.ontouchstart = function (e) {
-            e.preventDefault();
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-        };
-        canvas.ontouchend = function (e) {
-            e.preventDefault();
-            let dx = e.changedTouches[0].clientX - touchStartX;
-            let dy = e.changedTouches[0].clientY - touchStartY;
-
-            if (Math.abs(dx) > Math.abs(dy)) {
-                // Horizontal swipe
-                if (dx > 20 && snake.dx === 0) { snake.dx = grid; snake.dy = 0; }
-                else if (dx < -20 && snake.dx === 0) { snake.dx = -grid; snake.dy = 0; }
-            } else {
-                // Vertical swipe
-                if (dy > 20 && snake.dy === 0) { snake.dy = grid; snake.dx = 0; }
-                else if (dy < -20 && snake.dy === 0) { snake.dy = -grid; snake.dx = 0; }
-            }
-        };
+        ]);
 
         function loop() {
             gameLoopRef = requestAnimationFrame(loop);
-
-            // Throttle speed
-            if (++count < speedControl) { return; }
+            if (++count < speedControl) return;
             count = 0;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Move Snake
             snake.x += snake.dx;
             snake.y += snake.dy;
 
-            // Collision with boundaries (Wall = Death)
             if (snake.x < 0 || snake.x >= canvas.width || snake.y < 0 || snake.y >= canvas.height) {
                 window.triggerGameOver(score);
                 return;
             }
 
-            // Track movements
             snake.cells.unshift({ x: snake.x, y: snake.y });
-            if (snake.cells.length > snake.maxCells) { snake.cells.pop(); }
+            if (snake.cells.length > snake.maxCells) snake.cells.pop();
 
-            // Draw Apple (Neon Pink/Red)
+            // Apple
             ctx.fillStyle = '#ef4444';
             ctx.shadowBlur = 10;
             ctx.shadowColor = '#ef4444';
             ctx.fillRect(apple.x, apple.y, grid - 1, grid - 1);
 
-            // Draw Snake (Neon Blue)
+            // Snake
             ctx.fillStyle = '#3b82f6';
             ctx.shadowColor = '#3b82f6';
 
             for (let i = 0; i < snake.cells.length; i++) {
                 ctx.fillRect(snake.cells[i].x, snake.cells[i].y, grid - 1, grid - 1);
 
-                // Ate Apple?
                 if (snake.cells[i].x === apple.x && snake.cells[i].y === apple.y) {
                     snake.maxCells++;
                     score += 10;
                     updateHUDScore(score);
-
-                    // Increase speed slightly every 100 points
-                    if (score % 100 === 0 && speedControl > 2) { speedControl--; }
-
-                    // Respawn Apple
+                    if (score % 100 === 0 && speedControl > 2) speedControl--;
                     apple.x = Math.floor(Math.random() * (canvas.width / grid)) * grid;
                     apple.y = Math.floor(Math.random() * (canvas.height / grid)) * grid;
                 }
 
-                // Self Collision
                 for (let j = i + 1; j < snake.cells.length; j++) {
                     if (snake.cells[i].x === snake.cells[j].x && snake.cells[i].y === snake.cells[j].y) {
                         window.triggerGameOver(score);
@@ -241,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             }
-            ctx.shadowBlur = 0; // reset
+            ctx.shadowBlur = 0;
         }
 
         gameLoopRef = requestAnimationFrame(loop);
@@ -251,9 +323,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // GAME 2: FLAPPY UFO
     // ==========================================
     function startFlappy() {
+        clearAllInputs();
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Settings
         const gravity = 0.15;
         const jumpThrust = -4.5;
         const speed = 2;
@@ -261,45 +333,33 @@ document.addEventListener('DOMContentLoaded', () => {
         const pipeGap = 200;
 
         let score = 0;
-        let lastPipeVal = 0; // tracking for scored pipes
         updateHUDScore(0);
 
-        let ufo = {
-            x: 100,
-            y: 200,
-            radius: 12,
-            velocity: 0
-        };
+        let ufo = { x: 100, y: 200, radius: 12, velocity: 0 };
+        let pipes = [{ x: canvas.width, topHeight: 200 }];
 
-        let pipes = []; // {x, topHeight}
-
-        // Spawn first pipes
-        pipes.push({ x: canvas.width, topHeight: 200 });
-
-        // Input overrides
-        document.onkeydown = function (e) {
-            if (e.which === 32 || e.which === 38) { // Space or Up Arrow
+        registerKeyHandler(function (e) {
+            if (e.which === 32 || e.which === 38) {
                 e.preventDefault();
                 ufo.velocity = jumpThrust;
             }
-        };
+        });
 
-        // Touch Tap Controls for Flappy UFO
-        canvas.ontouchstart = function (e) {
-            e.preventDefault();
-            ufo.velocity = jumpThrust;
-        };
-        canvas.ontouchend = null; // clear snake swipe handler
+        registerTouchHandlers([{
+            event: 'touchstart', fn: function (e) {
+                e.preventDefault();
+                ufo.velocity = jumpThrust;
+            }
+        }]);
 
         function loop() {
             gameLoopRef = requestAnimationFrame(loop);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Physics
             ufo.velocity += gravity;
             ufo.y += ufo.velocity;
 
-            // Draw UFO (Neon Purple/Pink orb)
+            // UFO body
             ctx.beginPath();
             ctx.arc(ufo.x, ufo.y, ufo.radius, 0, Math.PI * 2);
             ctx.fillStyle = '#c084fc';
@@ -307,16 +367,16 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.shadowColor = '#c084fc';
             ctx.fill();
 
-            // Draw UFO ring
+            // UFO ring
             ctx.beginPath();
-            ctx.ellipse(ufo.x, ufo.y + 2, ufo.radius + 6, parseInt(ufo.radius / 2), 0, 0, Math.PI * 2);
+            ctx.ellipse(ufo.x, ufo.y + 2, ufo.radius + 6, Math.floor(ufo.radius / 2), 0, 0, Math.PI * 2);
             ctx.strokeStyle = '#e879f9';
             ctx.lineWidth = 2;
             ctx.stroke();
             ctx.shadowBlur = 0;
 
-            // Process Pipes
-            ctx.fillStyle = '#10b981'; // Neon Emerald Pipes
+            // Pipes
+            ctx.fillStyle = '#10b981';
             ctx.shadowBlur = 5;
             ctx.shadowColor = '#10b981';
 
@@ -324,24 +384,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 let p = pipes[i];
                 p.x -= speed;
 
-                // Draw Top Pipe
                 ctx.fillRect(p.x, 0, pipeWidth, p.topHeight);
-                // Draw Bottom Pipe
                 let bottomY = p.topHeight + pipeGap;
-                let bottomHeight = canvas.height - bottomY;
-                ctx.fillRect(p.x, bottomY, pipeWidth, bottomHeight);
+                ctx.fillRect(p.x, bottomY, pipeWidth, canvas.height - bottomY);
 
-                // Collision Logic
-                // If UFO X is inside Pipe X
                 if (ufo.x + ufo.radius > p.x && ufo.x - ufo.radius < p.x + pipeWidth) {
-                    // If UFO Y hits Top or Bottom
                     if (ufo.y - ufo.radius < p.topHeight || ufo.y + ufo.radius > bottomY) {
                         window.triggerGameOver(score);
                         return;
                     }
                 }
 
-                // Scoring (Pass middle of pipe)
                 if (p.x + pipeWidth / 2 < ufo.x && !p.scored) {
                     p.scored = true;
                     score++;
@@ -350,22 +403,490 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             ctx.shadowBlur = 0;
 
-            // Spawn Logic
             const lastPipe = pipes[pipes.length - 1];
             if (lastPipe && lastPipe.x < canvas.width - 250) {
                 let rHeight = Math.floor(Math.random() * (canvas.height - pipeGap - 100)) + 50;
                 pipes.push({ x: canvas.width, topHeight: rHeight, scored: false });
             }
 
-            // Cleanup offscreen pipes
-            if (pipes[0] && pipes[0].x < -pipeWidth) {
-                pipes.shift();
-            }
+            if (pipes[0] && pipes[0].x < -pipeWidth) pipes.shift();
 
-            // Floor/Ceil collision
             if (ufo.y > canvas.height || ufo.y < 0) {
                 window.triggerGameOver(score);
                 return;
+            }
+        }
+
+        gameLoopRef = requestAnimationFrame(loop);
+    }
+
+    // ==========================================
+    // GAME 3: BREAKOUT
+    // ==========================================
+    function startBreakout() {
+        clearAllInputs();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        let score = 0;
+        let bricksDestroyed = 0;
+        updateHUDScore(0);
+
+        const paddleW = 100, paddleH = 12;
+        let paddleX = (canvas.width - paddleW) / 2;
+
+        const ballRadius = 6;
+        let ballX = canvas.width / 2;
+        let ballY = canvas.height - 40;
+        let ballSpeedBase = 4;
+        let ballDX = ballSpeedBase * (Math.random() > 0.5 ? 1 : -1);
+        let ballDY = -ballSpeedBase;
+
+        // Brick grid
+        const cols = 8, rows = 5;
+        const brickPad = 4;
+        const brickTopOffset = 40;
+        const rowColors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6'];
+        let bricks = [];
+
+        function buildBricks() {
+            bricks = [];
+            const brickW = (canvas.width - brickPad * (cols + 1)) / cols;
+            const brickH = 18;
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    bricks.push({
+                        x: brickPad + c * (brickW + brickPad),
+                        y: brickTopOffset + r * (brickH + brickPad),
+                        w: brickW,
+                        h: brickH,
+                        color: rowColors[r],
+                        alive: true
+                    });
+                }
+            }
+        }
+        buildBricks();
+
+        // Mouse control
+        registerMouseHandler('mousemove', function (e) {
+            const rect = canvas.getBoundingClientRect();
+            let mx = e.clientX - rect.left;
+            paddleX = Math.max(0, Math.min(canvas.width - paddleW, mx - paddleW / 2));
+        });
+
+        // Touch drag
+        registerTouchHandlers([{
+            event: 'touchmove', fn: function (e) {
+                e.preventDefault();
+                const rect = canvas.getBoundingClientRect();
+                let tx = e.touches[0].clientX - rect.left;
+                paddleX = Math.max(0, Math.min(canvas.width - paddleW, tx - paddleW / 2));
+            }
+        }, {
+            event: 'touchstart', fn: function (e) {
+                e.preventDefault();
+                const rect = canvas.getBoundingClientRect();
+                let tx = e.touches[0].clientX - rect.left;
+                paddleX = Math.max(0, Math.min(canvas.width - paddleW, tx - paddleW / 2));
+            }
+        }]);
+
+        function loop() {
+            gameLoopRef = requestAnimationFrame(loop);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Move ball
+            ballX += ballDX;
+            ballY += ballDY;
+
+            // Wall bounces
+            if (ballX - ballRadius < 0 || ballX + ballRadius > canvas.width) ballDX = -ballDX;
+            if (ballY - ballRadius < 0) ballDY = -ballDY;
+
+            // Ball below paddle = game over
+            if (ballY + ballRadius > canvas.height) {
+                window.triggerGameOver(score);
+                return;
+            }
+
+            // Paddle collision
+            if (ballDY > 0 &&
+                ballY + ballRadius >= canvas.height - 25 - paddleH &&
+                ballY + ballRadius <= canvas.height - 25 &&
+                ballX >= paddleX && ballX <= paddleX + paddleW) {
+                // Angle based on hit position
+                let hitPos = (ballX - paddleX) / paddleW; // 0..1
+                let angle = (hitPos - 0.5) * Math.PI * 0.7; // -63deg to +63deg
+                let speed = Math.sqrt(ballDX * ballDX + ballDY * ballDY);
+                ballDX = speed * Math.sin(angle);
+                ballDY = -speed * Math.cos(angle);
+            }
+
+            // Brick collisions
+            for (let i = 0; i < bricks.length; i++) {
+                let b = bricks[i];
+                if (!b.alive) continue;
+
+                if (ballX + ballRadius > b.x && ballX - ballRadius < b.x + b.w &&
+                    ballY + ballRadius > b.y && ballY - ballRadius < b.y + b.h) {
+                    b.alive = false;
+                    score += 10;
+                    bricksDestroyed++;
+                    updateHUDScore(score);
+
+                    // Speed up every 15 bricks
+                    if (bricksDestroyed % 15 === 0) {
+                        let spd = Math.sqrt(ballDX * ballDX + ballDY * ballDY);
+                        let factor = (spd + 0.5) / spd;
+                        ballDX *= factor;
+                        ballDY *= factor;
+                    }
+
+                    // Determine bounce direction
+                    let overlapLeft = (ballX + ballRadius) - b.x;
+                    let overlapRight = (b.x + b.w) - (ballX - ballRadius);
+                    let overlapTop = (ballY + ballRadius) - b.y;
+                    let overlapBottom = (b.y + b.h) - (ballY - ballRadius);
+                    let minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
+                    if (minOverlap === overlapTop || minOverlap === overlapBottom) ballDY = -ballDY;
+                    else ballDX = -ballDX;
+                    break;
+                }
+            }
+
+            // All bricks cleared = reset with faster ball
+            if (bricks.every(b => !b.alive)) {
+                buildBricks();
+                let spd = Math.sqrt(ballDX * ballDX + ballDY * ballDY);
+                let factor = (spd + 1) / spd;
+                ballDX *= factor;
+                ballDY *= factor;
+            }
+
+            // Draw bricks
+            for (let i = 0; i < bricks.length; i++) {
+                let b = bricks[i];
+                if (!b.alive) continue;
+                ctx.fillStyle = b.color;
+                ctx.shadowBlur = 6;
+                ctx.shadowColor = b.color;
+                ctx.fillRect(b.x, b.y, b.w, b.h);
+            }
+            ctx.shadowBlur = 0;
+
+            // Draw paddle
+            ctx.fillStyle = '#e879f9';
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#e879f9';
+            ctx.fillRect(paddleX, canvas.height - 25 - paddleH, paddleW, paddleH);
+            ctx.shadowBlur = 0;
+
+            // Draw ball
+            ctx.beginPath();
+            ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = '#ffffff';
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+
+        gameLoopRef = requestAnimationFrame(loop);
+    }
+
+    // ==========================================
+    // GAME 4: ASTEROIDS
+    // ==========================================
+    function startAsteroids() {
+        clearAllInputs();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        let score = 0;
+        let wave = 1;
+        updateHUDScore(0);
+
+        // Ship
+        let ship = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            angle: -Math.PI / 2,
+            vx: 0, vy: 0,
+            radius: 14
+        };
+
+        let keys = {};
+        let bullets = [];
+        let asteroids = [];
+        let lastShot = 0;
+        const SHOOT_COOLDOWN = 200;
+
+        // Touch state
+        let activeTouches = {};
+
+        function spawnAsteroids(count) {
+            for (let i = 0; i < count; i++) {
+                let ax, ay;
+                // Spawn away from ship
+                do {
+                    ax = Math.random() * canvas.width;
+                    ay = Math.random() * canvas.height;
+                } while (Math.hypot(ax - ship.x, ay - ship.y) < 120);
+                let angle = Math.random() * Math.PI * 2;
+                let spd = 0.5 + Math.random() * 1;
+                asteroids.push(makeAsteroid(ax, ay, 40, Math.cos(angle) * spd, Math.sin(angle) * spd));
+            }
+        }
+
+        function makeAsteroid(x, y, radius, vx, vy) {
+            // Irregular polygon 8-12 vertices
+            let verts = 8 + Math.floor(Math.random() * 5);
+            let shape = [];
+            for (let i = 0; i < verts; i++) {
+                let a = (i / verts) * Math.PI * 2;
+                let r = radius * (0.7 + Math.random() * 0.3);
+                shape.push({ x: Math.cos(a) * r, y: Math.sin(a) * r });
+            }
+            let pts = radius >= 35 ? 20 : radius >= 18 ? 50 : 100;
+            return { x, y, vx, vy, radius, shape, points: pts };
+        }
+
+        spawnAsteroids(3 + wave);
+
+        // Desktop keyboard
+        registerKeyHandler(
+            function (e) {
+                if ([37, 38, 39, 40, 32].includes(e.keyCode)) e.preventDefault();
+                keys[e.keyCode] = true;
+                if (e.keyCode === 32) shoot();
+            },
+            function (e) {
+                keys[e.keyCode] = false;
+            }
+        );
+
+        // Mobile touch zones
+        registerTouchHandlers([
+            {
+                event: 'touchstart', fn: function (e) {
+                    e.preventDefault();
+                    for (let i = 0; i < e.changedTouches.length; i++) {
+                        let t = e.changedTouches[i];
+                        let zone = getTouchZone(t);
+                        activeTouches[t.identifier] = zone;
+                        if (zone === 'shoot') shoot();
+                    }
+                }
+            },
+            {
+                event: 'touchmove', fn: function (e) {
+                    e.preventDefault();
+                    for (let i = 0; i < e.changedTouches.length; i++) {
+                        let t = e.changedTouches[i];
+                        activeTouches[t.identifier] = getTouchZone(t);
+                    }
+                }
+            },
+            {
+                event: 'touchend', fn: function (e) {
+                    e.preventDefault();
+                    for (let i = 0; i < e.changedTouches.length; i++) {
+                        delete activeTouches[e.changedTouches[i].identifier];
+                    }
+                }
+            }
+        ]);
+
+        function getTouchZone(touch) {
+            let rect = canvas.getBoundingClientRect();
+            let rx = (touch.clientX - rect.left) / rect.width;
+            let ry = (touch.clientY - rect.top) / rect.height;
+            if (rx < 0.25) return 'left';
+            if (rx > 0.75) return 'right';
+            if (ry > 0.6) return 'thrust';
+            return 'shoot';
+        }
+
+        function touchActive(zone) {
+            for (let id in activeTouches) {
+                if (activeTouches[id] === zone) return true;
+            }
+            return false;
+        }
+
+        function shoot() {
+            let now = Date.now();
+            if (now - lastShot < SHOOT_COOLDOWN) return;
+            lastShot = now;
+            bullets.push({
+                x: ship.x + Math.cos(ship.angle) * ship.radius,
+                y: ship.y + Math.sin(ship.angle) * ship.radius,
+                vx: Math.cos(ship.angle) * 6 + ship.vx * 0.5,
+                vy: Math.sin(ship.angle) * 6 + ship.vy * 0.5,
+                life: 60
+            });
+        }
+
+        function wrap(obj) {
+            if (obj.x < 0) obj.x += canvas.width;
+            if (obj.x > canvas.width) obj.x -= canvas.width;
+            if (obj.y < 0) obj.y += canvas.height;
+            if (obj.y > canvas.height) obj.y -= canvas.height;
+        }
+
+        function loop() {
+            gameLoopRef = requestAnimationFrame(loop);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Input processing
+            let rotSpeed = 0.06;
+            if (keys[37] || touchActive('left')) ship.angle -= rotSpeed;
+            if (keys[39] || touchActive('right')) ship.angle += rotSpeed;
+            if (keys[38] || touchActive('thrust')) {
+                ship.vx += Math.cos(ship.angle) * 0.12;
+                ship.vy += Math.sin(ship.angle) * 0.12;
+            }
+
+            // Friction
+            ship.vx *= 0.995;
+            ship.vy *= 0.995;
+            ship.x += ship.vx;
+            ship.y += ship.vy;
+            wrap(ship);
+
+            // Draw ship (neon cyan wireframe triangle)
+            ctx.save();
+            ctx.translate(ship.x, ship.y);
+            ctx.rotate(ship.angle);
+            ctx.strokeStyle = '#22d3ee';
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#22d3ee';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(ship.radius, 0);
+            ctx.lineTo(-ship.radius * 0.7, -ship.radius * 0.6);
+            ctx.lineTo(-ship.radius * 0.4, 0);
+            ctx.lineTo(-ship.radius * 0.7, ship.radius * 0.6);
+            ctx.closePath();
+            ctx.stroke();
+
+            // Thrust flame
+            if (keys[38] || touchActive('thrust')) {
+                ctx.strokeStyle = '#f97316';
+                ctx.shadowColor = '#f97316';
+                ctx.beginPath();
+                ctx.moveTo(-ship.radius * 0.5, -ship.radius * 0.25);
+                ctx.lineTo(-ship.radius * 0.9 - Math.random() * 5, 0);
+                ctx.lineTo(-ship.radius * 0.5, ship.radius * 0.25);
+                ctx.stroke();
+            }
+            ctx.restore();
+            ctx.shadowBlur = 0;
+
+            // Bullets
+            ctx.fillStyle = '#fbbf24';
+            ctx.shadowBlur = 6;
+            ctx.shadowColor = '#fbbf24';
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                let b = bullets[i];
+                b.x += b.vx;
+                b.y += b.vy;
+                b.life--;
+                wrap(b);
+                if (b.life <= 0) { bullets.splice(i, 1); continue; }
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.shadowBlur = 0;
+
+            // Asteroids
+            ctx.strokeStyle = '#a78bfa';
+            ctx.shadowBlur = 5;
+            ctx.shadowColor = '#a78bfa';
+            ctx.lineWidth = 1.5;
+            for (let i = asteroids.length - 1; i >= 0; i--) {
+                let a = asteroids[i];
+                a.x += a.vx;
+                a.y += a.vy;
+                wrap(a);
+
+                // Draw asteroid
+                ctx.beginPath();
+                ctx.moveTo(a.x + a.shape[0].x, a.y + a.shape[0].y);
+                for (let v = 1; v < a.shape.length; v++) {
+                    ctx.lineTo(a.x + a.shape[v].x, a.y + a.shape[v].y);
+                }
+                ctx.closePath();
+                ctx.stroke();
+
+                // Bullet-asteroid collision
+                for (let j = bullets.length - 1; j >= 0; j--) {
+                    let b = bullets[j];
+                    if (Math.hypot(b.x - a.x, b.y - a.y) < a.radius) {
+                        score += a.points;
+                        updateHUDScore(score);
+                        bullets.splice(j, 1);
+
+                        // Split
+                        if (a.radius >= 35) {
+                            // Large -> 2 medium
+                            for (let k = 0; k < 2; k++) {
+                                let ang = Math.random() * Math.PI * 2;
+                                let spd = 1 + Math.random() * 1;
+                                asteroids.push(makeAsteroid(a.x, a.y, 20, Math.cos(ang) * spd, Math.sin(ang) * spd));
+                            }
+                        } else if (a.radius >= 18) {
+                            // Medium -> 2 small
+                            for (let k = 0; k < 2; k++) {
+                                let ang = Math.random() * Math.PI * 2;
+                                let spd = 1.5 + Math.random() * 1.5;
+                                asteroids.push(makeAsteroid(a.x, a.y, 10, Math.cos(ang) * spd, Math.sin(ang) * spd));
+                            }
+                        }
+                        asteroids.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+            ctx.shadowBlur = 0;
+
+            // Ship-asteroid collision
+            for (let i = 0; i < asteroids.length; i++) {
+                if (Math.hypot(ship.x - asteroids[i].x, ship.y - asteroids[i].y) < ship.radius + asteroids[i].radius * 0.7) {
+                    window.triggerGameOver(score);
+                    return;
+                }
+            }
+
+            // Wave cleared
+            if (asteroids.length === 0) {
+                wave++;
+                spawnAsteroids(3 + wave);
+            }
+
+            // Draw touch zones hint on mobile (subtle)
+            if ('ontouchstart' in window && asteroids.length > 0) {
+                ctx.globalAlpha = 0.12;
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([4, 4]);
+                // Left zone
+                ctx.beginPath();
+                ctx.moveTo(canvas.width * 0.25, 0);
+                ctx.lineTo(canvas.width * 0.25, canvas.height);
+                ctx.stroke();
+                // Right zone
+                ctx.beginPath();
+                ctx.moveTo(canvas.width * 0.75, 0);
+                ctx.lineTo(canvas.width * 0.75, canvas.height);
+                ctx.stroke();
+                // Bottom zone
+                ctx.beginPath();
+                ctx.moveTo(canvas.width * 0.25, canvas.height * 0.6);
+                ctx.lineTo(canvas.width * 0.75, canvas.height * 0.6);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.globalAlpha = 1;
             }
         }
 
