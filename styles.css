@@ -731,7 +731,6 @@ section {
 }
 
 .stat-card:hover {
-    transform: translateY(-8px);
     box-shadow: var(--shadow-medium);
     border-color: rgba(255, 255, 255, 0.6);
 }
@@ -778,7 +777,6 @@ section {
 }
 
 .capability-card:hover {
-    transform: translateY(-8px);
     box-shadow: var(--shadow-medium);
     border-color: rgba(255, 255, 255, 0.6);
 }
@@ -827,7 +825,6 @@ section {
 }
 
 .project-card:hover {
-    transform: translateY(-8px);
     box-shadow: var(--shadow-medium);
 }
 
@@ -928,7 +925,6 @@ section {
 }
 
 .oss-card:hover {
-    transform: translateY(-8px);
     box-shadow: var(--shadow-medium);
     border-color: rgba(255, 255, 255, 0.6);
 }
@@ -987,7 +983,6 @@ section {
 }
 
 .skill-category:hover {
-    transform: translateY(-8px);
     box-shadow: var(--shadow-medium);
     border-color: rgba(255, 255, 255, 0.6);
 }
@@ -1256,39 +1251,108 @@ input[type=range]::-webkit-slider-thumb:hover {
     transform: translateY(0);
 }
 
-/* Float Animations for Cards */
-.float-anim {
-    animation: float 6s ease-in-out infinite;
+/* 3D Card Tilt */
+.glass-card {
+    transform-style: preserve-3d;
+    will-change: transform;
 }
 
-.delay-1 {
-    animation-delay: 0s;
+/* Staggered Card Reveals */
+.stagger > * {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.active .stagger > *:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0s; }
+.reveal.active .stagger > *:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.1s; }
+.reveal.active .stagger > *:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }
+.reveal.active .stagger > *:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 0.3s; }
+.reveal.active .stagger > *:nth-child(5) { opacity: 1; transform: translateY(0); transition-delay: 0.4s; }
+.reveal.active .stagger > *:nth-child(6) { opacity: 1; transform: translateY(0); transition-delay: 0.5s; }
+
+/* Project Mockup Previews */
+.project-preview {
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.delay-2 {
-    animation-delay: 1s;
+.preview-chrome {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: rgba(15, 23, 42, 0.7);
 }
 
-.delay-3 {
-    animation-delay: 2s;
+.chrome-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
 }
 
-.delay-4 {
-    animation-delay: 3s;
+.chrome-dot:first-child { background: #ef4444; }
+.chrome-dot:nth-child(2) { background: #eab308; }
+.chrome-dot:nth-child(3) { background: #22c55e; }
+
+.preview-screen {
+    height: 120px;
+    position: relative;
 }
 
-@keyframes float {
-    0% {
-        transform: translateY(0px);
-    }
+.mosaic-preview {
+    background: linear-gradient(135deg, #1e3a5f 0%, #4c1d95 100%);
+    box-shadow:
+        inset 20px 20px 0 40px rgba(255,255,255,0.05),
+        inset 80px 30px 0 20px rgba(255,255,255,0.03),
+        inset 30px 70px 0 60px rgba(255,255,255,0.04);
+}
 
-    50% {
-        transform: translateY(-8px);
-    }
+.wfm-preview {
+    background: linear-gradient(135deg, #0d4f4f 0%, #1e3a5f 100%);
+    background-image:
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 18px,
+            rgba(255,255,255,0.06) 18px,
+            rgba(255,255,255,0.06) 22px
+        ),
+        linear-gradient(135deg, #0d4f4f 0%, #1e3a5f 100%);
+}
 
-    100% {
-        transform: translateY(0px);
-    }
+.ime-preview {
+    background: linear-gradient(135deg, #312e81 0%, #1e293b 100%);
+    background-image:
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 18px,
+            rgba(255,255,255,0.04) 18px,
+            rgba(255,255,255,0.04) 19px
+        ),
+        linear-gradient(135deg, #312e81 0%, #1e293b 100%);
+}
+
+.square-preview {
+    background: linear-gradient(135deg, #9a3412 0%, #b45309 100%);
+    background-image:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.0) 0%,
+            rgba(255,255,255,0.08) 100%
+        ),
+        linear-gradient(135deg, #9a3412 0%, #b45309 100%);
+}
+
+.svas-preview {
+    background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+    box-shadow:
+        inset 20px 25px 0 30px rgba(255,255,255,0.04),
+        inset 70px 60px 0 25px rgba(255,255,255,0.03),
+        inset 130px 30px 0 35px rgba(255,255,255,0.05);
 }
 
 /* Media Queries */

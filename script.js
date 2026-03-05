@@ -76,6 +76,59 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         document.getElementById('hero').classList.add('active');
     }, 100);
+    // Animated Stat Counters
+    const statsGrid = document.querySelector('.power-stats-grid');
+    if (statsGrid) {
+        const statObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                observer.unobserve(entry.target);
+
+                entry.target.querySelectorAll('.stat-value').forEach(el => {
+                    const raw = el.textContent.trim();
+                    const prefix = raw.match(/^[^0-9]*/)[0];
+                    const numMatch = raw.match(/[0-9]+/);
+                    const suffix = raw.match(/[0-9]([^0-9]*)$/)[1];
+                    const target = parseInt(numMatch[0], 10);
+                    const duration = 2000;
+                    const start = performance.now();
+
+                    function update(now) {
+                        const elapsed = now - start;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const eased = 1 - Math.pow(1 - progress, 3);
+                        const current = Math.round(eased * target);
+                        el.textContent = prefix + current + suffix;
+                        if (progress < 1) requestAnimationFrame(update);
+                    }
+                    el.textContent = prefix + '0' + suffix;
+                    requestAnimationFrame(update);
+                });
+            });
+        }, { threshold: 0.3 });
+        statObserver.observe(statsGrid);
+    }
+
+    // 3D Card Tilt on Hover
+    document.querySelectorAll('.glass-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateY = ((x - centerX) / centerX) * 6;
+            const rotateX = ((centerY - y) / centerY) * 6;
+            card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transition = 'transform 0.3s ease';
+            card.style.transform = 'perspective(800px) rotateX(0) rotateY(0)';
+            setTimeout(() => { card.style.transition = ''; }, 300);
+        });
+    });
+
     // 2. Rotating Hero Text Animation
     const typingText = document.querySelector('.typing-text');
     if (typingText) {
