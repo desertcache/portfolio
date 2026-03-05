@@ -774,6 +774,53 @@ section {
 }
 
 /* =========================================
+   Capabilities (What I Do) Section
+   ========================================= */
+.capabilities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.capability-card {
+    padding: 2.5rem 2rem;
+    text-align: center;
+}
+
+.capability-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-medium);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.capability-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(139, 92, 246, 0.15));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.capability-icon i {
+    font-size: 1.8rem;
+    color: var(--accent-blue);
+}
+
+.capability-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+}
+
+.capability-card p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+/* =========================================
    Work Section
    ========================================= */
 .projects-grid {
@@ -871,6 +918,69 @@ section {
     padding: 0.3rem 0.8rem;
     border-radius: 100px;
     font-weight: 500;
+}
+
+/* =========================================
+   Building in Public (OSS) Section
+   ========================================= */
+.oss-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.oss-card {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.oss-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-medium);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.oss-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.oss-header i {
+    font-size: 1.8rem;
+    color: #f1f5f9;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.oss-external {
+    font-size: 1.2rem !important;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.oss-card:hover .oss-external {
+    opacity: 1;
+}
+
+.oss-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+}
+
+.oss-card p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+}
+
+.oss-card .tech-stack-flex {
+    margin-top: auto;
 }
 
 /* =========================================
@@ -986,6 +1096,43 @@ section {
     font-size: 1.1rem;
     max-width: 600px;
     margin: 0 auto;
+}
+
+/* Resume Download Links */
+.resume-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.resume-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.5rem;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: var(--transition-fast);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    box-shadow: var(--shadow-soft);
+}
+
+.resume-btn:hover {
+    background: var(--bg-base);
+    border-color: var(--text-tertiary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+.resume-btn i {
+    font-size: 1.1rem;
 }
 
 .footer {
@@ -1267,7 +1414,9 @@ input[type=range]::-webkit-slider-thumb:hover {
     }
 
     .impact-grid,
-    .projects-grid {
+    .projects-grid,
+    .capabilities-grid,
+    .oss-grid {
         grid-template-columns: 1fr;
     }
 

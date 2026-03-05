@@ -81,9 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typingText) {
         const phrases = [
             "I build complex systems that <span class='text-gradient'>scale</span>.",
-            "I craft resilient backend <span class='text-gradient'>pipelines</span>.",
-            "I integrate sophisticated AI <span class='text-gradient'>workflows</span>.",
-            "I design pristine user <span class='text-gradient'>experiences</span>."
+            "I architect enterprise <span class='text-gradient'>integrations</span>.",
+            "I bridge business strategy and <span class='text-gradient'>engineering</span>.",
+            "I design AI-powered <span class='text-gradient'>platforms</span>."
         ];
 
         let phraseIndex = 0;
