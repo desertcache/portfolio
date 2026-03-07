@@ -26,7 +26,7 @@
 
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css?v=17">
+    <link rel="stylesheet" href="styles.css?v=28">
 
     <!-- Boxicons (for sleek icons) -->
     <link rel="preload" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" as="style">
@@ -72,6 +72,7 @@
             </button>
             <ul class="nav-links">
                 <li><a href="#work">Work</a></li>
+                <li><a href="#oss">Open Source</a></li>
                 <li><a href="#skills">Skills</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="arcade.html">Arcade</a></li>
@@ -250,37 +251,114 @@
                     </div>
                 </article>
 
-                <!-- Project 5: SVAS -->
-                <article class="project-card glass-card">
+                <!-- Project 5: SVAS (Featured with Live Preview) -->
+                <article class="project-featured glass-card">
                     <div class="responsive-edge"></div>
-                    <div class="project-header">
-                        <span class="project-tag tag-orange"
-                            style="background: rgba(16, 185, 129, 0.6); color: #eff6ff; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border-color: rgba(16, 185, 129, 0.6); box-shadow: 0 2px 10px rgba(0,0,0,0.1);">Volunteer
-                            Engineering</span>
-                        <div class="project-links">
-                            <a href="https://sunvalleypets.org/" target="_blank" style="color: inherit;"><i
-                                    class='bx bx-link-external'></i></a>
+                    <div class="project-featured-content">
+                        <div class="project-featured-text">
+                            <div class="project-header">
+                                <span class="project-tag tag-orange"
+                                    style="background: rgba(16, 185, 129, 0.6); color: #eff6ff; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border-color: rgba(16, 185, 129, 0.6); box-shadow: 0 2px 10px rgba(0,0,0,0.1);">Volunteer
+                                    Engineering</span>
+                                <div class="project-links">
+                                    <a href="https://sunvalleypets.org/" target="_blank" style="color: inherit;"><i
+                                            class='bx bx-link-external'></i></a>
+                                </div>
+                            </div>
+                            <h3 class="project-title">Sun Valley Pets (SVAS)</h3>
+                            <p class="project-desc">
+                                Volunteered as a lead developer to overhaul and continually enhance the public-facing rescue
+                                platform. Implemented substantial UI/UX updates to drive adoption rates and streamline
+                                donations.
+                            </p>
+                            <ul class="project-highlights">
+                                <li><i class='bx bx-check'></i> Engineered responsive, modern UI components across the platform</li>
+                                <li><i class='bx bx-check'></i> Optimized page load speeds and mobile accessibility</li>
+                                <li><i class='bx bx-heart'></i> Built features to better showcase adoptable pets</li>
+                            </ul>
+                            <div class="tech-stack-flex">
+                                <span class="tech-pill">Web Development</span>
+                                <span class="tech-pill">UI/UX Design</span>
+                                <span class="tech-pill">Performance Optimization</span>
+                            </div>
                         </div>
-                    </div>
-                    <h3 class="project-title">Sun Valley Pets (SVAS)</h3>
-                    <p class="project-desc">
-                        Volunteered as a lead developer to overhaul and continually enhance the public-facing rescue
-                        platform. Implemented substantial UI/UX updates to drive adoption rates and streamline
-                        donations.
-                    </p>
-                    <ul class="project-highlights">
-                        <li><i class='bx bx-check'></i> Engineered responsive, modern UI components across the platform
-                        </li>
-                        <li><i class='bx bx-check'></i> Optimized page load speeds and mobile accessibility</li>
-                        <li><i class='bx bx-heart'></i> Built features to better showcase adoptable pets</li>
-                    </ul>
-                    <div class="tech-stack-flex">
-                        <span class="tech-pill">Web Development</span>
-                        <span class="tech-pill">UI/UX Design</span>
-                        <span class="tech-pill">Performance Optimization</span>
+                        <div class="project-featured-demo">
+                            <iframe src="https://sunvalleypets.org/" title="Sun Valley Pets Live Site"
+                                loading="lazy"></iframe>
+                            <a href="https://sunvalleypets.org/" target="_blank" class="project-featured-overlay">
+                                <span>Visit Live Site <i class='bx bx-link-external'></i></span>
+                            </a>
+                        </div>
                     </div>
                 </article>
 
+            </div>
+        </section>
+
+        <!-- BUILDING IN PUBLIC SECTION -->
+        <section id="oss" class="oss-section container reveal">
+            <div class="section-header">
+                <h2 class="section-title">Building in <span class="accent">Public</span></h2>
+                <p class="section-desc">Open-source projects and experiments I'm shipping right now.</p>
+            </div>
+            <!-- Featured: Samantha UI with live orb -->
+            <div class="oss-featured glass-card">
+                <div class="responsive-edge"></div>
+                <div class="oss-featured-content">
+                    <div class="oss-featured-text">
+                        <div class="oss-header">
+                            <i class='bx bxl-github'></i>
+                            <a href="https://github.com/desertcache/samantha-ui" target="_blank"
+                                style="color: inherit;"><i class='bx bx-link-external oss-external'
+                                    style="opacity:1;"></i></a>
+                        </div>
+                        <h3>Samantha UI</h3>
+                        <p>Audio-reactive 3D avatar with custom GLSL shaders, simplex noise deformation, and fresnel
+                            edge glow. The orb morphs between listening, thinking, and speaking states with real-time
+                            amplitude response. 60fps on WebGL.</p>
+                        <div class="tech-stack-flex">
+                            <span class="tech-pill">React 19</span>
+                            <span class="tech-pill">Three.js</span>
+                            <span class="tech-pill">GLSL</span>
+                            <span class="tech-pill">WebGL</span>
+                        </div>
+                    </div>
+                    <div class="oss-featured-demo">
+                        <iframe src="https://desertcache.github.io/samantha-ui/" title="Samantha UI Live Demo"
+                            loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+
+            <div class="oss-grid">
+                <a href="https://github.com/desertcache/agent-os" target="_blank" class="oss-card glass-card">
+                    <div class="responsive-edge"></div>
+                    <div class="oss-header">
+                        <i class='bx bxl-github'></i>
+                        <i class='bx bx-link-external oss-external'></i>
+                    </div>
+                    <h3>Agent-OS</h3>
+                    <p>Open-source toolkit for building AI agent systems. Hooks, skills, memory, and vault templates
+                        for Claude Code.</p>
+                    <div class="tech-stack-flex">
+                        <span class="tech-pill">Python</span>
+                        <span class="tech-pill">CLI</span>
+                    </div>
+                </a>
+                <a href="https://github.com/desertcache/velvet" target="_blank" class="oss-card glass-card">
+                    <div class="responsive-edge"></div>
+                    <div class="oss-header">
+                        <i class='bx bxl-github'></i>
+                        <i class='bx bx-link-external oss-external'></i>
+                    </div>
+                    <h3>Velvet</h3>
+                    <p>Real-time speech-to-text application with local AI model inference. Privacy-first, runs
+                        entirely on-device.</p>
+                    <div class="tech-stack-flex">
+                        <span class="tech-pill">Python</span>
+                        <span class="tech-pill">Whisper</span>
+                    </div>
+                </a>
             </div>
         </section>
 
@@ -359,7 +437,7 @@
                     <div class="about-stat-item glass-card">
                         <div class="responsive-edge"></div>
                         <h4>Side Projects</h4>
-                        <p>Kernel, SVAS Shield, Velvet, Arcade</p>
+                        <p>Agent-OS, Samantha UI, Velvet</p>
                     </div>
                 </div>
             </div>
