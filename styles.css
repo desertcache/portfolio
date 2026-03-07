@@ -132,57 +132,6 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    /* Hide default cursor for interactive custom cursor */
-    cursor: none;
-}
-
-/* Base interactive elements should also hide cursor */
-a,
-button,
-input,
-select,
-textarea {
-    cursor: none;
-}
-
-/* =========================================
-   Custom Cursor
-   ========================================= */
-.cursor-dot {
-    width: 6px;
-    height: 6px;
-    background-color: var(--text-primary);
-    border-radius: 50%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: 10000;
-    background: #f8fafc;
-    /* crisp white */
-}
-
-.cursor-outline {
-    width: 32px;
-    height: 32px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 50%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: 9999;
-    transition: width 0.2s ease, height 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-}
-
-/* Hover state for magnetic elements */
-.cursor-outline.hover {
-    width: 50px;
-    height: 50px;
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.8);
 }
 
 
@@ -1225,25 +1174,6 @@ input[type=range]::-webkit-slider-thumb:hover {
 }
 
 @media (max-width: 768px) {
-
-    /* Mobile performance overrides */
-    body {
-        cursor: auto;
-        /* Remove custom cursor on mobile */
-    }
-
-    a,
-    button,
-    input,
-    select,
-    textarea {
-        cursor: auto;
-    }
-
-    .cursor-dot,
-    .cursor-outline {
-        display: none;
-    }
 
     /* Fixed 2x2 grid for stats on mobile */
     .power-stats-grid {

@@ -2,42 +2,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // ==========================================
-    // Custom Cursor Logic
-    // ==========================================
-    const cursorDot = document.querySelector('.cursor-dot');
-    const cursorOutline = document.querySelector('.cursor-outline');
-    let cursorX = 0, cursorY = 0;
-    let outlineX = 0, outlineY = 0;
-
-    // Fast tracking for the dot, lerp for the outline
-    if (cursorDot && cursorOutline && window.innerWidth > 768) {
-        window.addEventListener('mousemove', (e) => {
-            cursorX = e.clientX;
-            cursorY = e.clientY;
-            // Immediate dot update
-            cursorDot.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
-        });
-
-        // Smooth outline animation via requestAnimationFrame
-        const animateCursor = () => {
-            let dx = cursorX - outlineX;
-            let dy = cursorY - outlineY;
-            outlineX += dx * 0.15; // LERP speed
-            outlineY += dy * 0.15;
-            cursorOutline.style.transform = `translate(${outlineX}px, ${outlineY}px)`;
-            requestAnimationFrame(animateCursor);
-        };
-        animateCursor();
-
-        // Enlarge on interactive element hover
-        const interactives = document.querySelectorAll('a, button, input, .magnetic, .glass-card');
-        interactives.forEach(el => {
-            el.addEventListener('mouseenter', () => cursorOutline.classList.add('hover'));
-            el.addEventListener('mouseleave', () => cursorOutline.classList.remove('hover'));
-        });
-    }
-
-    // ==========================================
     // Dynamic Background tracking
     // ==========================================
     const glow1 = document.querySelector('.glow-1');
