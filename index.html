@@ -33,7 +33,7 @@
         rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css?v=24">
+    <link rel="stylesheet" href="styles.css?v=26">
 
     <!-- Boxicons (for sleek icons) -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
@@ -62,11 +62,6 @@
     <div class="ambient-mesh"></div>
     <div class="ambient-glow glow-1"></div>
     <div class="ambient-glow glow-2"></div>
-    <div class="background-orbs">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-    </div>
 
     <nav class="navbar glass-panel">
         <div class="nav-content container">
@@ -361,6 +356,35 @@
                 <h2 class="section-title">Building in <span class="accent">Public</span></h2>
                 <p class="section-desc">Open-source projects and experiments I'm shipping right now.</p>
             </div>
+            <!-- Featured: Samantha UI with live orb -->
+            <div class="oss-featured glass-card stagger">
+                <div class="responsive-edge"></div>
+                <div class="oss-featured-content">
+                    <div class="oss-featured-text">
+                        <div class="oss-header">
+                            <i class='bx bxl-github'></i>
+                            <a href="https://github.com/desertcache/samantha-ui" target="_blank"
+                                style="color: inherit;"><i class='bx bx-link-external oss-external'
+                                    style="opacity:1;"></i></a>
+                        </div>
+                        <h3>Samantha UI</h3>
+                        <p>Audio-reactive 3D avatar with custom GLSL shaders, simplex noise deformation, and fresnel
+                            edge glow. The orb morphs between listening, thinking, and speaking states with real-time
+                            amplitude response. 60fps on WebGL.</p>
+                        <div class="tech-stack-flex">
+                            <span class="tech-pill">React 19</span>
+                            <span class="tech-pill">Three.js</span>
+                            <span class="tech-pill">GLSL</span>
+                            <span class="tech-pill">WebGL</span>
+                        </div>
+                    </div>
+                    <div class="oss-featured-demo">
+                        <iframe src="https://desertcache.github.io/samantha-ui/" title="Samantha UI Live Demo"
+                            loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+
             <div class="oss-grid stagger">
                 <a href="https://github.com/desertcache/agent-os" target="_blank" class="oss-card glass-card">
                     <div class="responsive-edge"></div>
@@ -369,24 +393,11 @@
                         <i class='bx bx-link-external oss-external'></i>
                     </div>
                     <h3>Agent-OS</h3>
-                    <p>Open-source toolkit for building AI agent systems. Hooks, skills, memory, and vault templates for Claude Code.</p>
+                    <p>Open-source toolkit for building AI agent systems. Hooks, skills, memory, and vault templates
+                        for Claude Code.</p>
                     <div class="tech-stack-flex">
                         <span class="tech-pill">Python</span>
                         <span class="tech-pill">CLI</span>
-                    </div>
-                </a>
-                <a href="https://github.com/desertcache/samantha-ui" target="_blank" class="oss-card glass-card">
-                    <div class="responsive-edge"></div>
-                    <div class="oss-header">
-                        <i class='bx bxl-github'></i>
-                        <i class='bx bx-link-external oss-external'></i>
-                    </div>
-                    <h3>Samantha UI</h3>
-                    <p>Audio-reactive 3D avatar with custom GLSL shaders, WebSocket streaming, and 60fps performance.</p>
-                    <div class="tech-stack-flex">
-                        <span class="tech-pill">React 19</span>
-                        <span class="tech-pill">Three.js</span>
-                        <span class="tech-pill">GLSL</span>
                     </div>
                 </a>
                 <a href="https://github.com/desertcache/velvet" target="_blank" class="oss-card glass-card">
@@ -396,7 +407,8 @@
                         <i class='bx bx-link-external oss-external'></i>
                     </div>
                     <h3>Velvet</h3>
-                    <p>Real-time speech-to-text application with local AI model inference. Privacy-first, runs entirely on-device.</p>
+                    <p>Real-time speech-to-text application with local AI model inference. Privacy-first, runs
+                        entirely on-device.</p>
                     <div class="tech-stack-flex">
                         <span class="tech-pill">Python</span>
                         <span class="tech-pill">Whisper</span>
@@ -523,7 +535,6 @@
     <footer class="footer">
         <div class="container footer-content">
             <p>&copy; 2026 Samuel Bates. All rights reserved.</p>
-            <p class="footer-note">Designed and built with Vanilla HTML, CSS, & JS.</p>
         </div>
     </footer>
 
