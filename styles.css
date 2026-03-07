@@ -1239,6 +1239,80 @@ section {
         inset 130px 30px 0 35px rgba(255,255,255,0.05);
 }
 
+/* Featured Project Card with Live Demo */
+.project-featured {
+    padding: 2.5rem;
+    grid-column: 1 / -1;
+}
+
+.project-featured-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: center;
+}
+
+.project-featured-text .project-header {
+    margin-bottom: 1rem;
+}
+
+.project-featured-text .project-desc {
+    margin-bottom: 1.5rem;
+}
+
+.project-featured-demo {
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    position: relative;
+}
+
+.project-featured-demo iframe {
+    display: block;
+    width: 100%;
+    height: 340px;
+    border: none;
+    border-radius: 12px;
+    pointer-events: none;
+}
+
+.project-featured-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0);
+    transition: background 0.3s ease;
+    text-decoration: none;
+    border-radius: 12px;
+}
+
+.project-featured-overlay span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1.4rem;
+    background: rgba(15, 23, 42, 0.85);
+    color: #f8fafc;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: 100px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.project-featured-overlay:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.project-featured-overlay:hover span {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 /* Media Queries */
 @media (max-width: 992px) {
     .hero-title {
@@ -1356,6 +1430,18 @@ section {
     .capabilities-grid,
     .oss-grid {
         grid-template-columns: 1fr;
+    }
+
+    .project-featured-content {
+        grid-template-columns: 1fr;
+    }
+
+    .project-featured-demo {
+        order: -1;
+    }
+
+    .project-featured-demo iframe {
+        height: 250px;
     }
 
     .oss-featured-content {
