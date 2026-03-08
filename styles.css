@@ -865,6 +865,7 @@ section {
     background: #ffffff;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     position: relative;
+    height: 340px;
 }
 
 .project-featured-demo iframe {
@@ -1441,6 +1442,7 @@ input[type=range]::-webkit-slider-thumb:hover {
 
     .project-featured-demo {
         order: -1;
+        height: 250px;
     }
 
     .project-featured-demo iframe {
