@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnFlappy = document.getElementById('btn-flappy');
     const btnBreakout = document.getElementById('btn-breakout');
     const btnAsteroids = document.getElementById('btn-asteroids');
+    const btnRunner = document.getElementById('btn-runner');
     const btnRestart = document.getElementById('btn-restart');
     const btnMenu = document.getElementById('btn-menu');
 
@@ -138,6 +139,38 @@ document.addEventListener('DOMContentLoaded', () => {
         clearMouseHandlers();
     }
 
+    // ==========================================
+    // VIRTUAL GAMEPAD
+    // ==========================================
+    const mobileControls = document.getElementById('mobile-controls');
+    window.vpad = { up: false, down: false, left: false, right: false, a: false, b: false };
+
+    function setupMobileControls() {
+        const btns = [
+            { id: 'btn-up', key: 'up' }, { id: 'btn-down', key: 'down' },
+            { id: 'btn-left', key: 'left' }, { id: 'btn-right', key: 'right' },
+            { id: 'btn-action-a', key: 'a' }, { id: 'btn-action-b', key: 'b' }
+        ];
+        btns.forEach(b => {
+            const el = document.getElementById(b.id);
+            if (!el) return;
+            const press = (e) => { e.preventDefault(); window.vpad[b.key] = true; };
+            const release = (e) => { e.preventDefault(); window.vpad[b.key] = false; };
+            el.addEventListener('touchstart', press, { passive: false });
+            el.addEventListener('touchend', release, { passive: false });
+            el.addEventListener('mousedown', press);
+            window.addEventListener('mouseup', release);
+            window.addEventListener('mouseleave', release);
+        });
+    }
+    setupMobileControls();
+
+    function showMobileControls(show) {
+        if (!mobileControls) return;
+        if (show) mobileControls.classList.add('active');
+        else mobileControls.classList.remove('active');
+    }
+
     // --- Core Routing ---
     btnSnake.addEventListener('click', () => {
         activeGame = 'SNAKE';
@@ -163,12 +196,21 @@ document.addEventListener('DOMContentLoaded', () => {
         startAsteroids();
     });
 
+    if (btnRunner) {
+        btnRunner.addEventListener('click', () => {
+            activeGame = 'RUNNER';
+            hideMenu();
+            startResumeRunner();
+        });
+    }
+
     btnRestart.addEventListener('click', () => {
         hideGameOver();
         if (activeGame === 'SNAKE') startSnake();
         else if (activeGame === 'FLAPPY') startFlappy();
         else if (activeGame === 'BREAKOUT') startBreakout();
         else if (activeGame === 'ASTEROIDS') startAsteroids();
+        else if (activeGame === 'RUNNER') startResumeRunner();
     });
 
     btnMenu.addEventListener('click', () => {
@@ -181,20 +223,38 @@ document.addEventListener('DOMContentLoaded', () => {
     function hideMenu() {
         menuScreen.style.display = 'none';
         hudScore.style.display = 'block';
+        if (activeGame !== 'BREAKOUT') showMobileControls(true);
     }
     function showMenu() {
+        showMobileControls(false);
         clearAllInputs();
+        if (deathLoopRef) cancelAnimationFrame(deathLoopRef);
+        clearParticles();
         menuScreen.style.display = 'block';
         hudScore.style.display = 'none';
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
+    let deathLoopRef = null;
     window.triggerGameOver = function (score) {
+        showMobileControls(false);
         cancelAnimationFrame(gameLoopRef);
         clearAllInputs();
         finalScoreText.innerText = `Score: ${score}`;
         hudScore.style.display = 'none';
         gameOverScreen.style.display = 'block';
+
+        function deathLoop() {
+            if (particles.length > 0) {
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.15)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                updateAndDrawParticles();
+                deathLoopRef = requestAnimationFrame(deathLoop);
+            } else {
+                if (deathLoopRef) cancelAnimationFrame(deathLoopRef);
+            }
+        }
+        if (particles.length > 0) deathLoop();
     };
 
     window.updateHUDScore = function (score) {
@@ -207,10 +267,55 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
+    // PARTICLE SYSTEM
+    // ==========================================
+    let particles = [];
+    function createParticles(x, y, count, color, speedRange, lifeRange) {
+        for (let i = 0; i < count; i++) {
+            let angle = Math.random() * Math.PI * 2;
+            let speed = speedRange[0] + Math.random() * (speedRange[1] - speedRange[0]);
+            let life = lifeRange[0] + Math.random() * (lifeRange[1] - lifeRange[0]);
+            particles.push({
+                x: x, y: y,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                life: life,
+                maxLife: life,
+                color: color,
+                size: 1 + Math.random() * 2
+            });
+        }
+    }
+
+    function updateAndDrawParticles() {
+        for (let i = particles.length - 1; i >= 0; i--) {
+            let p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.life--;
+
+            ctx.globalAlpha = Math.max(0, p.life / p.maxLife);
+            ctx.fillStyle = p.color;
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = p.color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+
+            if (p.life <= 0) particles.splice(i, 1);
+        }
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1.0;
+    }
+
+    function clearParticles() { particles = []; }
+
+    // ==========================================
     // GAME 1: NEON SNAKE
     // ==========================================
     function startSnake() {
         clearAllInputs();
+        clearParticles();
         const grid = 20;
         let count = 0;
         let score = 0;
@@ -272,11 +377,18 @@ document.addEventListener('DOMContentLoaded', () => {
             count = 0;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            updateAndDrawParticles();
+
+            if (window.vpad.left && snake.dx === 0) { snake.dx = -grid; snake.dy = 0; }
+            else if (window.vpad.up && snake.dy === 0) { snake.dy = -grid; snake.dx = 0; }
+            else if (window.vpad.right && snake.dx === 0) { snake.dx = grid; snake.dy = 0; }
+            else if (window.vpad.down && snake.dy === 0) { snake.dy = grid; snake.dx = 0; }
 
             snake.x += snake.dx;
             snake.y += snake.dy;
 
             if (snake.x < 0 || snake.x >= canvas.width || snake.y < 0 || snake.y >= canvas.height) {
+                createParticles(snake.x + grid / 2, snake.y + grid / 2, 30, '#3b82f6', [2, 6], [20, 50]);
                 window.triggerGameOver(score);
                 return;
             }
@@ -308,6 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 for (let j = i + 1; j < snake.cells.length; j++) {
                     if (snake.cells[i].x === snake.cells[j].x && snake.cells[i].y === snake.cells[j].y) {
+                        createParticles(snake.x + grid / 2, snake.y + grid / 2, 30, '#3b82f6', [2, 6], [20, 50]);
                         window.triggerGameOver(score);
                         return;
                     }
@@ -324,6 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     function startFlappy() {
         clearAllInputs();
+        clearParticles();
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         const gravity = 0.15;
@@ -334,6 +448,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let score = 0;
         updateHUDScore(0);
+        let vpadPrev = { ...window.vpad };
 
         let ufo = { x: 100, y: 200, radius: 12, velocity: 0 };
         let pipes = [{ x: canvas.width, topHeight: 200 }];
@@ -355,6 +470,12 @@ document.addEventListener('DOMContentLoaded', () => {
         function loop() {
             gameLoopRef = requestAnimationFrame(loop);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            updateAndDrawParticles();
+
+            if ((window.vpad.b && !vpadPrev.b) || (window.vpad.a && !vpadPrev.a) || (window.vpad.up && !vpadPrev.up)) {
+                ufo.velocity = jumpThrust;
+            }
+            vpadPrev = { ...window.vpad };
 
             ufo.velocity += gravity;
             ufo.y += ufo.velocity;
@@ -390,6 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (ufo.x + ufo.radius > p.x && ufo.x - ufo.radius < p.x + pipeWidth) {
                     if (ufo.y - ufo.radius < p.topHeight || ufo.y + ufo.radius > bottomY) {
+                        createParticles(ufo.x, ufo.y, 40, '#c084fc', [2, 7], [20, 50]);
                         window.triggerGameOver(score);
                         return;
                     }
@@ -412,6 +534,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (pipes[0] && pipes[0].x < -pipeWidth) pipes.shift();
 
             if (ufo.y > canvas.height || ufo.y < 0) {
+                createParticles(ufo.x, ufo.y, 40, '#c084fc', [2, 7], [20, 50]);
                 window.triggerGameOver(score);
                 return;
             }
@@ -425,6 +548,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     function startBreakout() {
         clearAllInputs();
+        clearParticles();
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         let score = 0;
@@ -494,6 +618,7 @@ document.addEventListener('DOMContentLoaded', () => {
         function loop() {
             gameLoopRef = requestAnimationFrame(loop);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            updateAndDrawParticles();
 
             // Move ball
             ballX += ballDX;
@@ -533,6 +658,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     score += 10;
                     bricksDestroyed++;
                     updateHUDScore(score);
+                    createParticles(b.x + b.w / 2, b.y + b.h / 2, 12, b.color, [1, 3], [15, 30]);
 
                     // Speed up every 15 bricks
                     if (bricksDestroyed % 15 === 0) {
@@ -599,6 +725,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     function startAsteroids() {
         clearAllInputs();
+        clearParticles();
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         let score = 0;
@@ -736,15 +863,17 @@ document.addEventListener('DOMContentLoaded', () => {
         function loop() {
             gameLoopRef = requestAnimationFrame(loop);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            updateAndDrawParticles();
 
             // Input processing
             let rotSpeed = 0.06;
-            if (keys[37] || touchActive('left')) ship.angle -= rotSpeed;
-            if (keys[39] || touchActive('right')) ship.angle += rotSpeed;
-            if (keys[38] || touchActive('thrust')) {
+            if (keys[37] || touchActive('left') || window.vpad.left) ship.angle -= rotSpeed;
+            if (keys[39] || touchActive('right') || window.vpad.right) ship.angle += rotSpeed;
+            if (keys[38] || touchActive('thrust') || window.vpad.a || window.vpad.up) {
                 ship.vx += Math.cos(ship.angle) * 0.12;
                 ship.vy += Math.sin(ship.angle) * 0.12;
             }
+            if (window.vpad.b) shoot();
 
             // Friction
             ship.vx *= 0.995;
@@ -826,6 +955,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         score += a.points;
                         updateHUDScore(score);
                         bullets.splice(j, 1);
+                        createParticles(a.x, a.y, 20, '#a78bfa', [1, 4], [20, 40]);
 
                         // Split
                         if (a.radius >= 35) {
@@ -853,6 +983,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Ship-asteroid collision
             for (let i = 0; i < asteroids.length; i++) {
                 if (Math.hypot(ship.x - asteroids[i].x, ship.y - asteroids[i].y) < ship.radius + asteroids[i].radius * 0.7) {
+                    createParticles(ship.x, ship.y, 50, '#22d3ee', [2, 8], [30, 60]);
                     window.triggerGameOver(score);
                     return;
                 }
@@ -865,7 +996,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Draw touch zones hint on mobile (subtle)
-            if ('ontouchstart' in window && asteroids.length > 0) {
+            if ('ontouchstart' in window && asteroids.length > 0 && false) { // disabled hint via `&& false` since we have Gamepad now.
                 ctx.globalAlpha = 0.12;
                 ctx.strokeStyle = '#ffffff';
                 ctx.lineWidth = 1;
@@ -888,6 +1019,209 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.setLineDash([]);
                 ctx.globalAlpha = 1;
             }
+        }
+
+        gameLoopRef = requestAnimationFrame(loop);
+    }
+
+    // ==========================================
+    // GAME 5: RESUME RUNNER
+    // ==========================================
+    function startResumeRunner() {
+        clearAllInputs();
+        clearParticles();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        let score = 0;
+        let speed = 5;
+        let gravity = 0.6;
+        updateHUDScore(0);
+
+        let player = {
+            x: 50,
+            y: canvas.height - 50,
+            w: 30,
+            h: 40,
+            dy: 0,
+            jumping: false
+        };
+
+        const groundY = canvas.height - 10;
+
+        // Arrays for obstacles and items
+        let obstacles = [];
+        let coffees = [];
+        let nextObstacleWait = 60;
+        let framesCounter = 0;
+
+        let vpadPrev = { ...window.vpad };
+
+        function jump() {
+            if (!player.jumping) {
+                player.dy = -12;
+                player.jumping = true;
+                createParticles(player.x + player.w / 2, player.y + player.h, 10, '#ffffff', [0.5, 2], [10, 20]);
+            }
+        }
+
+        registerKeyHandler(function (e) {
+            if (e.which === 32 || e.which === 38) { e.preventDefault(); jump(); }
+        });
+
+        registerTouchHandlers([{
+            event: 'touchstart', fn: function (e) {
+                e.preventDefault();
+                jump();
+            }
+        }]);
+
+        let floorOffset = 0;
+
+        function loop() {
+            gameLoopRef = requestAnimationFrame(loop);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            updateAndDrawParticles();
+
+            framesCounter++;
+
+            // Input
+            if ((window.vpad.b && !vpadPrev.b) || (window.vpad.up && !vpadPrev.up)) {
+                jump();
+            }
+            vpadPrev = { ...window.vpad };
+
+            // Physics
+            player.dy += gravity;
+            player.y += player.dy;
+
+            if (player.y + player.h > groundY) {
+                player.y = groundY - player.h;
+                player.dy = 0;
+                player.jumping = false;
+            }
+
+            // Speed up
+            if (framesCounter % 600 === 0 && speed < 12) {
+                speed += 0.5;
+            }
+
+            // Spawn
+            if (framesCounter >= nextObstacleWait) {
+                let type = Math.random() > 0.6 ? 'glitch' : 'email';
+                let w = type === 'email' ? 30 : 20;
+                let h = type === 'email' ? 20 : 30;
+                let y = groundY - h;
+
+                if (type === 'glitch' && Math.random() > 0.5) y = groundY - h - 45;
+
+                obstacles.push({ x: canvas.width, y: y, w: w, h: h, type: type });
+                nextObstacleWait = framesCounter + Math.floor(Math.random() * 60 + 50);
+
+                if (Math.random() > 0.7) {
+                    coffees.push({
+                        x: canvas.width + Math.random() * 100 + 50,
+                        y: groundY - 20 - Math.random() * 80,
+                        r: 10
+                    });
+                }
+            }
+
+            // Draw Ground
+            floorOffset = (floorOffset + speed) % 40;
+            ctx.fillStyle = '#334155';
+            ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY);
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let i = 0 - floorOffset; i < canvas.width + 40; i += 40) {
+                ctx.moveTo(i, groundY);
+                ctx.lineTo(i - 20, canvas.height);
+            }
+            ctx.stroke();
+
+            // Obstacles
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                let obs = obstacles[i];
+                obs.x -= speed;
+
+                if (obs.type === 'email') {
+                    ctx.fillStyle = '#ef4444';
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = '#ef4444';
+                    ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(obs.x, obs.y);
+                    ctx.lineTo(obs.x + obs.w / 2, obs.y + obs.h / 2);
+                    ctx.lineTo(obs.x + obs.w, obs.y);
+                    ctx.stroke();
+                } else {
+                    ctx.fillStyle = '#8ce82c';
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = '#8ce82c';
+                    ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
+                    if (framesCounter % 10 < 5) ctx.fillStyle = '#ffffff';
+                    else ctx.fillStyle = '#1e293b';
+                    ctx.fillRect(obs.x + 4, obs.y + 4, obs.w - 8, obs.h - 8);
+                }
+                ctx.shadowBlur = 0;
+
+                // Collision
+                if (player.x < obs.x + obs.w && player.x + player.w > obs.x &&
+                    player.y < obs.y + obs.h && player.y + player.h > obs.y) {
+                    createParticles(player.x + player.w / 2, player.y + player.h / 2, 40, '#ef4444', [2, 8], [20, 50]);
+                    window.triggerGameOver(score);
+                    return;
+                }
+
+                if (obs.x + obs.w < 0) {
+                    obstacles.splice(i, 1);
+                    score += 10;
+                    updateHUDScore(score);
+                }
+            }
+
+            // Collectibles
+            for (let i = coffees.length - 1; i >= 0; i--) {
+                let c = coffees[i];
+                c.x -= speed;
+
+                ctx.fillStyle = '#d97706';
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = '#d97706';
+                ctx.beginPath();
+                ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                let distX = (player.x + player.w / 2) - c.x;
+                let distY = (player.y + player.h / 2) - c.y;
+                if (Math.hypot(distX, distY) < c.r + Math.max(player.w, player.h) / 2) {
+                    coffees.splice(i, 1);
+                    score += 50;
+                    updateHUDScore(score);
+                    createParticles(c.x, c.y, 15, '#fcd34d', [1, 3], [10, 30]);
+                } else if (c.x + c.r < 0) {
+                    coffees.splice(i, 1);
+                }
+            }
+
+            // Player Drop Shadow
+            ctx.fillStyle = 'rgba(0,0,0,0.3)';
+            ctx.fillRect(player.x, groundY, player.w, 4);
+
+            // Draw Player (Resume)
+            ctx.fillStyle = '#f8fafc';
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = '#facc15';
+            ctx.fillRect(player.x, player.y, player.w, player.h);
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillRect(player.x + 5, player.y + 5, 10, 3);
+            ctx.fillRect(player.x + 5, player.y + 12, 20, 3);
+            ctx.fillRect(player.x + 5, player.y + 19, 20, 3);
+            ctx.fillRect(player.x + 5, player.y + 26, 15, 3);
+            ctx.shadowBlur = 0;
         }
 
         gameLoopRef = requestAnimationFrame(loop);

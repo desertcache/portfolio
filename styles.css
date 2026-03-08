@@ -1103,6 +1103,125 @@ section {
 }
 
 /* =========================================
+   Mobile On-Screen Controls (Arcade)
+   ========================================= */
+.mobile-controls {
+    display: none;
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    padding: 0 20px;
+    justify-content: space-between;
+    pointer-events: none;
+    /* Let touches pass through the container */
+    z-index: 30;
+}
+
+.d-pad,
+.action-buttons {
+    pointer-events: auto;
+    /* Catch touches on the actual controls */
+    display: flex;
+    gap: 10px;
+}
+
+/* D-Pad Layout */
+.d-pad {
+    position: relative;
+    width: 120px;
+    height: 120px;
+}
+
+.d-pad-btn {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    touch-action: manipulation;
+    cursor: pointer;
+}
+
+.d-pad-btn:active {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0.95);
+}
+
+.d-pad-btn.up {
+    top: 0;
+    left: 40px;
+}
+
+.d-pad-btn.left {
+    top: 40px;
+    left: 0;
+}
+
+.d-pad-btn.right {
+    top: 40px;
+    left: 80px;
+}
+
+.d-pad-btn.down {
+    top: 80px;
+    left: 40px;
+}
+
+/* Action Buttons Layout */
+.action-buttons {
+    align-items: flex-end;
+    gap: 15px;
+    padding-bottom: 10px;
+}
+
+.action-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    touch-action: manipulation;
+    cursor: pointer;
+}
+
+.action-btn:active {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0.95);
+}
+
+.a-btn {
+    margin-bottom: 20px;
+    background: rgba(37, 99, 235, 0.3);
+    border-color: rgba(37, 99, 235, 0.5);
+}
+
+.b-btn {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: rgba(239, 68, 68, 0.5);
+}
+
+/* Only show on touch devices when active */
+@media (hover: none) and (pointer: coarse) {
+    .mobile-controls.active {
+        display: flex !important;
+    }
+}
+
+/* =========================================
    Glass Control Panel Widget 
    ========================================= */
 #glass-controls {
