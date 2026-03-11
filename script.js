@@ -118,10 +118,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const typingText = document.querySelector('.typing-text');
     if (typingText) {
         const phrases = [
-            "I build complex systems that <span class='text-gradient'>scale</span>.",
-            "I craft resilient backend <span class='text-gradient'>pipelines</span>.",
+            "I build production AI <span class='text-gradient'>agents</span>.",
             "I integrate sophisticated AI <span class='text-gradient'>workflows</span>.",
-            "I design pristine user <span class='text-gradient'>experiences</span>."
+            "I deploy systems that drive <span class='text-gradient'>adoption</span>.",
+            "I build complex systems that <span class='text-gradient'>scale</span>."
         ];
 
         let phraseIndex = 0;

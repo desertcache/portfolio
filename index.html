@@ -8,10 +8,10 @@
 
     <!-- SEO Meta Tags -->
     <meta name="description"
-        content="Portfolio of Samuel Bates, a Software Engineer specializing in AI integrations, data pipelines, and frontend applications.">
-    <meta name="keywords" content="Software Engineer, Full-Stack, React, Snowflake, AI, Python, TypeScript">
-    <meta property="og:title" content="Samuel Bates | Software Engineer">
-    <meta property="og:description" content="Software Engineer specializing in AI integrations, data pipelines, and frontend applications.">
+        content="Portfolio of Samuel Bates - AI Engineer and Software Engineer building production AI agents and full-stack platforms at DoorDash.">
+    <meta name="keywords" content="AI Engineer, Forward Deployed Engineer, Software Engineer, React, Python, TypeScript, LLM, RAG, Prompt Engineering">
+    <meta property="og:title" content="Samuel Bates | AI Engineer & Software Engineer">
+    <meta property="og:description" content="AI Engineer building production AI agents and full-stack platforms. 14 AI apps, 3 production agents, 100K+ lines of code.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://desertcache.github.io/portfolio/">
     <meta name="twitter:card" content="summary">
@@ -32,7 +32,7 @@
 
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css?v=28">
+    <link rel="stylesheet" href="styles.css?v=29">
 
     <!-- Boxicons (for sleek icons) -->
     <link rel="preload" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" as="style">
@@ -97,9 +97,9 @@
                     </h1>
 
                     <p class="hero-subtitle" style="margin-bottom: 0;">
-                        Software Engineer with a non-traditional background (EMT to Code). Most recently protecting
-                        $21M/mo in GMV and building production AI tools at DoorDash. Product-minded, data-driven, and
-                        obsessed with clean UX.
+                        Software Engineer building production AI systems at DoorDash. Shipped 3 AI agents (76 MAU),
+                        3 full-stack platforms, and 100,000+ lines of code. Built 14 AI applications independently.
+                        EMT-turned-engineer.
                     </p>
                 </div>
 
@@ -108,6 +108,7 @@
                     <a href="#contact" class="btn-secondary glass-btn magnetic">Get In Touch</a>
                     <a href="resume-swe.pdf" target="_blank" class="btn-secondary glass-btn magnetic">Resume (SWE) <i class='bx bx-download'></i></a>
                     <a href="resume-sa.pdf" target="_blank" class="btn-secondary glass-btn magnetic">Resume (SA) <i class='bx bx-download'></i></a>
+                    <a href="resume-fde.pdf" target="_blank" class="btn-secondary glass-btn magnetic">Resume (FDE) <i class='bx bx-download'></i></a>
                 </div>
             </div>
 
@@ -133,9 +134,9 @@
                 </div>
                 <div class="stat-card glass-card float-anim delay-4">
                     <div class="responsive-edge"></div>
-                    <div class="stat-icon"><i class='bx bx-award'></i></div>
-                    <div class="stat-value">2x</div>
-                    <div class="stat-label">Excellence Awards</div>
+                    <div class="stat-icon"><i class='bx bx-bot'></i></div>
+                    <div class="stat-value">14</div>
+                    <div class="stat-label">AI Apps Built</div>
                 </div>
             </div>
         </section>
@@ -179,7 +180,35 @@
                     </div>
                 </article>
 
-                <!-- Project 2: WFM Dashboard -->
+                <!-- Project: CHIP AI Agent -->
+                <article class="project-card glass-card">
+                    <div class="responsive-edge"></div>
+                    <div class="project-header">
+                        <span class="project-tag">Production AI Agent</span>
+                        <div class="project-links">
+                            <i class='bx bx-bot'></i>
+                        </div>
+                    </div>
+                    <h3 class="project-title">CHIP AI Agent</h3>
+                    <p class="project-desc">
+                        Production AI chatbot serving 4,000+ DoorDash support agents. Redesigned prompt architecture
+                        with enforced 6-section output format, reducing response length 80% while increasing adoption.
+                        Template adopted by 3 additional agents across the org.
+                    </p>
+                    <ul class="project-highlights">
+                        <li><i class='bx bx-trending-up'></i> 76 MAU, 51 WAU, 6,846 queries in production</li>
+                        <li><i class='bx bx-check'></i> 80% response length reduction (1,500 to 300 words)</li>
+                        <li><i class='bx bx-check'></i> Diagnostic checklists, action matrices, merchant scripts</li>
+                    </ul>
+                    <div class="tech-stack-flex">
+                        <span class="tech-pill">Glean</span>
+                        <span class="tech-pill">Prompt Engineering</span>
+                        <span class="tech-pill">RAG</span>
+                        <span class="tech-pill">AI Agent Design</span>
+                    </div>
+                </article>
+
+                <!-- Project: WFM Dashboard -->
                 <article class="project-card glass-card">
                     <div class="responsive-edge"></div>
                     <div class="project-header">
@@ -340,12 +369,14 @@
                         <i class='bx bxl-github'></i>
                         <i class='bx bx-link-external oss-external'></i>
                     </div>
-                    <h3>Agent-OS</h3>
-                    <p>Open-source toolkit for building AI agent systems. Hooks, skills, memory, and vault templates
-                        for Claude Code.</p>
+                    <h3>Agent-OS <span style="font-size: 0.7rem; font-weight: 600; background: rgba(16, 185, 129, 0.15); color: #10B981; padding: 0.2rem 0.5rem; border-radius: 100px; vertical-align: middle; margin-left: 0.4rem;">Open Source</span></h3>
+                    <p>Persistent memory and self-improvement for AI coding agents. 7 skills, 2 background hooks,
+                        3-file memory system with quality gates. Zero dependencies. Works with monorepos out of the box.</p>
                     <div class="tech-stack-flex">
                         <span class="tech-pill">Python</span>
-                        <span class="tech-pill">CLI</span>
+                        <span class="tech-pill">Claude API</span>
+                        <span class="tech-pill">MCP</span>
+                        <span class="tech-pill">Tool Routing</span>
                     </div>
                 </a>
                 <a href="https://github.com/desertcache/velvet" target="_blank" class="oss-card glass-card">
@@ -434,7 +465,7 @@
                     <div class="about-stat-item glass-card">
                         <div class="responsive-edge"></div>
                         <h4>Focus</h4>
-                        <p>Full-Stack Web, AI Integrations</p>
+                        <p>Production AI, Full-Stack Engineering</p>
                     </div>
                     <div class="about-stat-item glass-card">
                         <div class="responsive-edge"></div>
@@ -450,8 +481,8 @@
             <div class="contact-card glass-card">
                 <div class="responsive-edge"></div>
                 <h2 class="section-title">Let's build something <span class="text-gradient">incredible</span>.</h2>
-                <p>I'm currently open to new opportunities as a Software Engineer, Full-Stack Developer, or Technical
-                    Integration Specialist.</p>
+                <p>I'm currently open to new opportunities as a Software Engineer, AI Engineer, or Forward Deployed
+                    Engineer.</p>
 
                 <div class="social-links mt-4">
                     <a href="https://github.com/desertcache" target="_blank" class="social-btn glass-btn"><i
