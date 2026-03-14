@@ -179,8 +179,9 @@
 
     /* ========== MOBILE ========== */
     @media (max-width: 768px) {
-      body { padding: 0; margin: 0; background: #e5e5e5; }
-      .shell { border: none; box-shadow: none; }
+      body { padding: 0; margin: 0; background: #e5e5e5; min-height: 100vh; min-height: 100dvh; }
+      .shell { border: none; box-shadow: none; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+      .arcade-cabinet { flex: 1; }
 
       header { display: none; }
       .hero-section {
@@ -296,8 +297,8 @@
         if (window.innerWidth > 768) return;
         if (window.innerHeight <= window.innerWidth) return;
         var w = window.innerWidth;
-        var maxH = Math.floor(window.innerHeight * 0.55);
-        var h = Math.min(Math.floor(w * 1.2), maxH);
+        var maxH = Math.floor(window.innerHeight * 0.75);
+        var h = Math.min(Math.floor(w * 1.4), maxH);
         canvas.width = w;
         canvas.height = h;
       }
