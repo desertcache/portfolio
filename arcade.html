@@ -372,5 +372,26 @@
   </div>
 
   <script src="arcade.js"></script>
+  <script>
+    // Portrait mobile: override canvas to a taller aspect ratio
+    // arcade.js uses 800:500 (1.6:1) which is too short on portrait phones
+    // This runs AFTER arcade.js and overrides with a near-square ratio
+    (function() {
+      var canvas = document.getElementById('gameCanvas');
+      if (!canvas) return;
+      function fitPortrait() {
+        if (window.innerWidth > 768) return;
+        if (window.innerHeight <= window.innerWidth) return; // landscape, let arcade.js handle it
+        var w = window.innerWidth;
+        var maxH = Math.floor(window.innerHeight * 0.52);
+        var h = Math.min(Math.floor(w * 1.1), maxH); // ~1:1.1 ratio, capped at 52vh
+        canvas.width = w;
+        canvas.height = h;
+      }
+      window.addEventListener('resize', function() { setTimeout(fitPortrait, 60); });
+      window.addEventListener('orientationchange', function() { setTimeout(fitPortrait, 200); });
+      setTimeout(fitPortrait, 300);
+    })();
+  </script>
 </body>
 </html>
