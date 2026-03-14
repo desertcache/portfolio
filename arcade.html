@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Arcade | Samuel Bates</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -25,6 +24,8 @@
       border: 4px solid #000;
       box-shadow: 12px 12px 0px #000;
     }
+
+    /* Header */
     header {
       display: flex;
       justify-content: space-between;
@@ -32,270 +33,192 @@
       padding: 1rem;
       border-bottom: 4px solid #000;
     }
-    .logo {
-      font-weight: 700;
-      font-size: 1.5rem;
-      letter-spacing: -0.05em;
-      text-decoration: none;
-      color: #000;
-    }
+    .logo { font-weight: 700; font-size: 1.5rem; letter-spacing: -0.05em; text-decoration: none; color: #000; }
     .logo span { color: #2563eb; }
-    nav a {
-      font-weight: 700;
-      font-size: 0.875rem;
-      text-transform: uppercase;
-      text-decoration: none;
-      color: #000;
-      margin-left: 2rem;
-    }
+    nav a { font-weight: 700; font-size: 0.875rem; text-transform: uppercase; text-decoration: none; color: #000; margin-left: 2rem; }
     nav a:hover { text-decoration: underline; }
-    .hero-section {
-      padding: 2rem;
-      border-bottom: 4px solid #000;
-      text-align: center;
-    }
-    .hero-section h1 {
-      font-size: 3rem;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: -0.05em;
-      margin-bottom: 0.5rem;
-    }
-    .hero-section p {
-      font-weight: 700;
-      text-transform: uppercase;
-      font-size: 0.875rem;
-      opacity: 0.7;
-    }
+
+    /* Hero */
+    .hero-section { padding: 2rem; border-bottom: 4px solid #000; text-align: center; }
+    .hero-section h1 { font-size: 3rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.05em; margin-bottom: 0.5rem; }
+    .hero-section p { font-weight: 700; text-transform: uppercase; font-size: 0.875rem; opacity: 0.7; }
+
+    /* Cabinet */
     .arcade-cabinet {
       padding: 2rem;
       display: flex;
       align-items: center;
       justify-content: center;
       border-bottom: 4px solid #000;
-      background: #f4f4f0;
+      background: #0f172a;
       position: relative;
       overflow: hidden;
       min-height: 500px;
     }
     canvas {
-      border: 4px solid #000;
-      background: rgba(15, 23, 42, 0.6);
+      border: 3px solid #1e293b;
+      border-radius: 4px;
+      background: #0f172a;
       display: block;
       max-width: 100%;
       z-index: 10;
     }
+
+    /* Menu & overlays */
     #arcade-menu, #game-over-screen {
       position: absolute;
       z-index: 20;
       text-align: center;
       color: white;
     }
-    #arcade-menu h2, #game-over-screen h2 {
-      font-family: 'Space Mono', monospace;
-      text-transform: uppercase;
-    }
     #arcade-menu h2 {
-      font-size: 2rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 1.75rem;
       font-weight: 900;
+      text-transform: uppercase;
       margin-bottom: 1.5rem;
-      text-shadow: 0 0 10px rgba(255,255,255,0.5);
+      letter-spacing: 0.1em;
     }
-    #game-over-screen {
-      display: none;
-    }
-    #game-over-screen h2 {
-      font-size: 2.5rem;
-      font-weight: 900;
-      color: #ef4444;
-      text-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
-      margin-bottom: 0.5rem;
-    }
-    #final-score {
-      font-size: 1.5rem;
-      margin-bottom: 2rem;
-    }
-    .arcade-btn, .game-btn {
+    .menu-buttons { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+    .arcade-btn {
       font-family: 'Space Mono', monospace;
       font-weight: 700;
-      font-size: 0.875rem;
+      font-size: 0.8rem;
       text-transform: uppercase;
-      border: 4px solid #fff;
-      background: transparent;
+      letter-spacing: 0.05em;
+      border: 3px solid rgba(255,255,255,0.3);
       color: #fff;
-      padding: 0.75rem 2rem;
-      margin: 0.25rem;
+      padding: 0.875rem 2rem;
       cursor: pointer;
       min-width: 180px;
-      transition: background 0.15s, color 0.15s;
+      transition: all 0.15s ease;
+      border-radius: 4px;
     }
-    .arcade-btn:hover, .game-btn:hover {
-      background: #fff;
-      color: #000;
+    .arcade-btn:hover { border-color: #fff; transform: translateY(-2px); }
+    #btn-snake { background: rgba(37, 99, 235, 0.7); }
+    #btn-snake:hover { background: rgba(37, 99, 235, 1); }
+    #btn-flappy { background: rgba(139, 92, 246, 0.7); }
+    #btn-flappy:hover { background: rgba(139, 92, 246, 1); }
+    #btn-breakout { background: rgba(236, 72, 153, 0.7); }
+    #btn-breakout:hover { background: rgba(236, 72, 153, 1); }
+    #btn-asteroids { background: rgba(6, 182, 212, 0.7); }
+    #btn-asteroids:hover { background: rgba(6, 182, 212, 1); }
+
+    /* Game over */
+    #game-over-screen { display: none; }
+    #game-over-screen h2 {
+      font-family: 'Space Mono', monospace;
+      font-size: 2.5rem; font-weight: 900; text-transform: uppercase;
+      color: #ef4444;
+      text-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+      margin-bottom: 0.5rem;
     }
-    #btn-snake:hover { background: rgba(37, 99, 235, 0.9); color: #fff; }
-    #btn-flappy:hover { background: rgba(139, 92, 246, 0.9); color: #fff; }
-    #btn-breakout:hover { background: rgba(236, 72, 153, 0.9); color: #fff; }
-    #btn-asteroids:hover { background: rgba(6, 182, 212, 0.9); color: #fff; }
+    #final-score { font-size: 1.25rem; margin-bottom: 1.5rem; opacity: 0.8; }
+    .game-btn {
+      font-family: 'Space Mono', monospace;
+      font-weight: 700; font-size: 0.8rem; text-transform: uppercase;
+      border: 3px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      padding: 0.75rem 2rem;
+      cursor: pointer;
+      min-width: 160px;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+    }
+    .game-btn:hover { background: rgba(255,255,255,0.2); border-color: #fff; }
+
+    /* HUD */
     #hud-score {
       position: absolute;
-      top: 2rem;
-      left: 3rem;
+      top: 1.5rem; left: 2.5rem;
       z-index: 15;
-      color: rgba(255,255,255,0.8);
-      font-family: monospace;
-      font-size: 1.5rem;
-      font-weight: bold;
-      display: none;
-    }
-    .mobile-controls {
-      display: none;
-      padding: 1rem;
-      border-bottom: 4px solid #000;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .d-pad {
-      display: grid;
-      grid-template-areas: ". up ." "left . right" ". down .";
-      gap: 4px;
-    }
-    .d-pad-btn {
-      width: 48px;
-      height: 48px;
-      border: 3px solid #000;
-      background: #fff;
-      font-size: 1.25rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .d-pad-btn.up { grid-area: up; }
-    .d-pad-btn.left { grid-area: left; }
-    .d-pad-btn.right { grid-area: right; }
-    .d-pad-btn.down { grid-area: down; }
-    .action-buttons { display: flex; gap: 8px; }
-    .action-btn {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      border: 3px solid #000;
-      background: #fff;
+      color: rgba(255,255,255,0.7);
       font-family: 'Space Mono', monospace;
+      font-size: 1rem;
       font-weight: 700;
-      cursor: pointer;
+      display: none;
+      letter-spacing: 0.05em;
     }
-    .a-btn { background: #dbeafe; }
-    .b-btn { background: #fee2e2; }
+
+    /* Touch hint (mobile only) */
+    .touch-hint {
+      display: none;
+      padding: 0.5rem;
+      background: #0f172a;
+      color: rgba(255,255,255,0.4);
+      text-align: center;
+      font-size: 0.625rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    /* On-screen controls: hidden, kept for arcade.js compatibility */
+    .mobile-controls { display: none !important; }
+
+    /* Instructions */
     .instructions {
       padding: 1rem;
       text-align: center;
       font-weight: 700;
       text-transform: uppercase;
       font-size: 0.75rem;
-      opacity: 0.6;
+      opacity: 0.5;
       border-bottom: 4px solid #000;
     }
+
+    /* Footer */
     footer {
       padding: 1rem;
       text-align: center;
       font-weight: 700;
       font-size: 0.75rem;
       text-transform: uppercase;
-      opacity: 0.6;
-    }
-    /* Landscape hint */
-    .landscape-hint {
-      display: none;
-      padding: 0.5rem;
-      background: #222;
-      color: #fff;
-      text-align: center;
-      font-size: 0.625rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
+      opacity: 0.5;
     }
 
+    /* ========== MOBILE ========== */
     @media (max-width: 768px) {
-      body { padding: 0; margin: 0; background: #000; }
-      .shell { border: none; box-shadow: none; background: #000; }
+      body { padding: 0; margin: 0; background: #0f172a; }
+      .shell { border: none; box-shadow: none; background: #0f172a; }
 
-      /* Hide chrome - game only */
       header { display: none; }
       .hero-section { display: none; }
       .instructions { display: none; }
       footer { display: none; }
-      .landscape-hint { display: block; }
+      .touch-hint { display: block; }
 
-      /* Cabinet: full width, dark bg */
       .arcade-cabinet {
         padding: 0;
         min-height: auto;
         border: none;
-        background: #000;
       }
-      canvas {
-        border: none;
-        width: 100%;
-        background: rgba(15, 23, 42, 0.9);
-      }
+      canvas { border: none; width: 100%; border-radius: 0; }
 
-      /* Game menu: full-width stacked buttons */
-      #arcade-menu { width: 100%; padding: 0 1.5rem; }
-      #arcade-menu h2 { font-size: 1.25rem; margin-bottom: 0.75rem; }
-      #arcade-menu > div { flex-direction: column; gap: 0.5rem; width: 100%; }
+      /* Menu */
+      #arcade-menu { width: 100%; padding: 0 1.25rem; }
+      #arcade-menu h2 { font-size: 1.25rem; margin-bottom: 1rem; letter-spacing: 0.15em; }
+      .menu-buttons { flex-direction: column; gap: 0.5rem; width: 100%; }
       .arcade-btn {
         min-width: unset;
         width: 100%;
-        padding: 0.875rem 1rem;
+        padding: 1rem;
         font-size: 0.8rem;
-        border-width: 3px;
+        border-radius: 6px;
       }
 
-      /* Game over: full-width buttons */
-      #game-over-screen { width: 100%; padding: 0 1.5rem; }
+      /* Game over */
+      #game-over-screen { width: 100%; padding: 0 1.25rem; }
       #game-over-screen h2 { font-size: 1.75rem; }
-      #game-over-screen > div { flex-direction: column; width: 100%; gap: 0.5rem; }
-      .game-btn { min-width: unset; width: 100%; border-width: 3px; font-size: 0.8rem; }
+      .gameover-buttons { flex-direction: column; width: 100%; gap: 0.5rem; }
+      .game-btn { min-width: unset; width: 100%; border-radius: 6px; }
 
-      /* Mobile controls: dark controller pad, big touch targets */
-      .mobile-controls {
-        display: flex;
-        padding: 1.5rem;
-        background: #000;
-        border: none;
-      }
-      .d-pad { gap: 6px; }
-      .d-pad-btn {
-        width: 60px;
-        height: 60px;
-        background: #1a1a1a;
-        color: #888;
-        border: 2px solid #333;
-        border-radius: 8px;
-        font-size: 1.5rem;
-      }
-      .d-pad-btn:active { background: #333; color: #fff; }
-      .action-buttons { gap: 16px; align-items: center; }
-      .action-btn {
-        width: 68px;
-        height: 68px;
-        font-size: 1.1rem;
-        border-width: 3px;
-      }
-      .a-btn { background: #1e3a5f; color: #93c5fd; border-color: #2563eb; }
-      .b-btn { background: #5f1e1e; color: #fca5a5; border-color: #ef4444; }
-      .a-btn:active { background: #2563eb; color: #fff; }
-      .b-btn:active { background: #ef4444; color: #fff; }
+      #hud-score { top: 0.75rem; left: 1rem; font-size: 0.875rem; }
     }
 
-    /* Landscape on mobile: even better */
+    /* Landscape mobile */
     @media (max-width: 768px) and (orientation: landscape) {
-      .landscape-hint { display: none; }
-      .mobile-controls { padding: 0.75rem 1.5rem; }
-      .d-pad-btn { width: 48px; height: 48px; }
-      .action-btn { width: 56px; height: 56px; }
+      .touch-hint { display: none; }
     }
   </style>
 </head>
@@ -316,54 +239,40 @@
       <p>// Take a break. Play some games built with raw HTML5 Canvas and vanilla JS physics.</p>
     </div>
 
-    <div class="landscape-hint">Rotate phone for best experience</div>
-
     <div class="arcade-cabinet">
       <canvas id="gameCanvas" width="800" height="500"></canvas>
 
-      <!-- Main Menu Overlay (IDs must match arcade.js) -->
       <div id="arcade-menu">
         <h2>Select Game</h2>
-        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-          <button id="btn-snake" class="arcade-btn" style="background: rgba(37, 99, 235, 0.8);">Neon Snake</button>
-          <button id="btn-flappy" class="arcade-btn" style="background: rgba(139, 92, 246, 0.8);">Flappy UFO</button>
-          <button id="btn-breakout" class="arcade-btn" style="background: rgba(236, 72, 153, 0.8);">Breakout</button>
-          <button id="btn-asteroids" class="arcade-btn" style="background: rgba(6, 182, 212, 0.8);">Asteroids</button>
+        <div class="menu-buttons">
+          <button id="btn-snake" class="arcade-btn">Neon Snake</button>
+          <button id="btn-flappy" class="arcade-btn">Flappy UFO</button>
+          <button id="btn-breakout" class="arcade-btn">Breakout</button>
+          <button id="btn-asteroids" class="arcade-btn">Asteroids</button>
         </div>
       </div>
 
-      <!-- Game Over Overlay -->
       <div id="game-over-screen">
         <h2>GAME OVER</h2>
-        <p id="final-score" style="font-size: 1.5rem; margin-bottom: 2rem;">Score: 0</p>
-        <div style="display: flex; gap: 1rem; justify-content: center;">
+        <p id="final-score">Score: 0</p>
+        <div class="gameover-buttons" style="display: flex; gap: 0.75rem; justify-content: center;">
           <button id="btn-restart" class="game-btn">Play Again</button>
           <button id="btn-menu" class="game-btn">Main Menu</button>
         </div>
       </div>
 
-      <!-- Runtime Score Display -->
       <div id="hud-score">
         Score: <span id="current-score">0</span>
       </div>
     </div>
 
-    <!-- Mobile On-Screen Controls (IDs must match arcade.js) -->
-    <div id="mobile-controls" class="mobile-controls">
-      <div class="d-pad">
-        <button id="btn-up" class="d-pad-btn up"><i class='bx bx-chevron-up'></i></button>
-        <button id="btn-left" class="d-pad-btn left"><i class='bx bx-chevron-left'></i></button>
-        <button id="btn-right" class="d-pad-btn right"><i class='bx bx-chevron-right'></i></button>
-        <button id="btn-down" class="d-pad-btn down"><i class='bx bx-chevron-down'></i></button>
-      </div>
-      <div class="action-buttons">
-        <button id="btn-action-b" class="action-btn b-btn">B</button>
-        <button id="btn-action-a" class="action-btn a-btn">A</button>
-      </div>
-    </div>
+    <div class="touch-hint">Swipe &bull; Tap &bull; Drag to play</div>
+
+    <!-- Hidden: arcade.js references this element -->
+    <div id="mobile-controls" class="mobile-controls"></div>
 
     <div class="instructions">
-      Desktop: Arrows / Space / Mouse &bull; Mobile: D-Pad + Buttons
+      Desktop: Arrows / Space / Mouse
     </div>
 
     <footer>
@@ -373,18 +282,16 @@
 
   <script src="arcade.js"></script>
   <script>
-    // Portrait mobile: override canvas to a taller aspect ratio
-    // arcade.js uses 800:500 (1.6:1) which is too short on portrait phones
-    // This runs AFTER arcade.js and overrides with a near-square ratio
+    // Portrait mobile: override canvas to taller ratio
     (function() {
       var canvas = document.getElementById('gameCanvas');
       if (!canvas) return;
       function fitPortrait() {
         if (window.innerWidth > 768) return;
-        if (window.innerHeight <= window.innerWidth) return; // landscape, let arcade.js handle it
+        if (window.innerHeight <= window.innerWidth) return;
         var w = window.innerWidth;
-        var maxH = Math.floor(window.innerHeight * 0.52);
-        var h = Math.min(Math.floor(w * 1.1), maxH); // ~1:1.1 ratio, capped at 52vh
+        var maxH = Math.floor(window.innerHeight * 0.55);
+        var h = Math.min(Math.floor(w * 1.2), maxH);
         canvas.width = w;
         canvas.height = h;
       }
