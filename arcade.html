@@ -1,151 +1,306 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arcade | Samuel Bates</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arcade | Samuel Bates</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Space Mono', monospace;
+      background: #e5e5e5;
+      color: #000;
+      padding: 1.5rem;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+    .shell {
+      width: 100%;
+      max-width: 1200px;
+      background: #fff;
+      border: 4px solid #000;
+      box-shadow: 12px 12px 0px #000;
+    }
 
-    <!-- SEO Meta Tags -->
-    <meta name="description"
-        content="Portfolio of Samuel Bates, a Full-Stack Engineer specializing in AI integrations, data pipelines, and frontend applications.">
-    <meta name="keywords" content="Software Engineer, Full-Stack, React, Snowflake, AI, Python, TypeScript">
+    /* Navbar */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 4px solid #000;
+    }
+    .logo {
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -0.05em;
+      text-decoration: none;
+      color: #000;
+    }
+    .logo span { color: #2563eb; }
+    nav a {
+      font-weight: 700;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: #000;
+      margin-left: 2rem;
+    }
+    nav a:hover { text-decoration: underline; }
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    /* Hero */
+    .hero {
+      padding: 2rem;
+      border-bottom: 4px solid #000;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.05em;
+      margin-bottom: 0.5rem;
+    }
+    .hero p {
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.875rem;
+      opacity: 0.7;
+    }
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css?v=26">
+    /* Cabinet */
+    .cabinet {
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      border-bottom: 4px solid #000;
+      background: #f4f4f0;
+    }
+    canvas {
+      border: 4px solid #000;
+      background: #111;
+      display: block;
+      max-width: 100%;
+    }
 
-    <!-- Boxicons (for sleek icons) -->
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    /* Menu overlay */
+    .menu-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.85);
+      z-index: 10;
+    }
+    .menu-overlay h2 {
+      color: #fff;
+      font-size: 2rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .menu-btn {
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      border: 4px solid #fff;
+      background: transparent;
+      color: #fff;
+      padding: 0.75rem 2rem;
+      margin: 0.25rem 0;
+      cursor: pointer;
+      min-width: 200px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .menu-btn:hover {
+      background: #fff;
+      color: #000;
+    }
+    .menu-btn.blue:hover { background: #3b82f6; color: #fff; }
+    .menu-btn.purple:hover { background: #8b5cf6; color: #fff; }
+    .menu-btn.pink:hover { background: #ec4899; color: #fff; }
+    .menu-btn.cyan:hover { background: #06b6d4; color: #fff; }
+
+    /* Game over */
+    .gameover-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.85);
+      z-index: 10;
+    }
+    .gameover-overlay h2 {
+      color: #ff3333;
+      font-size: 2.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .gameover-overlay .score {
+      color: #fff;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+
+    /* HUD */
+    .hud {
+      position: absolute;
+      top: 10px;
+      left: 14px;
+      color: #fff;
+      font-size: 0.875rem;
+      font-weight: 700;
+      display: none;
+      z-index: 5;
+      text-shadow: 0 0 4px rgba(0,0,0,0.8);
+    }
+
+    /* Mobile controls */
+    .mobile-controls {
+      display: none;
+      padding: 1rem;
+      border-bottom: 4px solid #000;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .dpad {
+      display: grid;
+      grid-template-areas: ". up ." "left . right" ". down .";
+      gap: 4px;
+    }
+    .dpad button {
+      width: 48px;
+      height: 48px;
+      border: 3px solid #000;
+      background: #fff;
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+    .dpad .up { grid-area: up; }
+    .dpad .left { grid-area: left; }
+    .dpad .right { grid-area: right; }
+    .dpad .down { grid-area: down; }
+    .action-btns { display: flex; gap: 8px; }
+    .action-btns button {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 3px solid #000;
+      background: #fff;
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .action-btns .btn-a { background: #dbeafe; }
+    .action-btns .btn-b { background: #fee2e2; }
+
+    /* Instructions */
+    .instructions {
+      padding: 1rem;
+      text-align: center;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      opacity: 0.6;
+      border-bottom: 4px solid #000;
+    }
+
+    /* Footer */
+    footer {
+      padding: 1rem;
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 0.5rem; }
+      .shell { border-width: 3px; box-shadow: 6px 6px 0px #000; }
+      header, .hero, .cabinet, .instructions, footer { border-bottom-width: 3px; }
+      .hero h1 { font-size: 1.75rem; }
+      nav { display: none; }
+      .mobile-controls { display: flex; }
+    }
+  </style>
 </head>
-
 <body>
-    <!-- Premium Preloader -->
-    <div id="preloader">
-        <div class="logo">sb<span class="accent">.</span></div>
+  <div class="shell">
+    <header>
+      <a href="#/" class="logo">SB<span>.</span></a>
+      <nav>
+        <a href="#/">[01] HOME</a>
+        <a href="#/work">[02] WORK</a>
+        <a href="#/about">[03] ABOUT</a>
+        <a href="arcade.html" style="text-decoration: underline">[04] ARCADE</a>
+      </nav>
+    </header>
+
+    <div class="hero">
+      <h1>THE ARCADE.</h1>
+      <p>// Take a break. Play some games built with raw HTML5 Canvas and vanilla JS physics.</p>
     </div>
-    <script>
-        // Inline preloader dismiss (works on all pages, no external JS dependency)
-        function dismissPreloader() {
-            var p = document.getElementById('preloader');
-            if (p && p.style.opacity !== '0') {
-                p.style.opacity = '0';
-                p.style.visibility = 'hidden';
-                setTimeout(function () { p.remove(); }, 800);
-            }
-        }
-        window.addEventListener('load', dismissPreloader);
-        // Failsafe: dismiss after 3s even if load event hasn't fired
-        setTimeout(dismissPreloader, 3000);
-    </script>
-    <!-- Ambient Background Effects for Liquid Glass -->
-    <div class="ambient-mesh"></div>
-    <div class="ambient-glow glow-1"></div>
-    <div class="ambient-glow glow-2"></div>
 
-    <nav class="navbar glass-panel">
-        <div class="nav-content container">
-            <a href="index.html" class="logo" style="text-decoration: none;">sb<span class="accent">.</span></a>
-            <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
-                <span></span><span></span><span></span>
-            </button>
-            <ul class="nav-links">
-                <li><a href="index.html#work">Work</a></li>
-                <li><a href="index.html#skills">Skills</a></li>
-                <li><a href="index.html#about">About</a></li>
-                <li><a href="#" style="color: var(--text-primary); font-weight: 700;">Arcade</a></li>
-                <li><a href="index.html#contact" class="btn-primary-small">Contact Me</a></li>
-            </ul>
+    <div class="cabinet">
+      <div style="position: relative; display: inline-block;">
+        <canvas id="gameCanvas" width="800" height="500"></canvas>
+
+        <div class="menu-overlay" id="mainMenu">
+          <h2>SELECT GAME</h2>
+          <button class="menu-btn blue" onclick="startGame('snake')">[NEON SNAKE]</button>
+          <button class="menu-btn purple" onclick="startGame('flappy')">[FLAPPY UFO]</button>
+          <button class="menu-btn pink" onclick="startGame('breakout')">[BREAKOUT]</button>
+          <button class="menu-btn cyan" onclick="startGame('asteroids')">[ASTEROIDS]</button>
         </div>
-    </nav>
 
-    <main>
-        <section id="arcade-section" class="hero container reveal">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    The <span class="text-gradient">Arcade</span>.
-                </h1>
-                <p class="hero-subtitle">
-                    Take a break. Play some games built entirely with raw HTML5 Canvas and vanilla JavaScript physics.
-                </p>
-            </div>
-
-            <div class="arcade-cabinet glass-card"
-                style="margin-top: 2rem; padding: 1rem; position: relative; overflow: hidden; min-height: 500px; display: flex; align-items: center; justify-content: center;">
-                <canvas id="gameCanvas" width="800" height="500"
-                    style="background: rgba(15, 23, 42, 0.6); border-radius: 8px; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); z-index: 10;"></canvas>
-
-                <!-- Main Menu Overlay -->
-                <div id="arcade-menu" style="position: absolute; z-index: 20; text-align: center; color: white;">
-                    <h2 style="font-size: 2.5rem; margin-bottom: 2rem; text-shadow: 0 0 10px rgba(255,255,255,0.5);">
-                        Select Game</h2>
-                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                        <button id="btn-snake" class="btn-primary arcade-btn"
-                            style="background: rgba(37, 99, 235, 0.8);">Neon Snake</button>
-                        <button id="btn-flappy" class="btn-primary arcade-btn"
-                            style="background: rgba(139, 92, 246, 0.8);">Flappy UFO</button>
-                        <button id="btn-breakout" class="btn-primary arcade-btn"
-                            style="background: rgba(236, 72, 153, 0.8);">Breakout</button>
-                        <button id="btn-asteroids" class="btn-primary arcade-btn"
-                            style="background: rgba(6, 182, 212, 0.8);">Asteroids</button>
-                    </div>
-                </div>
-
-                <!-- Game Over Overlay -->
-                <div id="game-over-screen"
-                    style="position: absolute; z-index: 20; text-align: center; color: white; display: none;">
-                    <h2
-                        style="font-size: 3rem; color: #ef4444; text-shadow: 0 0 15px rgba(239, 68, 68, 0.6); margin-bottom: 0.5rem;">
-                        GAME OVER</h2>
-                    <p id="final-score" style="font-size: 1.5rem; margin-bottom: 2rem;">Score: 0</p>
-                    <div style="display: flex; gap: 1rem; justify-content: center;">
-                        <button id="btn-restart" class="btn-primary">Play Again</button>
-                        <button id="btn-menu" class="btn-secondary glass-btn">Main Menu</button>
-                    </div>
-                </div>
-
-                <!-- Mobile On-Screen Controls -->
-                <div id="mobile-controls" class="mobile-controls">
-                    <div class="d-pad">
-                        <button id="btn-up" class="d-pad-btn up"><i class='bx bx-chevron-up'></i></button>
-                        <button id="btn-left" class="d-pad-btn left"><i class='bx bx-chevron-left'></i></button>
-                        <button id="btn-right" class="d-pad-btn right"><i class='bx bx-chevron-right'></i></button>
-                        <button id="btn-down" class="d-pad-btn down"><i class='bx bx-chevron-down'></i></button>
-                    </div>
-                    <div class="action-buttons">
-                        <button id="btn-action-b" class="action-btn b-btn">B</button>
-                        <button id="btn-action-a" class="action-btn a-btn">A</button>
-                    </div>
-                </div>
-
-                <!-- Runtime Score Display -->
-                <div id="hud-score"
-                    style="position: absolute; top: 2rem; left: 3rem; z-index: 15; color: rgba(255,255,255,0.8); font-family: monospace; font-size: 1.5rem; font-weight: bold; display: none;">
-                    Score: <span id="current-score">0</span>
-                </div>
-            </div>
-
-            <div style="text-align: center; margin-top: 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">
-                <p><strong>Desktop:</strong> Arrows / Space / Mouse &nbsp;|&nbsp; <strong>Mobile:</strong> Swipe, Tap,
-                    or Drag</p>
-            </div>
-        </section>
-    </main>
-
-    <footer class="footer">
-        <div class="container footer-content">
-            <p>&copy; 2026 Samuel Bates. All rights reserved.</p>
+        <div class="gameover-overlay" id="gameOverScreen">
+          <h2>GAME OVER</h2>
+          <div class="score" id="finalScore">Score: 0</div>
+          <button class="menu-btn" onclick="restartCurrentGame()">[PLAY AGAIN]</button>
+          <button class="menu-btn" onclick="showMainMenu()">[MAIN MENU]</button>
         </div>
+
+        <div class="hud" id="scoreHud">Score: 0</div>
+      </div>
+    </div>
+
+    <div class="mobile-controls">
+      <div class="dpad">
+        <button class="up" data-dir="up">&uarr;</button>
+        <button class="left" data-dir="left">&larr;</button>
+        <button class="right" data-dir="right">&rarr;</button>
+        <button class="down" data-dir="down">&darr;</button>
+      </div>
+      <div class="action-btns">
+        <button class="btn-b" data-btn="b">B</button>
+        <button class="btn-a" data-btn="a">A</button>
+      </div>
+    </div>
+
+    <div class="instructions">
+      Desktop: Arrows / Space / Mouse &bull; Mobile: D-Pad + Buttons
+    </div>
+
+    <footer>
+      // SAMUEL BATES &bull; ARCADE &bull; 2026
     </footer>
+  </div>
 
-    <!-- Custom JS -->
-    <script src="arcade.js?v=10"></script>
+  <script src="arcade.js"></script>
 </body>
-
 </html>
