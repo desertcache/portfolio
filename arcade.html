@@ -198,6 +198,7 @@
         padding: 0;
         min-height: auto;
         border-bottom-width: 3px;
+        background: #111;
       }
       canvas { border: none; width: 100%; }
 
@@ -297,8 +298,8 @@
         if (window.innerWidth > 768) return;
         if (window.innerHeight <= window.innerWidth) return;
         var w = window.innerWidth;
-        var maxH = Math.floor(window.innerHeight * 0.75);
-        var h = Math.min(Math.floor(w * 1.4), maxH);
+        var maxH = Math.floor(window.innerHeight * 0.65);
+        var h = Math.min(Math.floor(w * 0.95), maxH);
         canvas.width = w;
         canvas.height = h;
       }
