@@ -288,6 +288,26 @@
     </footer>
   </div>
 
+  <script>
+    // Force 60fps cap: override requestAnimationFrame so arcade.js
+    // game loops run at consistent 60fps regardless of display refresh rate.
+    // Fixes slow-mo on 30fps-throttled mobile and double-speed on 120Hz.
+    (function() {
+      var _raf = window.requestAnimationFrame;
+      var lastTime = 0;
+      var targetInterval = 1000 / 60; // 16.67ms
+      window.requestAnimationFrame = function(callback) {
+        return _raf(function(now) {
+          if (now - lastTime >= targetInterval) {
+            lastTime = now - ((now - lastTime) % targetInterval);
+            callback(now);
+          } else {
+            _raf(function(t) { callback(t); });
+          }
+        });
+      };
+    })();
+  </script>
   <script src="arcade.js"></script>
 </body>
 </html>
