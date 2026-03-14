@@ -39,9 +39,13 @@
     nav a:hover { text-decoration: underline; }
 
     /* Hero */
-    .hero-section { padding: 2rem; border-bottom: 4px solid #000; text-align: center; }
+    .hero-section {
+      padding: 2rem;
+      border-bottom: 4px solid #000;
+      text-align: center;
+    }
     .hero-section h1 { font-size: 3rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.05em; margin-bottom: 0.5rem; }
-    .hero-section p { font-weight: 700; text-transform: uppercase; font-size: 0.875rem; opacity: 0.7; }
+    .hero-section p { font-weight: 700; text-transform: uppercase; font-size: 0.875rem; opacity: 0.6; }
 
     /* Cabinet */
     .arcade-cabinet {
@@ -50,15 +54,14 @@
       align-items: center;
       justify-content: center;
       border-bottom: 4px solid #000;
-      background: #0f172a;
+      background: #f4f4f0;
       position: relative;
       overflow: hidden;
       min-height: 500px;
     }
     canvas {
-      border: 3px solid #1e293b;
-      border-radius: 4px;
-      background: #0f172a;
+      border: 4px solid #000;
+      background: #111;
       display: block;
       max-width: 100%;
       z-index: 10;
@@ -69,7 +72,7 @@
       position: absolute;
       z-index: 20;
       text-align: center;
-      color: white;
+      color: #fff;
     }
     #arcade-menu h2 {
       font-family: 'Space Mono', monospace;
@@ -86,23 +89,18 @@
       font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      border: 3px solid rgba(255,255,255,0.3);
-      color: #fff;
+      border: 4px solid #000;
+      color: #000;
       padding: 0.875rem 2rem;
       cursor: pointer;
       min-width: 180px;
       transition: all 0.15s ease;
-      border-radius: 4px;
     }
-    .arcade-btn:hover { border-color: #fff; transform: translateY(-2px); }
-    #btn-snake { background: rgba(37, 99, 235, 0.7); }
-    #btn-snake:hover { background: rgba(37, 99, 235, 1); }
-    #btn-flappy { background: rgba(139, 92, 246, 0.7); }
-    #btn-flappy:hover { background: rgba(139, 92, 246, 1); }
-    #btn-breakout { background: rgba(236, 72, 153, 0.7); }
-    #btn-breakout:hover { background: rgba(236, 72, 153, 1); }
-    #btn-asteroids { background: rgba(6, 182, 212, 0.7); }
-    #btn-asteroids:hover { background: rgba(6, 182, 212, 1); }
+    .arcade-btn:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0px #000; }
+    #btn-snake { background: #93c5fd; }
+    #btn-flappy { background: #c4b5fd; }
+    #btn-breakout { background: #f9a8d4; }
+    #btn-asteroids { background: #67e8f9; }
 
     /* Game over */
     #game-over-screen { display: none; }
@@ -117,16 +115,15 @@
     .game-btn {
       font-family: 'Space Mono', monospace;
       font-weight: 700; font-size: 0.8rem; text-transform: uppercase;
-      border: 3px solid rgba(255,255,255,0.3);
-      background: rgba(255,255,255,0.1);
-      color: #fff;
+      border: 4px solid #000;
+      background: #fff;
+      color: #000;
       padding: 0.75rem 2rem;
       cursor: pointer;
       min-width: 160px;
-      border-radius: 4px;
       transition: all 0.15s ease;
     }
-    .game-btn:hover { background: rgba(255,255,255,0.2); border-color: #fff; }
+    .game-btn:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0px #000; }
 
     /* HUD */
     #hud-score {
@@ -145,12 +142,15 @@
     .touch-hint {
       display: none;
       padding: 0.5rem;
-      background: #0f172a;
-      color: rgba(255,255,255,0.4);
+      background: #fff;
+      color: #000;
       text-align: center;
       font-size: 0.625rem;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.15em;
+      opacity: 0.4;
+      border-bottom: 4px solid #000;
     }
 
     /* On-screen controls: hidden, kept for arcade.js compatibility */
@@ -179,24 +179,29 @@
 
     /* ========== MOBILE ========== */
     @media (max-width: 768px) {
-      body { padding: 0; margin: 0; background: #0f172a; }
-      .shell { border: none; box-shadow: none; background: #0f172a; }
+      body { padding: 0; margin: 0; background: #e5e5e5; }
+      .shell { border: none; box-shadow: none; }
 
       header { display: none; }
-      .hero-section { display: none; }
+      .hero-section {
+        padding: 0.75rem;
+        border-bottom-width: 3px;
+      }
+      .hero-section h1 { font-size: 1.25rem; margin-bottom: 0; }
+      .hero-section p { display: none; }
       .instructions { display: none; }
       footer { display: none; }
-      .touch-hint { display: block; }
+      .touch-hint { display: block; border-bottom-width: 3px; }
 
       .arcade-cabinet {
         padding: 0;
         min-height: auto;
-        border: none;
+        border-bottom-width: 3px;
       }
-      canvas { border: none; width: 100%; border-radius: 0; }
+      canvas { border: none; width: 100%; }
 
-      /* Menu */
-      #arcade-menu { width: 100%; padding: 0 1.25rem; }
+      /* Menu: brutalist buttons stacked */
+      #arcade-menu { width: 100%; padding: 0 1rem; }
       #arcade-menu h2 { font-size: 1.25rem; margin-bottom: 1rem; letter-spacing: 0.15em; }
       .menu-buttons { flex-direction: column; gap: 0.5rem; width: 100%; }
       .arcade-btn {
@@ -204,20 +209,21 @@
         width: 100%;
         padding: 1rem;
         font-size: 0.8rem;
-        border-radius: 6px;
+        border-width: 3px;
       }
 
       /* Game over */
-      #game-over-screen { width: 100%; padding: 0 1.25rem; }
+      #game-over-screen { width: 100%; padding: 0 1rem; }
       #game-over-screen h2 { font-size: 1.75rem; }
       .gameover-buttons { flex-direction: column; width: 100%; gap: 0.5rem; }
-      .game-btn { min-width: unset; width: 100%; border-radius: 6px; }
+      .game-btn { min-width: unset; width: 100%; border-width: 3px; }
 
       #hud-score { top: 0.75rem; left: 1rem; font-size: 0.875rem; }
     }
 
     /* Landscape mobile */
     @media (max-width: 768px) and (orientation: landscape) {
+      .hero-section { display: none; }
       .touch-hint { display: none; }
     }
   </style>
@@ -245,10 +251,10 @@
       <div id="arcade-menu">
         <h2>Select Game</h2>
         <div class="menu-buttons">
-          <button id="btn-snake" class="arcade-btn">Neon Snake</button>
-          <button id="btn-flappy" class="arcade-btn">Flappy UFO</button>
-          <button id="btn-breakout" class="arcade-btn">Breakout</button>
-          <button id="btn-asteroids" class="arcade-btn">Asteroids</button>
+          <button id="btn-snake" class="arcade-btn">[NEON SNAKE]</button>
+          <button id="btn-flappy" class="arcade-btn">[FLAPPY UFO]</button>
+          <button id="btn-breakout" class="arcade-btn">[BREAKOUT]</button>
+          <button id="btn-asteroids" class="arcade-btn">[ASTEROIDS]</button>
         </div>
       </div>
 
@@ -256,8 +262,8 @@
         <h2>GAME OVER</h2>
         <p id="final-score">Score: 0</p>
         <div class="gameover-buttons" style="display: flex; gap: 0.75rem; justify-content: center;">
-          <button id="btn-restart" class="game-btn">Play Again</button>
-          <button id="btn-menu" class="game-btn">Main Menu</button>
+          <button id="btn-restart" class="game-btn">[PLAY AGAIN]</button>
+          <button id="btn-menu" class="game-btn">[MAIN MENU]</button>
         </div>
       </div>
 
@@ -266,7 +272,7 @@
       </div>
     </div>
 
-    <div class="touch-hint">Swipe &bull; Tap &bull; Drag to play</div>
+    <div class="touch-hint">Swipe // Tap // Drag to play</div>
 
     <!-- Hidden: arcade.js references this element -->
     <div id="mobile-controls" class="mobile-controls"></div>
