@@ -206,31 +206,48 @@
       opacity: 0.6;
     }
     @media (max-width: 768px) {
-      body { padding: 0.5rem; }
-      .shell { border-width: 3px; box-shadow: 6px 6px 0px #000; }
-      header, .hero-section, .arcade-cabinet, .instructions, footer { border-bottom-width: 3px; }
-      .hero-section h1 { font-size: 1.75rem; }
+      body { padding: 0; }
+      .shell { border-width: 0; box-shadow: none; }
+      header { border-bottom-width: 3px; padding: 0.75rem; }
       nav { display: none; }
 
-      /* Cabinet: less padding, canvas fills width */
-      .arcade-cabinet { padding: 0.5rem; min-height: auto; }
+      /* Compact hero */
+      .hero-section { padding: 0.75rem; border-bottom-width: 3px; }
+      .hero-section h1 { font-size: 1.25rem; margin-bottom: 0; }
+      .hero-section p { display: none; }
 
-      /* Game menu: vertical stack, full-width buttons */
-      #arcade-menu h2 { font-size: 1.5rem; margin-bottom: 1rem; }
-      #arcade-menu > div { flex-direction: column; gap: 0.5rem; padding: 0 1.5rem; }
-      .arcade-btn { min-width: unset; width: 100%; padding: 0.75rem 1rem; }
+      /* Cabinet: no padding, canvas fills screen width */
+      .arcade-cabinet {
+        padding: 0;
+        min-height: auto;
+        border-bottom-width: 3px;
+      }
+      canvas { border-width: 0; }
+
+      /* Game menu: full-width stacked buttons */
+      #arcade-menu { width: 100%; padding: 0 1rem; }
+      #arcade-menu h2 { font-size: 1.25rem; margin-bottom: 0.75rem; }
+      #arcade-menu > div { flex-direction: column; gap: 0.5rem; width: 100%; }
+      .arcade-btn {
+        min-width: unset;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 0.75rem;
+        border-width: 3px;
+      }
 
       /* Game over: full-width buttons */
-      #game-over-screen h2 { font-size: 2rem; }
-      #game-over-screen > div { flex-direction: column; padding: 0 1.5rem; }
-      .game-btn { min-width: unset; width: 100%; }
+      #game-over-screen { width: 100%; padding: 0 1rem; }
+      #game-over-screen h2 { font-size: 1.75rem; }
+      #game-over-screen > div { flex-direction: column; width: 100%; }
+      .game-btn { min-width: unset; width: 100%; border-width: 3px; }
 
-      /* Mobile controls: dark controller pad, bigger touch targets */
+      /* Mobile controls: dark controller pad, big touch targets */
       .mobile-controls {
         display: flex;
         padding: 1.25rem 1.5rem;
         background: #111;
-        border-color: #111;
+        border-bottom: 3px solid #111;
       }
       .d-pad { gap: 6px; }
       .d-pad-btn {
@@ -243,15 +260,15 @@
       }
       .d-pad-btn:active { background: #444; }
       .action-buttons { gap: 12px; align-items: center; }
-      .action-btn {
-        width: 64px;
-        height: 64px;
-        font-size: 1rem;
-      }
+      .action-btn { width: 64px; height: 64px; font-size: 1rem; }
       .a-btn { background: #1e3a5f; color: #fff; border-color: #2563eb; }
       .b-btn { background: #5f1e1e; color: #fff; border-color: #ef4444; }
       .a-btn:active { background: #2563eb; }
       .b-btn:active { background: #ef4444; }
+
+      /* Hide fluff */
+      .instructions { display: none; }
+      footer { padding: 0.5rem; font-size: 0.625rem; border-top: 3px solid #000; }
     }
   </style>
 </head>
