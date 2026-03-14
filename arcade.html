@@ -289,24 +289,5 @@
   </div>
 
   <script src="arcade.js"></script>
-  <script>
-    // Portrait mobile: override canvas to taller ratio
-    (function() {
-      var canvas = document.getElementById('gameCanvas');
-      if (!canvas) return;
-      function fitPortrait() {
-        if (window.innerWidth > 768) return;
-        if (window.innerHeight <= window.innerWidth) return;
-        var w = window.innerWidth;
-        var maxH = Math.floor(window.innerHeight * 0.65);
-        var h = Math.min(Math.floor(w * 0.95), maxH);
-        canvas.width = w;
-        canvas.height = h;
-      }
-      window.addEventListener('resize', function() { setTimeout(fitPortrait, 60); });
-      window.addEventListener('orientationchange', function() { setTimeout(fitPortrait, 200); });
-      setTimeout(fitPortrait, 300);
-    })();
-  </script>
 </body>
 </html>
