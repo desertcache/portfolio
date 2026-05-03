@@ -36,6 +36,38 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => { document.getElementById('arcade-section').classList.add('active'); }, 100);
 
     // ==========================================
+    // HIGH SCORES (localStorage)
+    // ==========================================
+    const HS_KEY = 'sb_arcade_pb_v1';
+    function loadPBs() {
+        try { return JSON.parse(localStorage.getItem(HS_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+    function savePBs(pbs) {
+        try { localStorage.setItem(HS_KEY, JSON.stringify(pbs)); } catch (e) {}
+    }
+    function renderPBs() {
+        const pbs = loadPBs();
+        document.querySelectorAll('.arcade-btn .hi').forEach(el => {
+            const g = el.dataset.game;
+            const v = pbs[g];
+            el.textContent = v != null ? `PB · ${v}` : 'PB · —';
+        });
+    }
+    function recordPB(game, score) {
+        if (!game || score == null) return;
+        const pbs = loadPBs();
+        const cur = pbs[game] || 0;
+        if (score > cur) {
+            pbs[game] = score;
+            savePBs(pbs);
+            return true;
+        }
+        return false;
+    }
+    renderPBs();
+
+    // ==========================================
     // ARCADE ENGINE
     // ==========================================
     const canvas = document.getElementById('gameCanvas');
@@ -240,7 +272,11 @@ document.addEventListener('DOMContentLoaded', () => {
         showMobileControls(false);
         cancelAnimationFrame(gameLoopRef);
         clearAllInputs();
-        finalScoreText.innerText = `Score: ${score}`;
+        const isNewPB = recordPB(activeGame, score);
+        finalScoreText.innerHTML = isNewPB
+            ? `Score: ${score} <span style="color:var(--accent);font-family:var(--serif);font-style:italic;font-size:0.95em;margin-left:8px;">new personal best</span>`
+            : `Score: ${score}`;
+        renderPBs();
         hudScore.style.display = 'none';
         gameOverScreen.style.display = 'block';
 
