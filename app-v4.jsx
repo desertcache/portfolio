@@ -59,7 +59,7 @@ function Hero() {
               I came up through ops — call center, EMT dispatch, escalations — and I now ship the <em>React, TypeScript, and Snowflake</em> code that fixes what I used to triage. Operator first. Engineer second. Both in production.
             </p>
             <div className="hero-meta">
-              <span><b>Currently:</b> DoorDash · MXO</span>
+              <span><b>Currently:</b> DoorDash · Merchant Ops</span>
               <span><b>Based:</b> Tempe, AZ</span>
               <span><b>Open to:</b> Remote · Hybrid · SF Bay</span>
             </div>
@@ -90,7 +90,7 @@ function Tracks() {
   return (
     <div className="tracks">
       {D.tracks.map(t => (
-        <a key={t.key} className={`track ${t.primary ? "is-primary" : ""}`} href={t.cv}>
+        <a key={t.key} className={`track ${t.primary ? "is-primary" : ""}`} href={t.cv} target="_blank" rel="noopener">
           <span className="label">{t.primary ? "Primary lane" : "Also fits"}</span>
           <div className="ttl">{t.title}</div>
           <div className="one">{t.one}</div>
@@ -159,7 +159,7 @@ function Receipt() {
 // ---------- selected work ----------
 function Work({ onOpen }) {
   return (
-    <section className="section tinted">
+    <section id="work" className="section tinted">
       <div className="wrap">
         <Reveal className="section-head">
           <div className="section-num">02 / Work</div>
@@ -192,15 +192,15 @@ function Work({ onOpen }) {
 
 // ---------- case study overlay ----------
 function CaseStudy({ id, onClose }) {
-  if (!id) return null;
-  const p = D.projects.find(x => x.id === id);
-  if (!p) return null;
+  const p = id ? D.projects.find(x => x.id === id) : null;
   useEffect(() => {
+    if (!id) return;
     const k = e => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", k);
     document.body.style.overflow = "hidden";
     return () => { window.removeEventListener("keydown", k); document.body.style.overflow = ""; };
-  }, [id]);
+  }, [id, onClose]);
+  if (!id || !p) return null;
 
   return (
     <div className="overlay open" onClick={onClose}>
@@ -279,7 +279,7 @@ function Validation() {
           <div>
             <h2 className="section-title">What people <em>actually said.</em></h2>
             <p className="section-lede">
-              Real names, real attributions, copy-pasted from Slack DMs and stand-ups. No paraphrasing.
+              Quotes pulled from internal channels. Verbatim, no paraphrasing.
             </p>
           </div>
         </Reveal>
@@ -288,7 +288,7 @@ function Validation() {
           {D.validation.map((q, i) => (
             <div key={i} className="quote-card">
               <p className="quote-text">{q.quote}</p>
-              <div className="quote-meta"><b>{q.who}</b> · {q.role} · {q.on}</div>
+              <div className="quote-meta"><b>{q.role}</b> · {q.on}</div>
             </div>
           ))}
         </Reveal>
@@ -372,7 +372,7 @@ function Contact() {
 
         <Reveal className="resumes">
           {D.tracks.map(t => (
-            <a key={t.key} className="resume-link" href={t.cv}>
+            <a key={t.key} className="resume-link" href={t.cv} target="_blank" rel="noopener">
               <div className="r-label">{t.title}</div>
               <div className="r-cv">Download résumé <span className="r-arrow">→</span></div>
             </a>
@@ -382,7 +382,7 @@ function Contact() {
         <div className="foot">
           <span>© {D.identity.name} · 2026</span>
           <span>
-            Built in HTML · React · No templates ·{" "}
+            Static · React · Hand-built ·{" "}
             <a href="arcade.html" style={{ borderBottom: "1px solid var(--accent)", color: "var(--accent)" }}>
               p.s. there's an arcade →
             </a>
