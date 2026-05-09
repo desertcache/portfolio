@@ -28,20 +28,20 @@ window.PORTFOLIO_DATA_V4 = {
       key: "fde",
       title: "Forward Deployed Engineer",
       one: "Embed with the team that has the problem. Ship the tool. Wire the measurement. Drive adoption.",
-      cv: "resume-fde.pdf",
+      cv: "Samuel_Bates_CV.pdf",
       primary: true,
     },
     {
       key: "se",
       title: "Solutions Engineer",
       one: "Business case to dashboard to vendor pod ops — the full path from operational risk to controlled program.",
-      cv: "resume-sa.pdf",
+      cv: "Samuel_Bates_CV.pdf",
     },
     {
       key: "swe",
       title: "Software Engineer",
       one: "React 18 · TypeScript · Fastify · Snowflake. 4 production apps · weekly release cadence · ~165K LOC authored.",
-      cv: "resume-swe.pdf",
+      cv: "Samuel_Bates_CV.pdf",
     },
   ],
 
