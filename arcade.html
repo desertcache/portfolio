@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Arcade · Samuel Bates</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f5f0e8;
+      --paper-2: #ece5d9;
+      --ink: #1a1a1f;
+      --ink-2: #3a3a44;
+      --ink-3: #6b6b76;
+      --ink-4: #9a9aa3;
+      --rule: #d8d2c4;
+      --accent: #e34a2b;
+      --serif: "Instrument Serif", Georgia, serif;
+      --sans: "Geist", -apple-system, system-ui, sans-serif;
+      --mono: "Geist Mono", ui-monospace, Menlo, monospace;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--sans);
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: clamp(20px, 4vw, 56px);
+      display: flex;
+      justify-content: center;
+    }
+    a { color: inherit; text-decoration: none; }
+    .shell { width: 100%; max-width: 1200px; }
+
+    /* Top bar — matches portfolio nav */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: clamp(40px, 6vw, 80px);
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--mono); font-size: 12px; letter-spacing: 0.02em;
+    }
+    .brand-mark {
+      width: 24px; height: 24px; display: grid; place-items: center;
+      background: var(--ink); color: var(--paper);
+      border-radius: 4px;
+      font-family: var(--serif); font-style: italic;
+      font-size: 16px; padding-bottom: 2px;
+    }
+    .brand .ver { color: var(--ink-3); }
+    .topbar nav {
+      display: flex; gap: 28px;
+      font-family: var(--mono); font-size: 12px; letter-spacing: 0.02em;
+    }
+    .topbar nav a {
+      color: var(--ink-2);
+      transition: color .2s;
+      position: relative;
+    }
+    .topbar nav a.active { color: var(--ink); }
+    .topbar nav a.active::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: -4px;
+      height: 1px; background: var(--accent);
+    }
+    .topbar nav a:hover { color: var(--ink); }
+    @media (max-width: 760px) { .topbar nav { display: none; } }
+
+    /* Hero */
+    .arcade-hero {
+      display: grid; gap: 16px;
+      margin-bottom: clamp(36px, 5vw, 56px);
+    }
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .eyebrow::before {
+      content: "";
+      display: inline-block;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+    }
+    .arcade-title {
+      font-family: var(--serif); font-weight: 400;
+      font-size: clamp(48px, 7.5vw, 120px);
+      line-height: 0.95;
+      letter-spacing: -0.025em;
+      text-wrap: balance;
+      margin: 0;
+    }
+    .arcade-title em { font-style: italic; color: var(--accent); }
+    .arcade-lede {
+      max-width: 640px;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(20px, 2vw, 26px);
+      line-height: 1.4;
+      color: var(--ink-2);
+      text-wrap: pretty;
+      margin-top: 6px;
+    }
+
+    /* Cabinet */
+    .arcade-cabinet {
+      position: relative;
+      background: var(--ink);
+      border-radius: 6px;
+      border: 1px solid var(--ink-2);
+      padding: clamp(20px, 3vw, 36px);
+      min-height: 580px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .cabinet-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+    .cabinet-bar {
+      position: absolute; top: 14px; left: 18px; right: 18px;
+      display: flex; justify-content: space-between;
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ink-4);
+      z-index: 5;
+    }
+    .cabinet-bar .live { color: oklch(85% 0.14 145); display: inline-flex; gap: 6px; align-items: center; }
+    .cabinet-bar .live::before {
+      content: ""; width: 5px; height: 5px; border-radius: 50%;
+      background: oklch(85% 0.14 145);
+      box-shadow: 0 0 6px oklch(85% 0.14 145);
+      animation: pulse 1.6s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.4); }
+    }
+    canvas {
+      background: #0a0a0e;
+      border: 1px solid var(--ink-2);
+      border-radius: 4px;
+      max-width: 100%;
+      display: block;
+      z-index: 10;
+    }
+
+    /* Menu overlay */
+    #arcade-menu, #game-over-screen {
+      position: absolute; z-index: 20;
+      text-align: center;
+      color: var(--paper);
+      width: 100%; max-width: 580px; padding: 0 24px;
+    }
+    #arcade-menu h2 {
+      font-family: var(--serif); font-style: italic;
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 400; line-height: 1;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    #arcade-menu .menu-sub {
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--ink-4);
+      margin-bottom: 28px;
+    }
+    .menu-buttons {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 600px) { .menu-buttons { grid-template-columns: 1fr; } }
+    .arcade-btn {
+      font-family: var(--mono);
+      font-weight: 500;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border: 1px solid var(--ink-3);
+      background: transparent;
+      color: var(--paper);
+      padding: 14px 20px;
+      cursor: pointer;
+      transition: all .2s cubic-bezier(.2,.7,.2,1);
+      text-align: left;
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 14px;
+    }
+    .arcade-btn .num {
+      color: var(--accent);
+      font-family: var(--serif); font-style: italic;
+      font-size: 16px;
+      margin-right: 8px;
+    }
+    .arcade-btn .hi {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--ink-4, #5a5650);
+      opacity: 0.7;
+      text-transform: uppercase;
+    }
+    .arcade-btn:hover .hi { color: var(--paper); opacity: 1; }
+    .arcade-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .arcade-btn .arrow { font-family: var(--serif); font-style: italic; font-size: 16px; }
+
+    /* Game over */
+    #game-over-screen { display: none; }
+    #game-over-screen h2 {
+      font-family: var(--serif); font-style: italic;
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 400; line-height: 1;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    #final-score {
+      font-family: var(--mono); font-size: 13px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ink-4);
+      margin-bottom: 28px;
+    }
+    .gameover-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .game-btn {
+      font-family: var(--mono); font-weight: 500;
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+      border: 1px solid var(--ink-3);
+      background: transparent;
+      color: var(--paper);
+      padding: 12px 22px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .game-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* HUD */
+    #hud-score {
+      position: absolute;
+      top: 40px; left: 38px;
+      z-index: 15;
+      color: var(--paper);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      display: none;
+    }
+    #hud-score #current-score { color: var(--accent); font-family: var(--serif); font-style: italic; font-size: 16px; }
+
+    /* Hidden mobile controls (kept for arcade.js compatibility) */
+    #mobile-controls { display: none !important; }
+
+    /* Footer meta */
+    .arcade-foot {
+      margin-top: clamp(24px, 3vw, 36px);
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ink-3);
+      padding-top: 16px;
+      border-top: 1px solid var(--rule);
+      flex-wrap: wrap; gap: 12px;
+    }
+    .arcade-foot .controls { color: var(--ink-2); }
+
+    .touch-hint {
+      display: none;
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ink-3);
+      text-align: center;
+      padding: 12px;
+    }
+    @media (max-width: 768px) {
+      .touch-hint { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <a href="index.html" class="brand">
+        <span class="brand-mark">S</span>
+        <span>Samuel Bates</span>
+        <span class="ver">· v2026.04</span>
+      </a>
+      <nav>
+        <a href="index.html">[01] Portfolio</a>
+        <a href="index.html#work">[02] Work</a>
+        <a href="arcade.html" class="active">[03] Arcade</a>
+      </nav>
+    </div>
+
+    <div class="arcade-hero">
+      <div class="eyebrow">Detour · The Arcade</div>
+      <h1 class="arcade-title">Take a <em>break.</em></h1>
+      <p class="arcade-lede">Four games written in vanilla JS on raw HTML5 Canvas — no engine, no framework. Built between PRs.</p>
+    </div>
+
+    <div id="arcade-section" class="arcade-cabinet">
+      <div class="cabinet-grid"></div>
+      <div class="cabinet-bar">
+        <span>CABINET · v2026.04</span>
+        <span class="live">CANVAS · 60FPS</span>
+      </div>
+
+      <canvas id="gameCanvas" width="800" height="500"></canvas>
+
+      <div id="arcade-menu">
+        <h2>Select a game</h2>
+        <div class="menu-sub">04 titles · ~2,400 LOC vanilla JS · zero dependencies</div>
+        <div class="menu-buttons">
+          <button id="btn-snake" class="arcade-btn"><span><span class="num">01</span>Neon Snake</span><span class="hi" data-game="SNAKE">PB · —</span><span class="arrow">→</span></button>
+          <button id="btn-flappy" class="arcade-btn"><span><span class="num">02</span>Flappy UFO</span><span class="hi" data-game="FLAPPY">PB · —</span><span class="arrow">→</span></button>
+          <button id="btn-breakout" class="arcade-btn"><span><span class="num">03</span>Breakout</span><span class="hi" data-game="BREAKOUT">PB · —</span><span class="arrow">→</span></button>
+          <button id="btn-asteroids" class="arcade-btn"><span><span class="num">04</span>Asteroids</span><span class="hi" data-game="ASTEROIDS">PB · —</span><span class="arrow">→</span></button>
+        </div>
+      </div>
+
+      <div id="game-over-screen">
+        <h2>Game over.</h2>
+        <p id="final-score">Score: 0</p>
+        <div class="gameover-buttons">
+          <button id="btn-restart" class="game-btn">Play again</button>
+          <button id="btn-menu" class="game-btn">Main menu</button>
+        </div>
+      </div>
+
+      <div id="hud-score">SCORE · <span id="current-score">0</span></div>
+
+      <!-- Hidden: arcade.js references this -->
+      <div id="mobile-controls"></div>
+    </div>
+
+    <div class="touch-hint">Swipe · tap · drag to play</div>
+
+    <div class="arcade-foot">
+      <span>Samuel Bates · Arcade · 2026</span>
+      <span class="controls">Desktop · arrows / space / mouse</span>
+    </div>
+  </div>
+
+  <script>
+    // 60fps cap so arcade.js loops are consistent across refresh rates.
+    (function() {
+      var _raf = window.requestAnimationFrame;
+      var lastTime = 0;
+      var targetInterval = 1000 / 60;
+      window.requestAnimationFrame = function(callback) {
+        return _raf(function(now) {
+          if (now - lastTime >= targetInterval) {
+            lastTime = now - ((now - lastTime) % targetInterval);
+            callback(now);
+          } else {
+            _raf(function(t) { callback(t); });
+          }
+        });
+      };
+    })();
+  </script>
+  <script src="arcade.js"></script>
+</body>
+</html>
