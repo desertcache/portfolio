@@ -67,7 +67,7 @@ export function playDeath(audio) {
 
 // --- background loops (built once per state change via audio.setLoop) ---
 
-function lfoLoop(h, { carrier, carrierType = 'sawtooth', rate, depth, vol }) {
+function lfoLoop(h, { carrier, carrierType = 'sawtooth', rate, depth, vol, lowpass = null }) {
   const osc = h.ctx.createOscillator();
   osc.type = carrierType;
   osc.frequency.value = carrier;
@@ -79,7 +79,14 @@ function lfoLoop(h, { carrier, carrierType = 'sawtooth', rate, depth, vol }) {
   lfo.connect(lfoGain).connect(osc.frequency);
   const gain = h.ctx.createGain();
   gain.gain.value = vol;
-  osc.connect(gain).connect(h.out);
+  let head = osc;
+  if (lowpass) {
+    const filter = h.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = lowpass;
+    head = osc.connect(filter);
+  }
+  head.connect(gain).connect(h.out);
   osc.start();
   lfo.start();
   return () => {
@@ -88,7 +95,8 @@ function lfoLoop(h, { carrier, carrierType = 'sawtooth', rate, depth, vol }) {
   };
 }
 
-// stage 0..4 — rises as the maze empties.
+// stage 0..4 — rises as the maze empties. Kept well under the one-shot sfx
+// level: it's a background bed, not a foreground voice.
 export function sirenLoop(stage) {
   return {
     name: `pm-siren-${stage}`,
@@ -96,14 +104,15 @@ export function sirenLoop(stage) {
       carrier: 320 + stage * 110,
       rate: 1.4 + stage * 0.35,
       depth: 55 + stage * 18,
-      vol: 0.05,
+      vol: 0.022,
+      lowpass: 900,
     }),
   };
 }
 
 export const frightLoop = {
   name: 'pm-fright',
-  builder: (h) => lfoLoop(h, { carrier: 180, rate: 7, depth: 90, vol: 0.055 }),
+  builder: (h) => lfoLoop(h, { carrier: 180, rate: 7, depth: 90, vol: 0.04, lowpass: 1200 }),
 };
 
 export const eyesLoop = {
