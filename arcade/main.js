@@ -6,14 +6,15 @@ import { createScreen } from './engine/canvas.js';
 import { createInput } from './engine/input.js';
 import { createFx } from './engine/fx.js';
 import { createAudio } from './engine/audio.js';
-import { getPBs, recordPB, getSettings, setSetting } from './engine/storage.js';
+import { getPB, getPBs, recordPB, getSettings, setSetting } from './engine/storage.js';
 
+import pacman from './games/pacman/index.js';
 import snake from './games/snake.js';
 import flappy from './games/flappy.js';
 import breakout from './games/breakout.js';
 import asteroids from './games/asteroids.js';
 
-const GAMES = [snake, flappy, breakout, asteroids];
+const GAMES = [pacman, snake, flappy, breakout, asteroids];
 
 const params = new URLSearchParams(location.search);
 const DEBUG = params.get('debug') === '1';
@@ -126,6 +127,7 @@ function startGame(entry) {
     input,
     fx,
     audio,
+    pb: getPB(entry.id),
     debug: DEBUG,
     onScore(score) {
       currentScore = score;
@@ -136,6 +138,9 @@ function startGame(entry) {
     },
     expose(state) {
       if (DEBUG) window.__arcade.gameState = state;
+    },
+    exposeActions(actions) {
+      if (DEBUG) window.__arcade.actions = actions;
     },
   };
 
