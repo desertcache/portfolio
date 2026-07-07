@@ -1,4 +1,10 @@
 // Asteroids — rotate, thrust, and shoot through splitting space rocks.
+import { makeGlowSprite } from '../engine/sprites.js';
+import { drawText } from '../engine/font.js';
+
+const SHIP_PAD = 12;
+const BULLET_PAD = 8;
+const AST_PAD = 10;
 
 export default {
   id: 'ASTEROIDS',
@@ -10,6 +16,8 @@ export default {
 
     let score = 0;
     let wave = 1;
+    let frame = 0;
+    let bannerTimer = 0;
     env.onScore(0);
 
     // Ship
@@ -20,6 +28,26 @@ export default {
       vx: 0, vy: 0,
       radius: 14,
     };
+
+    const shipSprite = makeGlowSprite(ship.radius * 2, ship.radius * 2, SHIP_PAD, '#22d3ee', 10, (c) => {
+      c.translate(ship.radius, ship.radius);
+      c.strokeStyle = '#22d3ee';
+      c.lineWidth = 2;
+      c.beginPath();
+      c.moveTo(ship.radius, 0);
+      c.lineTo(-ship.radius * 0.7, -ship.radius * 0.6);
+      c.lineTo(-ship.radius * 0.4, 0);
+      c.lineTo(-ship.radius * 0.7, ship.radius * 0.6);
+      c.closePath();
+      c.stroke();
+    });
+
+    const bulletSprite = makeGlowSprite(4, 4, BULLET_PAD, '#fbbf24', 6, (c) => {
+      c.fillStyle = '#fbbf24';
+      c.beginPath();
+      c.arc(2, 2, 2, 0, Math.PI * 2);
+      c.fill();
+    });
 
     const bullets = [];
     const asteroids = [];
@@ -40,6 +68,7 @@ export default {
         const spd = 0.5 + Math.random() * 1;
         asteroids.push(makeAsteroid(ax, ay, 40, Math.cos(angle) * spd, Math.sin(angle) * spd));
       }
+      bannerTimer = 90;
     }
 
     function makeAsteroid(x, y, radius, vx, vy) {
@@ -51,8 +80,20 @@ export default {
         const r = radius * (0.7 + Math.random() * 0.3);
         shape.push({ x: Math.cos(a) * r, y: Math.sin(a) * r });
       }
+      const sprite = makeGlowSprite(radius * 2, radius * 2, AST_PAD, '#a78bfa', 5, (c) => {
+        c.translate(radius, radius);
+        c.strokeStyle = '#a78bfa';
+        c.lineWidth = 1.5;
+        c.beginPath();
+        c.moveTo(shape[0].x, shape[0].y);
+        for (let v = 1; v < shape.length; v++) {
+          c.lineTo(shape[v].x, shape[v].y);
+        }
+        c.closePath();
+        c.stroke();
+      });
       const pts = radius >= 35 ? 20 : radius >= 18 ? 50 : 100;
-      return { x, y, vx, vy, radius, shape, points: pts };
+      return { x, y, vx, vy, radius, sprite, points: pts };
     }
 
     spawnAsteroids(3 + wave);
@@ -102,7 +143,12 @@ export default {
 
     return {
       tick() {
+        if (fx.consumePause()) return;
         ctx.clearRect(0, 0, W, H);
+        frame++;
+        const shake = fx.shakeOffset();
+        ctx.save();
+        ctx.translate(shake.x, shake.y);
         fx.updateAndDraw();
 
         // Input processing
@@ -141,26 +187,24 @@ export default {
         ship.y += ship.vy;
         wrap(ship);
 
+        if (thrusting && frame % 2 === 0) {
+          fx.burst(
+            ship.x - Math.cos(ship.angle) * ship.radius,
+            ship.y - Math.sin(ship.angle) * ship.radius,
+            2, '#f97316', [0.5, 2], [8, 18]
+          );
+        }
+
         // Draw ship (neon cyan wireframe triangle)
         ctx.save();
         ctx.translate(ship.x, ship.y);
         ctx.rotate(ship.angle);
-        ctx.strokeStyle = '#22d3ee';
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = '#22d3ee';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(ship.radius, 0);
-        ctx.lineTo(-ship.radius * 0.7, -ship.radius * 0.6);
-        ctx.lineTo(-ship.radius * 0.4, 0);
-        ctx.lineTo(-ship.radius * 0.7, ship.radius * 0.6);
-        ctx.closePath();
-        ctx.stroke();
+        ctx.drawImage(shipSprite, -SHIP_PAD - ship.radius, -SHIP_PAD - ship.radius);
 
         // Thrust flame
         if (thrusting) {
           ctx.strokeStyle = '#f97316';
-          ctx.shadowColor = '#f97316';
+          ctx.lineWidth = 2;
           ctx.beginPath();
           ctx.moveTo(-ship.radius * 0.5, -ship.radius * 0.25);
           ctx.lineTo(-ship.radius * 0.9 - Math.random() * 5, 0);
@@ -168,12 +212,8 @@ export default {
           ctx.stroke();
         }
         ctx.restore();
-        ctx.shadowBlur = 0;
 
         // Bullets
-        ctx.fillStyle = '#fbbf24';
-        ctx.shadowBlur = 6;
-        ctx.shadowColor = '#fbbf24';
         for (let i = bullets.length - 1; i >= 0; i--) {
           const b = bullets[i];
           b.x += b.vx;
@@ -181,31 +221,17 @@ export default {
           b.life--;
           wrap(b);
           if (b.life <= 0) { bullets.splice(i, 1); continue; }
-          ctx.beginPath();
-          ctx.arc(b.x, b.y, 2, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.drawImage(bulletSprite, b.x - BULLET_PAD - 2, b.y - BULLET_PAD - 2);
         }
-        ctx.shadowBlur = 0;
 
         // Asteroids
-        ctx.strokeStyle = '#a78bfa';
-        ctx.shadowBlur = 5;
-        ctx.shadowColor = '#a78bfa';
-        ctx.lineWidth = 1.5;
         for (let i = asteroids.length - 1; i >= 0; i--) {
           const a = asteroids[i];
           a.x += a.vx;
           a.y += a.vy;
           wrap(a);
 
-          // Draw asteroid
-          ctx.beginPath();
-          ctx.moveTo(a.x + a.shape[0].x, a.y + a.shape[0].y);
-          for (let v = 1; v < a.shape.length; v++) {
-            ctx.lineTo(a.x + a.shape[v].x, a.y + a.shape[v].y);
-          }
-          ctx.closePath();
-          ctx.stroke();
+          ctx.drawImage(a.sprite, a.x - a.radius - AST_PAD, a.y - a.radius - AST_PAD);
 
           // Bullet-asteroid collision
           for (let j = bullets.length - 1; j >= 0; j--) {
@@ -214,9 +240,15 @@ export default {
               score += a.points;
               env.onScore(score);
               bullets.splice(j, 1);
-              fx.burst(a.x, a.y, 20, '#a78bfa', [1, 4], [20, 40]);
               const big = a.radius >= 35;
               const mid = !big && a.radius >= 18;
+              fx.burst(a.x, a.y, big ? 30 : mid ? 20 : 12, '#a78bfa', [1, 4], [20, 40]);
+              if (big) {
+                fx.shake(4, 10);
+                fx.hitPause(2);
+              } else if (mid) {
+                fx.shake(2, 6);
+              }
               env.audio.play('ast-explode', (h) => h.noise({
                 dur: big ? 0.5 : mid ? 0.35 : 0.22,
                 vol: big ? 0.25 : mid ? 0.18 : 0.14,
@@ -224,14 +256,14 @@ export default {
               }));
 
               // Split
-              if (a.radius >= 35) {
+              if (big) {
                 // Large -> 2 medium
                 for (let k = 0; k < 2; k++) {
                   const ang = Math.random() * Math.PI * 2;
                   const spd = 1 + Math.random() * 1;
                   asteroids.push(makeAsteroid(a.x, a.y, 20, Math.cos(ang) * spd, Math.sin(ang) * spd));
                 }
-              } else if (a.radius >= 18) {
+              } else if (mid) {
                 // Medium -> 2 small
                 for (let k = 0; k < 2; k++) {
                   const ang = Math.random() * Math.PI * 2;
@@ -244,16 +276,17 @@ export default {
             }
           }
         }
-        ctx.shadowBlur = 0;
 
         // Ship-asteroid collision
         for (let i = 0; i < asteroids.length; i++) {
           if (Math.hypot(ship.x - asteroids[i].x, ship.y - asteroids[i].y) < ship.radius + asteroids[i].radius * 0.7) {
             fx.burst(ship.x, ship.y, 50, '#22d3ee', [2, 8], [30, 60]);
+            fx.shake(8, 24);
             env.audio.play('ast-death', (h) => {
               h.noise({ dur: 0.6, vol: 0.28, filterFrom: 1000 });
               h.tone({ f: 160, slideTo: 40, dur: 0.6, type: 'sawtooth', vol: 0.12 });
             });
+            ctx.restore();
             env.onGameOver(score);
             return;
           }
@@ -267,6 +300,15 @@ export default {
             { f: 660, vol: 0.1 }, { f: 880, vol: 0.1 }, { f: 1100, vol: 0.1 },
           ], 0.08));
         }
+
+        if (bannerTimer > 0) {
+          bannerTimer--;
+          ctx.globalAlpha = Math.min(1, bannerTimer / 30);
+          drawText(ctx, `WAVE ${wave}`, W / 2, 60, { color: '#22d3ee', scale: 3, align: 'center' });
+          ctx.globalAlpha = 1;
+        }
+
+        ctx.restore();
       },
     };
   },

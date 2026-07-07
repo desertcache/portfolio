@@ -1,4 +1,5 @@
 // Breakout — paddle, ball, and a 8x5 brick wall.
+import { makeGlowSprite } from '../engine/sprites.js';
 
 export default {
   id: 'BREAKOUT',
@@ -29,6 +30,36 @@ export default {
     const rowColors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6'];
     let bricks = [];
 
+    // Prerendered glow sprites — blit instead of per-frame shadowBlur.
+    // Sprite size rounds the fractional brick width up; gameplay rects
+    // keep the exact computed width.
+    const brickGlowPad = 10, paddleGlowPad = 12, ballGlowPad = 14;
+    const brickSpriteW = Math.ceil((W - brickPad * (cols + 1)) / cols);
+    const brickSprites = rowColors.map((color) =>
+      makeGlowSprite(brickSpriteW, 18, brickGlowPad, color, 8, (c, w, h) => {
+        c.fillStyle = color;
+        c.fillRect(0, 0, w, h);
+      }));
+    const makePaddleSprite = (color) =>
+      makeGlowSprite(paddleW, paddleH, paddleGlowPad, color, 10, (c, w, h) => {
+        c.fillStyle = color;
+        c.fillRect(0, 0, w, h);
+      });
+    const paddleSprite = makePaddleSprite('#e879f9');
+    const paddleFlashSprite = makePaddleSprite('#ffffff');
+    const ballSprite = makeGlowSprite(ballRadius * 2, ballRadius * 2, ballGlowPad, '#ffffff', 12, (c, w, h) => {
+      c.fillStyle = '#ffffff';
+      c.beginPath();
+      c.arc(w / 2, h / 2, ballRadius, 0, Math.PI * 2);
+      c.fill();
+    });
+
+    // Visual-only state: ball trail, brick-hit streak, paddle flash.
+    const trail = [];
+    const trailMax = 6;
+    let streak = 0;
+    let paddleFlash = 0;
+
     function buildBricks() {
       bricks = [];
       const brickW = (W - brickPad * (cols + 1)) / cols;
@@ -57,12 +88,19 @@ export default {
 
     return {
       tick() {
+        if (env.fx.consumePause()) return;
+
         ctx.clearRect(0, 0, W, H);
+        const shake = env.fx.shakeOffset();
+        ctx.save();
+        ctx.translate(shake.x, shake.y);
         env.fx.updateAndDraw();
 
         // Move ball
         ballX += ballDX;
         ballY += ballDY;
+        trail.push({ x: ballX, y: ballY });
+        if (trail.length > trailMax) trail.shift();
 
         // Wall bounces
         if (ballX - ballRadius < 0 || ballX + ballRadius > W) {
@@ -76,10 +114,12 @@ export default {
 
         // Ball below paddle = game over
         if (ballY + ballRadius > H) {
+          env.fx.shake(7, 20);
           env.audio.play('breakout-death', (h) => {
             h.noise({ dur: 0.25, vol: 0.16 });
             h.tone({ f: 300, slideTo: 50, dur: 0.4, type: 'sawtooth', vol: 0.12 });
           });
+          ctx.restore();
           env.onGameOver(score);
           return;
         }
@@ -95,6 +135,8 @@ export default {
           const speed = Math.sqrt(ballDX * ballDX + ballDY * ballDY);
           ballDX = speed * Math.sin(angle);
           ballDY = -speed * Math.cos(angle);
+          streak = 0;
+          paddleFlash = 4;
           env.audio.play('breakout-paddle', (h) => h.tone({ f: 220, dur: 0.05, vol: 0.12 }));
         }
 
@@ -110,8 +152,12 @@ export default {
             bricksDestroyed++;
             env.onScore(score);
             env.fx.burst(b.x + b.w / 2, b.y + b.h / 2, 12, b.color, [1, 3], [15, 30]);
+            env.fx.shake(Math.min(2 + streak, 6), 6);
+            env.fx.hitPause(1);
             const brickFreq = [880, 784, 659, 587, 523][b.row];
-            env.audio.play('breakout-brick', (h) => h.tone({ f: brickFreq, dur: 0.06, vol: 0.11 }));
+            const streakFreq = brickFreq * Math.pow(2, Math.min(streak, 12) / 12);
+            env.audio.play('breakout-brick', (h) => h.tone({ f: streakFreq, dur: 0.06, vol: 0.11 }));
+            streak++;
 
             // Speed up every 15 bricks
             if (bricksDestroyed % 15 === 0) {
@@ -146,28 +192,29 @@ export default {
         for (let i = 0; i < bricks.length; i++) {
           const b = bricks[i];
           if (!b.alive) continue;
-          ctx.fillStyle = b.color;
-          ctx.shadowBlur = 6;
-          ctx.shadowColor = b.color;
-          ctx.fillRect(b.x, b.y, b.w, b.h);
+          ctx.drawImage(brickSprites[b.row], b.x - brickGlowPad, b.y - brickGlowPad);
         }
-        ctx.shadowBlur = 0;
+
+        // Ball trail, oldest first
+        for (let i = 0; i < trail.length; i++) {
+          const t = i / (trailMax - 1);
+          ctx.globalAlpha = 0.05 + 0.25 * t;
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(trail[i].x, trail[i].y, 2 + 3 * t, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
 
         // Draw paddle
-        ctx.fillStyle = '#e879f9';
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = '#e879f9';
-        ctx.fillRect(paddleX, H - 25 - paddleH, paddleW, paddleH);
-        ctx.shadowBlur = 0;
+        ctx.drawImage(paddleFlash > 0 ? paddleFlashSprite : paddleSprite,
+          paddleX - paddleGlowPad, H - 25 - paddleH - paddleGlowPad);
+        if (paddleFlash > 0) paddleFlash--;
 
         // Draw ball
-        ctx.beginPath();
-        ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
-        ctx.fillStyle = '#ffffff';
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = '#ffffff';
-        ctx.fill();
-        ctx.shadowBlur = 0;
+        ctx.drawImage(ballSprite, ballX - ballRadius - ballGlowPad, ballY - ballRadius - ballGlowPad);
+
+        ctx.restore();
       },
     };
   },
