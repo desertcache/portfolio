@@ -28,6 +28,11 @@ export default {
       else if (e.key === 'ArrowDown' && snake.dy === 0) { snake.dy = grid; snake.dx = 0; }
     });
 
+    const deathSfx = () => env.audio.play('snake-death', (h) => {
+      h.noise({ dur: 0.3, vol: 0.2 });
+      h.tone({ f: 220, slideTo: 55, dur: 0.35, type: 'sawtooth', vol: 0.12 });
+    });
+
     env.input.onSwipe((dir) => {
       if (dir === 'right' && snake.dx === 0) { snake.dx = grid; snake.dy = 0; }
       else if (dir === 'left' && snake.dx === 0) { snake.dx = -grid; snake.dy = 0; }
@@ -48,6 +53,7 @@ export default {
 
         if (snake.x < 0 || snake.x >= W || snake.y < 0 || snake.y >= H) {
           env.fx.burst(snake.x + grid / 2, snake.y + grid / 2, 30, '#3b82f6', [2, 6], [20, 50]);
+          deathSfx();
           env.onGameOver(score);
           return;
         }
@@ -72,6 +78,10 @@ export default {
             snake.maxCells++;
             score += 10;
             env.onScore(score);
+            const step = Math.min(snake.maxCells - 4, 24);
+            env.audio.play('snake-eat', (h) => h.tone({
+              f: 440 * Math.pow(2, step / 24), dur: 0.07, type: 'square', vol: 0.1,
+            }));
             if (score % 100 === 0 && speedControl > 2) speedControl--;
             apple.x = Math.floor(Math.random() * (W / grid)) * grid;
             apple.y = Math.floor(Math.random() * (H / grid)) * grid;
@@ -80,6 +90,7 @@ export default {
           for (let j = i + 1; j < snake.cells.length; j++) {
             if (snake.cells[i].x === snake.cells[j].x && snake.cells[i].y === snake.cells[j].y) {
               env.fx.burst(snake.x + grid / 2, snake.y + grid / 2, 30, '#3b82f6', [2, 6], [20, 50]);
+              deathSfx();
               env.onGameOver(score);
               return;
             }

@@ -83,6 +83,7 @@ export default {
       const now = Date.now();
       if (now - lastShot < SHOOT_COOLDOWN) return;
       lastShot = now;
+      env.audio.play('ast-shoot', (h) => h.tone({ f: 880, slideTo: 120, dur: 0.12, vol: 0.1 }));
       bullets.push({
         x: ship.x + Math.cos(ship.angle) * ship.radius,
         y: ship.y + Math.sin(ship.angle) * ship.radius,
@@ -108,9 +109,29 @@ export default {
         const rotSpeed = 0.06;
         if (input.held('ArrowLeft') || touchActive('left')) ship.angle -= rotSpeed;
         if (input.held('ArrowRight') || touchActive('right')) ship.angle += rotSpeed;
-        if (input.held('ArrowUp') || touchActive('thrust')) {
+        const thrusting = input.held('ArrowUp') || touchActive('thrust');
+        if (thrusting) {
           ship.vx += Math.cos(ship.angle) * 0.12;
           ship.vy += Math.sin(ship.angle) * 0.12;
+          env.audio.setLoop('ast-thrust', (h) => {
+            const length = Math.floor(h.ctx.sampleRate * 0.5);
+            const buffer = h.ctx.createBuffer(1, length, h.ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let s = 0; s < length; s++) data[s] = Math.random() * 2 - 1;
+            const src = h.ctx.createBufferSource();
+            src.buffer = buffer;
+            src.loop = true;
+            const filter = h.ctx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 110;
+            const gain = h.ctx.createGain();
+            gain.gain.value = 0.12;
+            src.connect(filter).connect(gain).connect(h.out);
+            src.start();
+            return () => { try { src.stop(); } catch { /* already stopped */ } };
+          });
+        } else {
+          env.audio.stopLoop();
         }
 
         // Friction
@@ -137,7 +158,7 @@ export default {
         ctx.stroke();
 
         // Thrust flame
-        if (input.held('ArrowUp') || touchActive('thrust')) {
+        if (thrusting) {
           ctx.strokeStyle = '#f97316';
           ctx.shadowColor = '#f97316';
           ctx.beginPath();
@@ -194,6 +215,13 @@ export default {
               env.onScore(score);
               bullets.splice(j, 1);
               fx.burst(a.x, a.y, 20, '#a78bfa', [1, 4], [20, 40]);
+              const big = a.radius >= 35;
+              const mid = !big && a.radius >= 18;
+              env.audio.play('ast-explode', (h) => h.noise({
+                dur: big ? 0.5 : mid ? 0.35 : 0.22,
+                vol: big ? 0.25 : mid ? 0.18 : 0.14,
+                filterFrom: big ? 1200 : 2400,
+              }));
 
               // Split
               if (a.radius >= 35) {
@@ -222,6 +250,10 @@ export default {
         for (let i = 0; i < asteroids.length; i++) {
           if (Math.hypot(ship.x - asteroids[i].x, ship.y - asteroids[i].y) < ship.radius + asteroids[i].radius * 0.7) {
             fx.burst(ship.x, ship.y, 50, '#22d3ee', [2, 8], [30, 60]);
+            env.audio.play('ast-death', (h) => {
+              h.noise({ dur: 0.6, vol: 0.28, filterFrom: 1000 });
+              h.tone({ f: 160, slideTo: 40, dur: 0.6, type: 'sawtooth', vol: 0.12 });
+            });
             env.onGameOver(score);
             return;
           }
@@ -231,6 +263,9 @@ export default {
         if (asteroids.length === 0) {
           wave++;
           spawnAsteroids(3 + wave);
+          env.audio.play('ast-wave', (h) => h.seq([
+            { f: 660, vol: 0.1 }, { f: 880, vol: 0.1 }, { f: 1100, vol: 0.1 },
+          ], 0.08));
         }
       },
     };

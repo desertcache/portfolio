@@ -41,6 +41,7 @@ export default {
             w: brickW,
             h: brickH,
             color: rowColors[r],
+            row: r,
             alive: true,
           });
         }
@@ -64,11 +65,21 @@ export default {
         ballY += ballDY;
 
         // Wall bounces
-        if (ballX - ballRadius < 0 || ballX + ballRadius > W) ballDX = -ballDX;
-        if (ballY - ballRadius < 0) ballDY = -ballDY;
+        if (ballX - ballRadius < 0 || ballX + ballRadius > W) {
+          ballDX = -ballDX;
+          env.audio.play('breakout-wall', (h) => h.tone({ f: 160, dur: 0.04, vol: 0.08 }));
+        }
+        if (ballY - ballRadius < 0) {
+          ballDY = -ballDY;
+          env.audio.play('breakout-wall', (h) => h.tone({ f: 160, dur: 0.04, vol: 0.08 }));
+        }
 
         // Ball below paddle = game over
         if (ballY + ballRadius > H) {
+          env.audio.play('breakout-death', (h) => {
+            h.noise({ dur: 0.25, vol: 0.16 });
+            h.tone({ f: 300, slideTo: 50, dur: 0.4, type: 'sawtooth', vol: 0.12 });
+          });
           env.onGameOver(score);
           return;
         }
@@ -84,6 +95,7 @@ export default {
           const speed = Math.sqrt(ballDX * ballDX + ballDY * ballDY);
           ballDX = speed * Math.sin(angle);
           ballDY = -speed * Math.cos(angle);
+          env.audio.play('breakout-paddle', (h) => h.tone({ f: 220, dur: 0.05, vol: 0.12 }));
         }
 
         // Brick collisions
@@ -98,6 +110,8 @@ export default {
             bricksDestroyed++;
             env.onScore(score);
             env.fx.burst(b.x + b.w / 2, b.y + b.h / 2, 12, b.color, [1, 3], [15, 30]);
+            const brickFreq = [880, 784, 659, 587, 523][b.row];
+            env.audio.play('breakout-brick', (h) => h.tone({ f: brickFreq, dur: 0.06, vol: 0.11 }));
 
             // Speed up every 15 bricks
             if (bricksDestroyed % 15 === 0) {

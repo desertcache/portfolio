@@ -137,6 +137,15 @@
       color: var(--ink-4);
       z-index: 5;
     }
+    .cabinet-bar .cab-right { display: inline-flex; gap: 18px; align-items: center; }
+    .cab-toggle {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      background: none; border: none; padding: 0;
+      color: var(--ink-4); cursor: pointer;
+      transition: color .2s;
+    }
+    .cab-toggle:hover { color: var(--paper); }
     .cabinet-bar .live { color: oklch(85% 0.14 145); display: inline-flex; gap: 6px; align-items: center; }
     .cabinet-bar .live::before {
       content: ""; width: 5px; height: 5px; border-radius: 50%;
@@ -323,7 +332,10 @@
       <div class="cabinet-grid"></div>
       <div class="cabinet-bar">
         <span>CABINET · v2026.04</span>
-        <span class="live">CANVAS · 60FPS</span>
+        <span class="cab-right">
+          <button id="btn-mute" class="cab-toggle" type="button">SOUND · ON</button>
+          <span class="live">CANVAS · 60FPS</span>
+        </span>
       </div>
 
       <canvas id="gameCanvas" width="800" height="500"></canvas>
