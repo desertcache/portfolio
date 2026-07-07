@@ -263,8 +263,14 @@
     }
     #hud-score #current-score { color: var(--accent); font-family: var(--serif); font-style: italic; font-size: 16px; }
 
-    /* Hidden mobile controls (kept for arcade.js compatibility) */
-    #mobile-controls { display: none !important; }
+    #final-score .new-pb {
+      color: var(--accent);
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.95em;
+      margin-left: 8px;
+    }
+    canvas.pixel-art { image-rendering: pixelated; }
 
     /* Footer meta */
     .arcade-foot {
@@ -343,9 +349,6 @@
       </div>
 
       <div id="hud-score">SCORE · <span id="current-score">0</span></div>
-
-      <!-- Hidden: arcade.js references this -->
-      <div id="mobile-controls"></div>
     </div>
 
     <div class="touch-hint">Swipe · tap · drag to play</div>
@@ -356,24 +359,6 @@
     </div>
   </div>
 
-  <script>
-    // 60fps cap so arcade.js loops are consistent across refresh rates.
-    (function() {
-      var _raf = window.requestAnimationFrame;
-      var lastTime = 0;
-      var targetInterval = 1000 / 60;
-      window.requestAnimationFrame = function(callback) {
-        return _raf(function(now) {
-          if (now - lastTime >= targetInterval) {
-            lastTime = now - ((now - lastTime) % targetInterval);
-            callback(now);
-          } else {
-            _raf(function(t) { callback(t); });
-          }
-        });
-      };
-    })();
-  </script>
-  <script src="arcade.js"></script>
+  <script type="module" src="arcade/main.js"></script>
 </body>
 </html>
