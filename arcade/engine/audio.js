@@ -7,8 +7,12 @@ export function createAudio({ muted = false, onPlay } = {}) {
   let isMuted = muted;
   let loopName = null;
   let loopStop = null;
+  let userGestured = false;
 
   function ensure() {
+    // Never construct the context before a real user gesture — the browser
+    // would refuse it and log an autoplay warning for every attempt.
+    if (!userGestured) return null;
     if (!ctx) {
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return null;
@@ -67,7 +71,10 @@ export function createAudio({ muted = false, onPlay } = {}) {
 
   return {
     // Called from a real user-gesture handler; safe to call repeatedly.
-    unlock() { ensure(); },
+    unlock() {
+      userGestured = true;
+      ensure();
+    },
 
     get ready() { return !!ctx && ctx.state === 'running'; },
     get muted() { return isMuted; },
