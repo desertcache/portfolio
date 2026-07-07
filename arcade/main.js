@@ -143,7 +143,7 @@ function startGame(entry) {
   currentScore = 0;
   menuScreen.style.display = 'none';
   gameOverScreen.style.display = 'none';
-  hudScore.style.display = 'block';
+  hudScore.style.display = entry.ownHud ? 'none' : 'block';
   currentScoreText.textContent = '0';
 
   screen.setMode(entry.mode);

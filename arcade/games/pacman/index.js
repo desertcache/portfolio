@@ -32,6 +32,7 @@ export default {
   id: 'PACMAN',
   title: 'Pac-Man',
   mode: 'portrait',
+  ownHud: true, // renders its own score/lives HUD in-canvas
   start(env) {
     const { ctx, W, H } = env;
     const rng = env.debug ? mulberry32(0xc0ffee) : Math.random;
