@@ -5,7 +5,8 @@ import { createLoop } from './engine/loop.js';
 import { createScreen } from './engine/canvas.js';
 import { createInput } from './engine/input.js';
 import { createFx } from './engine/fx.js';
-import { getPB, getPBs, recordPB } from './engine/storage.js';
+import { createAudio } from './engine/audio.js';
+import { getPBs, recordPB, getSettings, setSetting } from './engine/storage.js';
 
 import snake from './games/snake.js';
 import flappy from './games/flappy.js';
@@ -30,13 +31,31 @@ const screen = createScreen(displayCanvas);
 const input = createInput(screen);
 const fx = createFx(screen.ctx);
 
-// Phase 2 replaces this stub with the WebAudio engine.
-const audioStub = {
-  play() {},
-  startLoop() {},
-  stopLoop() {},
-  unlock() {},
-};
+const debugState = { sfxLog: [] };
+const audio = createAudio({
+  muted: getSettings().muted,
+  onPlay(name) {
+    debugState.sfxLog.push(name);
+    if (debugState.sfxLog.length > 200) debugState.sfxLog.shift();
+  },
+});
+
+// Autoplay policy: the context can only start from a user gesture.
+document.addEventListener('pointerdown', () => audio.unlock());
+document.addEventListener('keydown', () => audio.unlock());
+
+const muteBtn = document.getElementById('btn-mute');
+function renderMute() {
+  if (muteBtn) muteBtn.textContent = audio.muted ? 'SOUND · OFF' : 'SOUND · ON';
+}
+if (muteBtn) {
+  muteBtn.addEventListener('click', () => {
+    audio.setMuted(!audio.muted);
+    setSetting('muted', audio.muted);
+    renderMute();
+  });
+  renderMute();
+}
 
 // --- State ---
 let activeGame = null; // registry entry
@@ -44,11 +63,11 @@ let loop = null;
 let currentScore = 0;
 let drainToken = 0; // invalidates a running death-particle drain
 
-const debugState = { sfxLog: [] };
 if (DEBUG) {
   window.__arcade = {
     get game() { return activeGame ? activeGame.id : null; },
     get score() { return currentScore; },
+    get audioReady() { return audio.ready; },
     sfxLog: debugState.sfxLog,
     screen,
   };
@@ -79,6 +98,7 @@ function stopScene() {
   if (loop) loop.stop();
   loop = null;
   input.detachAll();
+  audio.stopLoop();
   fx.clear();
   activeGame = null;
 }
@@ -105,7 +125,7 @@ function startGame(entry) {
     H: screen.h,
     input,
     fx,
-    audio: audioStub,
+    audio,
     debug: DEBUG,
     onScore(score) {
       currentScore = score;
@@ -129,6 +149,7 @@ function onGameOver(score) {
   if (loop) loop.stop();
   loop = null;
   input.detachAll();
+  audio.stopLoop();
 
   const isNewPB = recordPB(entry.id, score);
   finalScoreText.textContent = `Score: ${score}`;

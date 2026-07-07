@@ -21,14 +21,20 @@ export default {
     const ufo = { x: 100, y: 200, radius: 12, velocity: 0 };
     const pipes = [{ x: W, topHeight: 200 }];
 
+    const flap = () => {
+      ufo.velocity = jumpThrust;
+      env.audio.play('flappy-flap', (h) => h.tone({ f: 320, slideTo: 560, dur: 0.09, type: 'triangle', vol: 0.12 }));
+    };
+
     env.input.onKeyDown((e) => {
-      if (e.key === ' ' || e.key === 'ArrowUp') {
-        ufo.velocity = jumpThrust;
-      }
+      if (e.key === ' ' || e.key === 'ArrowUp') flap();
     });
 
-    env.input.onTap(() => {
-      ufo.velocity = jumpThrust;
+    env.input.onTap(flap);
+
+    const deathSfx = () => env.audio.play('flappy-death', (h) => {
+      h.noise({ dur: 0.3, vol: 0.2 });
+      h.tone({ f: 400, slideTo: 60, dur: 0.4, type: 'sawtooth', vol: 0.12 });
     });
 
     return {
@@ -71,6 +77,7 @@ export default {
           if (ufo.x + ufo.radius > p.x && ufo.x - ufo.radius < p.x + pipeWidth) {
             if (ufo.y - ufo.radius < p.topHeight || ufo.y + ufo.radius > bottomY) {
               env.fx.burst(ufo.x, ufo.y, 40, '#c084fc', [2, 7], [20, 50]);
+              deathSfx();
               env.onGameOver(score);
               return;
             }
@@ -80,6 +87,10 @@ export default {
             p.scored = true;
             score++;
             env.onScore(score);
+            env.audio.play('flappy-score', (h) => h.seq([
+              { f: 880, type: 'triangle', vol: 0.1 },
+              { f: 1318, type: 'triangle', vol: 0.1 },
+            ], 0.07));
           }
         }
         ctx.shadowBlur = 0;
@@ -94,6 +105,7 @@ export default {
 
         if (ufo.y > H || ufo.y < 0) {
           env.fx.burst(ufo.x, ufo.y, 40, '#c084fc', [2, 7], [20, 50]);
+          deathSfx();
           env.onGameOver(score);
           return;
         }
