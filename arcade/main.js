@@ -13,6 +13,7 @@ import snake from './games/snake.js';
 import flappy from './games/flappy.js';
 import breakout from './games/breakout.js';
 import asteroids from './games/asteroids.js';
+import { createAttract } from './games/attract.js';
 
 const GAMES = [pacman, snake, flappy, breakout, asteroids];
 
@@ -44,6 +45,27 @@ const audio = createAudio({
 // Autoplay policy: the context can only start from a user gesture.
 document.addEventListener('pointerdown', () => audio.unlock());
 document.addEventListener('keydown', () => audio.unlock());
+
+// Attract mode runs on the menu canvas; a reduced-motion preference gets a
+// single static frame instead of the animation.
+const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const attract = createAttract(screen);
+const attractLoop = createLoop({ tick: () => attract.tick(), render: screen.blit });
+
+const cabinet = document.getElementById('arcade-section');
+const crtBtn = document.getElementById('btn-crt');
+function renderCrt() {
+  const on = getSettings().crt;
+  cabinet.classList.toggle('crt-off', !on);
+  if (crtBtn) crtBtn.textContent = on ? 'CRT · ON' : 'CRT · OFF';
+}
+if (crtBtn) {
+  crtBtn.addEventListener('click', () => {
+    setSetting('crt', !getSettings().crt);
+    renderCrt();
+  });
+}
+renderCrt();
 
 const muteBtn = document.getElementById('btn-mute');
 function renderMute() {
@@ -91,11 +113,17 @@ function showMenu() {
   hudScore.style.display = 'none';
   screen.setMode('landscape');
   screen.ctx.clearRect(0, 0, screen.w, screen.h);
-  screen.blit();
   renderPBs();
+  if (REDUCED_MOTION) {
+    attract.tick();
+  } else {
+    attractLoop.start();
+  }
+  screen.blit();
 }
 
 function stopScene() {
+  attractLoop.stop();
   if (loop) loop.stop();
   loop = null;
   input.detachAll();
@@ -106,6 +134,7 @@ function stopScene() {
 
 function startGame(entry) {
   drainToken++;
+  attractLoop.stop();
   if (loop) loop.stop();
   input.detachAll();
   fx.clear();
@@ -193,6 +222,23 @@ document.getElementById('btn-restart').addEventListener('click', () => {
 });
 
 document.getElementById('btn-menu').addEventListener('click', showMenu);
+
+// Menu keyboard navigation: arrows move focus, Enter starts, 1-5 quick-start.
+const menuButtons = [...menuScreen.querySelectorAll('.arcade-btn')];
+document.addEventListener('keydown', (e) => {
+  if (menuScreen.style.display === 'none') return;
+  const idx = menuButtons.indexOf(document.activeElement);
+  if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+    e.preventDefault();
+    menuButtons[(idx + 1 + menuButtons.length) % menuButtons.length].focus();
+  } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+    e.preventDefault();
+    menuButtons[(idx - 1 + menuButtons.length) % menuButtons.length].focus();
+  } else if (/^[1-5]$/.test(e.key)) {
+    const btn = menuButtons[Number(e.key) - 1];
+    if (btn) btn.click();
+  }
+});
 
 renderPBs();
 showMenu();

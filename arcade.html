@@ -4,19 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Arcade · Samuel Bates</title>
+  <meta name="description" content="The arcade: five games in vanilla JS on raw HTML5 Canvas — including a dot-for-dot Pac-Man rebuild with authentic ghost AI. No engine, no framework, no dependencies." />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --paper: #f5f0e8;
-      --paper-2: #ece5d9;
-      --ink: #1a1a1f;
+      /* paper/ink tokens follow styles-v4.css; the hotter #e34a2b stays as a
+         deliberate arcade-only accent (it reads better on the dark cabinet) */
+      --paper: #f6f3ee;
+      --paper-2: #efe9df;
+      --ink: #181613;
       --ink-2: #3a3a44;
       --ink-3: #6b6b76;
       --ink-4: #9a9aa3;
-      --rule: #d8d2c4;
+      --rule: rgba(24, 22, 19, 0.12);
       --accent: #e34a2b;
       --serif: "Instrument Serif", Georgia, serif;
       --sans: "Geist", -apple-system, system-ui, sans-serif;
@@ -32,6 +35,7 @@
       display: flex;
       justify-content: center;
     }
+    ::selection { background: var(--accent); color: var(--paper); }
     a { color: inherit; text-decoration: none; }
     .shell { width: 100%; max-width: 1200px; }
 
@@ -58,11 +62,7 @@
       display: flex; gap: 28px;
       font-family: var(--mono); font-size: 12px; letter-spacing: 0.02em;
     }
-    .topbar nav a {
-      color: var(--ink-2);
-      transition: color .2s;
-      position: relative;
-    }
+    .topbar nav a { color: var(--ink-2); transition: color .2s; position: relative; }
     .topbar nav a.active { color: var(--ink); }
     .topbar nav a.active::after {
       content: ""; position: absolute; left: 0; right: 0; bottom: -4px;
@@ -72,70 +72,60 @@
     @media (max-width: 760px) { .topbar nav { display: none; } }
 
     /* Hero */
-    .arcade-hero {
-      display: grid; gap: 16px;
-      margin-bottom: clamp(36px, 5vw, 56px);
-    }
+    .arcade-hero { display: grid; gap: 16px; margin-bottom: clamp(36px, 5vw, 56px); }
     .eyebrow {
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.14em; text-transform: uppercase;
       color: var(--ink-3);
       display: flex; align-items: center; gap: 12px;
     }
     .eyebrow::before {
-      content: "";
-      display: inline-block;
+      content: ""; display: inline-block;
       width: 6px; height: 6px; border-radius: 50%;
       background: var(--accent);
     }
     .arcade-title {
       font-family: var(--serif); font-weight: 400;
       font-size: clamp(48px, 7.5vw, 120px);
-      line-height: 0.95;
-      letter-spacing: -0.025em;
-      text-wrap: balance;
-      margin: 0;
+      line-height: 0.95; letter-spacing: -0.025em;
+      text-wrap: balance; margin: 0;
     }
     .arcade-title em { font-style: italic; color: var(--accent); }
     .arcade-lede {
-      max-width: 640px;
-      font-family: var(--serif);
-      font-style: italic;
+      max-width: 680px;
+      font-family: var(--serif); font-style: italic;
       font-size: clamp(20px, 2vw, 26px);
-      line-height: 1.4;
-      color: var(--ink-2);
-      text-wrap: pretty;
-      margin-top: 6px;
+      line-height: 1.4; color: var(--ink-2);
+      text-wrap: pretty; margin-top: 6px;
     }
 
     /* Cabinet */
     .arcade-cabinet {
       position: relative;
-      background: var(--ink);
-      border-radius: 6px;
-      border: 1px solid var(--ink-2);
+      background: #131318;
+      border-radius: 8px;
+      border: 1px solid #26262e;
       padding: clamp(20px, 3vw, 36px);
-      min-height: 580px;
+      padding-top: 52px;
+      min-height: 620px;
       display: flex; align-items: center; justify-content: center;
       overflow: hidden;
     }
     .cabinet-grid {
       position: absolute; inset: 0;
       background-image:
-        linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px);
+        linear-gradient(to right, rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.035) 1px, transparent 1px);
       background-size: 32px 32px;
       pointer-events: none;
     }
     .cabinet-bar {
       position: absolute; top: 14px; left: 18px; right: 18px;
-      display: flex; justify-content: space-between;
+      display: flex; justify-content: space-between; align-items: center;
       font-family: var(--mono); font-size: 10px;
       letter-spacing: 0.14em; text-transform: uppercase;
       color: var(--ink-4);
-      z-index: 5;
+      z-index: 25;
     }
     .cabinet-bar .cab-right { display: inline-flex; gap: 18px; align-items: center; }
     .cab-toggle {
@@ -157,39 +147,73 @@
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.5; transform: scale(1.4); }
     }
-    canvas {
-      background: #0a0a0e;
-      border: 1px solid var(--ink-2);
-      border-radius: 4px;
-      max-width: 100%;
-      display: block;
-      z-index: 10;
+    @media (prefers-reduced-motion: reduce) {
+      .cabinet-bar .live::before { animation: none; }
     }
+
+    /* CRT screen: bezel + scanlines + vignette (pure static CSS, no JS) */
+    .screen {
+      position: relative;
+      z-index: 10;
+      border-radius: 12px;
+      padding: 14px;
+      background: linear-gradient(160deg, #17171d, #0e0e13);
+      box-shadow:
+        0 0 0 1px #2c2c36,
+        0 18px 50px rgba(0, 0, 0, 0.55),
+        inset 0 2px 8px rgba(255, 255, 255, 0.04);
+    }
+    .screen canvas {
+      background: #0a0a0e;
+      display: block;
+      border-radius: 6px;
+      max-width: 100%;
+    }
+    canvas.pixel-art { image-rendering: pixelated; }
+    .crt-overlay, .crt-vignette {
+      position: absolute; inset: 14px;
+      pointer-events: none;
+      border-radius: 6px;
+    }
+    .crt-overlay {
+      z-index: 3;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.22) 0px, rgba(0, 0, 0, 0.22) 1px,
+        transparent 1px, transparent 3px
+      );
+      opacity: 0.6;
+    }
+    .crt-vignette {
+      z-index: 4;
+      background: radial-gradient(ellipse at center, transparent 58%, rgba(0, 0, 0, 0.42) 100%);
+      box-shadow: inset 0 0 70px rgba(33, 33, 222, 0.08);
+    }
+    .arcade-cabinet.crt-off .crt-overlay,
+    .arcade-cabinet.crt-off .crt-vignette { display: none; }
 
     /* Menu overlay */
     #arcade-menu, #game-over-screen {
       position: absolute; z-index: 20;
       text-align: center;
       color: var(--paper);
-      width: 100%; max-width: 580px; padding: 0 24px;
+      width: 100%; max-width: 560px; padding: 0 24px;
     }
     #arcade-menu h2 {
       font-family: var(--serif); font-style: italic;
-      font-size: clamp(36px, 5vw, 56px);
+      font-size: clamp(32px, 4.5vw, 48px);
       font-weight: 400; line-height: 1;
       letter-spacing: -0.02em;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 18px rgba(0, 0, 0, 0.8);
     }
     #arcade-menu .menu-sub {
       font-family: var(--mono); font-size: 11px;
       letter-spacing: 0.12em; text-transform: uppercase;
       color: var(--ink-4);
-      margin-bottom: 28px;
+      margin-bottom: 22px;
     }
-    .menu-buttons {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
+    .menu-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     @media (max-width: 600px) { .menu-buttons { grid-template-columns: 1fr; } }
     .arcade-btn {
       font-family: var(--mono);
@@ -198,9 +222,9 @@
       text-transform: uppercase;
       letter-spacing: 0.1em;
       border: 1px solid var(--ink-3);
-      background: transparent;
+      background: rgba(10, 10, 14, 0.72);
       color: var(--paper);
-      padding: 14px 20px;
+      padding: 13px 18px;
       cursor: pointer;
       transition: all .2s cubic-bezier(.2,.7,.2,1);
       text-align: left;
@@ -208,6 +232,19 @@
       grid-template-columns: 1fr auto auto;
       align-items: center;
       gap: 14px;
+    }
+    .arcade-btn.featured {
+      grid-column: 1 / -1;
+      border-color: var(--accent);
+      padding: 16px 18px;
+      background:
+        linear-gradient(90deg, rgba(227, 74, 43, 0.14), rgba(10, 10, 14, 0.72) 55%);
+    }
+    .arcade-btn.featured .title { font-size: 13px; letter-spacing: 0.14em; }
+    .arcade-btn .tag {
+      font-size: 9px; letter-spacing: 0.18em;
+      color: #ffff66;
+      margin-left: 10px;
     }
     .arcade-btn .num {
       color: var(--accent);
@@ -219,15 +256,16 @@
       font-family: var(--mono);
       font-size: 10px;
       letter-spacing: 0.08em;
-      color: var(--ink-4, #5a5650);
+      color: var(--ink-4);
       opacity: 0.7;
       text-transform: uppercase;
     }
-    .arcade-btn:hover .hi { color: var(--paper); opacity: 1; }
-    .arcade-btn:hover {
+    .arcade-btn:hover .hi, .arcade-btn:focus-visible .hi { color: var(--paper); opacity: 1; }
+    .arcade-btn:hover, .arcade-btn:focus-visible {
       border-color: var(--accent);
       color: var(--accent);
       transform: translateY(-1px);
+      outline: none;
     }
     .arcade-btn .arrow { font-family: var(--serif); font-style: italic; font-size: 16px; }
 
@@ -239,6 +277,7 @@
       font-weight: 400; line-height: 1;
       color: var(--accent);
       margin-bottom: 8px;
+      text-shadow: 0 2px 18px rgba(0, 0, 0, 0.8);
     }
     #final-score {
       font-family: var(--mono); font-size: 13px;
@@ -246,32 +285,6 @@
       color: var(--ink-4);
       margin-bottom: 28px;
     }
-    .gameover-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-    .game-btn {
-      font-family: var(--mono); font-weight: 500;
-      font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
-      border: 1px solid var(--ink-3);
-      background: transparent;
-      color: var(--paper);
-      padding: 12px 22px;
-      cursor: pointer;
-      transition: all .2s;
-    }
-    .game-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-    /* HUD */
-    #hud-score {
-      position: absolute;
-      top: 40px; left: 38px;
-      z-index: 15;
-      color: var(--paper);
-      font-family: var(--mono);
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      display: none;
-    }
-    #hud-score #current-score { color: var(--accent); font-family: var(--serif); font-style: italic; font-size: 16px; }
-
     #final-score .new-pb {
       color: var(--accent);
       font-family: var(--serif);
@@ -279,7 +292,34 @@
       font-size: 0.95em;
       margin-left: 8px;
     }
-    canvas.pixel-art { image-rendering: pixelated; }
+    .gameover-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .game-btn {
+      font-family: var(--mono); font-weight: 500;
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+      border: 1px solid var(--ink-3);
+      background: rgba(10, 10, 14, 0.72);
+      color: var(--paper);
+      padding: 12px 22px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .game-btn:hover, .game-btn:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+
+    /* HUD */
+    #hud-score {
+      position: absolute;
+      top: 44px; left: 38px;
+      z-index: 15;
+      color: var(--paper);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      display: none;
+    }
+    #hud-score #current-score {
+      color: var(--accent);
+      font-family: var(--serif); font-style: italic; font-size: 16px;
+    }
 
     /* Footer meta */
     .arcade-foot {
@@ -302,9 +342,7 @@
       text-align: center;
       padding: 12px;
     }
-    @media (max-width: 768px) {
-      .touch-hint { display: block; }
-    }
+    @media (max-width: 768px) { .touch-hint { display: block; } }
   </style>
 </head>
 <body>
@@ -313,7 +351,7 @@
       <a href="index.html" class="brand">
         <span class="brand-mark">S</span>
         <span>Samuel Bates</span>
-        <span class="ver">· v2026.04</span>
+        <span class="ver">· v2026.07</span>
       </a>
       <nav>
         <a href="index.html">[01] Portfolio</a>
@@ -325,29 +363,39 @@
     <div class="arcade-hero">
       <div class="eyebrow">Detour · The Arcade</div>
       <h1 class="arcade-title">Take a <em>break.</em></h1>
-      <p class="arcade-lede">Four games written in vanilla JS on raw HTML5 Canvas — no engine, no framework. Built between PRs.</p>
+      <p class="arcade-lede">Five games in vanilla JS on raw HTML5 Canvas — no engine, no framework, no dependencies. Featuring a dot-for-dot Pac-Man rebuild with the original ghost AI.</p>
     </div>
 
     <div id="arcade-section" class="arcade-cabinet">
       <div class="cabinet-grid"></div>
       <div class="cabinet-bar">
-        <span>CABINET · v2026.04</span>
+        <span>CABINET · v2026.07</span>
         <span class="cab-right">
+          <button id="btn-crt" class="cab-toggle" type="button">CRT · ON</button>
           <button id="btn-mute" class="cab-toggle" type="button">SOUND · ON</button>
           <span class="live">CANVAS · 60FPS</span>
         </span>
       </div>
 
-      <canvas id="gameCanvas" width="800" height="500"></canvas>
+      <div class="screen">
+        <canvas id="gameCanvas" width="800" height="500"></canvas>
+        <div class="crt-overlay"></div>
+        <div class="crt-vignette"></div>
+      </div>
 
       <div id="arcade-menu">
         <h2>Select a game</h2>
-        <div class="menu-sub">04 titles · ~2,400 LOC vanilla JS · zero dependencies</div>
+        <div class="menu-sub">05 titles · vanilla JS ES modules · zero dependencies</div>
         <div class="menu-buttons">
-          <button id="btn-snake" class="arcade-btn"><span><span class="num">01</span>Neon Snake</span><span class="hi" data-game="SNAKE">PB · —</span><span class="arrow">→</span></button>
-          <button id="btn-flappy" class="arcade-btn"><span><span class="num">02</span>Flappy UFO</span><span class="hi" data-game="FLAPPY">PB · —</span><span class="arrow">→</span></button>
-          <button id="btn-breakout" class="arcade-btn"><span><span class="num">03</span>Breakout</span><span class="hi" data-game="BREAKOUT">PB · —</span><span class="arrow">→</span></button>
-          <button id="btn-asteroids" class="arcade-btn"><span><span class="num">04</span>Asteroids</span><span class="hi" data-game="ASTEROIDS">PB · —</span><span class="arrow">→</span></button>
+          <button id="btn-pacman" class="arcade-btn featured">
+            <span class="title"><span class="num">01</span>Pac-Man<span class="tag">★ Flagship</span></span>
+            <span class="hi" data-game="PACMAN">PB · —</span>
+            <span class="arrow">→</span>
+          </button>
+          <button id="btn-snake" class="arcade-btn"><span><span class="num">02</span>Neon Snake</span><span class="hi" data-game="SNAKE">PB · —</span><span class="arrow">→</span></button>
+          <button id="btn-flappy" class="arcade-btn"><span><span class="num">03</span>Flappy UFO</span><span class="hi" data-game="FLAPPY">PB · —</span><span class="arrow">→</span></button>
+          <button id="btn-breakout" class="arcade-btn"><span><span class="num">04</span>Breakout</span><span class="hi" data-game="BREAKOUT">PB · —</span><span class="arrow">→</span></button>
+          <button id="btn-asteroids" class="arcade-btn"><span><span class="num">05</span>Asteroids</span><span class="hi" data-game="ASTEROIDS">PB · —</span><span class="arrow">→</span></button>
         </div>
       </div>
 
@@ -367,7 +415,7 @@
 
     <div class="arcade-foot">
       <span>Samuel Bates · Arcade · 2026</span>
-      <span class="controls">Desktop · arrows / space / mouse</span>
+      <span class="controls">Keys · arrows / space / mouse — Touch · swipe / tap / drag</span>
     </div>
   </div>
 
