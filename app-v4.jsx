@@ -33,6 +33,7 @@ function TopStrip() {
           <span>FDE · Solutions · Applied AI</span>
         </div>
         <div className="topstrip-right">
+          <button id="theme-toggle" className="theme-toggle" type="button" aria-label="Toggle dark mode">◐</button>
           <a className="topstrip-arcade" href="starship.html" title="New — walk a fully procedural starship">
             <span className="dot-blink"></span> Starship
           </a>
