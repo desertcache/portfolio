@@ -31,3 +31,6 @@ If you forget, your edit silently won't ship (the page loads app-v4.js, not the 
   hotter accent `#e34a2b`; the homepage accent stays `#b9442b`.
 - starship.html embeds https://desertcache.github.io/starship/ click-to-load only
   (a live Three.js iframe would burn GPU from page load otherwise).
+- `alive.js` (theme toggle, ember, stars, transit, count-up, warp key) is
+  plain JS — edit and ship directly, NO precompile step. Only app-v4.jsx
+  needs babel.
