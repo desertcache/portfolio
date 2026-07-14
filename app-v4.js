@@ -50,7 +50,12 @@ function TopStrip() {
     className: "avail"
   }, D.identity.available), React.createElement("span", null, D.identity.location), React.createElement("span", null, "FDE · Solutions · Applied AI")), React.createElement("div", {
     className: "topstrip-right"
-  }, React.createElement("a", {
+  }, React.createElement("button", {
+    id: "theme-toggle",
+    className: "theme-toggle",
+    type: "button",
+    "aria-label": "Toggle dark mode"
+  }, "◐"), React.createElement("a", {
     className: "topstrip-arcade",
     href: "starship.html",
     title: "New — walk a fully procedural starship"
