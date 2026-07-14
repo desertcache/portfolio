@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Starship Explorer · Samuel Bates</title>
+  <meta name="description" content="Board the STREL-7: a first-person walkable starship in Three.js. Zero asset files — every texture and planet is procedural. Built end-to-end by an AI agent fleet under direction." />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* paper/ink tokens follow styles-v4.css; the hotter #e34a2b is the shared
+         "play pages" accent (arcade + starship) — it reads better on the dark dock */
+      --paper: #f6f3ee;
+      --paper-2: #efe9df;
+      --ink: #181613;
+      --ink-2: #3a3a44;
+      --ink-3: #6b6b76;
+      --ink-4: #9a9aa3;
+      --rule: rgba(24, 22, 19, 0.12);
+      --accent: #e34a2b;
+      --serif: "Instrument Serif", Georgia, serif;
+      --sans: "Geist", -apple-system, system-ui, sans-serif;
+      --mono: "Geist Mono", ui-monospace, Menlo, monospace;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--sans);
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: clamp(20px, 4vw, 56px);
+      display: flex;
+      justify-content: center;
+    }
+    ::selection { background: var(--accent); color: var(--paper); }
+    a { color: inherit; text-decoration: none; }
+    .shell { width: 100%; max-width: 1200px; }
+
+    /* Top bar — matches portfolio nav */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: clamp(40px, 6vw, 80px);
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--mono); font-size: 12px; letter-spacing: 0.02em;
+    }
+    .brand-mark {
+      width: 24px; height: 24px; display: grid; place-items: center;
+      background: var(--ink); color: var(--paper);
+      border-radius: 4px;
+      font-family: var(--serif); font-style: italic;
+      font-size: 16px; padding-bottom: 2px;
+    }
+    .brand .ver { color: var(--ink-3); }
+    .topbar nav {
+      display: flex; gap: 28px;
+      font-family: var(--mono); font-size: 12px; letter-spacing: 0.02em;
+    }
+    .topbar nav a { color: var(--ink-2); transition: color .2s; position: relative; }
+    .topbar nav a.active { color: var(--ink); }
+    .topbar nav a.active::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: -4px;
+      height: 1px; background: var(--accent);
+    }
+    .topbar nav a:hover { color: var(--ink); }
+    @media (max-width: 760px) { .topbar nav { display: none; } }
+
+    /* Hero */
+    .ship-hero { display: grid; gap: 16px; margin-bottom: clamp(28px, 4vw, 44px); }
+    .eyebrow {
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ink-3);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .eyebrow::before {
+      content: ""; display: inline-block;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+    }
+    .ship-title {
+      font-family: var(--serif); font-weight: 400;
+      font-size: clamp(48px, 7.5vw, 120px);
+      line-height: 0.95; letter-spacing: -0.025em;
+      text-wrap: balance; margin: 0;
+    }
+    .ship-title em { font-style: italic; color: var(--accent); }
+    .ship-lede {
+      max-width: 680px;
+      font-family: var(--serif); font-style: italic;
+      font-size: clamp(20px, 2vw, 26px);
+      line-height: 1.4; color: var(--ink-2);
+      text-wrap: pretty; margin-top: 6px;
+    }
+    .ship-controls {
+      display: flex; flex-wrap: wrap; gap: 8px 24px;
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ink-2);
+      margin-top: 8px;
+    }
+    .ship-controls .note { color: var(--ink-3); }
+
+    /* The dock — dark frame housing the game */
+    .ship-dock {
+      background: #131318;
+      border: 1px solid #26262e;
+      border-radius: 8px;
+      padding: 10px;
+      height: min(78vh, 860px);
+      min-height: 480px;
+      display: flex; flex-direction: column;
+    }
+    .dock-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 4px 6px 10px;
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ink-4);
+    }
+    .dock-stage {
+      position: relative;
+      flex: 1; min-height: 0;
+      border-radius: 5px;
+      overflow: hidden;
+      background: #0a0a0e;
+    }
+    .dock-poster {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .dock-start {
+      position: absolute; left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      display: grid; gap: 7px; justify-items: center;
+      font-family: var(--mono); font-weight: 500;
+      font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--paper);
+      border: 1px solid rgba(246, 243, 238, 0.5);
+      background: rgba(10, 10, 14, 0.78);
+      padding: 16px 28px; border-radius: 999px;
+      cursor: pointer;
+      transition: all .2s cubic-bezier(.2,.7,.2,1);
+      text-align: center;
+    }
+    .dock-start:hover, .dock-start:focus-visible {
+      border-color: var(--accent); color: var(--accent);
+      transform: translate(-50%, -50%) translateY(-1px);
+      outline: none;
+    }
+    .dock-start .sub {
+      font-size: 9px; letter-spacing: 0.16em;
+      color: var(--ink-4);
+    }
+    .dock-frame {
+      width: 100%; height: 100%;
+      border: 0; display: block;
+      background: #0a0a0e;
+      border-radius: 5px;
+    }
+    .dock-mobile-note {
+      display: none;
+      position: absolute; left: 0; right: 0; bottom: 0;
+      padding: 18px 14px 14px;
+      text-align: center;
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--paper);
+      background: linear-gradient(transparent, rgba(10, 10, 14, 0.88) 40%);
+      line-height: 1.8;
+    }
+    .dock-mobile-note a { color: var(--accent); }
+    body.no-embed .dock-start { display: none; }
+    body.no-embed .dock-mobile-note { display: block; }
+
+    /* Meta row under the dock */
+    .ship-meta {
+      margin-top: 14px;
+      display: flex; flex-wrap: wrap; gap: 10px 28px;
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ink-3);
+    }
+    .ship-meta a { color: var(--accent); transition: 0.18s; }
+    .ship-meta a:hover { color: var(--ink); }
+
+    /* How it was built */
+    .ship-how {
+      margin-top: clamp(36px, 5vw, 56px);
+      padding-top: 24px;
+      border-top: 1px solid var(--rule);
+      display: grid; grid-template-columns: 160px 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 720px) { .ship-how { grid-template-columns: 1fr; gap: 10px; } }
+    .ship-how .label {
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ink-3);
+      padding-top: 4px;
+    }
+    .ship-how p {
+      max-width: 70ch;
+      color: var(--ink-2);
+      font-size: 16px; line-height: 1.6;
+      margin: 0 0 12px;
+      text-wrap: pretty;
+    }
+    .ship-how a { border-bottom: 1px solid var(--accent); padding-bottom: 1px; }
+    .ship-how a:hover { color: var(--accent); }
+
+    /* Footer */
+    .ship-foot {
+      margin-top: clamp(24px, 3vw, 36px);
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ink-3);
+      padding-top: 16px;
+      border-top: 1px solid var(--rule);
+      flex-wrap: wrap; gap: 12px;
+    }
+    .ship-foot .controls { color: var(--ink-2); }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <a href="index.html" class="brand">
+        <span class="brand-mark">S</span>
+        <span>Samuel Bates</span>
+        <span class="ver">· v2026.07</span>
+      </a>
+      <nav>
+        <a href="index.html">[01] Portfolio</a>
+        <a href="index.html#work">[02] Work</a>
+        <a href="arcade.html">[03] Arcade</a>
+        <a href="starship.html" class="active">[04] Starship</a>
+      </nav>
+    </div>
+
+    <div class="ship-hero">
+      <div class="eyebrow">Live demo · Starship Explorer</div>
+      <h1 class="ship-title">Board the <em>ship.</em></h1>
+      <p class="ship-lede">A first-person walkable starship, entirely procedural — no asset files, no engine but Three.js. Written end-to-end by an AI agent fleet under direction, one verified screenshot at a time.</p>
+      <div class="ship-controls">
+        <span>W A S D — move</span>
+        <span>Mouse — look (click to capture)</span>
+        <span>E — interact</span>
+        <span>` — debug</span>
+        <span class="note">Runs best on desktop — needs a keyboard and mouse.</span>
+      </div>
+    </div>
+
+    <div id="dock" class="ship-dock">
+      <div class="dock-bar">
+        <span>STREL-7 · REMOTE DOCK</span>
+        <span>WEBGL2 · POINTER LOCK</span>
+      </div>
+      <div class="dock-stage">
+        <img class="dock-poster" src="assets/starship-poster.jpg"
+             alt="Corridor of the STREL-7 — cream panels, burnt-orange door frames, teal floor strips"
+             width="1280" height="720" />
+        <button id="dock-start" class="dock-start" type="button">
+          <span>▶ &nbsp;Board the ship</span>
+          <span class="sub">click-to-load · nothing runs until you board</span>
+        </button>
+        <div class="dock-mobile-note">
+          Desktop only — the ship needs a keyboard and a mouse.<br />
+          Enjoy the view, or <a href="https://desertcache.github.io/starship/" target="_blank" rel="noreferrer">open it anyway ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ship-meta">
+      <a href="https://desertcache.github.io/starship/" target="_blank" rel="noreferrer">Open in full tab ↗</a>
+      <a href="https://github.com/desertcache/starship" target="_blank" rel="noreferrer">GitHub ↗</a>
+      <span>WASD · mouse · E · ` — Esc releases the mouse</span>
+    </div>
+
+    <div class="ship-how">
+      <div class="label">How it was built</div>
+      <div>
+        <p>Built by a fleet of Claude agents working in parallel — one room per agent, an orchestrator enforcing a 300-line file limit and a typed room contract, and a headless Playwright verify pass screenshotting every named camera before any phase could merge. Ten functional tests (doors, quests, portals, save/load) gate every release; the frame budget is measured on real hardware, not taken on faith.</p>
+        <p>There are zero asset files in the repo: every wall panel and floor streak is painted onto a CanvasTexture at runtime, every planet outside the windows is procedurally seeded. The constitution the agents worked under is public — read <a href="https://github.com/desertcache/starship/blob/main/CLAUDE.md" target="_blank" rel="noreferrer">CLAUDE.md</a> and <a href="https://github.com/desertcache/starship/blob/main/KICKOFF.md" target="_blank" rel="noreferrer">KICKOFF.md</a> in the repo.</p>
+      </div>
+    </div>
+
+    <div class="ship-foot">
+      <span>Samuel Bates · Starship Explorer · 2026</span>
+      <span class="controls">WASD · mouse · E — desktop · WebGL2</span>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var GAME = "https://desertcache.github.io/starship/";
+      var stage = document.querySelector(".dock-stage");
+      var start = document.getElementById("dock-start");
+
+      // touch-only (no fine pointer) or small screens get the poster + note
+      var isTouch = window.matchMedia("(pointer: coarse)").matches &&
+                    !window.matchMedia("(pointer: fine)").matches;
+      var isSmall = window.matchMedia("(max-width: 899px)").matches;
+
+      if (isTouch || isSmall) {
+        document.body.classList.add("no-embed");
+        return;
+      }
+
+      start.addEventListener("click", function () {
+        var frame = document.createElement("iframe");
+        frame.src = GAME;
+        frame.className = "dock-frame";
+        frame.setAttribute("allow", "pointer-lock; fullscreen");
+        frame.setAttribute("allowfullscreen", "");
+        frame.setAttribute("title", "Starship Explorer — live");
+        stage.replaceChildren(frame);
+        frame.focus();
+      });
+    })();
+  </script>
+</body>
+</html>
