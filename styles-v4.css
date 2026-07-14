@@ -930,3 +930,129 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 0; }
   --accent-soft: rgba(233, 129, 102, 0.12);
 }
 [data-theme="dark"] .topstrip { background: rgba(22, 20, 18, 0.92); }
+
+/* ============================================================
+   ALIVE — living-paper details, driven by alive.js
+   (theme toggle, cursor ember, constellation rules, orb
+   proximity, STREL-7 transit, warp toast)
+   ============================================================ */
+.theme-toggle {
+  background: none; border: 0; padding: 4px;
+  font-size: 15px; line-height: 1;
+  color: var(--ink-3); cursor: pointer;
+  transition: color .18s, transform .3s;
+}
+.theme-toggle:hover { color: var(--accent); transform: rotate(180deg); }
+
+/* transient class during toggle — smooth cross-fade, then removed */
+html.theme-fade, html.theme-fade body,
+html.theme-fade *, html.theme-fade *::before, html.theme-fade *::after {
+  transition: background-color .45s ease, color .45s ease,
+              border-color .45s ease, box-shadow .45s ease !important;
+}
+
+/* night-mode lifts so dark frames still read as objects */
+[data-theme="dark"] .lab-frame { border-color: #3a3a46; }
+[data-theme="dark"] .lab-frame-bar { color: #7c7c88; }
+[data-theme="dark"] .photo img { filter: saturate(0.88) brightness(0.92); }
+
+/* cursor ember canvas */
+#ember-canvas {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 95;
+}
+
+/* constellation rule stars */
+.section, .contact { position: relative; }
+.rule-stars {
+  position: absolute; left: 0; right: 0; top: -1px; height: 2px;
+  pointer-events: none;
+}
+.rule-star {
+  position: absolute; top: -1px;
+  width: 3px; height: 3px; border-radius: 50%;
+  background: var(--accent);
+  opacity: .14;
+}
+.rule-star.lit { animation: star-twinkle 1.4s ease-out 1; }
+@keyframes star-twinkle {
+  0%   { opacity: .14; transform: scale(1); }
+  35%  { opacity: .8;  transform: scale(1.7); }
+  100% { opacity: .14; transform: scale(1); }
+}
+.shooting-star {
+  position: absolute; top: -1px;
+  width: 64px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent));
+  opacity: 0;
+  pointer-events: none;
+}
+.shooting-star.go { animation: star-shoot 1.1s ease-in 1; }
+@keyframes star-shoot {
+  0%   { transform: translateX(-70px); opacity: 0; }
+  12%  { opacity: .7; }
+  100% { transform: translateX(48vw); opacity: 0; }
+}
+
+/* orb proximity — alive.js drives --notice 0..1 */
+.hero-orb {
+  transform: scale(calc(1 + 0.04 * var(--notice, 0)));
+  box-shadow: 0 0 calc(46px * var(--notice, 0))
+              rgba(233, 129, 102, calc(0.38 * var(--notice, 0)));
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+/* STREL-7 transit — wide desktop only */
+.transit-rail, .transit-ship { display: none; }
+@media (min-width: 1100px) {
+  .transit-rail {
+    display: block; position: fixed;
+    top: 15vh; bottom: 15vh; right: 26px; width: 0;
+    border-right: 1px dotted rgba(24, 22, 19, 0.22);
+    z-index: 40; pointer-events: none;
+  }
+  [data-theme="dark"] .transit-rail { border-right-color: rgba(241, 236, 228, 0.2); }
+  .transit-ship {
+    display: block; position: fixed;
+    right: 21px; top: 15vh;
+    width: 11px; height: 14px;
+    color: var(--ink-3);
+    z-index: 41; pointer-events: none;
+    transition: color .3s;
+  }
+  .transit-ship svg { display: block; width: 100%; height: 100%; fill: currentColor; }
+  .transit-ship.docked { color: var(--accent); }
+  .transit-ship.docked::after {
+    content: ""; position: absolute; inset: -7px;
+    border: 1px solid var(--accent); border-radius: 50%;
+    animation: dock-ping 1s ease-out 1;
+    opacity: 0;
+  }
+}
+@keyframes dock-ping {
+  0%   { transform: scale(.4); opacity: .7; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* warp toast */
+.warp-toast {
+  position: fixed; left: 50%; bottom: 34px;
+  transform: translateX(-50%) translateY(8px);
+  z-index: 120;
+  font-family: var(--mono); font-size: 11px;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: #f6f3ee; background: #131318;
+  border: 1px solid #3a3a46; border-radius: 999px;
+  padding: 10px 18px;
+  opacity: 0; transition: opacity .25s, transform .25s;
+}
+.warp-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* one switch kills all motion */
+@media (prefers-reduced-motion: reduce) {
+  .rule-star.lit, .shooting-star.go, .transit-ship.docked::after { animation: none; }
+  .theme-toggle:hover { transform: none; }
+  .hero-orb { transform: none; box-shadow: none; }
+  #ember-canvas, .transit-rail, .transit-ship { display: none; }
+}
