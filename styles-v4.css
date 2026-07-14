@@ -166,6 +166,10 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 0; }
   flex-shrink: 1;
   display: block;
 }
+/* desktop two-column hero has room — let the orb hold its own next to the name */
+@media (min-width: 881px) {
+  .hero-orb { width: clamp(150px, 19vw, 268px); }
+}
 .hero-orb iframe {
   position: absolute;
   left: 50%; top: 50%;
