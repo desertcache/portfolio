@@ -5,6 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Samuel Bates — Forward Deployed Engineer</title>
   <meta name="description" content="Samuel Bates · Forward Deployed Engineer at DoorDash. I turn operational risk into shipped software: React, TypeScript, Snowflake, and production AI agents." />
+  <meta name="theme-color" content="#f6f3ee" />
+  <script>
+    // no-FOUC: apply saved/system theme before first paint (alive.js wires the toggle)
+    (function () {
+      try {
+        var t = localStorage.getItem('sb-theme');
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', t);
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#161412' : '#f6f3ee');
+      } catch (e) { /* storage blocked — stay light */ }
+    })();
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,5 +38,6 @@
 
   <script src="data-v4.js"></script>
   <script src="app-v4.js" defer></script>
+  <script src="alive.js" defer></script>
 </body>
 </html>
