@@ -33,8 +33,11 @@ function TopStrip() {
           <span>FDE · Solutions · Applied AI</span>
         </div>
         <div className="topstrip-right">
+          <a className="topstrip-arcade" href="starship.html" title="New — walk a fully procedural starship">
+            <span className="dot-blink"></span> Starship
+          </a>
           <a className="topstrip-arcade" href="arcade.html" title="A small detour — vanilla JS arcade games">
-            <span className="dot-blink"></span> Arcade
+            Arcade
           </a>
           <a className="topstrip-cta" href={`mailto:${D.identity.email}`}>Get in touch ↗</a>
         </div>
@@ -63,6 +66,11 @@ function Hero() {
               <span><b>Based:</b> Phoenix, AZ</span>
               <span><b>Open to:</b> Remote · Hybrid · SF Bay</span>
             </div>
+            <a className="hero-note" href="starship.html">
+              <span className="dot-blink"></span>
+              <span><b>New</b> — Starship Explorer: a walkable, fully procedural starship. Board it</span>
+              <span className="arrow">→</span>
+            </a>
           </div>
 
           <Photo />
@@ -237,13 +245,91 @@ function CaseStudy({ id, onClose }) {
   );
 }
 
+// ---------- lab (playable demos) ----------
+function LazyMount({ children, className }) {
+  const ref = useRef(null);
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setShow(true); io.disconnect(); }
+    }, { rootMargin: "400px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return <div ref={ref} className={className}>{show ? children : null}</div>;
+}
+
+function Lab() {
+  const ship = D.lab.find(x => x.id === "starship");
+  const sam = D.lab.find(x => x.id === "samantha");
+  const arcade = D.lab.find(x => x.id === "arcade");
+  return (
+    <section id="lab" className="section">
+      <div className="wrap">
+        <Reveal className="section-head">
+          <div className="section-num">03 / Lab</div>
+          <div>
+            <h2 className="section-title">Demos you can <em>walk around in.</em></h2>
+            <p className="section-lede">
+              Not screenshots — running software. A procedural starship you can board, a GPU orb rendering live on this page, and an arcade rebuilt dot-for-dot. All in the browser, all built after hours directing an AI agent fleet.
+            </p>
+          </div>
+        </Reveal>
+
+        <Reveal className="lab-feature">
+          <a className="lab-frame lab-poster" href={ship.href}>
+            <span className="lab-frame-bar"><span>STREL-7 · REMOTE DOCK</span><span>DESKTOP · WEBGL</span></span>
+            <img src={ship.poster} alt={ship.posterAlt} loading="lazy" width="1280" height="720" />
+            <span className="lab-play">▶ {ship.cta}</span>
+          </a>
+          <div className="lab-copy">
+            <div className="label">{ship.eyebrow}</div>
+            <h3 className="lab-title">{ship.title}</h3>
+            <p className="lab-one">{ship.one}</p>
+            <div className="lab-meta">{ship.meta.join(" · ")}</div>
+            <div className="lab-links">
+              <a className="lab-link" href={ship.href}>{ship.cta} <span className="arrow">→</span></a>
+              <a className="lab-link" href={ship.github} target="_blank" rel="noreferrer">GitHub ↗</a>
+            </div>
+          </div>
+        </Reveal>
+
+        <Reveal className="lab-row">
+          <div>
+            <div className="lab-frame">
+              <span className="lab-frame-bar"><span>SOUL ORB</span><span className="live">LIVE · WEBGL</span></span>
+              <LazyMount className="lab-embed-slot">
+                <iframe src={sam.embed} title="Samantha UI — live audio-reactive orb" loading="lazy" />
+              </LazyMount>
+            </div>
+            <div className="lab-caption">
+              <b>{sam.title}</b> — {sam.meta.join(" · ")} ·{" "}
+              <a className="lab-link" href={sam.embed} target="_blank" rel="noreferrer">{sam.cta} ↗</a>{" "}
+              <a className="lab-link" href={sam.github} target="_blank" rel="noreferrer">GitHub ↗</a>
+            </div>
+            <p className="lab-one" style={{ marginTop: 10 }}>{sam.one}</p>
+          </div>
+          <a className="lab-card" href={arcade.href}>
+            <div className="label">{arcade.eyebrow}</div>
+            <h3 className="lab-title">{arcade.title}</h3>
+            <p className="lab-one">{arcade.one}</p>
+            <div className="lab-meta">{arcade.meta.join(" · ")}</div>
+            <div className="lab-link" style={{ marginTop: "auto" }}>{arcade.cta} <span className="arrow">→</span></div>
+          </a>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
 // ---------- arc ----------
 function Arc() {
   return (
-    <section className="section">
+    <section className="section tinted">
       <div className="wrap">
         <Reveal className="section-head">
-          <div className="section-num">03 / Arc</div>
+          <div className="section-num">04 / Arc</div>
           <div>
             <h2 className="section-title">EMT dispatch <em>to</em> production code, in eight years.</h2>
             <p className="section-lede">
@@ -272,10 +358,10 @@ function Arc() {
 // ---------- validation ----------
 function Validation() {
   return (
-    <section className="section tinted">
+    <section className="section">
       <div className="wrap">
         <Reveal className="section-head">
-          <div className="section-num">04 / Trust</div>
+          <div className="section-num">05 / Trust</div>
           <div>
             <h2 className="section-title">What people <em>actually said.</em></h2>
             <p className="section-lede">
@@ -313,10 +399,10 @@ function Validation() {
 // ---------- stack ----------
 function Stack() {
   return (
-    <section className="section">
+    <section className="section tinted">
       <div className="wrap">
         <Reveal className="section-head">
-          <div className="section-num">05 / Stack</div>
+          <div className="section-num">06 / Stack</div>
           <div>
             <h2 className="section-title">What's actually <em>in production.</em></h2>
             <p className="section-lede">
@@ -386,6 +472,10 @@ function Contact() {
             <a href="arcade.html" style={{ borderBottom: "1px solid var(--accent)", color: "var(--accent)" }}>
               p.s. there's an arcade →
             </a>
+            {" · "}
+            <a href="starship.html" style={{ borderBottom: "1px solid var(--accent)", color: "var(--accent)" }}>
+              and a starship →
+            </a>
           </span>
         </div>
       </div>
@@ -403,6 +493,7 @@ function App() {
         <Hero />
         <Receipt />
         <Work onOpen={setOpenId} />
+        <Lab />
         <Arc />
         <Validation />
         <Stack />

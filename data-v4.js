@@ -174,6 +174,44 @@ window.PORTFOLIO_DATA_V4 = {
     Operating: ["Business-case authoring", "Vendor pod ops", "Outage sizing", "Pilot design (Bayesian)", "Workshop facilitation"],
   },
 
+  // Playable demos — everything on this list runs in the browser, today.
+  lab: [
+    {
+      id: "starship",
+      kind: "feature",
+      eyebrow: "Flagship · Playable build",
+      title: "Starship Explorer",
+      one: "A first-person walkable starship in Three.js. Zero asset files — every panel, texture, and planet outside the windows is generated procedurally at runtime. Built end-to-end by an AI agent fleet I directed, gated by an automated screenshot-verify pipeline.",
+      meta: ["Three.js", "TypeScript", "100% procedural", "144 fps"],
+      poster: "assets/starship-poster.jpg",
+      posterAlt: "Corridor of the STREL-7 — cream panels, burnt-orange door frames, teal floor strips",
+      href: "starship.html",
+      cta: "Walk the ship",
+      github: "https://github.com/desertcache/starship",
+    },
+    {
+      id: "samantha",
+      kind: "embed",
+      eyebrow: "Live · Rendering on this page",
+      title: "Samantha UI",
+      one: "A 'Her'-inspired soul orb: one GPU-displaced sphere, hand-written GLSL, audio-reactive at 60fps. What's below isn't a video — it's the real app, idling in its listening state.",
+      meta: ["React 19", "Three.js", "GLSL"],
+      embed: "https://desertcache.github.io/samantha-ui/",
+      cta: "Open full screen",
+      github: "https://github.com/desertcache/samantha-ui",
+    },
+    {
+      id: "arcade",
+      kind: "card",
+      eyebrow: "Detour",
+      title: "The Arcade",
+      one: "Five games in vanilla JS on raw canvas — including a dot-for-dot Pac-Man rebuild with the authentic ghost AI.",
+      meta: ["Vanilla JS", "Canvas", "Zero deps"],
+      href: "arcade.html",
+      cta: "Insert coin",
+    },
+  ],
+
   // Used in the photo caption.
   bio: {
     education: "B.S. Cell & Molecular Biology — University of Western New Mexico",
