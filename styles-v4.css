@@ -152,12 +152,14 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 0; }
 .hero-name-row {
   display: flex;
   align-items: center;
-  gap: clamp(18px, 5vw, 56px);
+  gap: clamp(10px, 2.5vw, 36px);
 }
 .hero-name-row h1 { flex-shrink: 0; }
 .hero-orb {
   position: relative;
-  width: clamp(96px, 28vw, 176px);
+  /* big presence: ~half the phone width, allowed to run into the right margin */
+  width: min(50vw, 240px);
+  margin-right: calc(var(--pad) * -0.7);
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
@@ -166,9 +168,13 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 0; }
   flex-shrink: 1;
   display: block;
 }
-/* desktop two-column hero has room — let the orb hold its own next to the name */
+/* desktop two-column hero: orb holds its own against the name, borrowing the
+   grid gap toward the photo column */
 @media (min-width: 881px) {
-  .hero-orb { width: clamp(150px, 19vw, 268px); }
+  .hero-orb {
+    width: clamp(240px, 25vw, 360px);
+    margin-right: clamp(-80px, -6vw, -32px);
+  }
 }
 .hero-orb iframe {
   position: absolute;
