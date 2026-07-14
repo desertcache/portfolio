@@ -147,6 +147,35 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 0; }
   letter-spacing: -0.02em;
   margin: 18px 0 24px;
 }
+
+/* live Samantha orb in the blank space beside the name */
+.hero-name-row {
+  display: flex;
+  align-items: center;
+  gap: clamp(18px, 5vw, 56px);
+}
+.hero-name-row h1 { flex-shrink: 0; }
+.hero-orb {
+  position: relative;
+  width: clamp(96px, 28vw, 176px);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #0a0a0e;
+  border: 1px solid #26262e;
+  flex-shrink: 1;
+  display: block;
+}
+.hero-orb iframe {
+  position: absolute;
+  left: 50%; top: 50%;
+  /* app runs in ?embed=1 (orb only, no text); at square aspect the orb spans
+     ~65% of its viewport, so a slight overscan makes it fill the porthole */
+  width: 116%; height: 116%;
+  transform: translate(-50%, -50%);
+  border: 0;
+  pointer-events: none; /* orb needs no input; the ring itself links to the Lab */
+}
 .hero h1 .it { font-style: italic; }
 .hero h1 .acc { color: var(--accent); }
 
