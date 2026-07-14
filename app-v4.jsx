@@ -48,16 +48,22 @@ function TopStrip() {
 
 // ---------- hero ----------
 function Hero() {
+  const sam = D.lab.find(x => x.id === "samantha");
   return (
     <section className="hero" id="top">
       <div className="wrap">
         <div className="hero-grid">
           <div>
             <div className="hero-tag">Portfolio · 2026</div>
-            <h1>
-              Samuel<br />
-              <span className="it">Bates</span><span className="acc">.</span>
-            </h1>
+            <div className="hero-name-row">
+              <h1>
+                Samuel<br />
+                <span className="it">Bates</span><span className="acc">.</span>
+              </h1>
+              <a className="hero-orb" href="#lab" aria-label="Samantha UI — a live audio-reactive orb, rendering right here. See the Lab section.">
+                <iframe src={`${sam.embed}?embed=1`} title="Samantha UI — live orb" loading="lazy" tabIndex={-1} aria-hidden="true" />
+              </a>
+            </div>
             <p className="hero-pitch">
               I came up through ops — call center, EMT dispatch, escalations — and now I ship the <em>React, TypeScript, and Snowflake</em> code that fixes what I used to triage. I own the customer outcome end to end: scope it, ship it, measure it.
             </p>

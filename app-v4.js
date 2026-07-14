@@ -66,6 +66,7 @@ function TopStrip() {
   }, "Get in touch ↗"))));
 }
 function Hero() {
+  const sam = D.lab.find(x => x.id === "samantha");
   return React.createElement("section", {
     className: "hero",
     id: "top"
@@ -75,11 +76,23 @@ function Hero() {
     className: "hero-grid"
   }, React.createElement("div", null, React.createElement("div", {
     className: "hero-tag"
-  }, "Portfolio · 2026"), React.createElement("h1", null, "Samuel", React.createElement("br", null), React.createElement("span", {
+  }, "Portfolio · 2026"), React.createElement("div", {
+    className: "hero-name-row"
+  }, React.createElement("h1", null, "Samuel", React.createElement("br", null), React.createElement("span", {
     className: "it"
   }, "Bates"), React.createElement("span", {
     className: "acc"
-  }, ".")), React.createElement("p", {
+  }, ".")), React.createElement("a", {
+    className: "hero-orb",
+    href: "#lab",
+    "aria-label": "Samantha UI — a live audio-reactive orb, rendering right here. See the Lab section."
+  }, React.createElement("iframe", {
+    src: `${sam.embed}?embed=1`,
+    title: "Samantha UI — live orb",
+    loading: "lazy",
+    tabIndex: -1,
+    "aria-hidden": "true"
+  }))), React.createElement("p", {
     className: "hero-pitch"
   }, "I came up through ops — call center, EMT dispatch, escalations — and now I ship the ", React.createElement("em", null, "React, TypeScript, and Snowflake"), " code that fixes what I used to triage. I own the customer outcome end to end: scope it, ship it, measure it."), React.createElement("div", {
     className: "hero-meta"
