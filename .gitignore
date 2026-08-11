@@ -1,0 +1,12 @@
+# Local-only babel toolchain. app-v4.js is GENERATED from app-v4.jsx and IS
+# committed (index.html loads it); the tooling that generates it is not.
+# See DEV-NOTES.md.
+node_modules/
+
+# Untracked on purpose — DEV-NOTES invariant. Ignoring it here means a stray
+# `git add -A` can no longer sweep it into a commit.
+mockups/
+
+# pytest/python bytecode from running scripts/test_ingest_digest.py locally.
+__pycache__/
+*.pyc
