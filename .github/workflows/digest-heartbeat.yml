@@ -1,0 +1,30 @@
+name: Digest heartbeat
+
+# Without this, a scheduled task that quietly stops running produces no error
+# anywhere — the blog just stops updating and you find out in a month.
+# Silence is not success.
+
+on:
+  schedule:
+    - cron: "0 16 * * 1-5"   # 09:00 America/Phoenix — ~4h after the task should have run
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assert today's digest landed
+        run: |
+          set -euo pipefail
+          TODAY="$(TZ=America/Phoenix date +%F)"
+          if [ -f "blog/posts/${TODAY}-hill-money-watch.html" ]; then
+            echo "ok — ${TODAY} digest is published"
+          else
+            echo "::error::No digest published for ${TODAY}. Check the Cowork" \
+                 "scheduled task (trig_01SmLu3Vj99p6NaLCwFX7Zdh) and the Drive inbox."
+            exit 1
+          fi
