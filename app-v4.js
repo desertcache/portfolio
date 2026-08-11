@@ -520,6 +520,51 @@ function Stack() {
     className: "stack-pill"
   }, v))))))));
 }
+function Dispatch() {
+  const [posts, setPosts] = useState([]);
+  useEffect(() => {
+    fetch("blog/posts.json", {
+      cache: "no-cache"
+    }).then(r => r.ok ? r.json() : null).then(d => setPosts((d && d.posts ? d.posts : []).slice(0, 3))).catch(() => {});
+  }, []);
+  if (!posts.length) return null;
+  const pretty = iso => new Date(iso + "T12:00:00Z").toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC"
+  });
+  return React.createElement("section", {
+    id: "dispatch",
+    className: "section"
+  }, React.createElement("div", {
+    className: "wrap"
+  }, React.createElement(Reveal, {
+    className: "section-head"
+  }, React.createElement("div", {
+    className: "section-num"
+  }, "07 / Dispatch"), React.createElement("div", null, React.createElement("h2", {
+    className: "section-title"
+  }, "A daily read on ", React.createElement("em", null, "congressional trading.")), React.createElement("p", {
+    className: "section-lede"
+  }, "Hill Money Watch — researched and published automatically every weekday morning."))), React.createElement(Reveal, {
+    className: "dispatch-list"
+  }, posts.map(p => React.createElement("a", {
+    key: p.slug,
+    className: "dispatch-row",
+    href: `blog/${p.href}`
+  }, React.createElement("time", {
+    className: "dispatch-date label",
+    dateTime: p.date
+  }, pretty(p.date)), React.createElement("div", null, React.createElement("div", {
+    className: "dispatch-title"
+  }, p.title), React.createElement("p", {
+    className: "dispatch-summary"
+  }, p.summary))))), React.createElement(Reveal, null, React.createElement("a", {
+    className: "underline dispatch-all",
+    href: "blog/index.html"
+  }, "All dispatches →"))));
+}
 function Contact() {
   return React.createElement("section", {
     className: "contact",
@@ -598,7 +643,7 @@ function App() {
   const [openId, setOpenId] = useState(null);
   return React.createElement(React.Fragment, null, React.createElement(TopStrip, null), React.createElement("main", null, React.createElement(Hero, null), React.createElement(Receipt, null), React.createElement(Work, {
     onOpen: setOpenId
-  }), React.createElement(Lab, null), React.createElement(Arc, null), React.createElement(Validation, null), React.createElement(Stack, null), React.createElement(Contact, null)), React.createElement(CaseStudy, {
+  }), React.createElement(Lab, null), React.createElement(Arc, null), React.createElement(Validation, null), React.createElement(Stack, null), React.createElement(Dispatch, null), React.createElement(Contact, null)), React.createElement(CaseStudy, {
     id: openId,
     onClose: () => setOpenId(null)
   }));
