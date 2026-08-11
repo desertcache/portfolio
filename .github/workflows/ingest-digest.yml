@@ -1,0 +1,67 @@
+name: Ingest Hill Money Watch digest
+
+on:
+  schedule:
+    # 12:15 UTC = 05:15 America/Phoenix. Phoenix does not observe DST, so this
+    # stays 45 min behind the 04:30 task all year — no seasonal drift to chase.
+    - cron: "15 12 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ingest-digest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install "beautifulsoup4==4.14.3"   # version the parser was verified against
+
+      - name: Ingest new digests
+        id: ingest
+        env:
+          GDRIVE_API_KEY: ${{ secrets.GDRIVE_API_KEY }}
+          GDRIVE_FOLDER_ID: ${{ vars.GDRIVE_FOLDER_ID }}
+        run: python scripts/ingest_digest.py
+
+      # `always()` with no output gate: the script exits non-zero when any digest
+      # violates the contract, and a run where one digest failed but another
+      # published cleanly must still ship the good one. There is deliberately no
+      # `published != '0'` condition — rebuild_index() also self-heals posts.json
+      # when a post is hand-deleted, and that produces a real diff with zero
+      # publishes. The `git diff --cached --quiet` check below is the only no-op
+      # guard needed, and unlike an output gate it cannot disagree with the disk.
+      - name: Commit and push
+        if: always()
+        env:
+          # Passed through the environment, never interpolated into the script
+          # body. `${{ }}` inside `run:` is textual substitution before bash sees
+          # it — a value containing a quote or `$(...)` would execute. It is
+          # regex-constrained here, but make the safe form the habit.
+          COMMIT_SUMMARY: ${{ steps.ingest.outputs.summary }}
+        run: |
+          set -euo pipefail
+          git config user.name  "hill-money-watch[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # DEV-NOTES invariant: NEVER `git add -A` in this repo — mockups/ is
+          # untracked on purpose. Scope every automated commit to blog/.
+          git add blog/
+          # `if`, not `git diff --cached --quiet && exit 0`. Under `set -e` the
+          # exit status of an && list whose left side fails is itself the list's
+          # status, and whether that kills the script is shell- and
+          # position-dependent. An explicit `if` is unambiguous everywhere.
+          if git diff --cached --quiet; then
+            echo "nothing staged — exiting clean"
+            exit 0
+          fi
+          git commit -m "blog: ${COMMIT_SUMMARY:-update}"
+          git push
