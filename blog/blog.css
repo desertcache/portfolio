@@ -1,0 +1,211 @@
+/* ============================================================
+   BLOG — Hill Money Watch dispatches.
+   Layout only. Every colour, font and rule comes from a custom
+   property defined in ../styles-v4.css, so the blog inherits the
+   homepage palette and its [data-theme="dark"] swap for free.
+   If you find yourself typing a hex code here, you're doing it wrong.
+   ============================================================ */
+
+/* ---------- top strip ---------- */
+/* .topstrip-inner is `auto 1fr auto`; the blog just needs the middle
+   cell to behave like a link instead of a status readout. */
+.blog-strip .topstrip-mid a { transition: color 0.18s; }
+.blog-strip .topstrip-mid a:hover { color: var(--accent); }
+
+/* ---------- page shell ---------- */
+/* .wrap caps at var(--wrap) (1180px) for the homepage grid. Prose wants a
+   reading measure, so narrow it here rather than fighting it per-element. */
+.post-wrap {
+  max-width: 760px;
+  padding-top: clamp(40px, 7vw, 88px);
+  padding-bottom: clamp(56px, 9vw, 120px);
+}
+
+/* The base .section-num is a fixed 80px column for the homepage's
+   `220px 1fr` section grid. Here it's an inline eyebrow over a title. */
+.post-wrap .section-num {
+  width: auto;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.post-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(34px, 5vw, 54px);
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+  margin: 0 0 14px;
+  text-wrap: balance;
+}
+
+.post-date { display: block; margin-bottom: 18px; }
+
+.post-summary {
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  margin: 0 0 32px;
+  max-width: 60ch;
+  text-wrap: pretty;
+}
+
+.post .rule { margin-bottom: clamp(28px, 4vw, 44px); }
+
+/* ---------- digest body ----------
+   These selectors style markup the scheduled task emits, so they must cover
+   the whole allowlist in COWORK-TASK-PROMPT.md (h2/h3, p, ul, ol, table,
+   blockquote, a, strong, em, code) — anything uncovered renders as UA default
+   and looks broken next to the rest of the page. */
+.post-body { font-size: 17px; line-height: 1.65; }
+.post-body > :first-child { margin-top: 0; }
+.post-body > :last-child { margin-bottom: 0; }
+/* h2 carries its own top rule as a section divider, but the post header already
+   ends in <hr class="rule">. Without this a leading h2 stacks a second hairline
+   right under the first. Zeroing the margin alone isn't enough — the border and
+   its padding survive it. */
+.post-body > h2:first-child { padding-top: 0; border-top: 0; }
+
+.post-body h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(26px, 3.2vw, 34px);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: clamp(40px, 5vw, 56px) 0 14px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule-2);
+  text-wrap: balance;
+}
+.post-body h3 {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: 0.01em;
+  margin: 32px 0 10px;
+}
+
+.post-body p { margin: 0 0 18px; }
+.post-body ul, .post-body ol { margin: 0 0 20px; padding-left: 22px; }
+.post-body li { margin-bottom: 8px; }
+.post-body li::marker { color: var(--ink-3); }
+
+.post-body strong { font-weight: 600; color: var(--ink); }
+
+.post-body blockquote {
+  margin: 26px 0;
+  padding: 4px 0 4px 20px;
+  border-left: 2px solid var(--accent);
+  color: var(--ink-2);
+  font-style: italic;
+}
+.post-body blockquote p:last-child { margin-bottom: 0; }
+
+.post-body code {
+  font-family: var(--mono);
+  font-size: 0.86em;
+  background: var(--accent-soft);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* Trade tables are the most likely thing the digest emits. Horizontal rules
+   only, never filled header cells — matches the editorial tone, and survives
+   the dark swap without a second palette. */
+.post-body table {
+  margin: 26px 0;
+  border-collapse: collapse;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  /* The digest emits a bare <table> with no wrapper we could add overflow to,
+     so the table itself becomes the scroll container. `display: block` is what
+     makes overflow-x apply to a table box at all; max-content + min-width keeps
+     it full-bleed when it fits and scrollable when it doesn't. Do NOT move the
+     overflow up to .post-body — overflow-x:auto forces overflow-y to `auto`
+     too, which puts a second scrollbar around the prose. */
+  display: block;
+  overflow-x: auto;
+  width: max-content;
+  max-width: 100%;
+  min-width: 100%;
+}
+.post-body thead th {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  text-align: left;
+  padding: 0 14px 8px 0;
+  border-bottom: 1px solid var(--ink);
+}
+.post-body td, .post-body tbody th {
+  padding: 10px 14px 10px 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+  text-align: left;
+}
+.post-body tbody th { font-weight: 500; }
+.post-body tr:last-child td { border-bottom: 0; }
+
+.post-body hr { border: 0; border-top: 1px solid var(--rule); margin: 34px 0; }
+
+/* ---------- post footer ---------- */
+.post-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  margin-top: clamp(48px, 7vw, 80px);
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+  font-size: 15px;
+}
+
+/* ---------- archive ---------- */
+.archive { margin-top: clamp(28px, 4vw, 40px); }
+
+.archive-row {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: clamp(16px, 3vw, 32px);
+  align-items: baseline;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--rule);
+  transition: 0.18s;
+}
+/* No border-top on the first row: index.html already closes the page header
+   with <hr class="rule">, and a first-child border would stack a second
+   hairline under it. (The homepage .dispatch-list DOES carry a border-top —
+   there is no <hr> above it there.) */
+.archive-row:hover .archive-title { color: var(--accent); }
+.archive-row:hover .archive-date { color: var(--accent); }
+
+@media (max-width: 700px) {
+  .archive-row { grid-template-columns: 1fr; gap: 8px; }
+}
+
+.archive-date { transition: color 0.18s; }
+
+.archive-title {
+  font-family: var(--serif);
+  font-size: 24px;
+  line-height: 1.2;
+  margin-bottom: 6px;
+  transition: color 0.18s;
+  text-wrap: balance;
+}
+
+.archive-summary {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 16px;
+  line-height: 1.5;
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .archive-row, .archive-title, .archive-date,
+  .blog-strip .topstrip-mid a { transition: none; }
+}

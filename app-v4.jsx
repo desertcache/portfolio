@@ -433,6 +433,60 @@ function Stack() {
   );
 }
 
+// ---------- dispatch (blog teaser) ----------
+// Reads blog/posts.json at runtime rather than data-v4.js on purpose: posts are
+// written by a GitHub Action that must never touch a file the babel build owns.
+// See DEV-NOTES.md — the bot and the compiler never share a file.
+function Dispatch() {
+  const [posts, setPosts] = useState([]);
+  useEffect(() => {
+    fetch("blog/posts.json", { cache: "no-cache" })
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => setPosts((d && d.posts ? d.posts : []).slice(0, 3)))
+      .catch(() => {});
+  }, []);
+
+  // Render nothing rather than an empty shell — the section should not exist
+  // on the page until there is something in it.
+  if (!posts.length) return null;
+
+  // Noon UTC + timeZone:UTC stops a plain YYYY-MM-DD sliding a day backwards
+  // for viewers west of Greenwich.
+  const pretty = iso => new Date(iso + "T12:00:00Z").toLocaleDateString("en-US", {
+    year: "numeric", month: "long", day: "numeric", timeZone: "UTC"
+  });
+
+  return (
+    <section id="dispatch" className="section">
+      <div className="wrap">
+        <Reveal className="section-head">
+          <div className="section-num">07 / Dispatch</div>
+          <div>
+            <h2 className="section-title">A daily read on <em>congressional trading.</em></h2>
+            <p className="section-lede">
+              Hill Money Watch — researched and published automatically every weekday morning.
+            </p>
+          </div>
+        </Reveal>
+        <Reveal className="dispatch-list">
+          {posts.map(p => (
+            <a key={p.slug} className="dispatch-row" href={`blog/${p.href}`}>
+              <time className="dispatch-date label" dateTime={p.date}>{pretty(p.date)}</time>
+              <div>
+                <div className="dispatch-title">{p.title}</div>
+                <p className="dispatch-summary">{p.summary}</p>
+              </div>
+            </a>
+          ))}
+        </Reveal>
+        <Reveal>
+          <a className="underline dispatch-all" href="blog/index.html">All dispatches →</a>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
 // ---------- contact ----------
 function Contact() {
   return (
@@ -508,6 +562,7 @@ function App() {
         <Arc />
         <Validation />
         <Stack />
+        <Dispatch />
         <Contact />
       </main>
       <CaseStudy id={openId} onClose={() => setOpenId(null)} />
