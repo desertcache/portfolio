@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hill Money Watch — August 15, 2026</title>
+  <meta name="description" content="A catch-up edition covering recent disclosures rather than a single trading day. Lisa McClain breaks a six-month silence with a private defense buy filed one day before a $3.2B state announcement; the Tier-1 roster is quiet; two members disclose large batches of late trades." />
+  <meta name="hmw-date" content="2026-08-15" />
+  <meta name="hmw-summary" content="A catch-up edition covering recent disclosures rather than a single trading day. Lisa McClain breaks a six-month silence with a private defense buy filed one day before a $3.2B state announcement; the Tier-1 roster is quiet; two members disclose large batches of late trades." />
+  <meta name="theme-color" content="#f6f3ee" />
+  <link rel="canonical" href="https://desertcache.github.io/portfolio/blog/posts/2026-08-15-hill-money-watch.html" />
+
+  <script>
+    // no-FOUC theme, mirrors index.html. Shares the 'sb-theme' key so the
+    // homepage and the blog agree on light/dark.
+    // alive.js is deliberately NOT loaded here: it gates init on
+    // `#theme-toggle && .receipt`, and the blog has no .receipt, so it would
+    // silently no-op. The ~12 lines below are the whole of what's needed.
+    (function () {
+      try {
+        var t = localStorage.getItem('sb-theme');
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', t);
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#161412' : '#f6f3ee');
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+  <link rel="stylesheet" href="../../styles-v4.css" />
+  <link rel="stylesheet" href="../blog.css" />
+</head>
+<body>
+  <header class="topstrip">
+    <div class="topstrip-inner blog-strip">
+      <a class="brand-mark" href="../../index.html">Samuel Bates<span class="dot">.</span></a>
+      <nav class="topstrip-mid"><a href="../index.html">&larr; All dispatches</a></nav>
+      <div class="topstrip-right">
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">&#9680;</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap post-wrap">
+    <article class="post">
+      <div class="section-num">Dispatch &middot; Hill Money Watch</div>
+      <h1 class="post-title">Hill Money Watch — August 15, 2026</h1>
+      <time class="post-date label" datetime="2026-08-15">August 15, 2026</time>
+      <p class="post-summary">A catch-up edition covering recent disclosures rather than a single trading day. Lisa McClain breaks a six-month silence with a private defense buy filed one day before a $3.2B state announcement; the Tier-1 roster is quiet; two members disclose large batches of late trades.</p>
+      <hr class="rule" />
+      <div class="post-body body">
+<style>
+  .hmw-note {
+    border-left: 2px solid var(--accent);
+    padding: 12px 16px;
+    margin: 24px 0;
+    background: var(--paper-2);
+    font-size: 0.94em;
+  }
+  /* No overflow wrapper here on purpose: blog.css already turns .post-body
+     table into its own scroll container (display:block + overflow-x:auto).
+     Wrapping it fights that and squeezes the columns instead. */
+  .hmw-table { border-collapse: collapse; margin: 16px 0; font-size: 0.9em; }
+  .hmw-table th {
+    text-align: left; padding: 8px 10px 8px 0;
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--mono, ui-monospace, monospace);
+    font-size: 0.78em; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 500;
+  }
+  .hmw-table td { padding: 10px 10px 10px 0; border-bottom: 1px solid var(--rule-2, var(--rule)); vertical-align: top; }
+  .hmw-table tr:last-child td { border-bottom: 0; }
+  .pill {
+    display: inline-block; padding: 1px 8px; border-radius: 3px;
+    font-family: var(--mono, ui-monospace, monospace);
+    font-size: 0.76em; letter-spacing: 0.06em; font-weight: 500;
+  }
+  .pill-buy  { background: rgba(47, 125, 90, 0.14); color: #2b6b4f; }
+  .pill-sell { background: rgba(176, 58, 42, 0.14); color: #a33a2a; }
+  .pill-none { background: var(--paper-2); color: var(--ink-3); }
+  .hmw-lag { font-family: var(--mono, ui-monospace, monospace); font-size: 0.85em; color: var(--ink-3); }
+  .hmw-sources { font-size: 0.86em; color: var(--ink-3); }
+  .hmw-sources li { margin-bottom: 4px; }
+  [data-theme="dark"] .pill-buy  { background: rgba(127, 199, 160, 0.16); color: #7fc7a0; }
+  [data-theme="dark"] .pill-sell { background: rgba(233, 129, 102, 0.16); color: #e98166; }
+</style>
+<p class="hmw-note">
+<strong>A note on this edition.</strong> This is a catch-up post, not a single-day digest.
+  Nothing was filed with the House Clerk on August 13–15, so rather than report an empty
+  tape, this covers the disclosures that have actually moved since the roster was last reviewed.
+  Every item below is dated by when it was <em>traded</em> and, where confirmed, when it was
+  <em>disclosed</em>. Regular since-last-business-day editions resume when the Clerk does.
+</p>
+<h2>The Headlines</h2>
+<p>
+<strong>Lisa McClain (R-MI) broke a six-month silence — and the timing is the story.</strong>
+  McClain had not filed since February 6, 2026, after a period of roughly 1,200 trades a year
+  concentrated in semiconductors and AI. On <strong>July 15</strong> her spouse purchased
+  <strong>$50,001–$100,000 of Saronic Technologies</strong>, a private autonomous-maritime
+  defense company. The trade was <strong>disclosed August 5</strong>.
+</p>
+<p>
+  One day after that purchase, Texas announced Saronic would build a <strong>$3.248 billion
+  shipyard in Brownsville</strong>, backed by an $80 million Texas Enterprise Fund grant. Saronic
+  has raised $1.75 billion at a reported $9.25 billion valuation, holds a $392 million U.S. Navy
+  production contract for autonomous surface vessels, and has been expanding its federal lobbying
+  operation. The filing is listed as a spouse transaction, which under House rules means the member
+  may have had no knowledge of it. NOTUS has separately reported this as McClain's second STOCK Act
+  violation of the year.
+</p>
+<p>
+  For a name this dormant, the resumption is itself the signal — and it resumed into a
+  private defense position rather than the semis-and-AI book she was known for.
+</p>
+<h2>Tier 1 — The Active Roster</h2>
+<p>The names worth acting on were quiet across the board this period.</p>
+<table class="hmw-table">
+<thead>
+<tr><th>Member</th><th>Last action</th><th>Traded</th><th>Status</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Nancy Pelosi</strong> (D-CA)</td>
+<td><span class="pill pill-buy">BUY</span> INTC $1M–5M calls · UBER $500K–1M calls<br/>
+<span class="hmw-lag">both $50 strike, exp. 2027-03-19</span></td>
+<td>May 29, 2026</td>
+<td>No new filings. Retiring January 2027.</td>
+</tr>
+<tr>
+<td><strong>Cleo Fields</strong> (D-LA)</td>
+<td><span class="pill pill-buy">BUY</span> TSM $1K–15K</td>
+<td>Jul 10, 2026</td>
+<td>Buy-only accumulator, roughly monthly. Nothing in August yet — a purchase is overdue on his own cadence.</td>
+</tr>
+<tr>
+<td><strong>Dwight Evans</strong> (D-PA)</td>
+<td><span class="pill pill-sell">SELL</span> GD, INTC $1K–15K each</td>
+<td>Jun 10, 2026</td>
+<td>Liquidation has paused. Two months without an exit is the longest gap in his recent run.</td>
+</tr>
+<tr>
+<td><strong>Rick Scott</strong> (R-FL)</td>
+<td><span class="pill pill-none">—</span> municipal bonds only</td>
+<td>—</td>
+<td>Low priority by policy. Nothing new.</td>
+</tr>
+<tr>
+<td><strong>Donald Trump</strong> (President)</td>
+<td><span class="pill pill-none">—</span> OGE Form 278-T</td>
+<td>Jul 1, 2026</td>
+<td>No new 278-T confirmed this period. Source page did not return filing data on this pass.</td>
+</tr>
+</tbody>
+</table>
+<p>
+  The standing <strong>INTC divergence</strong> is unchanged and still worth watching: Pelosi
+  holding $1M–5M in March 2027 calls while Evans has been selling the same name. Neither side
+  has moved since June, so the disagreement is still live rather than resolved.
+</p>
+<h2>Fresh Tape — $100K+ Outside the Roster</h2>
+<table class="hmw-table">
+<thead>
+<tr><th>Member</th><th>Asset</th><th>Direction</th><th>Size</th><th>Traded</th><th>Filed</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Ro Khanna</strong> (D-CA)</td>
+<td>Toronto-Dominion (TD)</td>
+<td><span class="pill pill-buy">BUY</span></td>
+<td>$100K–250K</td>
+<td>Jul 16, 2026</td>
+<td>Jul 16, 2026 <span class="hmw-lag">(+0d)</span></td>
+</tr>
+</tbody>
+</table>
+<p>
+  Khanna sits on the watch list as a rare or small filer, so a same-day-filed six-figure position
+  in a Canadian bank is off-pattern for him on both size and speed. Same-day filing is unusually
+  clean discipline by the standards of this dataset.
+</p>
+<h2>Late Filings — The Compliance Tape</h2>
+<p>
+  Two members disclosed large backlogs well past the STOCK Act's 45-day window. Late batches are
+  worth reading differently from fresh tape: the prices are long gone, but the pattern of what was
+  held and when tells you something the timely filings do not.
+</p>
+<ul>
+<li>
+<strong>Michael Rulli (R-OH)</strong> — 32 trades disclosed, <strong>22 of them past
+    deadline</strong>, totaling up to $480,000. Transactions run as recent as August 6, 2026 and as
+    old as November 2024.
+  </li>
+<li>
+<strong>Julie Johnson (D-TX)</strong> — disclosures totaling up to <strong>$1.1 million</strong>
+    in buys and sales, covering trades from December 2025, October 2025, September 2025, and one from
+    May 7, 2025.
+  </li>
+</ul>
+<h2>Policy Watch</h2>
+<p>
+<strong>H.R. 1908</strong>, the congressional stock-trading ban, passed the House 232–198 on
+  July 22, 2026 and remains pending in the Senate. No Senate action surfaced this period. If it is
+  enacted, the useful signal in this dataset shifts from buys to forced-sale notices — a very
+  different tape to read, and worth being positioned for before it happens rather than after.
+</p>
+<h2>Data Notes</h2>
+<ul>
+<li>
+<strong>A tracker typo worth knowing about.</strong> AltIndex is currently rendering a Michael
+    McCaul INTU/ASML sale dated <strong>June 16, 2028</strong>. Future-dated rows are a known defect
+    class in these trackers; treat any date past today as bad data rather than a scoop.
+  </li>
+<li>
+<strong>Coverage gaps this pass.</strong> GuruFocus politician pages returned HTTP 403 across the
+    board, and no reachable tracker exposes reliable per-filing dates — most publish the trade
+    date only. Where a disclosure date appears above, it was confirmed through reporting rather than
+    read off a tracker. Items without a confirmed filing date are presented by trade date and labeled
+    as such.
+  </li>
+<li>
+    Dollar figures are disclosed ranges, never exact amounts. Spouse and dependent transactions are
+    attributed to the member. Trackers routinely disagree on lot counts.
+  </li>
+</ul>
+<h2>Sources</h2>
+<ul class="hmw-sources">
+<li>AltIndex Congress trading overview — <a href="https://altindex.com/congress-trading">altindex.com/congress-trading</a></li>
+<li>Stockcircle member pages — Pelosi, Fields, Evans, McClain</li>
+<li>Congress Stock Tracker — <a href="https://www.congressstock.com/trades">congressstock.com/trades</a></li>
+<li>Quiver Quantitative and Investing.com reporting on the McClain / Saronic disclosure</li>
+<li>NOTUS — <a href="https://www.notus.org/congress/lisa-mcclain-stock-act-violation">McClain STOCK Act violation reporting</a></li>
+<li>Benzinga — Rulli and Johnson late-filing reporting</li>
+</ul>
+<p class="hmw-note">
+<strong>The lag caveat, every edition.</strong> Members have <strong>45 days</strong> to report a
+  transaction. Everything here is a disclosure that has already happened at a price that has already
+  moved — frequently weeks ago. This is disclosure reporting, not investment advice, and it is
+  not a real-time feed of anyone's positions.
+</p>
+</div>
+    </article>
+
+    <nav class="post-foot">
+      <a class="underline" href="../index.html">&larr; All dispatches</a>
+      <a class="underline" href="../../index.html">Back to portfolio</a>
+    </nav>
+  </main>
+
+  <script>
+    (function () {
+      var btn = document.getElementById('theme-toggle');
+      if (!btn) return;
+      btn.addEventListener('click', function () {
+        var root = document.documentElement;
+        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('sb-theme', next); } catch (e) {}
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', next === 'dark' ? '#161412' : '#f6f3ee');
+      });
+    })();
+  </script>
+</body>
+</html>
