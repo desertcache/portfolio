@@ -1,0 +1,16 @@
+{
+  "name": "desertcache-portfolio",
+  "private": true,
+  "description": "Build tooling only — the site itself is static. See DEV-NOTES.md.",
+  "scripts": {
+    "build:app": "babel app-v4.jsx -o app-v4.js",
+    "build:skincare": "tailwindcss -c tailwind.skincare.config.js -i skincare.src.css -o skincare.css --minify",
+    "build": "npm run build:app && npm run build:skincare"
+  },
+  "devDependencies": {
+    "@babel/cli": "^8.0.4",
+    "@babel/core": "^8.0.1",
+    "@babel/preset-react": "^8.0.1",
+    "tailwindcss": "^3.4.17"
+  }
+}

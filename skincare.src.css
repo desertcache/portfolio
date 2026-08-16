@@ -1,0 +1,176 @@
+/* ============================================================
+   skincare.src.css — source for skincare.css (do not edit skincare.css)
+   Build:  npm run build:skincare
+   ============================================================ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------
+   Everything below is deliberately NOT wrapped in a layer directive.
+
+   `data-theme="dark"` and `.theme-fade` only ever exist at runtime —
+   the theme script sets them, they appear nowhere in skincare.html.
+   Keeping these rules out of a layer keeps them out of reach of the
+   content scanner no matter how the config later changes. As a bonus,
+   sitting after the utilities they win the cascade for the chrome.
+
+   NOTE when grepping the built file: the minifier unquotes attribute
+   selectors ([data-theme=dark]) and collapses ::after to :after.
+   --------------------------------------------------------------- */
+
+/* ---- palette ------------------------------------------------
+   Portfolio paper / ink / terracotta, plus the two day-type
+   semantics this document needs: sage = recovery, slate = BHA.
+   Values are rgb channel triplets so Tailwind's opacity
+   modifiers can compose against them.
+   ------------------------------------------------------------ */
+:root {
+  --sk-paper:      246 243 238;   /* #f6f3ee — portfolio paper  */
+  --sk-surface:    255 253 249;   /* warm white — cards lift    */
+  --sk-ink:         24  22  19;   /* #181613                    */
+  --sk-ink-2:       58  53  48;   /* #3a3530                    */
+  --sk-ink-3:      106  99  91;   /* #6a635b                    */
+  --sk-hairline:    24  22  19;
+  --sk-hairline-a:  0.12;
+  --sk-ochre:      185  68  43;   /* #b9442b — portfolio accent */
+  --sk-ochre-l:    250 240 235;
+  --sk-ochre-b:    231 203 191;
+  --sk-sage:        58  96  82;
+  --sk-sage-l:     240 245 241;
+  --sk-sage-b:     197 214 207;
+  --sk-slate:       43  58  74;
+  --sk-slate-l:    239 242 246;
+  --sk-slate-b:    200 211 223;
+
+  --sk-serif: "Instrument Serif", Georgia, serif;
+  --sk-sans:  "Geist", -apple-system, "Helvetica Neue", sans-serif;
+  --sk-mono:  "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
+}
+
+[data-theme="dark"] {
+  --sk-paper:       22  20  18;   /* #161412 — portfolio night  */
+  --sk-surface:     31  28  25;   /* #1f1c19 — cards still lift */
+  --sk-ink:        241 236 228;   /* #f1ece4                    */
+  --sk-ink-2:      214 206 195;   /* #d6cec3                    */
+  --sk-ink-3:      140 133 124;   /* #8c857c                    */
+  --sk-hairline:   241 236 228;
+  --sk-hairline-a: 0.13;
+  --sk-ochre:      233 129 102;   /* #e98166 — portfolio night  */
+  --sk-ochre-l:     47  34  29;
+  --sk-ochre-b:     92  60  48;
+  --sk-sage:       127 174 155;
+  --sk-sage-l:      27  36  32;
+  --sk-sage-b:      58  79  69;
+  --sk-slate:      139 166 192;
+  --sk-slate-l:     26  32  39;
+  --sk-slate-b:     55  70  87;
+}
+
+body {
+  background-color: rgb(var(--sk-paper));
+  color: rgb(var(--sk-ink));
+  font-family: var(--sk-sans);
+  font-feature-settings: "ss01", "ss02", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Instrument Serif ships weight 400 only — stop the browser faking
+   500/600 on the `font-serif font-medium` headings. */
+.font-serif { font-synthesis-weight: none; }
+
+::selection { background: rgb(var(--sk-ochre)); color: rgb(var(--sk-paper)); }
+
+/* ---- top bar: matches arcade.html / starship.html ---- */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  max-width: 80rem; margin: 0 auto;
+  padding: 14px clamp(16px, 4vw, 32px) 12px;
+}
+.topbar a { color: inherit; text-decoration: none; }
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--sk-mono); font-size: 12px; letter-spacing: 0.02em;
+  color: rgb(var(--sk-ink));
+}
+.brand-mark {
+  width: 24px; height: 24px; display: grid; place-items: center;
+  background: rgb(var(--sk-ink)); color: rgb(var(--sk-paper));
+  border-radius: 4px;
+  font-family: var(--sk-serif); font-style: italic;
+  font-size: 16px; padding-bottom: 2px;
+}
+.brand .ver { color: rgb(var(--sk-ink-3)); }
+.topbar-right {
+  display: flex; align-items: center; gap: 20px;
+  flex: 1 1 auto; justify-content: flex-end;
+  min-width: 0;   /* without this the flex item refuses to shrink below its
+                     content width and the 5-item nav widens the whole page */
+}
+.topbar nav {
+  display: flex; gap: 22px; overflow-x: auto;
+  font-family: var(--sk-mono); font-size: 12px; letter-spacing: 0.02em;
+  scrollbar-width: none;
+  min-width: 0;   /* ditto — overflow-x only engages once shrinking is allowed */
+}
+.topbar nav::-webkit-scrollbar { display: none; }
+.topbar nav a {
+  color: rgb(var(--sk-ink-2)); white-space: nowrap;
+  position: relative; transition: color .2s;
+}
+.topbar nav a:hover { color: rgb(var(--sk-ochre)); }
+.topbar nav a.active { color: rgb(var(--sk-ink)); }
+.topbar nav a.active::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -4px;
+  height: 1px; background: rgb(var(--sk-ochre));
+}
+
+.theme-toggle {
+  background: none; border: 0; padding: 4px;
+  font-size: 15px; line-height: 1;
+  color: rgb(var(--sk-ink-3)); cursor: pointer;
+  transition: color .18s, transform .3s;
+}
+.theme-toggle:hover { color: rgb(var(--sk-ochre)); transform: rotate(180deg); }
+
+/* transient cross-fade while toggling, then removed */
+html.theme-fade, html.theme-fade body,
+html.theme-fade *, html.theme-fade *::before, html.theme-fade *::after {
+  transition: background-color .45s ease, color .45s ease,
+              border-color .45s ease, box-shadow .45s ease !important;
+}
+
+.tab-btn { position: relative; transition: all 0.15s ease; }
+.tab-btn.active { color: rgb(var(--sk-ink)); font-weight: 600; }
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 2px;
+  background-color: rgb(var(--sk-ochre));
+}
+
+/* referenced by the tab strip but never defined in the source document */
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: rgb(var(--sk-paper)); }
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--sk-ink-3) / 0.45);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--sk-ink-3)); }
+
+@media (prefers-reduced-motion: reduce) {
+  html.theme-fade, html.theme-fade body,
+  html.theme-fade *, html.theme-fade *::before, html.theme-fade *::after {
+    transition: none !important;
+  }
+  .theme-toggle { transition: color .18s; }
+  .theme-toggle:hover { transform: none; }
+}

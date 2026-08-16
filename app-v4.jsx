@@ -483,6 +483,10 @@ function Contact() {
             <a href="starship.html" style={{ borderBottom: "1px solid var(--accent)", color: "var(--accent)" }}>
               and a starship →
             </a>
+            {" · "}
+            <a href="skincare.html" style={{ borderBottom: "1px solid var(--accent)", color: "var(--accent)" }}>
+              and a skincare protocol →
+            </a>
           </span>
         </div>
       </div>
