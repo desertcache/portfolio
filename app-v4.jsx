@@ -434,9 +434,10 @@ function Stack() {
 }
 
 // ---------- dispatch (blog teaser) ----------
-// Reads blog/posts.json at runtime rather than data-v4.js on purpose: posts are
-// written by a GitHub Action that must never touch a file the babel build owns.
-// See DEV-NOTES.md — the bot and the compiler never share a file.
+// Reads blog/posts.json at runtime rather than data-v4.js on purpose: whatever
+// ends up writing posts must never touch a file the babel build owns. The
+// ingest transport is undecided — the Actions workflows were deliberately left
+// off main — but this separation holds whichever one wins. See DEV-NOTES.md.
 function Dispatch() {
   const [posts, setPosts] = useState([]);
   useEffect(() => {
@@ -464,7 +465,7 @@ function Dispatch() {
           <div>
             <h2 className="section-title">A daily read on <em>congressional trading.</em></h2>
             <p className="section-lede">
-              Hill Money Watch — researched and published automatically every weekday morning.
+              Hill Money Watch — a running digest of what Congress is buying and selling.
             </p>
           </div>
         </Reveal>
