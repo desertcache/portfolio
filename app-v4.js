@@ -592,7 +592,13 @@ function Contact() {
       borderBottom: "1px solid var(--accent)",
       color: "var(--accent)"
     }
-  }, "and a starship →")))));
+  }, "and a starship →"), " · ", React.createElement("a", {
+    href: "skincare.html",
+    style: {
+      borderBottom: "1px solid var(--accent)",
+      color: "var(--accent)"
+    }
+  }, "and a skincare protocol →")))));
 }
 function App() {
   const [openId, setOpenId] = useState(null);
