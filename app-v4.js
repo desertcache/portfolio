@@ -547,7 +547,7 @@ function Dispatch() {
     className: "section-title"
   }, "A daily read on ", React.createElement("em", null, "congressional trading.")), React.createElement("p", {
     className: "section-lede"
-  }, "Hill Money Watch — researched and published automatically every weekday morning."))), React.createElement(Reveal, {
+  }, "Hill Money Watch — a running digest of what Congress is buying and selling."))), React.createElement(Reveal, {
     className: "dispatch-list"
   }, posts.map(p => React.createElement("a", {
     key: p.slug,
