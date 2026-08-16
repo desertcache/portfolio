@@ -57,6 +57,22 @@ The page carries its own miniature theme toggle rather than loading `alive.js`,
 which gates its boot on `.receipt` from the homepage. Same `sb-theme`
 localStorage key, so the light/dark choice follows you between pages.
 
+## The blog does not update itself (2026-08-15)
+
+`blog/` ships with an empty `posts.json` and **no automation**. The two GitHub
+Actions workflows built on the `hill-money-watch-blog` branch
+(`ingest-digest.yml`, `digest-heartbeat.yml`) were deliberately left out of the
+merge — both are weekday crons that can only fail until the Drive secrets and
+the Cowork task exist, and the ingest transport is being reconsidered anyway.
+They still live on that branch if the Drive-relay design is revived.
+
+`scripts/ingest_digest.py` (+ its tests) IS merged and is transport-agnostic
+enough to reuse — it's the parser and index builder, not the fetcher.
+
+So: new posts land in `blog/posts/` by whatever means, and `posts.json` has to
+be rebuilt for the homepage teaser and archive to see them. Nothing does that
+on a schedule right now.
+
 ## Other invariants
 
 - All asset paths RELATIVE (no leading `/`) — site lives at /portfolio/ sub-path, no CNAME.

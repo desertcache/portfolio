@@ -912,6 +912,48 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 0; }
 .lab-card .lab-title { font-size: 26px; }
 
 /* ============================================================
+   07 / DISPATCH — Hill Money Watch teaser.
+   Mirrors .archive-row in blog/blog.css; the two lists should read
+   as the same object in two places. Change one, change the other.
+   ============================================================ */
+.dispatch-list { border-top: 1px solid var(--rule); }
+.dispatch-row {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: clamp(16px, 3vw, 32px);
+  align-items: baseline;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.dispatch-row:hover .dispatch-title,
+.dispatch-row:hover .dispatch-date { color: var(--accent); }
+.dispatch-date { transition: color 0.18s; }
+.dispatch-title {
+  font-family: var(--serif);
+  font-size: 24px;
+  line-height: 1.2;
+  margin-bottom: 6px;
+  transition: color 0.18s;
+  text-wrap: balance;
+}
+.dispatch-summary {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 16px;
+  line-height: 1.5;
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+.dispatch-all { display: inline-block; margin-top: 28px; font-size: 15px; }
+
+@media (max-width: 700px) {
+  .dispatch-row { grid-template-columns: 1fr; gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dispatch-title, .dispatch-date { transition: none; }
+}
+
+/* ============================================================
    REVEAL
    ============================================================ */
 .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.7s ease, transform 0.7s ease; }
