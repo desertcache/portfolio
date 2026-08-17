@@ -10,3 +10,9 @@ mockups/
 # pytest/python bytecode from running scripts/test_ingest_digest.py locally.
 __pycache__/
 *.pyc
+
+# Raw digests the hill-money-watch skill drops here before ingest renders them
+# into blog/posts/. Intermediates only. The skill's publish step ends in
+# `git add blog/`, and without this rule that sweeps an unstyled duplicate of
+# every post onto the live site at blog/hill-money-watch-<date>.html.
+blog/hill-money-watch-*.html
