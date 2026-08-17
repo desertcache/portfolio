@@ -82,6 +82,30 @@ def test_leaves_a_compliant_body_untouched():
     assert "<h2>Section</h2>" in body and "<h1>" not in body
 
 
+def test_rejects_a_style_block_stranded_outside_the_article():
+    """Head styles are dropped at publish; the post then renders almost-right and ships."""
+    raw = GOOD.replace("<head>", "<head><style>.pill-buy{color:green}</style>", 1)
+    with pytest.raises(ContractError, match="outside <article"):
+        parse_digest(raw, "2026-08-11")
+
+
+def test_accepts_a_style_block_inside_the_article():
+    """Styles inside the article survive publish, which is where they belong."""
+    raw = GOOD.replace('<article class="hmw-digest">', '<article class="hmw-digest"><style>.pill-buy{color:green}</style>', 1)
+    _, _, body = parse_digest(raw, "2026-08-11")
+    assert ".pill-buy{color:green}" in body
+
+
+def test_counts_every_stranded_style_block():
+    raw = GOOD.replace("<head>", "<head><style>a{}</style><style>b{}</style>", 1)
+    with pytest.raises(ContractError, match="2 <style> block"):
+        parse_digest(raw, "2026-08-11")
+
+
+def test_a_digest_with_no_styles_at_all_is_fine():
+    parse_digest(GOOD, "2026-08-11")  # must not raise
+
+
 def test_preserves_markup_inside_the_body():
     raw = GOOD.replace("<p>", '<h2>Trades</h2><table><tr><td><a href="https://x">src</a>', 1)
     _, _, body = parse_digest(raw, "2026-08-11")
