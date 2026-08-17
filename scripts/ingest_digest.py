@@ -288,11 +288,25 @@ def parse_digest(raw_html: str, expected_date: str) -> tuple[str, str, str]:
         problems.append(f"hmw-date {meta_date!r} does not match filename date {expected_date!r}")
     if article is None:
         problems.append("no <article class='hmw-digest'> and no <body>")
-    elif len(article.get_text(strip=True)) < MIN_BODY_CHARS:
-        problems.append(
-            f"body is {len(article.get_text(strip=True))} chars, "
-            f"under the {MIN_BODY_CHARS} minimum -- looks truncated"
-        )
+    else:
+        if len(article.get_text(strip=True)) < MIN_BODY_CHARS:
+            problems.append(
+                f"body is {len(article.get_text(strip=True))} chars, "
+                f"under the {MIN_BODY_CHARS} minimum -- looks truncated"
+            )
+        # Only the article's contents are published, so a <style> in the <head>
+        # is dropped in silence and the post renders with its table and pill
+        # classes undefined -- close enough to correct that it ships unnoticed.
+        # Rejected rather than hoisted: a head stylesheet may carry selectors
+        # scoped to the standalone file (body, :root), and moving those into the
+        # page would leak them into site chrome. The author's fix is one line,
+        # and a <style> inside <body> still works when the file is opened direct.
+        if stranded := len(soup.find_all("style")) - len(article.find_all("style")):
+            problems.append(
+                f"{stranded} <style> block(s) sit outside <article class='hmw-digest'> "
+                f"and would be dropped at publish, leaving the digest unstyled -- "
+                f"move them inside the article"
+            )
     if problems:
         raise ContractError("; ".join(problems))
 
