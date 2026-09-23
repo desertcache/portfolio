@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hill Money Watch — September 23, 2026</title>
+  <meta name="description" content="Nancy Pelosi&#x27;s household opened a $3M–12M position in Bloom Energy and added to Intel, the first move on either side of the open Intel divergence since June. Cleo Fields&#x27;s missing August buy turned up after all, April McClain Delaney sold 23 positions of $100K or more in one day, and the chair of the House Ethics Committee disclosed three trades about eight months after they were made." />
+  <meta name="hmw-date" content="2026-09-23" />
+  <meta name="hmw-summary" content="Nancy Pelosi&#x27;s household opened a $3M–12M position in Bloom Energy and added to Intel, the first move on either side of the open Intel divergence since June. Cleo Fields&#x27;s missing August buy turned up after all, April McClain Delaney sold 23 positions of $100K or more in one day, and the chair of the House Ethics Committee disclosed three trades about eight months after they were made." />
+  <meta name="theme-color" content="#f6f3ee" />
+  <link rel="canonical" href="https://desertcache.github.io/portfolio/blog/posts/2026-09-23-hill-money-watch.html" />
+
+  <script>
+    // no-FOUC theme, mirrors index.html. Shares the 'sb-theme' key so the
+    // homepage and the blog agree on light/dark.
+    // alive.js is deliberately NOT loaded here: it gates init on
+    // `#theme-toggle && .receipt`, and the blog has no .receipt, so it would
+    // silently no-op. The ~12 lines below are the whole of what's needed.
+    (function () {
+      try {
+        var t = localStorage.getItem('sb-theme');
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', t);
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#161412' : '#f6f3ee');
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+  <link rel="stylesheet" href="../../styles-v4.css" />
+  <link rel="stylesheet" href="../blog.css" />
+</head>
+<body>
+  <header class="topstrip">
+    <div class="topstrip-inner blog-strip">
+      <a class="brand-mark" href="../../index.html">Samuel Bates<span class="dot">.</span></a>
+      <nav class="topstrip-mid"><a href="../index.html">&larr; All dispatches</a></nav>
+      <div class="topstrip-right">
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">&#9680;</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap post-wrap">
+    <article class="post">
+      <div class="section-num">Dispatch &middot; Hill Money Watch</div>
+      <h1 class="post-title">Hill Money Watch — September 23, 2026</h1>
+      <time class="post-date label" datetime="2026-09-23">September 23, 2026</time>
+      <p class="post-summary">Nancy Pelosi&#x27;s household opened a $3M–12M position in Bloom Energy and added to Intel, the first move on either side of the open Intel divergence since June. Cleo Fields&#x27;s missing August buy turned up after all, April McClain Delaney sold 23 positions of $100K or more in one day, and the chair of the House Ethics Committee disclosed three trades about eight months after they were made.</p>
+      <hr class="rule" />
+      <div class="post-body body">
+<style>
+  .hmw-note {
+    border-left: 2px solid var(--accent);
+    padding: 12px 16px;
+    margin: 24px 0;
+    background: var(--paper-2);
+    font-size: 0.94em;
+  }
+  .hmw-meta {
+    font-family: var(--mono, ui-monospace, monospace);
+    font-size: 0.78em;
+    letter-spacing: 0.04em;
+    color: var(--ink-3);
+    margin: -6px 0 8px;
+  }
+  /* No overflow wrapper here on purpose: blog.css already turns .post-body table
+     into its own scroll container (display:block + overflow-x:auto). Wrapping it
+     fights that and squeezes the columns instead. */
+  .hmw-table { border-collapse: collapse; margin: 16px 0; font-size: 0.9em; }
+  .hmw-table th {
+    text-align: left;
+    padding: 8px 10px 8px 0;
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--mono, ui-monospace, monospace);
+    font-size: 0.78em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+  .hmw-table td {
+    padding: 10px 10px 10px 0;
+    border-bottom: 1px solid var(--rule-2, var(--rule));
+    vertical-align: top;
+  }
+  .hmw-table tr:last-child td { border-bottom: 0; }
+  /* Trade tables: only the descriptive leading column(s) wrap. A range split
+     across lines ("$1M–" / "5M") reads as two numbers on a phone. */
+  .hmw-trades td:nth-child(n+2),
+  .hmw-tape td:nth-child(n+3) { white-space: nowrap; }
+  .pill {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 3px;
+    font-family: var(--mono, ui-monospace, monospace);
+    font-size: 0.76em;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+  }
+  .pill-buy  { background: rgba(47, 125, 90, 0.14);  color: #2b6b4f; }
+  .pill-sell { background: rgba(176, 58, 42, 0.14);  color: #a33a2a; }
+  .pill-roll { background: rgba(150, 110, 20, 0.14); color: #7a5a12; }
+  .pill-none { background: var(--paper-2); color: var(--ink-3); }
+  .hmw-lag { font-family: var(--mono, ui-monospace, monospace); font-size: 0.85em; color: var(--ink-3); }
+  .hmw-sources { font-size: 0.86em; color: var(--ink-3); }
+  .hmw-sources li { margin-bottom: 4px; }
+  [data-theme="dark"] .pill-buy  { background: rgba(127, 199, 160, 0.16); color: #7fc7a0; }
+  [data-theme="dark"] .pill-sell { background: rgba(233, 129, 102, 0.16); color: #e98166; }
+  [data-theme="dark"] .pill-roll { background: rgba(224, 190, 110, 0.16); color: #e0be6e; }
+</style>
+<p class="hmw-note"><strong>Catch-up edition.</strong> This one covers filings published from August 17 through September 23, five and a half weeks since the August 16 edition, so it runs long. It is ordered by what a reader would act on, not by date. Two corrections to earlier editions are under Data Notes.</p>
+<h2>The Headlines</h2>
+<p><strong>Nancy Pelosi's household bought into Bloom Energy and added to Intel.</strong> A filing signed August 21 shows 15,000 Bloom shares and 200 long-dated Bloom calls, <strong>$3M–12M</strong> by the disclosed bands, plus 10,000 Intel shares and 50 more Intel calls. The Intel add is the first move on either side of the open Pelosi–Evans Intel divergence since June.</p>
+<p>Cleo Fields's August buy, whose absence the last edition flagged, turned up: Apple on August 13, filed September 2. Outside the roster, Rep. April McClain Delaney (D-MD) sold <strong>23 positions of $100K or more in a single day</strong>, and Tier-2 name Michael Guest, who chairs the House Ethics Committee, disclosed three family-trust sales about eight months after they were made.</p>
+<h2>Tier 1 — The Active Roster</h2>
+<h3>Nancy Pelosi (D-CA)</h3>
+<p class="hmw-meta">PTR #20035143 · signed Aug 21, 2026 · every lot held by her spouse</p>
+<table class="hmw-table hmw-trades">
+<tr><th>Asset</th><th>Action</th><th>Size</th><th>Traded</th><th>Filed</th><th>Lag</th></tr>
+<tr>
+<td>Bloom Energy (BE) · 10,000 shares</td>
+<td><span class="pill pill-buy">BUY</span></td>
+<td>$1M–5M</td>
+<td>Jul 24</td>
+<td>Aug 21</td>
+<td><span class="hmw-lag">+28d</span></td>
+</tr>
+<tr>
+<td>Bloom Energy (BE) · 100 calls<br/><span class="hmw-lag">$100 strike, exp. 2027-06-17</span></td>
+<td><span class="pill pill-buy">BUY</span></td>
+<td>$1M–5M</td>
+<td>Jul 24</td>
+<td>Aug 21</td>
+<td><span class="hmw-lag">+28d</span></td>
+</tr>
+<tr>
+<td>Bloom Energy (BE) · 5,000 shares</td>
+<td><span class="pill pill-buy">BUY</span></td>
+<td>$500K–1M</td>
+<td>Jul 28</td>
+<td>Aug 21</td>
+<td><span class="hmw-lag">+24d</span></td>
+</tr>
+<tr>
+<td>Bloom Energy (BE) · 100 calls<br/><span class="hmw-lag">$100 strike, exp. 2027-06-17</span></td>
+<td><span class="pill pill-buy">BUY</span></td>
+<td>$500K–1M</td>
+<td>Jul 28</td>
+<td>Aug 21</td>
+<td><span class="hmw-lag">+24d</span></td>
+</tr>
+<tr>
+<td>Intel (INTC) · 10,000 shares</td>
+<td><span class="pill pill-buy">BUY</span></td>
+<td>$500K–1M</td>
+<td>Jul 24</td>
+<td>Aug 21</td>
+<td><span class="hmw-lag">+28d</span></td>
+</tr>
+<tr>
+<td>Intel (INTC) · 50 calls<br/><span class="hmw-lag">$50 strike, exp. 2027-06-17</span></td>
+<td><span class="pill pill-buy">BUY</span></td>
+<td>$250K–500K</td>
+<td>Jul 24</td>
+<td>Aug 21</td>
+<td><span class="hmw-lag">+28d</span></td>
+</tr>
+<tr>
+<td>REOF XXV, LLC<br/><span class="hmw-lag">additional investment; the LLC is restoring a San Francisco luxury hotel</span></td>
+<td><span class="pill pill-buy">BUY</span></td>
+<td>$500K–1M</td>
+<td>Jul 27</td>
+<td>Aug 21</td>
+<td><span class="hmw-lag">+25d</span></td>
+</tr>
+</table>
+<p>Pelosi's pattern is large in-the-money calls bought through her husband's account, and the Bloom calls fit it: Decrypt puts the share price at roughly $167–185 on the purchase days, far above the $100 strike. What is new is that both names got shares alongside the options, where May's filing was options only. By the bands, Bloom is $3M–12M of the filing's $4.25M–14.5M total.</p>
+<p>The timing, as reported: Bloom posted record second-quarter revenue after the close on July 28, the day of the second lot, and the shares were up 26.5% by July 30 (Decrypt). The filing was signed August 21, and the stock rose in premarket trading on Tuesday, August 25 as it drew coverage. S&amp;P Dow Jones Indices then announced Bloom's addition to the S&amp;P 500 on September 4, effective September 21. A reader acting on the disclosure was buying after the earnings move and before the index news.</p>
+<p>One structural point for anyone following these positions: every option in the household's 2026 filings expires after Pelosi leaves office in January. That covers May's Intel and Uber calls (March 2027) and these (June 2027). Members stop filing transaction reports when they leave, so however these positions are closed may never show up on this tape.</p>
+<h3>The rest of Tier 1</h3>
+<table class="hmw-table">
+<tr><th>Member</th><th>New in window</th><th>Traded</th><th>Filed</th><th>Read</th></tr>
+<tr>
+<td>Cleo Fields (D-LA)</td>
+<td><span class="pill pill-buy">BUY</span> AAPL $1K–15K</td>
+<td>Aug 13</td>
+<td>Sep 2 <span class="hmw-lag">+20d</span></td>
+<td>Routine confirmation from the buy-only accumulator, and the purchase the last edition thought was missing. It is his third Apple buy of 2026; per Benzinga, he has not sold Apple in two years. Nothing disclosed since. His filings run about 20 days behind his trades, so a September buy would likely surface by mid-October.</td>
+</tr>
+<tr>
+<td>Dwight Evans (D-PA)</td>
+<td><span class="pill pill-none">—</span> nothing new</td>
+<td>last: Jun 10</td>
+<td>—</td>
+<td>No exit since the June GD and INTC sales, confirmed on two trackers. Three and a half months is the longest pause in his recent liquidation run, and it now overlaps with Pelosi adding to Intel.</td>
+</tr>
+<tr>
+<td>Rick Scott (R-FL)</td>
+<td><span class="pill pill-none">—</span> nothing new</td>
+<td>last filed: Jul 13</td>
+<td>—</td>
+<td>Low priority by policy. The July run of five municipal bond sales has not continued.</td>
+</tr>
+<tr>
+<td>Donald Trump (President)</td>
+<td><span class="pill pill-none">—</span> new 278-T located</td>
+<td>—</td>
+<td>dated Sep 8; OGE received Sep 14</td>
+<td>A new periodic transaction report is in the OGE document store, but OGE's server refused every connection this pass, so its contents are unread. A search-engine excerpt shows a Pittsburgh-area sports-authority municipal bond among the lines, consistent with his bond-heavy pattern. Located, not read.</td>
+</tr>
+</table>
+<h2>Tier 2 — Dormant Names</h2>
+<h3>Michael Guest (R-MS), chair of the House Ethics Committee</h3>
+<table class="hmw-table hmw-trades">
+<tr><th>Asset</th><th>Action</th><th>Size</th><th>Traded</th><th>Disclosed</th><th>Lag</th></tr>
+<tr>
+<td>Chevron (CVX)</td>
+<td><span class="pill pill-sell">SELL</span></td>
+<td>$1,001–$15,000</td>
+<td>Dec 16, 2025</td>
+<td>Aug 14, 2026</td>
+<td><span class="hmw-lag">+241d</span></td>
+</tr>
+<tr>
+<td>Airbnb (ABNB)</td>
+<td><span class="pill pill-sell">SELL</span></td>
+<td>$1,001–$15,000</td>
+<td>Dec 16, 2025</td>
+<td>Aug 14, 2026</td>
+<td><span class="hmw-lag">+241d</span></td>
+</tr>
+<tr>
+<td>e.l.f. Beauty (ELF)</td>
+<td><span class="pill pill-sell">SELL</span></td>
+<td>$1,001–$15,000</td>
+<td>Dec 16, 2025</td>
+<td>Aug 14, 2026</td>
+<td><span class="hmw-lag">+241d</span></td>
+</tr>
+</table>
+<p>Any filing from a Tier-2 name is news, and this one comes from the chair of the committee that administers late-filing fines. The three sales were made by a family trust owned by Guest's wife and disclosed in a message to the House Clerk on Friday, August 14. That is about eight months after the trades and more than six months past the 45-day window. NOTUS, which broke it on August 17, reported it as his second STOCK Act violation, after a 2021 filing more than eight months late on ExxonMobil and BP sales by the same trust.</p>
+<p>Guest wrote that "a compliance firm missed them, discovering the oversight while preparing my annual House disclosure," and his chief of staff said he "does not have any decision-making role" in the trust. Per NOTUS, he intends to pay any fine and sees "no need to recuse." As a trade there is nothing here: three small lots, sold at a loss by Guest's account. Its relevance is to the policy debate, not to anyone's portfolio.</p>
+<h3>Ro Khanna (D-CA)</h3>
+<p>Large lots, but not stock picks. Khanna's September 4 filing is mostly the small family-account trades he files constantly, but it includes a rotation among <strong>S&amp;P 500-linked structured notes</strong>. A Barclays note was sold ($250K–500K, Aug 6), notes from BofA Finance ($250K–500K, Aug 13), Wells Fargo and Bank of Nova Scotia ($100K–250K each, Aug 27) were bought, and a JPMorgan note was sold the same day ($100K–250K). That is index exposure moving between issuers, not a view on any bank. The largest single-stock line is a Microsoft buy of $50K–100K (Aug 10) in a dependent child's account. Lags across the filing run from +4d to +29d.</p>
+<p><strong>Everyone else in Tier 2</strong> (Lisa McClain, Warren Davidson, Terri Sewell, Jefferson Shreve and the five non-traders): nothing new. McClain's last filing is still the Saronic purchase reported here on August 15.</p>
+<h2>Fresh Tape — $100K+ Outside the Roster</h2>
+<table class="hmw-table hmw-tape">
+<tr><th>Member</th><th>Asset</th><th>Action</th><th>Size</th><th>Traded</th><th>Filed</th><th>Lag</th></tr>
+<tr>
+<td>April McClain Delaney (D-MD)</td>
+<td>23 positions<br/><span class="hmw-lag">ITT, MLM, LYV at $250K–500K; 20 more at $100K–250K; ~$2.6M–6.5M across the 23</span></td>
+<td><span class="pill pill-sell">SELL</span></td>
+<td>$100K–500K ea.</td>
+<td>Aug 25</td>
+<td>Sep 9</td>
+<td><span class="hmw-lag">+15d</span></td>
+</tr>
+<tr>
+<td>Sen. Cory Booker (D-NJ)</td>
+<td>Amazon (AMZN)</td>
+<td><span class="pill pill-sell">SELL</span></td>
+<td>$100K–250K</td>
+<td>Aug 11</td>
+<td>Sep 9</td>
+<td><span class="hmw-lag">+29d</span></td>
+</tr>
+<tr>
+<td>Pete Sessions (R-TX)</td>
+<td>Apple (AAPL)</td>
+<td><span class="pill pill-sell">SELL</span></td>
+<td>$100K–250K</td>
+<td>Sep 22</td>
+<td>Sep 22</td>
+<td><span class="hmw-lag">+0d</span></td>
+</tr>
+<tr>
+<td>Josh Gottheimer (D-NJ)</td>
+<td>Microsoft (MSFT) calls<br/><span class="hmw-lag">bought Oct 16 '26 $330 &amp; $340 · sold Dec 18 '26 $335 &amp; $340</span></td>
+<td><span class="pill pill-roll">ROLL</span></td>
+<td>$250K–1M ea.</td>
+<td>Aug 14</td>
+<td>Sep 14</td>
+<td><span class="hmw-lag">+31d</span></td>
+</tr>
+<tr>
+<td>Sen. Chris Coons (D-DE)</td>
+<td>W.L. Gore &amp; Associates (private)</td>
+<td><span class="pill pill-sell">SELL</span></td>
+<td>$100K–250K</td>
+<td>Aug 7</td>
+<td>Aug 28</td>
+<td><span class="hmw-lag">+21d</span></td>
+</tr>
+</table>
+<p><strong>Delaney is the size story.</strong> On August 25 one account sold 23 positions of $100K or more, among them ITT, Martin Marietta, Live Nation, TransDigm, BWX Technologies, EMCOR, Entegris, Nasdaq and Paychex, plus eight smaller lots, all filed September 9. Do not read it as 23 sell signals. Several of the same names had been bought in small lots in the days before: Hubbell on August 19, ESCO on August 20 and 24, Life Time and Liberty Formula One on August 24. That looks like a managed account being wound down or moved rather than a view on 23 companies, and the filing does not say which. congressstock.com lists the owner as a dependent child; spouse and dependent trades attribute to the member either way.</p>
+<p><strong>Booker's</strong> Amazon sale is marked as a spouse-held lot on congressstock.com, while MarketBeat's alert attributes it to the senator; either way it counts as his. <strong>Sessions's</strong> Apple sale came out of an IRA and was filed the day it was made (Investing.com). It lands three weeks into Apple's CEO handoff from Tim Cook to John Ternus, effective September 1, and on the opposite side from Fields's Apple buying. That is context, not a cross-signal, because Sessions is not a tracked name.</p>
+<p><strong>Gottheimer</strong>, a former Microsoft executive, bought October calls and sold December calls in matching bands on the same day. FinanceFeeds reads it as a roll: buying back October calls first sold in May and selling December calls at similar strikes, which extends an existing position by two months rather than making a new bet in either direction. <strong>Coons's</strong> lot is a partial spouse sale of stock in a private company, the maker of Gore-Tex, so there is no public-market read. Coons worked at Gore before entering politics, and congressstock.com shows the family selling the stock in pieces since at least 2021, so this continues a long-running exit rather than starting one.</p>
+<p><strong>Also over $100K, all cash management or fixed income.</strong> Sen. David McCormick (R-PA): the household's spouse accounts sold 14 municipal bond lots of $100K–500K on July 30–31 and bought a run of Goldman Sachs structured notes linked to the S&amp;P 500 and MSCI EAFE through mid-August, filed August 27. Rep. Scott Peters (D-CA): municipal bonds and T-bills in lots up to $1M+, filed August 17 and September 21. Rep. Suzan DelBene (D-WA): three municipal lots of $250K–500K, filed August 21. Rep. Steve Cohen (D-TN): T-bills and a JPMorgan bond, filed August 17 and September 1. Rep. Sheri Biggs (R-SC): a Bank of Nova Scotia note sold ($500K–1M, August 19) and another bought ($500K–1M, September 1) in the same trust account, filed September 22. Smaller municipal and T-bill lines came from Reps. Tony Wied (R-WI), Kevin Hern (R-OK) and Gil Cisneros (D-CA). None of it is a single-stock view.</p>
+<h2>Late Filings — The Compliance Tape</h2>
+<p>Two new names surfaced in five weeks, against five in the single week the August editions covered.</p>
+<table class="hmw-table">
+<tr><th>Member</th><th>What was late</th><th>Size</th><th>How late</th><th>Reported</th></tr>
+<tr>
+<td>Michael Guest (R-MS)</td>
+<td>Chevron, Airbnb and e.l.f. Beauty sales by a family trust (Tier 2, above)</td>
+<td>$1,001–$15,000 each</td>
+<td>~8 months from trade; 6+ months past the window</td>
+<td>NOTUS, Aug 17</td>
+</tr>
+<tr>
+<td>Gil Cisneros (D-CA)</td>
+<td>50+ trades, including Palantir, Microsoft, Macom, SPX Technologies, Coinbase, Nvidia, Paramount Skydance and Uber</td>
+<td>$95,000–$900,000 combined</td>
+<td>"days or weeks"</td>
+<td>NOTUS, Sep 8</td>
+</tr>
+</table>
+<p>NOTUS reported both as STOCK Act violations. Cisneros sits on the House Armed Services Committee, which is why NOTUS led with the defense names; his office acknowledged NOTUS's request for comment but did not otherwise respond. He has also been filing in volume: CapitolExposed counted 124 of his transactions across the first two weeks of September.</p>
+<h2>Cross-Signals</h2>
+<p><strong>Intel divergence: Pelosi moved.</strong> On July 24 the Pelosi household added 10,000 Intel shares and 50 June-2027 calls at the same $50 strike as May's 200 March-2027 calls. Dwight Evans, who sold Intel in May and June as part of his exit run, has filed nothing since June 10. The disagreement is still live and now lopsided: seven figures of Intel exposure on one side by the bands, $1K–15K exits on the other, and neither side has reversed.</p>
+<p>No new clusters among tracked names this window. The nearest thing is Apple, with Fields buying while Sessions (and, in the August 16 edition, Thanedar) sold, but Fields is the only tracked name in it.</p>
+<h2>Policy Watch</h2>
+<p><strong>H.R. 7008</strong>, the Stop Insider Trading Act, passed the House 232–198 on July 22. Earlier editions misnumbered it; see Data Notes. Per sponsor Rep. Bryan Steil's office, it bars members, spouses and dependent children from buying individual stocks, lets them keep what they already hold, requires public notice 7 to 14 days before any sale, and sets penalties at the greater of $2,000 or 10% of the investment, plus forfeiture of profits. It also carries voter-ID language from the SAVE America Act, which Democrats have called a poison pill for the Senate (Gray DC).</p>
+<p>No Senate floor action surfaced through September 23. Majority Leader John Thune told CNN in July he doubted leadership would bring the bill up, and Sen. Josh Hawley's separate HONEST Act has largely stalled (Gray DC). If the House bill ever becomes law, this tape changes character: sales would be announced a week or two before they happen, which would be the first time this data led a trade instead of trailing it.</p>
+<h2>Data Notes</h2>
+<p><strong>Correction: the bill number.</strong> The August 15 and 16 editions called the House-passed bill H.R. 1908. It is H.R. 7008, the Stop Insider Trading Act, per Rep. Steil's July 23 release and contemporaneous coverage. The vote and the date were right.</p>
+<p><strong>Correction: Fields's "absence."</strong> The August 16 edition said Cleo Fields was five weeks past his buying cadence and that the absence was becoming the signal. He had bought Apple on August 13, three days before that edition, and filed it September 2. The gap was disclosure lag. An absence in this data only means something once the 45-day window on it has closed.</p>
+<p><strong>Pelosi's filing date.</strong> The PTR is signed August 21, a Friday; several trackers and outlets give August 24, when coverage began. This page uses the signature date. Decrypt put all 200 Bloom calls on the July 28 lot; the filing splits them 100 and 100.</p>
+<p><strong>Tracker disagreements.</strong> Delaney's filing date is September 9 on congressstock.com and in MarketBeat's alerts; AltIndex's "+16 days" implies September 10. The two trackers also disagree on the Live Nation lot ($100K–250K vs. $250K–500K), which is why the Delaney total is a wide range. "Bank of Nova Scotia" on the Biggs and Khanna filings is a Scotia-issued note, not BNS shares: Biggs's filing describes corporate bonds and notes, Khanna's an S&amp;P 500-linked note. AltIndex nonetheless tags Khanna's line as a BNS share purchase of $50K–100K filed +11d, against congressstock's $100K–250K filed September 4. Separately, CapitolExposed's September 7–14 roundup lists a Rep. John Rose (R-TN) fund sale of up to $1M, traded June 3, 2025, as that week's only $100K+ trade. Per Investing.com, that trade was reported at the time and later corrected to name the right fund, so it is left out here.</p>
+<p><strong>Coverage gaps.</strong> OGE refused every connection this pass, so Trump's September 278-T is located but unread. CapitolExposed's roundups for the late-August weeks returned no content. Ro Khanna's July TD filing date is still disputed three ways, with no primary filing found.</p>
+<p><strong>Source change.</strong> NOTUS relaunched as <em>The Washington Sun</em> on September 9, and its older links now redirect there. This page cites stories under the name they ran under.</p>
+<p>Standing caveats: dollar figures are disclosed ranges, never exact amounts. Totals here add up the ends of the bands, so they are ranges too. Spouse and dependent transactions attribute to the member. Trackers routinely disagree on lot counts and filing dates.</p>
+<h2>Sources</h2>
+<ul class="hmw-sources">
+<li>House Clerk PTRs #20035143 (Pelosi, signed Aug 21) and #20035455 (Gottheimer, signed Sep 14), primary</li>
+<li>congressstock.com: Congress-wide trade feed (pages 1–15) and member pages for Pelosi, Fields and Evans</li>
+<li>AltIndex Congress trading overview</li>
+<li>Stockcircle member pages: Pelosi, Fields, Evans, Rick Scott, McClain</li>
+<li>NOTUS / The Washington Sun: Guest (Aug 17) and Cisneros (Sep 8)</li>
+<li>Decrypt and 24/7 Wall St.: Bloom Energy timing and prices; S&amp;P Dow Jones Indices (Sep 4): S&amp;P 500 additions</li>
+<li>FinanceFeeds: reading of the Gottheimer roll. Benzinga: Fields. Investing.com: Biggs, Sessions, Rose</li>
+<li>Rep. Bryan Steil's office (Jul 23) and Gray DC (Jul 25): H.R. 7008</li>
+<li>CapitolExposed weekly roundups for the weeks to Sep 7, 14 and 21 (late-August weeks returned no content)</li>
+<li>OGE document store: Trump 278-T located; connection refused on every attempt</li>
+</ul>
+<p class="hmw-note"><strong>On late filings.</strong> Late disclosures are common and frequently clerical: a missed form, a spouse's account, a filing agent's backlog. This page reports the gap between trade and disclosure dates exactly as filed, and attributes any characterization of a filing as a violation to the outlet that made it. Whether a given filing actually breaks the law is for the House Ethics Committee to determine, not this page.</p>
+<p class="hmw-note"><strong>The lag caveat, every edition.</strong> Disclosures lag trades by up to 45 days. Ranges are as filed. This edition's lead item became public four weeks after the trades and after the stock's earnings move. Everything here is a disclosure of a trade that has already happened at a price that has already moved. This is disclosure reporting, not investment advice, and it is not a real-time feed of anyone's positions.</p>
+</div>
+    </article>
+
+    <nav class="post-foot">
+      <a class="underline" href="../index.html">&larr; All dispatches</a>
+      <a class="underline" href="../../index.html">Back to portfolio</a>
+    </nav>
+  </main>
+
+  <script>
+    (function () {
+      var btn = document.getElementById('theme-toggle');
+      if (!btn) return;
+      btn.addEventListener('click', function () {
+        var root = document.documentElement;
+        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('sb-theme', next); } catch (e) {}
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', next === 'dark' ? '#161412' : '#f6f3ee');
+      });
+    })();
+  </script>
+</body>
+</html>
