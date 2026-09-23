@@ -1,0 +1,79 @@
+<!doctype html>
+<!--
+  Source for assets/og.png, the 1200×630 image LinkedIn, Slack, and iMessage
+  show when someone shares the site. It renders the real hero shader with a
+  pinned seed, so the result is reproducible.
+
+  To regenerate: serve the repo root (e.g. `npx serve .`), open
+  /scripts/og-card.html in a 1200×630 viewport, hover the right-hand side to
+  raise the hill, and screenshot the viewport to assets/og.png.
+-->
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <title>OG card · Samuel Bates</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+  <link rel="stylesheet" href="../css/site.css">
+  <style>
+    html, body { width: 1200px; height: 630px; overflow: hidden; }
+    .og {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: space-between;
+      width: 1200px;
+      height: 630px;
+      min-height: 0;
+      padding: 60px 72px 56px;
+    }
+    .og .topo {
+      opacity: 1;
+      -webkit-mask-image: linear-gradient(100deg, rgba(0, 0, 0, 0.3) 15%, #000 62%);
+      mask-image: linear-gradient(100deg, rgba(0, 0, 0, 0.3) 15%, #000 62%);
+    }
+    .og-id { display: flex; align-items: center; gap: 14px; font: 500 26px/1 var(--sans); }
+    .og-id .brand-mark { width: 40px; height: 40px; }
+    .og-id span { color: var(--ink-3); font-weight: 400; }
+    .og-statement {
+      max-width: 11ch;
+      font: 400 104px/0.92 var(--serif);
+      letter-spacing: -0.028em;
+    }
+    .og-statement em { color: var(--accent); }
+    .og-foot {
+      display: flex;
+      gap: 36px;
+      align-items: baseline;
+      font: 500 17px/1.2 var(--mono);
+      letter-spacing: 0.04em;
+      color: var(--ink-2);
+    }
+    .og-foot b { font: 400 34px/1 var(--serif); letter-spacing: -0.01em; color: var(--ink); margin-right: 8px; }
+    .og-url { margin-left: auto; color: var(--accent-ink); }
+  </style>
+</head>
+<body>
+  <div class="hero og">
+    <canvas class="topo" id="topo" data-seed="137" aria-hidden="true"></canvas>
+    <p class="og-id">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M6.2 17.8C5.2 11.6 9.4 6.1 15.6 5.6 21.9 5.1 27.2 9.2 26.8 15.2 26.4 20.4 23.6 22.1 20.1 24.6 16.2 27.4 7.3 25.1 6.2 17.8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <path d="M11.4 15.9C11.1 12.2 13.9 9.6 17.4 9.5 21 9.4 23.1 11.9 22.6 15 22.1 18.2 19.8 19.2 17.2 20.1 14.2 21.1 11.7 19.2 11.4 15.9Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+        <circle cx="17.6" cy="14.7" r="2.6" class="brand-dot"/>
+      </svg>
+      Samuel Bates <span>— Forward Deployed Engineer</span>
+    </p>
+    <p class="og-statement">I ship the software that fixes what I used to <em>triage.</em></p>
+    <p class="og-foot">
+      <span><b>94%</b>revenue retained</span>
+      <span><b>800+</b>leaders trained</span>
+      <span class="og-url">desertcache.github.io/portfolio</span>
+    </p>
+  </div>
+  <script type="module">
+    import { initTopo } from '../js/topo.js';
+    initTopo(/** @type {HTMLCanvasElement} */ (document.getElementById('topo')));
+  </script>
+</body>
+</html>
