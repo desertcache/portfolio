@@ -1,43 +1,611 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Samuel Bates — Forward Deployed Engineer</title>
-  <meta name="description" content="Samuel Bates · Forward Deployed Engineer at DoorDash. I turn operational risk into shipped software: React, TypeScript, Snowflake, and production AI agents." />
-  <meta name="theme-color" content="#f6f3ee" />
+  <meta name="description" content="Samuel Bates, forward deployed engineer at DoorDash. Ex-EMT and ops lead who now ships React, TypeScript, Snowflake, and production AI agents, and measures the outcome.">
+  <link rel="canonical" href="https://desertcache.github.io/portfolio/">
+  <meta name="theme-color" content="#f5f1ea">
+
+  <!-- Link previews (LinkedIn, Slack, iMessage). og:image must be an absolute URL. -->
+  <meta property="og:type" content="profile">
+  <meta property="og:site_name" content="Samuel Bates">
+  <meta property="og:title" content="Samuel Bates — Forward Deployed Engineer">
+  <meta property="og:description" content="I ship the software that fixes what I used to triage. Ex-EMT and ops lead; now React, TypeScript, Snowflake, and production AI agents.">
+  <meta property="og:url" content="https://desertcache.github.io/portfolio/">
+  <meta property="og:image" content="https://desertcache.github.io/portfolio/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Samuel Bates, Forward Deployed Engineer: I ship the software that fixes what I used to triage.">
+  <meta name="twitter:card" content="summary_large_image">
+
   <script>
-    // no-FOUC: apply saved/system theme before first paint (alive.js wires the toggle)
+    // Runs before first paint: pick the theme (saved choice, else system) so
+    // the page never flashes the wrong colours, and flag that JS is on so CSS
+    // only hides reveal-on-scroll content when something will reveal it.
+    // `sb-theme` is shared with every other page on the site.
     (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      // Safety net: if js/main.js never arrives, un-hide the reveal-on-scroll content.
+      setTimeout(function () { if (!root.classList.contains('js-ready')) root.classList.remove('js'); }, 4000);
       try {
         var t = localStorage.getItem('sb-theme');
         if (t !== 'dark' && t !== 'light') {
           t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
-        document.documentElement.setAttribute('data-theme', t);
-        var m = document.querySelector('meta[name="theme-color"]');
-        if (m) m.setAttribute('content', t === 'dark' ? '#161412' : '#f6f3ee');
-      } catch (e) { /* storage blocked — stay light */ }
+        root.setAttribute('data-theme', t);
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#12100e' : '#f5f1ea');
+      } catch (e) { /* storage blocked: CSS falls back to the system theme */ }
     })();
   </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
 
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <link rel="stylesheet" href="styles-v4.css" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/site.css">
+  <script type="module" src="js/main.js"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Samuel Bates",
+    "jobTitle": "Forward Deployed Engineer",
+    "worksFor": { "@type": "Organization", "name": "DoorDash" },
+    "address": { "@type": "PostalAddress", "addressLocality": "Phoenix", "addressRegion": "AZ", "addressCountry": "US" },
+    "url": "https://desertcache.github.io/portfolio/",
+    "image": "https://desertcache.github.io/portfolio/assets/headshot-600.jpg",
+    "email": "mailto:batessambates@gmail.com",
+    "sameAs": ["https://github.com/desertcache", "https://www.linkedin.com/in/samuel-b-343205133"]
+  }
+  </script>
 </head>
 <body>
-  <div id="root"></div>
+  <a class="skip" href="#main">Skip to content</a>
 
-  <!-- Production React + precompiled JSX (app-v4.js is built FROM app-v4.jsx —
-       see DEV-NOTES.md; never edit app-v4.js by hand) -->
-  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1" crossorigin="anonymous"></script>
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="#top" aria-label="Samuel Bates, back to top">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <path d="M6.2 17.8C5.2 11.6 9.4 6.1 15.6 5.6 21.9 5.1 27.2 9.2 26.8 15.2 26.4 20.4 23.6 22.1 20.1 24.6 16.2 27.4 7.3 25.1 6.2 17.8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M11.4 15.9C11.1 12.2 13.9 9.6 17.4 9.5 21 9.4 23.1 11.9 22.6 15 22.1 18.2 19.8 19.2 17.2 20.1 14.2 21.1 11.7 19.2 11.4 15.9Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <circle cx="17.6" cy="14.7" r="2.6" class="brand-dot"/>
+        </svg>
+        <span class="brand-name">Samuel Bates</span>
+      </a>
+      <nav class="nav-links" aria-label="Sections">
+        <a href="#work">Work</a>
+        <a href="#lab">Lab</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.2 14.6A8.3 8.3 0 0 1 9.4 3.8a8.3 8.3 0 1 0 10.8 10.8Z"/></svg>
+        </button>
+        <a class="btn btn-ghost btn-sm nav-cv" href="Samuel_Bates_CV.pdf" target="_blank" rel="noopener">Résumé</a>
+        <a class="btn btn-solid btn-sm" href="mailto:batessambates@gmail.com">Get in touch</a>
+      </div>
+    </div>
+    <div class="nav-progress" aria-hidden="true"></div>
+  </header>
 
-  <script src="data-v4.js"></script>
-  <script src="app-v4.js" defer></script>
-  <script src="alive.js" defer></script>
+  <main id="main">
+    <!-- ============================== HERO ============================== -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <canvas class="topo" id="topo" aria-hidden="true"></canvas>
+      <div class="hero-fade" aria-hidden="true"></div>
+      <div class="wrap hero-inner">
+        <div class="hero-main">
+          <p class="status rise"><span class="status-dot" aria-hidden="true"></span>Open to forward deployed &amp; solutions roles · Remote, hybrid, or SF Bay</p>
+
+          <h1 class="hero-title rise" id="hero-title" style="--delay: .08s">
+            <span class="hero-id">
+              <picture>
+                <source srcset="assets/headshot-96.webp" type="image/webp">
+                <img class="avatar" src="assets/headshot-96.jpg" width="48" height="48" alt="">
+              </picture>
+              <span>Samuel Bates <span class="hero-role">— Forward Deployed Engineer</span></span>
+            </span>
+            <span class="hero-statement">I ship the software that fixes what I used to <em>triage.</em></span>
+          </h1>
+
+          <p class="hero-lede rise" style="--delay: .22s">I came up through call centers, EMT crisis response, and executive escalations at DoorDash. Now I build the React, TypeScript, Snowflake, and AI-agent tools that operations teams run on, and I own the outcome end to end: scope it, ship it, measure it.</p>
+
+          <div class="hero-cta rise" style="--delay: .32s">
+            <a class="btn btn-solid" href="#work">See the work <span class="btn-arrow" aria-hidden="true">↓</span></a>
+            <a class="btn btn-ghost" href="Samuel_Bates_CV.pdf" target="_blank" rel="noopener">Résumé <span class="btn-meta">PDF</span></a>
+            <button class="btn btn-text copy-email" type="button" data-email="batessambates@gmail.com">
+              <span class="copy-label">batessambates@gmail.com</span>
+              <svg class="icon-copy" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5V6A1.5 1.5 0 0 0 14 4.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></svg>
+              <span class="visually-hidden">Copy email address</span>
+            </button>
+          </div>
+        </div>
+
+        <aside class="legend rise" style="--delay: .46s" aria-label="Selected outcomes">
+          <div class="legend-head">
+            <p class="legend-title">Field notes</p>
+            <p class="legend-coords" aria-hidden="true"><span data-lat>33.4484° N</span> <span data-lon>112.0740° W</span></p>
+          </div>
+          <ul class="proof">
+            <li>
+              <a href="#migration">
+                <span class="proof-num" data-count>94%</span>
+                <span class="proof-label">of at-risk merchant revenue retained in a forced migration</span>
+              </a>
+            </li>
+            <li>
+              <a href="#cs-framework" data-cs="framework">
+                <span class="proof-num" data-count>800+</span>
+                <span class="proof-label">leaders trained to put AI to work</span>
+              </a>
+            </li>
+            <li>
+              <a href="#cs-wfm" data-cs="wfm">
+                <span class="proof-num" data-count>100+</span>
+                <span class="proof-label">support queues on a platform I built</span>
+              </a>
+            </li>
+            <li>
+              <a href="#cs-chip" data-cs="chip">
+                <span class="proof-num" data-count>6,846</span>
+                <span class="proof-label">questions answered by my production AI agent</span>
+              </a>
+            </li>
+          </ul>
+          <div class="legend-foot" aria-hidden="true">
+            <span class="scale"><i></i><i></i><i></i><i></i></span><span>1 km</span>
+            <span class="legend-place">Phoenix, AZ</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============================ MIGRATION ============================ -->
+    <section class="section" id="migration" aria-labelledby="migration-title">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <p class="eyebrow"><span class="eyebrow-num">01</span> Featured program</p>
+          <h2 class="section-title" id="migration-title">A partner sunset its API. The program I ran kept <em>94%</em> of the revenue at risk.</h2>
+          <p class="section-lede">A major POS partner deprecated its v1 API with thousands of active stores still on it. This is the whole forward deployed loop in one program, start to finish in eight months: size the loss, fund the fix, build the measurement, drive the adoption.</p>
+        </header>
+
+        <div class="mig">
+          <figure class="mig-viz reveal" aria-labelledby="units-cap">
+            <div class="mig-headline">
+              <span class="mig-big" data-count>94%</span>
+              <span class="mig-big-label">of at-risk monthly merchant revenue retained, under budget</span>
+            </div>
+            <div class="units" role="img" aria-label="94 of 100 squares filled: 94 percent of at-risk revenue retained, 6 percent lost">
+              <i class="u" style="--i:0"></i><i class="u" style="--i:1"></i><i class="u" style="--i:2"></i><i class="u" style="--i:3"></i><i class="u" style="--i:4"></i><i class="u" style="--i:5"></i><i class="u" style="--i:6"></i><i class="u" style="--i:7"></i><i class="u" style="--i:8"></i><i class="u" style="--i:9"></i><i class="u" style="--i:10"></i><i class="u" style="--i:11"></i><i class="u" style="--i:12"></i><i class="u" style="--i:13"></i><i class="u" style="--i:14"></i><i class="u" style="--i:15"></i><i class="u" style="--i:16"></i><i class="u" style="--i:17"></i><i class="u" style="--i:18"></i><i class="u" style="--i:19"></i><i class="u" style="--i:20"></i><i class="u" style="--i:21"></i><i class="u" style="--i:22"></i><i class="u" style="--i:23"></i><i class="u" style="--i:24"></i><i class="u" style="--i:25"></i><i class="u" style="--i:26"></i><i class="u" style="--i:27"></i><i class="u" style="--i:28"></i><i class="u" style="--i:29"></i><i class="u" style="--i:30"></i><i class="u" style="--i:31"></i><i class="u" style="--i:32"></i><i class="u" style="--i:33"></i><i class="u" style="--i:34"></i><i class="u" style="--i:35"></i><i class="u" style="--i:36"></i><i class="u" style="--i:37"></i><i class="u" style="--i:38"></i><i class="u" style="--i:39"></i><i class="u" style="--i:40"></i><i class="u" style="--i:41"></i><i class="u" style="--i:42"></i><i class="u" style="--i:43"></i><i class="u" style="--i:44"></i><i class="u" style="--i:45"></i><i class="u" style="--i:46"></i><i class="u" style="--i:47"></i><i class="u" style="--i:48"></i><i class="u" style="--i:49"></i><i class="u" style="--i:50"></i><i class="u" style="--i:51"></i><i class="u" style="--i:52"></i><i class="u" style="--i:53"></i><i class="u" style="--i:54"></i><i class="u" style="--i:55"></i><i class="u" style="--i:56"></i><i class="u" style="--i:57"></i><i class="u" style="--i:58"></i><i class="u" style="--i:59"></i><i class="u" style="--i:60"></i><i class="u" style="--i:61"></i><i class="u" style="--i:62"></i><i class="u" style="--i:63"></i><i class="u" style="--i:64"></i><i class="u" style="--i:65"></i><i class="u" style="--i:66"></i><i class="u" style="--i:67"></i><i class="u" style="--i:68"></i><i class="u" style="--i:69"></i><i class="u" style="--i:70"></i><i class="u" style="--i:71"></i><i class="u" style="--i:72"></i><i class="u" style="--i:73"></i><i class="u" style="--i:74"></i><i class="u" style="--i:75"></i><i class="u" style="--i:76"></i><i class="u" style="--i:77"></i><i class="u" style="--i:78"></i><i class="u" style="--i:79"></i><i class="u" style="--i:80"></i><i class="u" style="--i:81"></i><i class="u" style="--i:82"></i><i class="u" style="--i:83"></i><i class="u" style="--i:84"></i><i class="u" style="--i:85"></i><i class="u" style="--i:86"></i><i class="u" style="--i:87"></i><i class="u" style="--i:88"></i><i class="u" style="--i:89"></i><i class="u" style="--i:90"></i><i class="u" style="--i:91"></i><i class="u" style="--i:92"></i><i class="u" style="--i:93"></i><i class="u u-lost" style="--i:94"></i><i class="u u-lost" style="--i:95"></i><i class="u u-lost" style="--i:96"></i><i class="u u-lost" style="--i:97"></i><i class="u u-lost" style="--i:98"></i><i class="u u-lost" style="--i:99"></i>
+            </div>
+            <figcaption class="units-cap" id="units-cap"><span class="key key-on" aria-hidden="true"></span>Retained <span class="key key-off" aria-hidden="true"></span>Lost <span class="units-note">Each square is 1% of the monthly revenue at risk.</span></figcaption>
+
+            <div class="rate" role="group" aria-label="Weekly migration rate">
+              <p class="rate-title">Stores migrated per week</p>
+              <div class="rate-row">
+                <span class="rate-k">Organic outreach</span>
+                <span class="rate-track"><span class="rate-bar rate-bar-before" style="--w: 11%"></span></span>
+                <span class="rate-v">&lt;1%</span>
+              </div>
+              <div class="rate-row">
+                <span class="rate-k">Vendor pod, at peak</span>
+                <span class="rate-track"><span class="rate-bar rate-bar-after" style="--w: 100%"></span></span>
+                <span class="rate-v">~8%</span>
+              </div>
+            </div>
+          </figure>
+
+          <ol class="steps">
+            <li class="step reveal">
+              <span class="step-n">Problem</span>
+              <p>Thousands of active stores on a dying API, and significant monthly merchant revenue exposed if they didn't move in time. Organic outreach was moving under 1% of them a week, nowhere near the timeline.</p>
+            </li>
+            <li class="step reveal">
+              <span class="step-n">Bet</span>
+              <p>Co-authored the funding request: sized the risk, modeled four investment options, and recommended white-glove vendor support for the highest-revenue stores. The model projected most of the revenue saved for a fraction of the cost of covering every store.</p>
+            </li>
+            <li class="step reveal">
+              <span class="step-n">Build</span>
+              <p>Designed the operating model end to end: CRM-routed queues, a 3-day cadence, 200–300 touches a day, training, and escalation paths. Then built the dashboard that ran the program, with the full funnel, migration progress, and revenue at every stage in one view.</p>
+            </li>
+            <li class="step reveal">
+              <span class="step-n">Result</span>
+              <dl class="mini-stats">
+                <div><dt>Revenue retained</dt><dd>94%</dd></div>
+                <div><dt>Vendor pod stood up</dt><dd>10 agents</dd></div>
+                <div><dt>Escalations</dt><dd>20+ a day <small>down to a few a week</small></dd></div>
+                <div><dt>Delivered</dt><dd>Under budget</dd></div>
+              </dl>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== WORK ============================== -->
+    <section class="section section-tint" id="work" aria-labelledby="work-title">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <p class="eyebrow"><span class="eyebrow-num">02</span> Selected work</p>
+          <h2 class="section-title" id="work-title">Six builds, <em>one thread:</em> fix what operations lives with.</h2>
+          <p class="section-lede">Each one started as operational friction I'd lived with myself. I built the tool, wired the measurement, and got it adopted. They're internal, so you get schematics instead of screenshots. Open any card for the case study.</p>
+        </header>
+
+        <div class="bento">
+          <article class="card card-7 reveal" id="card-wfm">
+            <div class="card-art"><svg class="glyph" viewBox="0 0 480 240" aria-hidden="true" focusable="false" data-glyph="wfm"><g class="g-bars"><rect class="g-soft" x="32" y="175.9" width="6" height="28.1" rx="1.5" style="--i:0"/><rect class="g-soft" x="42.4" y="178.1" width="6" height="25.9" rx="1.5" style="--i:1"/><rect class="g-soft" x="52.8" y="169.2" width="6" height="34.8" rx="1.5" style="--i:2"/><rect class="g-soft" x="63.2" y="177.5" width="6" height="26.5" rx="1.5" style="--i:3"/><rect class="g-soft" x="73.6" y="167.7" width="6" height="36.3" rx="1.5" style="--i:4"/><rect class="g-soft" x="84" y="168.2" width="6" height="35.8" rx="1.5" style="--i:5"/><rect class="g-soft" x="94.4" y="171.4" width="6" height="32.6" rx="1.5" style="--i:6"/><rect class="g-soft" x="104.8" y="157.3" width="6" height="46.7" rx="1.5" style="--i:7"/><rect class="g-soft" x="115.2" y="164" width="6" height="40" rx="1.5" style="--i:8"/><rect class="g-soft" x="125.6" y="147.3" width="6" height="56.7" rx="1.5" style="--i:9"/><rect class="g-soft" x="136" y="152.3" width="6" height="51.7" rx="1.5" style="--i:10"/><rect class="g-soft" x="146.4" y="145.5" width="6" height="58.5" rx="1.5" style="--i:11"/><rect class="g-soft" x="156.8" y="126" width="6" height="78" rx="1.5" style="--i:12"/><rect class="g-soft" x="167.2" y="101.6" width="6" height="102.4" rx="1.5" style="--i:13"/><rect class="g-soft" x="177.6" y="127.9" width="6" height="76.1" rx="1.5" style="--i:14"/><rect class="g-soft" x="188" y="119.7" width="6" height="84.3" rx="1.5" style="--i:15"/><rect class="g-soft" x="198.4" y="97.8" width="6" height="106.2" rx="1.5" style="--i:16"/><rect class="g-soft" x="208.8" y="82.2" width="6" height="121.8" rx="1.5" style="--i:17"/><rect class="g-soft" x="219.2" y="103.2" width="6" height="100.8" rx="1.5" style="--i:18"/><rect class="g-soft" x="229.6" y="116.2" width="6" height="87.8" rx="1.5" style="--i:19"/><rect class="g-soft" x="240" y="97" width="6" height="107" rx="1.5" style="--i:20"/><rect class="g-soft" x="250.4" y="142.7" width="6" height="61.3" rx="1.5" style="--i:21"/><rect class="g-soft" x="260.8" y="119.5" width="6" height="84.5" rx="1.5" style="--i:22"/><rect class="g-soft" x="271.2" y="146.5" width="6" height="57.5" rx="1.5" style="--i:23"/><rect class="g-soft" x="281.6" y="156.7" width="6" height="47.3" rx="1.5" style="--i:24"/><rect class="g-soft" x="292" y="161.6" width="6" height="42.4" rx="1.5" style="--i:25"/><rect class="g-soft" x="302.4" y="159" width="6" height="45" rx="1.5" style="--i:26"/><rect class="g-soft" x="312.8" y="145.5" width="6" height="58.5" rx="1.5" style="--i:27"/><rect class="g-soft" x="323.2" y="157.8" width="6" height="46.2" rx="1.5" style="--i:28"/><rect class="g-soft" x="333.6" y="139.4" width="6" height="64.6" rx="1.5" style="--i:29"/><rect class="g-soft" x="344" y="130.3" width="6" height="73.7" rx="1.5" style="--i:30"/><rect class="g-soft" x="354.4" y="136.6" width="6" height="67.4" rx="1.5" style="--i:31"/><rect class="g-soft" x="364.8" y="133.1" width="6" height="70.9" rx="1.5" style="--i:32"/><rect class="g-soft" x="375.2" y="155.9" width="6" height="48.1" rx="1.5" style="--i:33"/><rect class="g-soft" x="385.6" y="163.8" width="6" height="40.2" rx="1.5" style="--i:34"/><rect class="g-soft" x="396" y="167.6" width="6" height="36.4" rx="1.5" style="--i:35"/><rect class="g-soft" x="406.4" y="164.4" width="6" height="39.6" rx="1.5" style="--i:36"/><rect class="g-soft" x="416.8" y="172.5" width="6" height="31.5" rx="1.5" style="--i:37"/><rect class="g-soft" x="427.2" y="175.9" width="6" height="28.1" rx="1.5" style="--i:38"/><rect class="g-soft" x="437.6" y="172.4" width="6" height="31.6" rx="1.5" style="--i:39"/></g><path class="g-ink g-dash" d="M32 160.9 L38.9 161.4 L45.9 160.9 L52.8 159.6 L59.7 159.1 L66.7 158 L73.6 156.8 L80.5 155.2 L87.5 152.1 L94.4 149.2 L101.3 146.9 L108.3 142.4 L115.2 138.2 L122.1 132.1 L129.1 126.9 L136 121 L142.9 113.7 L149.9 107.7 L156.8 100.7 L163.7 93 L170.7 86.7 L177.6 81.7 L184.5 77.5 L191.5 73.2 L198.4 70.7 L205.3 69.9 L212.3 69.9 L219.2 71.9 L226.1 75.3 L233.1 79.7 L240 84.6 L246.9 90.7 L253.9 97.2 L260.8 104.3 L267.7 111 L274.7 117.4 L281.6 124.7 L288.5 130.1 L295.5 135 L302.4 138.1 L309.3 141.1 L316.3 141.1 L323.2 138 L330.1 133.9 L337.1 128.1 L344 121 L350.9 114.6 L357.9 109.5 L364.8 108.7 L371.7 111 L378.7 116.4 L385.6 124.8 L392.5 134 L399.5 142.3 L406.4 148.8 L413.3 154.1 L420.3 156.9 L427.2 159.3 L434.1 161.2 L441.1 161.4 L448 161.4"/><path class="g-acc g-draw" pathLength="1" d="M32 163.5 L38.9 163.1 L45.9 161.6 L52.8 161 L59.7 161.1 L66.7 159.9 L73.6 158.4 L80.5 156.2 L87.5 154.3 L94.4 151.5 L101.3 148.1 L108.3 143.7 L115.2 139.4 L122.1 134.2 L129.1 128.8 L136 122.9 L142.9 116.2 L149.9 108.8 L156.8 101.8 L163.7 94.9 L170.7 88.3 L177.6 82.7 L184.5 78.5 L191.5 74.7 L198.4 72.5 L205.3 72.1 L212.3 72.1 L219.2 73.9 L226.1 76.7 L233.1 80.7 L240 86.3 L246.9 92.1 L253.9 99.2 L260.8 106.6 L267.7 113.1 L274.7 119.2 L281.6 126.4 L288.5 131.9 L295.5 136.7 L302.4 140.5 L309.3 142.4 L316.3 142.6 L323.2 139.9 L330.1 136.3 L337.1 130 L344 121.9 L350.9 116 L357.9 111.4 L364.8 109.9 L371.7 112.4 L378.7 118.2 L385.6 126.8 L392.5 135.1 L399.5 143.9 L406.4 150.2 L413.3 156.1 L420.3 159.6 L427.2 161.2 L434.1 162.5 L441.1 163.6 L448 163.7"/><g class="g-callout"><path class="g-ink" d="M204 44 V70"/><text class="g-txt g-txt-acc" x="210" y="40">Δ 0.9% vs legacy</text></g></svg></div>
+            <div class="card-body">
+              <p class="eyebrow">2026 · Production platform</p>
+              <h3 class="card-title"><a class="card-link" href="#cs-wfm" data-cs="wfm">Workforce Operations Platform</a></h3>
+              <p class="card-one">Real-time platform replacing legacy SaaS for 100+ support queues across multiple vendors.</p>
+              <ul class="card-stats"><li><b>100+</b> queues unified</li><li><b>18</b> dashboard pages</li><li><b>0.9%</b> from legacy, validated externally</li></ul>
+              <span class="card-cta" aria-hidden="true">Case study <span class="card-cta-arrow">→</span></span>
+            </div>
+          </article>
+          <article class="card card-5 reveal" id="card-chip">
+            <div class="card-art"><svg class="glyph" viewBox="0 0 480 240" aria-hidden="true" focusable="false" data-glyph="chip"><g class="g-wall"><rect class="g-soft" x="36" y="26" width="128" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="37.2" width="140.9" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="48.4" width="133.5" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="59.6" width="143.4" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="70.8" width="144.3" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="82" width="120.8" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="93.2" width="118.6" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="104.4" width="153.2" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="115.6" width="128.9" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="126.8" width="127.8" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="138" width="159.8" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="149.2" width="137.8" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="160.4" width="153.1" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="171.6" width="138" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="182.8" width="144.8" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="194" width="70" height="4.4" rx="2.2"/></g><path class="g-ink" d="M214 118 H262 M254 111 L262 118 L254 125"/><g class="g-sections"><rect class="g-accf" x="284" y="54.2" width="8" height="8" rx="2" style="--i:0"/><rect class="g-soft2" x="300" y="56" width="45.1" height="4.4" rx="2.2" style="--i:0"/><rect class="g-accf" x="284" y="76.2" width="8" height="8" rx="2" style="--i:1"/><rect class="g-soft2" x="300" y="78" width="61.6" height="4.4" rx="2.2" style="--i:1"/><rect class="g-accf" x="284" y="98.2" width="8" height="8" rx="2" style="--i:2"/><rect class="g-soft2" x="300" y="100" width="69.5" height="4.4" rx="2.2" style="--i:2"/><rect class="g-accf" x="284" y="120.2" width="8" height="8" rx="2" style="--i:3"/><rect class="g-soft2" x="300" y="122" width="57.8" height="4.4" rx="2.2" style="--i:3"/><rect class="g-accf" x="284" y="142.2" width="8" height="8" rx="2" style="--i:4"/><rect class="g-soft2" x="300" y="144" width="65.2" height="4.4" rx="2.2" style="--i:4"/><rect class="g-accf" x="284" y="164.2" width="8" height="8" rx="2" style="--i:5"/><rect class="g-soft2" x="300" y="166" width="62.8" height="4.4" rx="2.2" style="--i:5"/></g><text class="g-txt" x="36" y="226">~1,500 words</text><text class="g-txt g-txt-acc" x="284" y="226">~300 words · 6 sections</text></svg></div>
+            <div class="card-body">
+              <p class="eyebrow">2025–26 · Production AI agent · Tech lead</p>
+              <h3 class="card-title"><a class="card-link" href="#cs-chip" data-cs="chip">Specialist Support Chatbot</a></h3>
+              <p class="card-one">Turned 1,500-word walls of text into 300-word answers agents actually use.</p>
+              <ul class="card-stats"><li><b>6,846</b> queries served</li><li><b>76</b> monthly active users</li><li><b>~80%</b> shorter answers</li></ul>
+              <span class="card-cta" aria-hidden="true">Case study <span class="card-cta-arrow">→</span></span>
+            </div>
+          </article>
+          <article class="card card-5 reveal" id="card-ime">
+            <div class="card-art"><svg class="glyph" viewBox="0 0 480 240" aria-hidden="true" focusable="false" data-glyph="ime"><g class="g-rows"><rect class="g-soft" x="44" y="26" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="26" width="38" height="9" rx="2"/><rect class="g-soft" x="44" y="44.6" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="44.6" width="38" height="9" rx="2"/><rect class="g-soft" x="44" y="63.2" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="63.2" width="38" height="9" rx="2"/><rect class="g-soft" x="44" y="81.8" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="81.8" width="38" height="9" rx="2"/><rect class="g-soft" x="44" y="100.4" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="100.4" width="38" height="9" rx="2"/><rect class="g-soft" x="44" y="119" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="119" width="38" height="9" rx="2"/><rect class="g-soft" x="44" y="137.6" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="137.6" width="38" height="9" rx="2"/><rect class="g-soft" x="44" y="156.2" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="156.2" width="38" height="9" rx="2"/><rect class="g-soft" x="44" y="174.8" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="174.8" width="38" height="9" rx="2"/><rect class="g-soft" x="44" y="193.4" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="193.4" width="38" height="9" rx="2"/></g><g class="g-links"><path class="g-ink g-faint" d="M114 30.5 C250 30.5 290 50 416 50"/><path class="g-acc g-flow" d="M114 49.1 C250 49.1 290 50 416 50"/><path class="g-ink g-faint" d="M114 67.7 C250 67.7 290 94 416 94"/><path class="g-ink g-faint" d="M114 86.3 C250 86.3 290 50 416 50"/><path class="g-acc g-flow" d="M114 104.9 C250 104.9 290 94 416 94"/><path class="g-ink g-faint" d="M114 123.5 C250 123.5 290 94 416 94"/><path class="g-ink g-faint" d="M114 142.1 C250 142.1 290 138 416 138"/><path class="g-ink g-faint" d="M114 160.7 C250 160.7 290 138 416 138"/><path class="g-acc g-flow" d="M114 179.3 C250 179.3 290 182 416 182"/><path class="g-ink g-faint" d="M114 197.9 C250 197.9 290 182 416 182"/></g><g class="g-nodes"><circle class="g-node" cx="428" cy="50" r="9"/><circle class="g-node" cx="428" cy="94" r="9"/><circle class="g-node" cx="428" cy="138" r="9"/><circle class="g-node" cx="428" cy="182" r="9"/></g><text class="g-txt" x="44" y="226">spreadsheets · 1–7 days</text><text class="g-txt g-txt-acc" x="444" y="226" text-anchor="end">live</text></svg></div>
+            <div class="card-body">
+              <p class="eyebrow">2025–26 · Full-stack product</p>
+              <h3 class="card-title"><a class="card-link" href="#cs-ime" data-cs="ime">Intelligent Mapping Engine</a></h3>
+              <p class="card-one">Replaced 1–7 day spreadsheet workflows with a real-time product. Hundreds of thousands of records flowing live.</p>
+              <ul class="card-stats"><li><b>1–7 days</b> → real time</li><li><b>26 / 35</b> phase-1 features live</li><li><b>6</b> pages</li></ul>
+              <span class="card-cta" aria-hidden="true">Case study <span class="card-cta-arrow">→</span></span>
+            </div>
+          </article>
+          <article class="card card-7 reveal" id="card-workspace">
+            <div class="card-art"><svg class="glyph" viewBox="0 0 480 240" aria-hidden="true" focusable="false" data-glyph="workspace"><g class="g-tabs"><g style="--i:0"><rect class="g-win" x="28" y="26" width="124" height="80" rx="7"/><path class="g-ink g-faint" d="M28 41 H152"/><rect class="g-soft" x="38" y="52" width="60" height="4" rx="2"/><rect class="g-soft" x="38" y="62" width="44" height="4" rx="2"/></g><g style="--i:1"><rect class="g-win" x="39" y="43" width="124" height="80" rx="7"/><path class="g-ink g-faint" d="M39 58 H163"/><rect class="g-soft" x="49" y="69" width="69" height="4" rx="2"/><rect class="g-soft" x="49" y="79" width="51" height="4" rx="2"/></g><g style="--i:2"><rect class="g-win" x="50" y="60" width="124" height="80" rx="7"/><path class="g-ink g-faint" d="M50 75 H174"/><rect class="g-soft" x="60" y="86" width="78" height="4" rx="2"/><rect class="g-soft" x="60" y="96" width="44" height="4" rx="2"/></g><g style="--i:3"><rect class="g-win" x="61" y="77" width="124" height="80" rx="7"/><path class="g-ink g-faint" d="M61 92 H185"/><rect class="g-soft" x="71" y="103" width="60" height="4" rx="2"/><rect class="g-soft" x="71" y="113" width="51" height="4" rx="2"/></g><g style="--i:4"><rect class="g-win" x="72" y="94" width="124" height="80" rx="7"/><path class="g-ink g-faint" d="M72 109 H196"/><rect class="g-soft" x="82" y="120" width="69" height="4" rx="2"/><rect class="g-soft" x="82" y="130" width="44" height="4" rx="2"/></g></g><path class="g-ink" d="M218 124 H262 M254 117 L262 124 L254 131"/><g class="g-panel"><rect class="g-win g-win-strong" x="282" y="32" width="170" height="178" rx="10"/><circle class="g-soft" cx="296" cy="45" r="3"/><circle class="g-soft" cx="306" cy="45" r="3"/><circle class="g-soft" cx="316" cy="45" r="3"/><rect class="g-field" x="296" y="62" width="142" height="20" rx="10"/><circle class="g-ink" cx="309" cy="72" r="4"/><path class="g-ink" d="M312 75 l4 4"/><rect class="g-soft" x="322" y="70" width="58" height="4" rx="2"/><g class="g-check" style="--i:0"><rect class="g-accf" x="298" y="100" width="12" height="12" rx="3"/><path class="g-tick" d="M301 106.5 l2.6 2.6 l4.6 -5.2"/><rect class="g-soft2" x="318" y="104" width="96" height="4.4" rx="2.2"/></g><g class="g-check" style="--i:1"><rect class="g-accf" x="298" y="124" width="12" height="12" rx="3"/><path class="g-tick" d="M301 130.5 l2.6 2.6 l4.6 -5.2"/><rect class="g-soft2" x="318" y="128" width="82" height="4.4" rx="2.2"/></g><g class="g-check" style="--i:2"><rect class="g-accf" x="298" y="148" width="12" height="12" rx="3"/><path class="g-tick" d="M301 154.5 l2.6 2.6 l4.6 -5.2"/><rect class="g-soft2" x="318" y="152" width="68" height="4.4" rx="2.2"/></g><path class="g-accf g-spark" d="M304 176 C305 182 306 183 312 184 C306 185 305 186 304 192 C303 186 302 185 296 184 C302 183 303 182 304 176Z"/><rect class="g-soft2" x="318" y="181.8" width="104" height="4.4" rx="2.2"/></g></svg></div>
+            <div class="card-body">
+              <p class="eyebrow">2025–26 · AI-embedded app</p>
+              <h3 class="card-title"><a class="card-link" href="#cs-workspace" data-cs="workspace">AI Support Workspace</a></h3>
+              <p class="card-one">Replaced 5+ tabs with one AI-assisted troubleshooting surface for thousands of support agents.</p>
+              <ul class="card-stats"><li><b>5+ → 1</b> tabs to one surface</li><li><b>~4 wks</b> build to pilot</li><li><b>22</b> components</li></ul>
+              <span class="card-cta" aria-hidden="true">Case study <span class="card-cta-arrow">→</span></span>
+            </div>
+          </article>
+          <article class="card card-6 reveal" id="card-framework">
+            <div class="card-art"><svg class="glyph" viewBox="0 0 480 240" aria-hidden="true" focusable="false" data-glyph="framework"><circle class="g-ink g-faint g-dash" cx="240" cy="116" r="76"/><g class="g-arcs"><path class="g-acc g-arc" style="--i:0" pathLength="1" d="M262.2 43.3 A76 76 0 0 1 312.7 93.8"/><path class="g-acc g-head" style="--i:0" d="M314.5 85.9 L312.7 93.8 L306.8 88.3"/><path class="g-acc g-arc" style="--i:1" pathLength="1" d="M312.7 138.2 A76 76 0 0 1 262.2 188.7"/><path class="g-acc g-head" style="--i:1" d="M270.1 190.5 L262.2 188.7 L267.7 182.8"/><path class="g-acc g-arc" style="--i:2" pathLength="1" d="M217.8 188.7 A76 76 0 0 1 167.3 138.2"/><path class="g-acc g-head" style="--i:2" d="M165.5 146.1 L167.3 138.2 L173.2 143.7"/><path class="g-acc g-arc" style="--i:3" pathLength="1" d="M167.3 93.8 A76 76 0 0 1 217.8 43.3"/><path class="g-acc g-head" style="--i:3" d="M209.9 41.5 L217.8 43.3 L212.3 49.2"/></g><circle class="g-node g-node-acc" cx="240" cy="40" r="6.5"/><text class="g-txt" x="240" y="24" text-anchor="middle">DEFINE</text><circle class="g-node g-node-acc" cx="316" cy="116" r="6.5"/><text class="g-txt" x="332" y="120" text-anchor="start">ORGANIZE</text><circle class="g-node g-node-acc" cx="240" cy="192" r="6.5"/><text class="g-txt" x="240" y="218" text-anchor="middle">APPLY</text><circle class="g-node g-node-acc" cx="164" cy="116" r="6.5"/><text class="g-txt" x="148" y="120" text-anchor="end">REFINE</text><text class="g-num" x="240" y="124" text-anchor="middle">800+</text><text class="g-txt" x="240" y="144" text-anchor="middle">leaders</text></svg></div>
+            <div class="card-body">
+              <p class="eyebrow">2025–26 · Framework + live workshops</p>
+              <h3 class="card-title"><a class="card-link" href="#cs-framework" data-cs="framework">AI as a Leadership Tool</a></h3>
+              <p class="card-one">A four-phase framework and hands-on training that reached 800+ leaders across the consumer and merchant orgs.</p>
+              <ul class="card-stats"><li><b>800+</b> leaders reached</li><li><b>~180</b> facilitated live</li><li><b>5–7</b> cross-org follow-ons</li></ul>
+              <span class="card-cta" aria-hidden="true">Case study <span class="card-cta-arrow">→</span></span>
+            </div>
+          </article>
+          <article class="card card-6 reveal" id="card-fleet">
+            <div class="card-art"><svg class="glyph" viewBox="0 0 480 240" aria-hidden="true" focusable="false" data-glyph="fleet"><circle class="g-ink g-faint g-dash" cx="240" cy="118" r="84"/><g class="g-spokes"><path class="g-ink g-flow g-faint2" style="--i:0" d="M240 88 L240 49"/><path class="g-ink g-flow g-faint2" style="--i:1" d="M266 103 L299.8 83.5"/><path class="g-acc g-flow" style="--i:2" d="M266 133 L299.8 152.5"/><path class="g-ink g-flow g-faint2" style="--i:3" d="M240 148 L240 187"/><path class="g-ink g-flow g-faint2" style="--i:4" d="M214 133 L180.2 152.5"/><path class="g-ink g-flow g-faint2" style="--i:5" d="M214 103 L180.2 83.5"/></g><g class="g-agents"><circle class="g-node" cx="240" cy="34" r="13"/><circle class="g-soft2" cx="240" cy="34" r="3.4"/><circle class="g-node" cx="312.7" cy="76" r="13"/><circle class="g-soft2" cx="312.7" cy="76" r="3.4"/><circle class="g-ring" cx="312.7" cy="160" r="13"/><circle class="g-node g-node-acc" cx="312.7" cy="160" r="13"/><circle class="g-accf" cx="312.7" cy="160" r="3.4"/><circle class="g-node" cx="240" cy="202" r="13"/><circle class="g-soft2" cx="240" cy="202" r="3.4"/><circle class="g-node" cx="167.3" cy="160" r="13"/><circle class="g-soft2" cx="167.3" cy="160" r="3.4"/><circle class="g-node" cx="167.3" cy="76" r="13"/><circle class="g-soft2" cx="167.3" cy="76" r="3.4"/></g><rect class="g-win g-win-strong" x="216" y="94" width="48" height="48" rx="11"/><rect class="g-soft2" x="229" y="107" width="8" height="8" rx="2"/><rect class="g-soft2" x="229" y="121" width="8" height="8" rx="2"/><rect class="g-accf" x="243" y="107" width="8" height="8" rx="2"/><rect class="g-soft2" x="243" y="121" width="8" height="8" rx="2"/></svg></div>
+            <div class="card-body">
+              <p class="eyebrow">2026 · Personal tooling</p>
+              <h3 class="card-title"><a class="card-link" href="#cs-fleet" data-cs="fleet">Six-Agent Local Dev Fleet</a></h3>
+              <p class="card-one">Six personal AI agents for local development, with per-agent memory, local dispatch, and weekly memory-health audits.</p>
+              <ul class="card-stats"><li><b>6</b> agents</li><li><b>47</b> daemon tests passing</li><li><b>21</b> workflow skills</li></ul>
+              <span class="card-cta" aria-hidden="true">Case study <span class="card-cta-arrow">→</span></span>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <dialog class="cs" id="cs-wfm" aria-labelledby="cs-wfm-title">
+        <article class="cs-sheet">
+          <div class="cs-top"><p class="eyebrow">2026 · Production platform</p><a class="cs-close" href="#card-wfm" data-cs-close>Close <kbd>Esc</kbd></a></div>
+          <h3 class="cs-title" id="cs-wfm-title">Workforce Operations Platform</h3>
+          <p class="cs-one">Real-time platform replacing legacy SaaS for 100+ support queues across multiple vendors.</p>
+          <div class="cs-art"><svg class="glyph" viewBox="0 0 480 240" aria-hidden="true" focusable="false" data-glyph="wfm"><g class="g-bars"><rect class="g-soft" x="32" y="175.9" width="6" height="28.1" rx="1.5" style="--i:0"/><rect class="g-soft" x="42.4" y="178.1" width="6" height="25.9" rx="1.5" style="--i:1"/><rect class="g-soft" x="52.8" y="169.2" width="6" height="34.8" rx="1.5" style="--i:2"/><rect class="g-soft" x="63.2" y="177.5" width="6" height="26.5" rx="1.5" style="--i:3"/><rect class="g-soft" x="73.6" y="167.7" width="6" height="36.3" rx="1.5" style="--i:4"/><rect class="g-soft" x="84" y="168.2" width="6" height="35.8" rx="1.5" style="--i:5"/><rect class="g-soft" x="94.4" y="171.4" width="6" height="32.6" rx="1.5" style="--i:6"/><rect class="g-soft" x="104.8" y="157.3" width="6" height="46.7" rx="1.5" style="--i:7"/><rect class="g-soft" x="115.2" y="164" width="6" height="40" rx="1.5" style="--i:8"/><rect class="g-soft" x="125.6" y="147.3" width="6" height="56.7" rx="1.5" style="--i:9"/><rect class="g-soft" x="136" y="152.3" width="6" height="51.7" rx="1.5" style="--i:10"/><rect class="g-soft" x="146.4" y="145.5" width="6" height="58.5" rx="1.5" style="--i:11"/><rect class="g-soft" x="156.8" y="126" width="6" height="78" rx="1.5" style="--i:12"/><rect class="g-soft" x="167.2" y="101.6" width="6" height="102.4" rx="1.5" style="--i:13"/><rect class="g-soft" x="177.6" y="127.9" width="6" height="76.1" rx="1.5" style="--i:14"/><rect class="g-soft" x="188" y="119.7" width="6" height="84.3" rx="1.5" style="--i:15"/><rect class="g-soft" x="198.4" y="97.8" width="6" height="106.2" rx="1.5" style="--i:16"/><rect class="g-soft" x="208.8" y="82.2" width="6" height="121.8" rx="1.5" style="--i:17"/><rect class="g-soft" x="219.2" y="103.2" width="6" height="100.8" rx="1.5" style="--i:18"/><rect class="g-soft" x="229.6" y="116.2" width="6" height="87.8" rx="1.5" style="--i:19"/><rect class="g-soft" x="240" y="97" width="6" height="107" rx="1.5" style="--i:20"/><rect class="g-soft" x="250.4" y="142.7" width="6" height="61.3" rx="1.5" style="--i:21"/><rect class="g-soft" x="260.8" y="119.5" width="6" height="84.5" rx="1.5" style="--i:22"/><rect class="g-soft" x="271.2" y="146.5" width="6" height="57.5" rx="1.5" style="--i:23"/><rect class="g-soft" x="281.6" y="156.7" width="6" height="47.3" rx="1.5" style="--i:24"/><rect class="g-soft" x="292" y="161.6" width="6" height="42.4" rx="1.5" style="--i:25"/><rect class="g-soft" x="302.4" y="159" width="6" height="45" rx="1.5" style="--i:26"/><rect class="g-soft" x="312.8" y="145.5" width="6" height="58.5" rx="1.5" style="--i:27"/><rect class="g-soft" x="323.2" y="157.8" width="6" height="46.2" rx="1.5" style="--i:28"/><rect class="g-soft" x="333.6" y="139.4" width="6" height="64.6" rx="1.5" style="--i:29"/><rect class="g-soft" x="344" y="130.3" width="6" height="73.7" rx="1.5" style="--i:30"/><rect class="g-soft" x="354.4" y="136.6" width="6" height="67.4" rx="1.5" style="--i:31"/><rect class="g-soft" x="364.8" y="133.1" width="6" height="70.9" rx="1.5" style="--i:32"/><rect class="g-soft" x="375.2" y="155.9" width="6" height="48.1" rx="1.5" style="--i:33"/><rect class="g-soft" x="385.6" y="163.8" width="6" height="40.2" rx="1.5" style="--i:34"/><rect class="g-soft" x="396" y="167.6" width="6" height="36.4" rx="1.5" style="--i:35"/><rect class="g-soft" x="406.4" y="164.4" width="6" height="39.6" rx="1.5" style="--i:36"/><rect class="g-soft" x="416.8" y="172.5" width="6" height="31.5" rx="1.5" style="--i:37"/><rect class="g-soft" x="427.2" y="175.9" width="6" height="28.1" rx="1.5" style="--i:38"/><rect class="g-soft" x="437.6" y="172.4" width="6" height="31.6" rx="1.5" style="--i:39"/></g><path class="g-ink g-dash" d="M32 160.9 L38.9 161.4 L45.9 160.9 L52.8 159.6 L59.7 159.1 L66.7 158 L73.6 156.8 L80.5 155.2 L87.5 152.1 L94.4 149.2 L101.3 146.9 L108.3 142.4 L115.2 138.2 L122.1 132.1 L129.1 126.9 L136 121 L142.9 113.7 L149.9 107.7 L156.8 100.7 L163.7 93 L170.7 86.7 L177.6 81.7 L184.5 77.5 L191.5 73.2 L198.4 70.7 L205.3 69.9 L212.3 69.9 L219.2 71.9 L226.1 75.3 L233.1 79.7 L240 84.6 L246.9 90.7 L253.9 97.2 L260.8 104.3 L267.7 111 L274.7 117.4 L281.6 124.7 L288.5 130.1 L295.5 135 L302.4 138.1 L309.3 141.1 L316.3 141.1 L323.2 138 L330.1 133.9 L337.1 128.1 L344 121 L350.9 114.6 L357.9 109.5 L364.8 108.7 L371.7 111 L378.7 116.4 L385.6 124.8 L392.5 134 L399.5 142.3 L406.4 148.8 L413.3 154.1 L420.3 156.9 L427.2 159.3 L434.1 161.2 L441.1 161.4 L448 161.4"/><path class="g-acc g-draw" pathLength="1" d="M32 163.5 L38.9 163.1 L45.9 161.6 L52.8 161 L59.7 161.1 L66.7 159.9 L73.6 158.4 L80.5 156.2 L87.5 154.3 L94.4 151.5 L101.3 148.1 L108.3 143.7 L115.2 139.4 L122.1 134.2 L129.1 128.8 L136 122.9 L142.9 116.2 L149.9 108.8 L156.8 101.8 L163.7 94.9 L170.7 88.3 L177.6 82.7 L184.5 78.5 L191.5 74.7 L198.4 72.5 L205.3 72.1 L212.3 72.1 L219.2 73.9 L226.1 76.7 L233.1 80.7 L240 86.3 L246.9 92.1 L253.9 99.2 L260.8 106.6 L267.7 113.1 L274.7 119.2 L281.6 126.4 L288.5 131.9 L295.5 136.7 L302.4 140.5 L309.3 142.4 L316.3 142.6 L323.2 139.9 L330.1 136.3 L337.1 130 L344 121.9 L350.9 116 L357.9 111.4 L364.8 109.9 L371.7 112.4 L378.7 118.2 L385.6 126.8 L392.5 135.1 L399.5 143.9 L406.4 150.2 L413.3 156.1 L420.3 159.6 L427.2 161.2 L434.1 162.5 L441.1 163.6 L448 163.7"/><g class="g-callout"><path class="g-ink" d="M204 44 V70"/><text class="g-txt g-txt-acc" x="210" y="40">Δ 0.9% vs legacy</text></g></svg></div>
+          <dl class="cs-stats"><div><dt>Pages built</dt><dd>18</dd></div><div><dt>Queues unified</dt><dd>100+</dd></div><div><dt>External validation</dt><dd>within 0.9% of legacy</dd></div><div><dt>Release cadence</dt><dd>Weekly</dd></div></dl>
+          <div class="cs-body"><section><h4>Context</h4><p>Support operations ran 100+ queues across multiple vendors on legacy SaaS, with the numbers spread across several data sources.</p></section><section><h4>What I built</h4><p>A production workforce platform that pulls those sources into one operating surface: 18 dashboard pages covering queue health, SLA, and Erlang C staffing on live Snowflake data. Micro-frontend architecture, plus a typed component library published to the internal registry.</p></section><section><h4>The hard part</h4><p>The upstream systems didn&#x27;t agree on names: only about 5% of records matched exactly. Fuzzy matching lifted that to 95%+.</p></section><section><h4>Outcome</h4><p>An operations lead outside the team independently validated the numbers within 0.9% of the legacy system. The platform has shipped on a weekly release cadence through 2026.</p></section></div>
+          <ul class="tags" aria-label="Stack"><li>React 18</li><li>TypeScript</li><li>Zustand</li><li>Snowflake</li><li>Recharts</li><li>Erlang C</li></ul>
+          <nav class="cs-nav" aria-label="More case studies"><a class="cs-prev" href="#cs-fleet" data-cs="fleet"><span class="cs-nav-k">← Previous</span><span class="cs-nav-t">Six-Agent Local Dev Fleet</span></a><a class="cs-next" href="#cs-chip" data-cs="chip"><span class="cs-nav-k">Next →</span><span class="cs-nav-t">Specialist Support Chatbot</span></a></nav>
+        </article>
+      </dialog>
+      <dialog class="cs" id="cs-chip" aria-labelledby="cs-chip-title">
+        <article class="cs-sheet">
+          <div class="cs-top"><p class="eyebrow">2025–26 · Production AI agent · Tech lead</p><a class="cs-close" href="#card-chip" data-cs-close>Close <kbd>Esc</kbd></a></div>
+          <h3 class="cs-title" id="cs-chip-title">Specialist Support Chatbot</h3>
+          <p class="cs-one">Turned 1,500-word walls of text into 300-word answers agents actually use.</p>
+          <div class="cs-art"><svg class="glyph" viewBox="0 0 480 240" aria-hidden="true" focusable="false" data-glyph="chip"><g class="g-wall"><rect class="g-soft" x="36" y="26" width="128" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="37.2" width="140.9" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="48.4" width="133.5" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="59.6" width="143.4" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="70.8" width="144.3" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="82" width="120.8" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="93.2" width="118.6" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="104.4" width="153.2" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="115.6" width="128.9" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="126.8" width="127.8" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="138" width="159.8" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="149.2" width="137.8" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="160.4" width="153.1" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="171.6" width="138" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="182.8" width="144.8" height="4.4" rx="2.2"/><rect class="g-soft" x="36" y="194" width="70" height="4.4" rx="2.2"/></g><path class="g-ink" d="M214 118 H262 M254 111 L262 118 L254 125"/><g class="g-sections"><rect class="g-accf" x="284" y="54.2" width="8" height="8" rx="2" style="--i:0"/><rect class="g-soft2" x="300" y="56" width="45.1" height="4.4" rx="2.2" style="--i:0"/><rect class="g-accf" x="284" y="76.2" width="8" height="8" rx="2" style="--i:1"/><rect class="g-soft2" x="300" y="78" width="61.6" height="4.4" rx="2.2" style="--i:1"/><rect class="g-accf" x="284" y="98.2" width="8" height="8" rx="2" style="--i:2"/><rect class="g-soft2" x="300" y="100" width="69.5" height="4.4" rx="2.2" style="--i:2"/><rect class="g-accf" x="284" y="120.2" width="8" height="8" rx="2" style="--i:3"/><rect class="g-soft2" x="300" y="122" width="57.8" height="4.4" rx="2.2" style="--i:3"/><rect class="g-accf" x="284" y="142.2" width="8" height="8" rx="2" style="--i:4"/><rect class="g-soft2" x="300" y="144" width="65.2" height="4.4" rx="2.2" style="--i:4"/><rect class="g-accf" x="284" y="164.2" width="8" height="8" rx="2" style="--i:5"/><rect class="g-soft2" x="300" y="166" width="62.8" height="4.4" rx="2.2" style="--i:5"/></g><text class="g-txt" x="36" y="226">~1,500 words</text><text class="g-txt g-txt-acc" x="284" y="226">~300 words · 6 sections</text></svg></div>
+          <dl class="cs-stats"><div><dt>Queries served</dt><dd>6,846</dd></div><div><dt>Monthly active users</dt><dd>76</dd></div><div><dt>Answer length</dt><dd>~80% shorter</dd></div><div><dt>Template reused by</dt><dd>2 more agents</dd></div></dl>
+          <div class="cs-body"><section><h4>Context</h4><p>I built a production AI agent for merchant support, and it had an adoption problem. The feedback from support agents: “wall of text, then abandon.”</p></section><section><h4>What I built</h4><p>Rebuilt the prompt architecture around an enforced six-section answer: What This Means, Diagnostic Checklist, Action Matrix, Outreach Script, Still Stuck?, and CRM Reminder. Prose became something an agent can scan and act on.</p></section><section><h4>Outcome</h4><p>Average answers shrank from ~1,500 to ~300 words while holding accuracy. 76 monthly active users, 6,846 queries served, top adoption among the internal AI agents, and two more agents now reuse the template.</p></section></div>
+          <ul class="tags" aria-label="Stack"><li>Enterprise AI agent platform</li><li>Prompt architecture</li><li>Adoption metrics</li></ul>
+          <nav class="cs-nav" aria-label="More case studies"><a class="cs-prev" href="#cs-wfm" data-cs="wfm"><span class="cs-nav-k">← Previous</span><span class="cs-nav-t">Workforce Operations Platform</span></a><a class="cs-next" href="#cs-ime" data-cs="ime"><span class="cs-nav-k">Next →</span><span class="cs-nav-t">Intelligent Mapping Engine</span></a></nav>
+        </article>
+      </dialog>
+      <dialog class="cs" id="cs-ime" aria-labelledby="cs-ime-title">
+        <article class="cs-sheet">
+          <div class="cs-top"><p class="eyebrow">2025–26 · Full-stack product</p><a class="cs-close" href="#card-ime" data-cs-close>Close <kbd>Esc</kbd></a></div>
+          <h3 class="cs-title" id="cs-ime-title">Intelligent Mapping Engine</h3>
+          <p class="cs-one">Replaced 1–7 day spreadsheet workflows with a real-time product. Hundreds of thousands of records flowing live.</p>
+          <div class="cs-art"><svg class="glyph" viewBox="0 0 480 240" aria-hidden="true" focusable="false" data-glyph="ime"><g class="g-rows"><rect class="g-soft" x="44" y="26" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="26" width="38" height="9" rx="2"/><rect class="g-soft" x="44" y="44.6" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="44.6" width="38" height="9" rx="2"/><rect class="g-soft" x="44" y="63.2" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="63.2" width="38" height="9" rx="2"/><rect class="g-soft" x="44" y="81.8" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="81.8" width="38" height="9" rx="2"/><rect class="g-soft" x="44" y="100.4" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="100.4" width="38" height="9" rx="2"/><rect class="g-soft" x="44" y="119" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="119" width="38" height="9" rx="2"/><rect class="g-soft" x="44" y="137.6" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="137.6" width="38" height="9" rx="2"/><rect class="g-soft" x="44" y="156.2" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="156.2" width="38" height="9" rx="2"/><rect class="g-soft" x="44" y="174.8" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="174.8" width="38" height="9" rx="2"/><rect class="g-soft" x="44" y="193.4" width="22" height="9" rx="2"/><rect class="g-soft" x="70" y="193.4" width="38" height="9" rx="2"/></g><g class="g-links"><path class="g-ink g-faint" d="M114 30.5 C250 30.5 290 50 416 50"/><path class="g-acc g-flow" d="M114 49.1 C250 49.1 290 50 416 50"/><path class="g-ink g-faint" d="M114 67.7 C250 67.7 290 94 416 94"/><path class="g-ink g-faint" d="M114 86.3 C250 86.3 290 50 416 50"/><path class="g-acc g-flow" d="M114 104.9 C250 104.9 290 94 416 94"/><path class="g-ink g-faint" d="M114 123.5 C250 123.5 290 94 416 94"/><path class="g-ink g-faint" d="M114 142.1 C250 142.1 290 138 416 138"/><path class="g-ink g-faint" d="M114 160.7 C250 160.7 290 138 416 138"/><path class="g-acc g-flow" d="M114 179.3 C250 179.3 290 182 416 182"/><path class="g-ink g-faint" d="M114 197.9 C250 197.9 290 182 416 182"/></g><g class="g-nodes"><circle class="g-node" cx="428" cy="50" r="9"/><circle class="g-node" cx="428" cy="94" r="9"/><circle class="g-node" cx="428" cy="138" r="9"/><circle class="g-node" cx="428" cy="182" r="9"/></g><text class="g-txt" x="44" y="226">spreadsheets · 1–7 days</text><text class="g-txt g-txt-acc" x="444" y="226" text-anchor="end">live</text></svg></div>
+          <dl class="cs-stats"><div><dt>Records flowing</dt><dd>Hundreds of thousands</dd></div><div><dt>Programs covered</dt><dd>Hundreds</dd></div><div><dt>Pages</dt><dd>6</dd></div><div><dt>Phase 1 features live</dt><dd>26 / 35</dd></div></dl>
+          <div class="cs-body"><section><h4>Context</h4><p>Merchant-to-account mapping lived in spreadsheets, with turnaround measured in days: one to seven of them.</p></section><section><h4>What I built</h4><p>A dual-stack product: React frontend, a Fastify backend-for-frontend, and Snowflake underneath. I&#x27;m the declared package owner, and it&#x27;s now embedded in the broader workforce platform.</p></section><section><h4>The hard part</h4><p>The bugs a team loses weeks to, fixed at the driver level: a snowflake-sdk browser-auth race that looped and opened multiple tabs (solved with promise-based connection locking), a typed callback that silently terminated the warehouse connection, and a silent 1,000-row cap on the AI query service (solved with split queries and a truncation banner).</p></section><section><h4>Outcome</h4><p>Hundreds of thousands of records flowing through production across hundreds of programs, with 26 of 35 phase-1 features live.</p></section></div>
+          <ul class="tags" aria-label="Stack"><li>React</li><li>Fastify</li><li>snowflake-sdk</li><li>Prometheus</li><li>GraphQL</li></ul>
+          <nav class="cs-nav" aria-label="More case studies"><a class="cs-prev" href="#cs-chip" data-cs="chip"><span class="cs-nav-k">← Previous</span><span class="cs-nav-t">Specialist Support Chatbot</span></a><a class="cs-next" href="#cs-workspace" data-cs="workspace"><span class="cs-nav-k">Next →</span><span class="cs-nav-t">AI Support Workspace</span></a></nav>
+        </article>
+      </dialog>
+      <dialog class="cs" id="cs-workspace" aria-labelledby="cs-workspace-title">
+        <article class="cs-sheet">
+          <div class="cs-top"><p class="eyebrow">2025–26 · AI-embedded app</p><a class="cs-close" href="#card-workspace" data-cs-close>Close <kbd>Esc</kbd></a></div>
+          <h3 class="cs-title" id="cs-workspace-title">AI Support Workspace</h3>
+          <p class="cs-one">Replaced 5+ tabs with one AI-assisted troubleshooting surface for thousands of support agents.</p>
+          <div class="cs-art"><svg class="glyph" viewBox="0 0 480 240" aria-hidden="true" focusable="false" data-glyph="workspace"><g class="g-tabs"><g style="--i:0"><rect class="g-win" x="28" y="26" width="124" height="80" rx="7"/><path class="g-ink g-faint" d="M28 41 H152"/><rect class="g-soft" x="38" y="52" width="60" height="4" rx="2"/><rect class="g-soft" x="38" y="62" width="44" height="4" rx="2"/></g><g style="--i:1"><rect class="g-win" x="39" y="43" width="124" height="80" rx="7"/><path class="g-ink g-faint" d="M39 58 H163"/><rect class="g-soft" x="49" y="69" width="69" height="4" rx="2"/><rect class="g-soft" x="49" y="79" width="51" height="4" rx="2"/></g><g style="--i:2"><rect class="g-win" x="50" y="60" width="124" height="80" rx="7"/><path class="g-ink g-faint" d="M50 75 H174"/><rect class="g-soft" x="60" y="86" width="78" height="4" rx="2"/><rect class="g-soft" x="60" y="96" width="44" height="4" rx="2"/></g><g style="--i:3"><rect class="g-win" x="61" y="77" width="124" height="80" rx="7"/><path class="g-ink g-faint" d="M61 92 H185"/><rect class="g-soft" x="71" y="103" width="60" height="4" rx="2"/><rect class="g-soft" x="71" y="113" width="51" height="4" rx="2"/></g><g style="--i:4"><rect class="g-win" x="72" y="94" width="124" height="80" rx="7"/><path class="g-ink g-faint" d="M72 109 H196"/><rect class="g-soft" x="82" y="120" width="69" height="4" rx="2"/><rect class="g-soft" x="82" y="130" width="44" height="4" rx="2"/></g></g><path class="g-ink" d="M218 124 H262 M254 117 L262 124 L254 131"/><g class="g-panel"><rect class="g-win g-win-strong" x="282" y="32" width="170" height="178" rx="10"/><circle class="g-soft" cx="296" cy="45" r="3"/><circle class="g-soft" cx="306" cy="45" r="3"/><circle class="g-soft" cx="316" cy="45" r="3"/><rect class="g-field" x="296" y="62" width="142" height="20" rx="10"/><circle class="g-ink" cx="309" cy="72" r="4"/><path class="g-ink" d="M312 75 l4 4"/><rect class="g-soft" x="322" y="70" width="58" height="4" rx="2"/><g class="g-check" style="--i:0"><rect class="g-accf" x="298" y="100" width="12" height="12" rx="3"/><path class="g-tick" d="M301 106.5 l2.6 2.6 l4.6 -5.2"/><rect class="g-soft2" x="318" y="104" width="96" height="4.4" rx="2.2"/></g><g class="g-check" style="--i:1"><rect class="g-accf" x="298" y="124" width="12" height="12" rx="3"/><path class="g-tick" d="M301 130.5 l2.6 2.6 l4.6 -5.2"/><rect class="g-soft2" x="318" y="128" width="82" height="4.4" rx="2.2"/></g><g class="g-check" style="--i:2"><rect class="g-accf" x="298" y="148" width="12" height="12" rx="3"/><path class="g-tick" d="M301 154.5 l2.6 2.6 l4.6 -5.2"/><rect class="g-soft2" x="318" y="152" width="68" height="4.4" rx="2.2"/></g><path class="g-accf g-spark" d="M304 176 C305 182 306 183 312 184 C306 185 305 186 304 192 C303 186 302 185 296 184 C302 183 303 182 304 176Z"/><rect class="g-soft2" x="318" y="181.8" width="104" height="4.4" rx="2.2"/></g></svg></div>
+          <dl class="cs-stats"><div><dt>Components</dt><dd>22</dd></div><div><dt>Telemetry events</dt><dd>19</dd></div><div><dt>Build → pilot</dt><dd>~4 weeks</dd></div><div><dt>Addressable</dt><dd>Thousands of agents</dd></div></dl>
+          <div class="cs-body"><section><h4>Context</h4><p>Troubleshooting a single merchant issue meant juggling five or more internal tabs.</p></section><section><h4>What I built</h4><p>A single-page app embedded in the internal admin portal: 22 components, dual lookup by store ID or case ID, four issue-specific diagnostic checklists, and an AI assistant wired in through the enterprise search platform.</p></section><section><h4>The hard part</h4><p>Telemetry that fails quietly. I documented three subtle behaviors as a team reference: dual entity registration, missing user-ID propagation, and silent SDK failures. Later I extracted the app into a standalone micro-frontend, which survived a same-day platform pivot.</p></section><section><h4>Outcome</h4><p>Build to pilot in about four weeks, 19 instrumented event types, and one surface addressable to thousands of support agents.</p></section></div>
+          <ul class="tags" aria-label="Stack"><li>React 18</li><li>TypeScript</li><li>GraphQL</li><li>Internal telemetry SDK</li></ul>
+          <nav class="cs-nav" aria-label="More case studies"><a class="cs-prev" href="#cs-ime" data-cs="ime"><span class="cs-nav-k">← Previous</span><span class="cs-nav-t">Intelligent Mapping Engine</span></a><a class="cs-next" href="#cs-framework" data-cs="framework"><span class="cs-nav-k">Next →</span><span class="cs-nav-t">AI as a Leadership Tool</span></a></nav>
+        </article>
+      </dialog>
+      <dialog class="cs" id="cs-framework" aria-labelledby="cs-framework-title">
+        <article class="cs-sheet">
+          <div class="cs-top"><p class="eyebrow">2025–26 · Framework + live workshops</p><a class="cs-close" href="#card-framework" data-cs-close>Close <kbd>Esc</kbd></a></div>
+          <h3 class="cs-title" id="cs-framework-title">AI as a Leadership Tool</h3>
+          <p class="cs-one">A four-phase framework and hands-on training that reached 800+ leaders across the consumer and merchant orgs.</p>
+          <div class="cs-art"><svg class="glyph" viewBox="0 0 480 240" aria-hidden="true" focusable="false" data-glyph="framework"><circle class="g-ink g-faint g-dash" cx="240" cy="116" r="76"/><g class="g-arcs"><path class="g-acc g-arc" style="--i:0" pathLength="1" d="M262.2 43.3 A76 76 0 0 1 312.7 93.8"/><path class="g-acc g-head" style="--i:0" d="M314.5 85.9 L312.7 93.8 L306.8 88.3"/><path class="g-acc g-arc" style="--i:1" pathLength="1" d="M312.7 138.2 A76 76 0 0 1 262.2 188.7"/><path class="g-acc g-head" style="--i:1" d="M270.1 190.5 L262.2 188.7 L267.7 182.8"/><path class="g-acc g-arc" style="--i:2" pathLength="1" d="M217.8 188.7 A76 76 0 0 1 167.3 138.2"/><path class="g-acc g-head" style="--i:2" d="M165.5 146.1 L167.3 138.2 L173.2 143.7"/><path class="g-acc g-arc" style="--i:3" pathLength="1" d="M167.3 93.8 A76 76 0 0 1 217.8 43.3"/><path class="g-acc g-head" style="--i:3" d="M209.9 41.5 L217.8 43.3 L212.3 49.2"/></g><circle class="g-node g-node-acc" cx="240" cy="40" r="6.5"/><text class="g-txt" x="240" y="24" text-anchor="middle">DEFINE</text><circle class="g-node g-node-acc" cx="316" cy="116" r="6.5"/><text class="g-txt" x="332" y="120" text-anchor="start">ORGANIZE</text><circle class="g-node g-node-acc" cx="240" cy="192" r="6.5"/><text class="g-txt" x="240" y="218" text-anchor="middle">APPLY</text><circle class="g-node g-node-acc" cx="164" cy="116" r="6.5"/><text class="g-txt" x="148" y="120" text-anchor="end">REFINE</text><text class="g-num" x="240" y="124" text-anchor="middle">800+</text><text class="g-txt" x="240" y="144" text-anchor="middle">leaders</text></svg></div>
+          <dl class="cs-stats"><div><dt>Leaders reached</dt><dd>800+</dd></div><div><dt>Facilitated live</dt><dd>~180</dd></div><div><dt>Workshops delivered</dt><dd>4</dd></div><div><dt>Cross-org follow-ons</dt><dd>5–7</dd></div></dl>
+          <div class="cs-body"><section><h4>Context</h4><p>The original workshop was for senior leaders at the org&#x27;s leadership summit. I co-designed and co-facilitated it.</p></section><section><h4>What I built</h4><p>A four-phase framework (DEFINE → ORGANIZE → APPLY → REFINE) with concrete examples, and a hands-on lab where each leader defined a real challenge and shipped a working AI solution in the room.</p></section><section><h4>The hard part</h4><p>The platform went down mid-demo. I pivoted to audience Q&amp;A and the workshop kept going.</p></section><section><h4>Outcome</h4><p>The curriculum was reused across multiple internal training tracks and reached 800+ leaders. It earned a Merchant Services Excellence Award and set off 5–7 cross-org follow-ons.</p></section></div>
+          <ul class="tags" aria-label="Stack"><li>Workshop design</li><li>Framework authoring</li><li>Live facilitation</li></ul>
+          <nav class="cs-nav" aria-label="More case studies"><a class="cs-prev" href="#cs-workspace" data-cs="workspace"><span class="cs-nav-k">← Previous</span><span class="cs-nav-t">AI Support Workspace</span></a><a class="cs-next" href="#cs-fleet" data-cs="fleet"><span class="cs-nav-k">Next →</span><span class="cs-nav-t">Six-Agent Local Dev Fleet</span></a></nav>
+        </article>
+      </dialog>
+      <dialog class="cs" id="cs-fleet" aria-labelledby="cs-fleet-title">
+        <article class="cs-sheet">
+          <div class="cs-top"><p class="eyebrow">2026 · Personal tooling</p><a class="cs-close" href="#card-fleet" data-cs-close>Close <kbd>Esc</kbd></a></div>
+          <h3 class="cs-title" id="cs-fleet-title">Six-Agent Local Dev Fleet</h3>
+          <p class="cs-one">Six personal AI agents for local development, with per-agent memory, local dispatch, and weekly memory-health audits.</p>
+          <div class="cs-art"><svg class="glyph" viewBox="0 0 480 240" aria-hidden="true" focusable="false" data-glyph="fleet"><circle class="g-ink g-faint g-dash" cx="240" cy="118" r="84"/><g class="g-spokes"><path class="g-ink g-flow g-faint2" style="--i:0" d="M240 88 L240 49"/><path class="g-ink g-flow g-faint2" style="--i:1" d="M266 103 L299.8 83.5"/><path class="g-acc g-flow" style="--i:2" d="M266 133 L299.8 152.5"/><path class="g-ink g-flow g-faint2" style="--i:3" d="M240 148 L240 187"/><path class="g-ink g-flow g-faint2" style="--i:4" d="M214 133 L180.2 152.5"/><path class="g-ink g-flow g-faint2" style="--i:5" d="M214 103 L180.2 83.5"/></g><g class="g-agents"><circle class="g-node" cx="240" cy="34" r="13"/><circle class="g-soft2" cx="240" cy="34" r="3.4"/><circle class="g-node" cx="312.7" cy="76" r="13"/><circle class="g-soft2" cx="312.7" cy="76" r="3.4"/><circle class="g-ring" cx="312.7" cy="160" r="13"/><circle class="g-node g-node-acc" cx="312.7" cy="160" r="13"/><circle class="g-accf" cx="312.7" cy="160" r="3.4"/><circle class="g-node" cx="240" cy="202" r="13"/><circle class="g-soft2" cx="240" cy="202" r="3.4"/><circle class="g-node" cx="167.3" cy="160" r="13"/><circle class="g-soft2" cx="167.3" cy="160" r="3.4"/><circle class="g-node" cx="167.3" cy="76" r="13"/><circle class="g-soft2" cx="167.3" cy="76" r="3.4"/></g><rect class="g-win g-win-strong" x="216" y="94" width="48" height="48" rx="11"/><rect class="g-soft2" x="229" y="107" width="8" height="8" rx="2"/><rect class="g-soft2" x="229" y="121" width="8" height="8" rx="2"/><rect class="g-accf" x="243" y="107" width="8" height="8" rx="2"/><rect class="g-soft2" x="243" y="121" width="8" height="8" rx="2"/></svg></div>
+          <dl class="cs-stats"><div><dt>Local agents</dt><dd>6</dd></div><div><dt>Daemon tests</dt><dd>47 passing</dd></div><div><dt>Workflow skills</dt><dd>21</dd></div><div><dt>Memory-audit CLI</dt><dd>~2,000 LOC</dd></div></dl>
+          <div class="cs-body"><section><h4>Context</h4><p>A personal setup for my own engineering work, not a DoorDash system.</p></section><section><h4>What I built</h4><p>Six agents covering dispatch, code review, repo stewardship, daily standup prep, memory audit, and orchestration. A local-only background daemon coordinates spawn timing, a classifier triages incoming work, and a commander spawns agents into terminal tabs.</p></section><section><h4>The hard part</h4><p>Agent memory drifts. A 1,985-line Python CLI audits each agent&#x27;s memory against a personal vault every week and flags what&#x27;s gone stale.</p></section><section><h4>Outcome</h4><p>47 daemon tests passing and 21 workflow skills in daily use.</p></section></div>
+          <ul class="tags" aria-label="Stack"><li>TypeScript</li><li>Bun</li><li>MCP</li><li>Python</li><li>LaunchAgent</li></ul>
+          <nav class="cs-nav" aria-label="More case studies"><a class="cs-prev" href="#cs-framework" data-cs="framework"><span class="cs-nav-k">← Previous</span><span class="cs-nav-t">AI as a Leadership Tool</span></a><a class="cs-next" href="#cs-wfm" data-cs="wfm"><span class="cs-nav-k">Next →</span><span class="cs-nav-t">Workforce Operations Platform</span></a></nav>
+        </article>
+      </dialog>
+    </section>
+
+    <!-- =============================== LAB =============================== -->
+    <section class="section lab" id="lab" aria-labelledby="lab-title">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <p class="eyebrow"><span class="eyebrow-num">03</span> Lab</p>
+          <h2 class="section-title" id="lab-title">Demos you can <em>walk around in.</em></h2>
+          <p class="section-lede">Everything here runs in your browser: a procedural starship you can board, a GPU orb, and an arcade rebuilt dot for dot. All built after hours by directing an AI agent fleet.</p>
+        </header>
+
+        <article class="lab-feature reveal">
+          <a class="lab-poster" href="starship.html" aria-label="Starship Explorer: walk the ship">
+            <span class="lab-bar" aria-hidden="true"><span>STREL-7 · Remote dock</span><span>Desktop · WebGL</span></span>
+            <picture>
+              <source srcset="assets/starship-poster.webp" type="image/webp">
+              <img src="assets/starship-poster.jpg" alt="Corridor of the STREL-7: cream panels, burnt-orange door frames, teal floor strips" width="1280" height="720" loading="lazy" decoding="async">
+            </picture>
+            <span class="lab-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg>Walk the ship</span>
+          </a>
+          <div class="lab-copy">
+            <p class="eyebrow">Flagship · Playable build</p>
+            <h3 class="lab-title">Starship Explorer</h3>
+            <p>A first-person walkable starship in Three.js with zero asset files. Every panel, texture, and planet outside the windows is generated procedurally at runtime. Built end to end by an AI agent fleet I directed, gated by an automated screenshot-verify pipeline.</p>
+            <ul class="tags"><li>Three.js</li><li>TypeScript</li><li>100% procedural</li><li>144 fps</li></ul>
+            <div class="lab-links">
+              <a class="link-arrow" href="starship.html">Walk the ship <span aria-hidden="true">→</span></a>
+              <a class="link-arrow" href="https://github.com/desertcache/starship" target="_blank" rel="noopener">Source <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </article>
+
+        <div class="lab-grid">
+          <article class="lab-card reveal">
+            <div class="orb-slot" id="orb-slot" data-src="https://desertcache.github.io/samantha-ui/">
+              <div class="orb-poster" aria-hidden="true"><span class="orb-core"></span></div>
+              <button class="orb-wake" type="button">Wake the orb</button>
+              <span class="lab-live" aria-hidden="true">Live · WebGL</span>
+            </div>
+            <div class="lab-card-body">
+              <h3 class="lab-card-title">Samantha UI</h3>
+              <p>A <i>Her</i>-inspired soul orb: one GPU-displaced sphere, hand-written GLSL, audio-reactive at 60fps. It's the real app, idling in its listening state.</p>
+              <ul class="tags"><li>React 19</li><li>Three.js</li><li>GLSL</li></ul>
+              <div class="lab-links">
+                <a class="link-arrow" href="https://desertcache.github.io/samantha-ui/" target="_blank" rel="noopener">Open full screen <span aria-hidden="true">↗</span></a>
+                <a class="link-arrow" href="https://github.com/desertcache/samantha-ui" target="_blank" rel="noopener">Source <span aria-hidden="true">↗</span></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="lab-card reveal">
+            <a class="arcade-stage" href="arcade.html" aria-label="The Arcade: insert coin">
+              <span class="pac" aria-hidden="true"></span>
+              <span class="pellets" aria-hidden="true"></span>
+              <span class="arcade-coin" aria-hidden="true">Insert coin</span>
+            </a>
+            <div class="lab-card-body">
+              <h3 class="lab-card-title">The Arcade</h3>
+              <p>Five games in vanilla JS on raw canvas, including a dot-for-dot Pac-Man rebuild with the authentic ghost AI.</p>
+              <ul class="tags"><li>Vanilla JS</li><li>Canvas</li><li>Zero dependencies</li></ul>
+              <div class="lab-links">
+                <a class="link-arrow" href="arcade.html">Insert coin <span aria-hidden="true">→</span></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="lab-card reveal">
+            <a class="dispatch-stage" href="blog/index.html" aria-label="Hill Money Watch: read the dispatches">
+              <span class="ticker" aria-hidden="true"><span class="ticker-track"><span>PTR</span><span>Purchase</span><span>$1K–15K</span><span>Sale</span><span>$15K–50K</span><span>Filed late</span><span>$100K–250K</span><span>Exchange</span><span>PTR</span><span>Purchase</span><span>$1K–15K</span><span>Sale</span><span>$15K–50K</span><span>Filed late</span><span>$100K–250K</span><span>Exchange</span></span></span>
+              <span class="dispatch-latest">
+                <span class="dispatch-kicker">Latest dispatch</span>
+                <span class="dispatch-title" id="dispatch-title">Hill Money Watch — August 16, 2026</span>
+                <time class="dispatch-date" id="dispatch-date" datetime="2026-08-16">August 16, 2026</time>
+              </span>
+            </a>
+            <div class="lab-card-body">
+              <h3 class="lab-card-title">Hill Money Watch</h3>
+              <p>A digest of congressional trading disclosures. A Python ingest step parses each digest, rebuilds the index from disk, and rejects any digest whose styles would be dropped at publish. Contract tests keep it honest.</p>
+              <ul class="tags"><li>Python</li><li>Contract tests</li><li>Static publishing</li></ul>
+              <div class="lab-links">
+                <a class="link-arrow" href="blog/index.html">Read the dispatches <span aria-hidden="true">→</span></a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== ABOUT ============================== -->
+    <section class="section" id="about" aria-labelledby="about-title">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <p class="eyebrow"><span class="eyebrow-num">04</span> Background</p>
+          <h2 class="section-title" id="about-title">From EMT to production code <em>in eight years.</em></h2>
+          <p class="section-lede">Most engineers don't have this path. The pattern: every role ran the operations the next one automated.</p>
+        </header>
+
+        <div class="about">
+          <aside class="about-side reveal">
+            <figure class="portrait">
+              <picture>
+                <source srcset="assets/headshot-600.webp" type="image/webp">
+                <img src="assets/headshot-600.jpg" alt="Samuel Bates in a brown cowboy hat with a sheriff's star, glasses, and a mustache" width="600" height="600" loading="lazy" decoding="async">
+              </picture>
+              <figcaption><span class="fig">Fig. 1</span> Phoenix, 2026. Same hat I wore to win an internal training award. Worked then. Still works.</figcaption>
+            </figure>
+            <dl class="facts">
+              <div><dt>Based</dt><dd>Phoenix, AZ</dd></div>
+              <div><dt>Education</dt><dd>B.S. Cell &amp; Molecular Biology, Western New Mexico University</dd></div>
+              <div><dt>Certified</dt><dd>NREMT-B (EMT), Estrella Mountain Community College</dd></div>
+              <div><dt>Off hours</dt><dd>Rock climbing, hiking, plants, building AI tools</dd></div>
+            </dl>
+          </aside>
+
+          <div class="about-main">
+            <ol class="timeline">
+              <li class="tl reveal" data-phase="operator">
+                <span class="tl-year">2018</span>
+                <div class="tl-body">
+                  <span class="tl-phase">Operator</span>
+                  <h3 class="tl-role">Lead Patient Care Coordinator <span class="tl-org">AZ Pain Doctors</span></h3>
+                  <p>30+ inbound calls a day. Promoted to escalations. Hired and trained 16 coordinators and redesigned the SOPs that were causing the bottlenecks.</p>
+                </div>
+              </li>
+              <li class="tl reveal" data-phase="operator">
+                <span class="tl-year">2020</span>
+                <div class="tl-body">
+                  <span class="tl-phase">Operator</span>
+                  <h3 class="tl-role">EMT, Behavioral Health Team Lead <span class="tl-org">Phoenix Fire Department</span></h3>
+                  <p>Led a 12-person crisis response team, coordinating fire, medical, and law-enforcement units on scene. Triage under pressure, every shift.</p>
+                </div>
+              </li>
+              <li class="tl reveal" data-phase="specialist">
+                <span class="tl-year">2022</span>
+                <div class="tl-body">
+                  <span class="tl-phase">Specialist</span>
+                  <h3 class="tl-role">Merchant Services Senior Specialist <span class="tl-org">DoorDash · Tempe</span></h3>
+                  <p>Onboarded 9,000+ stores. Wrote the SOPs that took POS provider coverage from 1 to 23 and the specialist-to-provider ratio from 1:1 to 1:7.</p>
+                </div>
+              </li>
+              <li class="tl reveal" data-phase="specialist">
+                <span class="tl-year">2023</span>
+                <div class="tl-body">
+                  <span class="tl-phase">Specialist</span>
+                  <h3 class="tl-role">Disaster Prevention Specialist <span class="tl-org">DoorDash · Escalations</span></h3>
+                  <p>One of four people handling executive-level escalations, 50+ cases a day. Built the SQL tooling, Salesforce reports, and prevention playbooks.</p>
+                </div>
+              </li>
+              <li class="tl reveal" data-phase="builder">
+                <span class="tl-year">2025</span>
+                <div class="tl-body">
+                  <span class="tl-phase">Builder</span>
+                  <h3 class="tl-role">Technical Integrations Associate, Engineering &amp; AI <span class="tl-org">DoorDash · Merchant Ops</span></h3>
+                  <p>First production code. Three production apps, a funded business case, 800+ leaders trained, and two Excellence Awards.</p>
+                </div>
+              </li>
+              <li class="tl reveal" data-phase="architect">
+                <span class="tl-year">2026</span>
+                <div class="tl-body">
+                  <span class="tl-phase">Architect</span>
+                  <h3 class="tl-role">Technical Integrations Associate, Engineering &amp; AI <span class="tl-org">DoorDash · Merchant Ops</span></h3>
+                  <p>Deeper into AI: a six-agent local dev fleet, an internal AI builder playbook, and tech lead on the flagship internal support chatbot.</p>
+                </div>
+              </li>
+            </ol>
+
+            <div class="recognition reveal">
+              <h3 class="recognition-title">Recognition</h3>
+              <ul>
+                <li><span class="award-mark" aria-hidden="true">2×</span><span><b>Merchant Services Excellence Award</b>, 2025, from senior leadership: once for the <i>AI as a Leadership Tool</i> workshop, once for the POS migration training program.</span></li>
+                <li><span class="award-mark" aria-hidden="true">✦</span><span>Directors and senior engineers across the org come to me for AI tooling guidance, and new requests from adjacent orgs follow most workshops and live demos.</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== TOOLKIT ============================== -->
+    <section class="section section-tint" id="stack" aria-labelledby="stack-title">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <p class="eyebrow"><span class="eyebrow-num">05</span> Toolkit</p>
+          <h2 class="section-title" id="stack-title">What I <em>ship with.</em></h2>
+        </header>
+        <div class="toolkit reveal">
+          <div class="tk"><h3>Frontend</h3><ul><li>React 18 &amp; 19</li><li>TypeScript</li><li>Zustand · Redux</li><li>React Query</li><li>styled-components</li><li>Recharts</li><li>Vite</li></ul></div>
+          <div class="tk"><h3>Backend</h3><ul><li>Node.js</li><li>Fastify</li><li>GraphQL · REST</li><li>snowflake-sdk</li><li>Prometheus</li></ul></div>
+          <div class="tk"><h3>Data</h3><ul><li>Snowflake (CTEs, window functions)</li><li>BI dashboards</li><li>Bayesian analysis</li><li>A/B design</li><li>ETL</li></ul></div>
+          <div class="tk"><h3>AI</h3><ul><li>Claude API</li><li>Anthropic Agent SDK</li><li>MCP servers</li><li>Enterprise search agents</li><li>Ollama · MLX Whisper</li><li>Kokoro TTS</li></ul></div>
+          <div class="tk"><h3>Platform</h3><ul><li>pnpm monorepo</li><li>Buildkite</li><li>GitHub Actions</li><li>AWS Lambda</li><li>Internal telemetry</li></ul></div>
+          <div class="tk"><h3>Operating</h3><ul><li>Business-case authoring</li><li>Vendor pod operations</li><li>Outage sizing</li><li>Pilot design (Bayesian)</li><li>Workshop facilitation</li></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== CONTACT ============================== -->
+    <section class="contact" id="contact" aria-labelledby="contact-title">
+      <div class="wrap">
+        <h2 class="contact-title reveal" id="contact-title">Let's build the system that fixes <em>the bottleneck.</em></h2>
+        <div class="contact-grid reveal">
+          <p class="contact-lede">Open to forward deployed, solutions, and applied-AI roles: remote, hybrid, or SF Bay. Email is the fastest way to reach me.</p>
+          <div class="contact-actions">
+            <a class="btn btn-solid btn-lg" href="mailto:batessambates@gmail.com">Email me <span class="btn-arrow" aria-hidden="true">↗</span></a>
+            <button class="btn btn-ghost btn-lg copy-email" type="button" data-email="batessambates@gmail.com"><span class="copy-label">Copy address</span></button>
+            <a class="btn btn-ghost btn-lg" href="Samuel_Bates_CV.pdf" target="_blank" rel="noopener">Résumé <span class="btn-meta">PDF</span></a>
+          </div>
+          <ul class="contact-links">
+            <li><a href="https://github.com/desertcache" target="_blank" rel="noopener"><span class="cl-k">GitHub</span><span class="cl-v">@desertcache</span><span aria-hidden="true">↗</span></a></li>
+            <li><a href="https://www.linkedin.com/in/samuel-b-343205133" target="_blank" rel="noopener"><span class="cl-k">LinkedIn</span><span class="cl-v">samuel-b-343205133</span><span aria-hidden="true">↗</span></a></li>
+            <li><a href="mailto:batessambates@gmail.com"><span class="cl-k">Email</span><span class="cl-v">batessambates@gmail.com</span><span aria-hidden="true">↗</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p class="footer-copy">© 2026 Samuel Bates. Hand-built with HTML, CSS, and a little JavaScript. No framework.</p>
+      <nav class="side-quests" aria-label="Side quests">
+        <span>Side quests:</span>
+        <a href="starship.html">Starship</a>
+        <a href="arcade.html">Arcade</a>
+        <a href="blog/index.html">Hill Money Watch</a>
+        <a href="skincare.html">A skincare regimen, run like an ops program</a>
+      </nav>
+      <p class="footer-hint"><kbd>`</kbd> warps you to the starship.</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
