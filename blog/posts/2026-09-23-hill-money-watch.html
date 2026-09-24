@@ -1,61 +1,98 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Hill Money Watch — September 23, 2026</title>
-  <meta name="description" content="Nancy Pelosi&#x27;s household opened a $3M–12M position in Bloom Energy and added to Intel, the first move on either side of the open Intel divergence since June. Cleo Fields&#x27;s missing August buy turned up after all, April McClain Delaney sold 23 positions of $100K or more in one day, and the chair of the House Ethics Committee disclosed three trades about eight months after they were made." />
-  <meta name="hmw-date" content="2026-09-23" />
-  <meta name="hmw-summary" content="Nancy Pelosi&#x27;s household opened a $3M–12M position in Bloom Energy and added to Intel, the first move on either side of the open Intel divergence since June. Cleo Fields&#x27;s missing August buy turned up after all, April McClain Delaney sold 23 positions of $100K or more in one day, and the chair of the House Ethics Committee disclosed three trades about eight months after they were made." />
-  <meta name="theme-color" content="#f6f3ee" />
-  <link rel="canonical" href="https://desertcache.github.io/portfolio/blog/posts/2026-09-23-hill-money-watch.html" />
+  <meta name="description" content="Nancy Pelosi&#x27;s household opened a $3M–12M position in Bloom Energy and added to Intel, the first move on either side of the open Intel divergence since June. Cleo Fields&#x27;s missing August buy turned up after all, April McClain Delaney sold 23 positions of $100K or more in one day, and the chair of the House Ethics Committee disclosed three trades about eight months after they were made.">
+  <meta name="hmw-date" content="2026-09-23">
+  <meta name="hmw-summary" content="Nancy Pelosi&#x27;s household opened a $3M–12M position in Bloom Energy and added to Intel, the first move on either side of the open Intel divergence since June. Cleo Fields&#x27;s missing August buy turned up after all, April McClain Delaney sold 23 positions of $100K or more in one day, and the chair of the House Ethics Committee disclosed three trades about eight months after they were made.">
+  <link rel="canonical" href="https://desertcache.github.io/portfolio/blog/posts/2026-09-23-hill-money-watch.html">
+  <meta name="theme-color" content="#f5f1ea">
+
+  <!-- Link previews (LinkedIn, Slack, iMessage). og:image must be an absolute URL. -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Samuel Bates">
+  <meta property="og:title" content="Hill Money Watch — September 23, 2026">
+  <meta property="og:description" content="Nancy Pelosi&#x27;s household opened a $3M–12M position in Bloom Energy and added to Intel, the first move on either side of the open Intel divergence since June. Cleo Fields&#x27;s missing August buy turned up after all, April McClain Delaney sold 23 positions of $100K or more in one day, and the chair of the House Ethics Committee disclosed three trades about eight months after they were made.">
+  <meta property="og:url" content="https://desertcache.github.io/portfolio/blog/posts/2026-09-23-hill-money-watch.html">
+  <meta property="og:image" content="https://desertcache.github.io/portfolio/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:published_time" content="2026-09-23">
+  <meta name="twitter:card" content="summary_large_image">
 
   <script>
-    // no-FOUC theme, mirrors index.html. Shares the 'sb-theme' key so the
-    // homepage and the blog agree on light/dark.
-    // alive.js is deliberately NOT loaded here: it gates init on
-    // `#theme-toggle && .receipt`, and the blog has no .receipt, so it would
-    // silently no-op. The ~12 lines below are the whole of what's needed.
+    // Same as the homepage: pick the theme before first paint (saved choice,
+    // else the OS setting) and flag that JS is on. `sb-theme` is shared by
+    // every page on the site.
     (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      // Safety net: if js/blog.js never arrives, fall back to the no-JS look.
+      setTimeout(function () { if (!root.classList.contains('js-ready')) root.classList.remove('js'); }, 4000);
       try {
         var t = localStorage.getItem('sb-theme');
         if (t !== 'dark' && t !== 'light') {
           t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
-        document.documentElement.setAttribute('data-theme', t);
-        var m = document.querySelector('meta[name="theme-color"]');
-        if (m) m.setAttribute('content', t === 'dark' ? '#161412' : '#f6f3ee');
-      } catch (e) {}
+        root.setAttribute('data-theme', t);
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#12100e' : '#f5f1ea');
+      } catch (e) { /* storage blocked: CSS falls back to the system theme */ }
     })();
   </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
 
-  <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
-  <link rel="stylesheet" href="../../styles-v4.css" />
-  <link rel="stylesheet" href="../blog.css" />
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../css/site.css">
+  <link rel="stylesheet" href="../blog.css?v=2026-09-23">
+  <script type="module" src="../../js/blog.js"></script>
 </head>
 <body>
-  <header class="topstrip">
-    <div class="topstrip-inner blog-strip">
-      <a class="brand-mark" href="../../index.html">Samuel Bates<span class="dot">.</span></a>
-      <nav class="topstrip-mid"><a href="../index.html">&larr; All dispatches</a></nav>
-      <div class="topstrip-right">
-        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">&#9680;</button>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="../../index.html" aria-label="Samuel Bates, home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <path d="M6.2 17.8C5.2 11.6 9.4 6.1 15.6 5.6 21.9 5.1 27.2 9.2 26.8 15.2 26.4 20.4 23.6 22.1 20.1 24.6 16.2 27.4 7.3 25.1 6.2 17.8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M11.4 15.9C11.1 12.2 13.9 9.6 17.4 9.5 21 9.4 23.1 11.9 22.6 15 22.1 18.2 19.8 19.2 17.2 20.1 14.2 21.1 11.7 19.2 11.4 15.9Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <circle cx="17.6" cy="14.7" r="2.6" class="brand-dot"/>
+        </svg>
+        <span class="brand-name">Samuel Bates</span>
+      </a>
+      <nav class="nav-links" aria-label="Sections">
+        <a href="../../index.html#work">Work</a>
+        <a href="../../index.html#lab" aria-current="true">Lab</a>
+        <a href="../../index.html#about">About</a>
+        <a href="../../index.html#contact">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.2 14.6A8.3 8.3 0 0 1 9.4 3.8a8.3 8.3 0 1 0 10.8 10.8Z"/></svg>
+        </button>
+        <a class="btn btn-ghost btn-sm nav-cv" href="../../Samuel_Bates_CV.pdf" target="_blank" rel="noopener">Résumé</a>
+        <a class="btn btn-solid btn-sm" href="mailto:batessambates@gmail.com">Get in touch</a>
       </div>
     </div>
+    <div class="nav-progress" aria-hidden="true"></div>
   </header>
 
-  <main class="wrap post-wrap">
-    <article class="post">
-      <div class="section-num">Dispatch &middot; Hill Money Watch</div>
-      <h1 class="post-title">Hill Money Watch — September 23, 2026</h1>
-      <time class="post-date label" datetime="2026-09-23">September 23, 2026</time>
-      <p class="post-summary">Nancy Pelosi&#x27;s household opened a $3M–12M position in Bloom Energy and added to Intel, the first move on either side of the open Intel divergence since June. Cleo Fields&#x27;s missing August buy turned up after all, April McClain Delaney sold 23 positions of $100K or more in one day, and the chair of the House Ethics Committee disclosed three trades about eight months after they were made.</p>
-      <hr class="rule" />
-      <div class="post-body body">
+  <main id="main" data-index="../posts.json">
+    <article class="post" data-slug="2026-09-23-hill-money-watch">
+      <header class="post-head">
+        <a class="eyebrow post-back" href="../index.html"><span class="eyebrow-num">Dispatch</span>All editions</a>
+        <h1 class="post-title">Hill Money Watch — September 23, 2026</h1>
+        <p class="post-lede">Nancy Pelosi&#x27;s household opened a $3M–12M position in Bloom Energy and added to Intel, the first move on either side of the open Intel divergence since June. Cleo Fields&#x27;s missing August buy turned up after all, April McClain Delaney sold 23 positions of $100K or more in one day, and the chair of the House Ethics Committee disclosed three trades about eight months after they were made.</p>
+        <p class="post-meta"><time datetime="2026-09-23">September 23, 2026</time><span id="read-time" hidden></span></p>
+      </header>
+
+      <div class="post-body">
 <style>
   .hmw-note {
     border-left: 2px solid var(--accent);
@@ -95,7 +132,8 @@
   /* Trade tables: only the descriptive leading column(s) wrap. A range split
      across lines ("$1M–" / "5M") reads as two numbers on a phone. */
   .hmw-trades td:nth-child(n+2),
-  .hmw-tape td:nth-child(n+3) { white-space: nowrap; }
+  .hmw-tape td:nth-child(n+3),
+  .hmw-status td:not(:last-child) { white-space: nowrap; }
   .pill {
     display: inline-block;
     padding: 1px 8px;
@@ -186,7 +224,7 @@
 <p>The timing, as reported: Bloom posted record second-quarter revenue after the close on July 28, the day of the second lot, and the shares were up 26.5% by July 30 (Decrypt). The filing was signed August 21, and the stock rose in premarket trading on Tuesday, August 25 as it drew coverage. S&amp;P Dow Jones Indices then announced Bloom's addition to the S&amp;P 500 on September 4, effective September 21. A reader acting on the disclosure was buying after the earnings move and before the index news.</p>
 <p>One structural point for anyone following these positions: every option in the household's 2026 filings expires after Pelosi leaves office in January. That covers May's Intel and Uber calls (March 2027) and these (June 2027). Members stop filing transaction reports when they leave, so however these positions are closed may never show up on this tape.</p>
 <h3>The rest of Tier 1</h3>
-<table class="hmw-table">
+<table class="hmw-table hmw-status">
 <tr><th>Member</th><th>New in window</th><th>Traded</th><th>Filed</th><th>Read</th></tr>
 <tr>
 <td>Cleo Fields (D-LA)</td>
@@ -198,23 +236,23 @@
 <tr>
 <td>Dwight Evans (D-PA)</td>
 <td><span class="pill pill-none">—</span> nothing new</td>
-<td>last: Jun 10</td>
+<td>Jun 10<br/><span class="hmw-lag">last sale</span></td>
 <td>—</td>
 <td>No exit since the June GD and INTC sales, confirmed on two trackers. Three and a half months is the longest pause in his recent liquidation run, and it now overlaps with Pelosi adding to Intel.</td>
 </tr>
 <tr>
 <td>Rick Scott (R-FL)</td>
 <td><span class="pill pill-none">—</span> nothing new</td>
-<td>last filed: Jul 13</td>
 <td>—</td>
+<td>Jul 13<br/><span class="hmw-lag">last filing</span></td>
 <td>Low priority by policy. The July run of five municipal bond sales has not continued.</td>
 </tr>
 <tr>
 <td>Donald Trump (President)</td>
 <td><span class="pill pill-none">—</span> new 278-T located</td>
 <td>—</td>
-<td>dated Sep 8; OGE received Sep 14</td>
-<td>A new periodic transaction report is in the OGE document store, but OGE's server refused every connection this pass, so its contents are unread. A search-engine excerpt shows a Pittsburgh-area sports-authority municipal bond among the lines, consistent with his bond-heavy pattern. Located, not read.</td>
+<td>Sep 8<br/><span class="hmw-lag">dated</span></td>
+<td>A new periodic transaction report, dated September 8 and received by OGE September 14, is in the OGE document store, but OGE's server refused every connection this pass, so its contents are unread. A search-engine excerpt shows a Pittsburgh-area sports-authority municipal bond among the lines, consistent with his bond-heavy pattern. Located, not read.</td>
 </tr>
 </table>
 <h2>Tier 2 — Dormant Names</h2>
@@ -354,27 +392,24 @@
 <p class="hmw-note"><strong>On late filings.</strong> Late disclosures are common and frequently clerical: a missed form, a spouse's account, a filing agent's backlog. This page reports the gap between trade and disclosure dates exactly as filed, and attributes any characterization of a filing as a violation to the outlet that made it. Whether a given filing actually breaks the law is for the House Ethics Committee to determine, not this page.</p>
 <p class="hmw-note"><strong>The lag caveat, every edition.</strong> Disclosures lag trades by up to 45 days. Ranges are as filed. This edition's lead item became public four weeks after the trades and after the stock's earnings move. Everything here is a disclosure of a trade that has already happened at a price that has already moved. This is disclosure reporting, not investment advice, and it is not a real-time feed of anyone's positions.</p>
 </div>
-    </article>
 
-    <nav class="post-foot">
-      <a class="underline" href="../index.html">&larr; All dispatches</a>
-      <a class="underline" href="../../index.html">Back to portfolio</a>
-    </nav>
+      <nav class="cs-nav edition-nav" id="edition-nav" aria-label="Other editions">
+        <a href="../index.html"><span class="cs-nav-k">Archive</span><span class="cs-nav-t">All editions</span></a>
+      </nav>
+    </article>
   </main>
 
-  <script>
-    (function () {
-      var btn = document.getElementById('theme-toggle');
-      if (!btn) return;
-      btn.addEventListener('click', function () {
-        var root = document.documentElement;
-        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        root.setAttribute('data-theme', next);
-        try { localStorage.setItem('sb-theme', next); } catch (e) {}
-        var m = document.querySelector('meta[name="theme-color"]');
-        if (m) m.setAttribute('content', next === 'dark' ? '#161412' : '#f6f3ee');
-      });
-    })();
-  </script>
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p class="footer-copy">© 2026 Samuel Bates. Hand-built with HTML, CSS, and a little JavaScript. No framework.</p>
+      <nav class="side-quests" aria-label="Side quests">
+        <span>Side quests:</span>
+        <a href="../../starship.html">Starship</a>
+        <a href="../../arcade.html">Arcade</a>
+        <a href="../index.html">Hill Money Watch</a>
+        <a href="../../skincare.html">A skincare regimen, run like an ops program</a>
+      </nav>
+    </div>
+  </footer>
 </body>
 </html>

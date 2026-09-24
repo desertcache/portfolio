@@ -3,7 +3,9 @@
  * Pure helpers: no DOM, no globals. Everything here runs in Node as well as
  * the browser, which is what makes it testable (see tests/lib.test.mjs).
  * Rule of thumb for this codebase: if a function can be pure, it lives here.
+ * (The blog's post-list helpers live in editions.js; see why at its top.)
  */
+import { validPosts } from './editions.js';
 
 /**
  * Parse a CSS hex colour into 0..1 channels for a WebGL uniform.
@@ -69,29 +71,15 @@ export function formatStat(stat, n) {
  */
 
 /**
- * Newest well-formed post in a blog/posts.json payload, or null.
- * posts.json is written upstream (scripts/ingest_digest.py), so its shape is
- * validated rather than trusted, and any href with a scheme ("javascript:",
- * "https:") or a protocol-relative "//" is rejected: only same-site paths.
+ * Newest well-formed post in a blog/posts.json payload, or null. The shape
+ * checks (and the same-site-links-only rule) are validPosts' in editions.js,
+ * so the homepage card and the blog archive can never disagree on a post.
  * @param {unknown} data parsed JSON
  * @returns {Post | null}
  */
 export function latestPost(data) {
-  if (!data || typeof data !== 'object') return null;
-  const posts = /** @type {{ posts?: unknown }} */ (data).posts;
-  if (!Array.isArray(posts)) return null;
-  /** @type {Post[]} */
-  const valid = [];
-  for (const p of posts) {
-    if (!p || typeof p !== 'object') continue;
-    const { title, date, href } = /** @type {Record<string, unknown>} */ (p);
-    if (typeof title !== 'string' || !title.trim()) continue;
-    if (typeof date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
-    if (typeof href !== 'string' || !href || /^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith('//')) continue;
-    valid.push({ title, date, href });
-  }
-  valid.sort((a, b) => b.date.localeCompare(a.date));
-  return valid[0] ?? null;
+  const [newest] = validPosts(data);
+  return newest ? { title: newest.title, date: newest.date, href: newest.href } : null;
 }
 
 /**

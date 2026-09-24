@@ -1,111 +1,123 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Hill Money Watch — Samuel Bates</title>
-  <meta name="description" content="A daily read on congressional trading disclosures." />
-  <meta name="theme-color" content="#f6f3ee" />
-  <link rel="canonical" href="https://desertcache.github.io/portfolio/blog/" />
+  <meta name="description" content="Congressional and executive-branch stock-trade disclosures, read closely: what the tracked names bought and sold, the six-figure trades from everyone else, and how long each took to become public.">
+  <link rel="canonical" href="https://desertcache.github.io/portfolio/blog/">
+  <meta name="theme-color" content="#f5f1ea">
+
+  <!-- Link previews (LinkedIn, Slack, iMessage). og:image must be an absolute URL. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Samuel Bates">
+  <meta property="og:title" content="Hill Money Watch">
+  <meta property="og:description" content="Congressional and executive-branch stock-trade disclosures, read closely.">
+  <meta property="og:url" content="https://desertcache.github.io/portfolio/blog/">
+  <meta property="og:image" content="https://desertcache.github.io/portfolio/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
 
   <script>
-    // no-FOUC theme, mirrors index.html and _post.template.html.
+    // Same as the homepage: pick the theme before first paint (saved choice,
+    // else the OS setting) and flag that JS is on. `sb-theme` is shared by
+    // every page on the site.
     (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      // Safety net: if js/blog.js never arrives, fall back to the no-JS look.
+      setTimeout(function () { if (!root.classList.contains('js-ready')) root.classList.remove('js'); }, 4000);
       try {
         var t = localStorage.getItem('sb-theme');
         if (t !== 'dark' && t !== 'light') {
           t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
-        document.documentElement.setAttribute('data-theme', t);
-        var m = document.querySelector('meta[name="theme-color"]');
-        if (m) m.setAttribute('content', t === 'dark' ? '#161412' : '#f6f3ee');
-      } catch (e) {}
+        root.setAttribute('data-theme', t);
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#12100e' : '#f5f1ea');
+      } catch (e) { /* storage blocked: CSS falls back to the system theme */ }
     })();
   </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
 
-  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
-  <link rel="stylesheet" href="../styles-v4.css" />
-  <link rel="stylesheet" href="blog.css" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="blog.css?v=2026-09-23">
+  <script type="module" src="../js/blog.js"></script>
 </head>
 <body>
-  <header class="topstrip">
-    <div class="topstrip-inner blog-strip">
-      <a class="brand-mark" href="../index.html">Samuel Bates<span class="dot">.</span></a>
-      <nav class="topstrip-mid"><a href="../index.html">&larr; Back to portfolio</a></nav>
-      <div class="topstrip-right">
-        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">&#9680;</button>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="../index.html" aria-label="Samuel Bates, home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <path d="M6.2 17.8C5.2 11.6 9.4 6.1 15.6 5.6 21.9 5.1 27.2 9.2 26.8 15.2 26.4 20.4 23.6 22.1 20.1 24.6 16.2 27.4 7.3 25.1 6.2 17.8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M11.4 15.9C11.1 12.2 13.9 9.6 17.4 9.5 21 9.4 23.1 11.9 22.6 15 22.1 18.2 19.8 19.2 17.2 20.1 14.2 21.1 11.7 19.2 11.4 15.9Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <circle cx="17.6" cy="14.7" r="2.6" class="brand-dot"/>
+        </svg>
+        <span class="brand-name">Samuel Bates</span>
+      </a>
+      <nav class="nav-links" aria-label="Sections">
+        <a href="../index.html#work">Work</a>
+        <a href="../index.html#lab" aria-current="true">Lab</a>
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#contact">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.2 14.6A8.3 8.3 0 0 1 9.4 3.8a8.3 8.3 0 1 0 10.8 10.8Z"/></svg>
+        </button>
+        <a class="btn btn-ghost btn-sm nav-cv" href="../Samuel_Bates_CV.pdf" target="_blank" rel="noopener">Résumé</a>
+        <a class="btn btn-solid btn-sm" href="mailto:batessambates@gmail.com">Get in touch</a>
       </div>
     </div>
+    <div class="nav-progress" aria-hidden="true"></div>
   </header>
 
-  <main class="wrap post-wrap">
-    <div class="section-num">Dispatch</div>
-    <h1 class="post-title">Hill Money Watch</h1>
-    <p class="section-lede">
-      A daily read on congressional trading disclosures.
-    </p>
-    <hr class="rule" />
-    <div id="archive" class="archive" aria-live="polite">
-      <p class="label">Loading&hellip;</p>
+  <main id="main" data-index="posts.json">
+    <header class="wrap archive-head">
+      <p class="eyebrow"><span class="eyebrow-num">Dispatch</span>From the Lab</p>
+      <h1 class="archive-name">Hill Money Watch</h1>
+      <p class="archive-lede">Congressional and executive-branch stock-trade disclosures, read closely: what the tracked names bought and sold, the six-figure trades from everyone else, and how long each one took to become public.</p>
+      <p class="archive-caveat">Disclosure reporting, not investment advice. Filings lag trades by up to 45 days.</p>
+    </header>
+
+    <div class="ticker ticker-band" aria-hidden="true">
+      <div class="ticker-track"><span>PTR</span><span>Purchase</span><span>$1K–15K</span><span>Sale (partial)</span><span>$15K–50K</span><span>Spouse</span><span>Filed late</span><span>$100K–250K</span><span>Call options</span><span>Exchange</span><span>OGE 278-T</span><span>$1M–5M</span><span>PTR</span><span>Purchase</span><span>$1K–15K</span><span>Sale (partial)</span><span>$15K–50K</span><span>Spouse</span><span>Filed late</span><span>$100K–250K</span><span>Call options</span><span>Exchange</span><span>OGE 278-T</span><span>$1M–5M</span></div>
     </div>
+
+    <section class="wrap archive-feature" aria-label="Latest edition">
+      <div id="latest">
+        <p class="archive-status" id="archive-status" role="status">Loading the editions…</p>
+        <!-- Shown by CSS whenever JS is off or js/blog.js never arrived (the
+             <head> safety net drops .js after 4s); replaced once the list loads. -->
+        <p class="archive-status archive-fallback">The edition list needs JavaScript. The newest edition is also linked from the <a href="../index.html#lab">Lab section of the homepage</a>.</p>
+      </div>
+    </section>
+
+    <section class="wrap archive-earlier" id="earlier" aria-labelledby="earlier-title" hidden>
+      <h2 class="archive-heading" id="earlier-title">Earlier editions</h2>
+      <ol class="archive-list" id="archive-list"></ol>
+    </section>
   </main>
 
-  <script>
-    (function () {
-      var btn = document.getElementById('theme-toggle');
-      if (!btn) return;
-      btn.addEventListener('click', function () {
-        var root = document.documentElement;
-        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        root.setAttribute('data-theme', next);
-        try { localStorage.setItem('sb-theme', next); } catch (e) {}
-        var m = document.querySelector('meta[name="theme-color"]');
-        if (m) m.setAttribute('content', next === 'dark' ? '#161412' : '#f6f3ee');
-      });
-    })();
-  </script>
-
-  <script>
-    // posts.json is generated by scripts/ingest_digest.py from meta tags written
-    // by a scheduled task. That is upstream of this page and can drift, so every
-    // field is escaped before it touches innerHTML — a title containing markup
-    // should render as text, not execute.
-    (function () {
-      function esc(s) {
-        return String(s == null ? '' : s)
-          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-      }
-      var root = document.getElementById('archive');
-      fetch('posts.json', { cache: 'no-cache' })
-        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-        .then(function (data) {
-          var posts = (data && data.posts) || [];
-          if (!posts.length) {
-            root.innerHTML = '<p class="label">No dispatches published yet.</p>';
-            return;
-          }
-          root.innerHTML = posts.map(function (p) {
-            // Noon UTC + timeZone:UTC keeps a plain YYYY-MM-DD from sliding a day
-            // backwards for viewers west of Greenwich.
-            var d = new Date(p.date + 'T12:00:00Z').toLocaleDateString('en-US', {
-              year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC'
-            });
-            return '<a class="archive-row" href="' + esc(p.href) + '">' +
-                     '<time class="archive-date label" datetime="' + esc(p.date) + '">' + esc(d) + '</time>' +
-                     '<div><div class="archive-title">' + esc(p.title) + '</div>' +
-                     '<p class="archive-summary">' + esc(p.summary) + '</p></div>' +
-                   '</a>';
-          }).join('');
-        })
-        .catch(function () {
-          root.innerHTML = '<p class="label">Archive unavailable &mdash; try a refresh.</p>';
-        });
-    })();
-  </script>
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p class="footer-copy">© 2026 Samuel Bates. Hand-built with HTML, CSS, and a little JavaScript. No framework.</p>
+      <nav class="side-quests" aria-label="Side quests">
+        <span>Side quests:</span>
+        <a href="../starship.html">Starship</a>
+        <a href="../arcade.html">Arcade</a>
+        <a href="index.html" aria-current="page">Hill Money Watch</a>
+        <a href="../skincare.html">A skincare regimen, run like an ops program</a>
+      </nav>
+    </div>
+  </footer>
 </body>
 </html>

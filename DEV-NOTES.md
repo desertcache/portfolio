@@ -71,12 +71,41 @@ browser. If a new helper doesn't touch the DOM, put it there and test it.
 - `favicon.svg` and `assets/apple-touch-icon.png` share the contour mark
   used in the nav.
 
-### `styles-v4.css` now serves only the blog
+### The blog is on the same system (2026-09-23)
 
-`blog/index.html`, the post template, and every post still link
-`../styles-v4.css`. The homepage no longer uses it. It still carries the old
-homepage rules, which are dead weight for the blog but harmless; trimming it,
-or moving the blog onto `css/site.css`, is a follow-up.
+`blog/index.html`, `blog/_post.template.html`, and every rendered post load
+`css/site.css` plus `blog/blog.css`, and run `js/blog.js`. Same nav, footer,
+theme toggle, tokens, and focus rings as the homepage; `styles-v4.css` is
+gone.
+
+| File | Job |
+|---|---|
+| `blog/blog.css` | Only what a long read adds: the reading column (`--measure`), the wide lane tables may grow into (`--wide`), the digest's classes, the archive. Sectioned like `site.css`. |
+| `js/blog.js` | Entry point for every blog page: theme, frosted nav + read-progress, the archive list, links to the editions either side, reading time. Same one-try/catch-per-feature pattern as `js/main.js`. |
+| `js/editions.js` | The pure helpers behind it (`validPosts`, `postNeighbors`, `editionTitle`, `readingMinutes`), tested in `tests/editions.test.mjs`. A separate file on purpose: a visitor can hold a cached `lib.js` from before these existed, and a missing named export stops a module from loading at all. `lib.js`'s `latestPost` reuses `validPosts`, so the homepage card and the archive can't disagree about which posts are valid. |
+
+Things worth knowing before touching the blog:
+
+- **Posts are rendered once, at publish.** Changing the template changes no
+  existing post until each is republished: `py scripts/ingest_digest.py --file
+  blog/hill-money-watch-DATE.html --force` (repeat `--file` for several). The
+  digest drafts are gitignored; if one is missing, it can be rebuilt from the
+  rendered post (the post's `.post-body` is the digest's `<article>`, and
+  `<title>`/`meta[hmw-date]`/`meta[hmw-summary]` round-trip byte for byte).
+- **`blog.css` owns the digest's look.** Digests still carry an inline
+  `<style>` so a draft reads when opened by itself, but on the site the
+  `.post-body …` rules win on specificity. Older digests' inline rules use v4
+  token names (`--paper-2`, `--rule`, `--rule-2`); `blog.css` aliases those to
+  v5 values so nothing falls through. The class vocabulary digests may use:
+  `hmw-note`, `hmw-meta`, `hmw-lag`, `hmw-sources`, `hmw-table` (plus
+  `hmw-trades` / `hmw-tape` / `hmw-status` to keep numeric columns on one
+  line), and `pill` + `pill-buy` / `pill-sell` / `pill-roll` / `pill-none`.
+- **Bump the `?v=` on the `blog.css` link** (template + `blog/index.html`)
+  whenever a change needs HTML and CSS to agree, then republish the posts.
+  GitHub Pages lets browsers cache for 10 minutes, and new markup against a
+  stale stylesheet renders unstyled.
+- **The archive list is rendered by JS** from `blog/posts.json`. With JS off
+  (or if `js/blog.js` never arrives), a fallback line points at the homepage.
 
 ## skincare.html is precompiled too (2026-08-15)
 
@@ -112,21 +141,19 @@ Two things about that build worth knowing before you touch it:
 The page carries its own miniature theme toggle. Same `sb-theme` localStorage
 key as every other page, so the light/dark choice follows you around the site.
 
-## The blog does not update itself (2026-08-15)
+## The blog does not update itself (2026-08-15, updated 2026-09-23)
 
-`blog/` ships with an empty `posts.json` and **no automation**. The two GitHub
-Actions workflows built on the `hill-money-watch-blog` branch
-(`ingest-digest.yml`, `digest-heartbeat.yml`) were deliberately left out of the
-merge — both are weekday crons that can only fail until the Drive secrets and
-the Cowork task exist, and the ingest transport is being reconsidered anyway.
-They still live on that branch if the Drive-relay design is revived.
+There is **no automation**. Editions are written and published by the
+`hill-money-watch` Claude Code skill, which writes a draft digest to
+`blog/hill-money-watch-YYYY-MM-DD.html` and runs `scripts/ingest_digest.py
+--file` on it; that renders the post into `blog/posts/` and rebuilds
+`blog/posts.json`, which the homepage card and the archive read. A push to
+`main` is the deploy.
 
-`scripts/ingest_digest.py` (+ its tests) IS merged and is transport-agnostic
-enough to reuse — it's the parser and index builder, not the fetcher.
-
-So: new posts land in `blog/posts/` by whatever means, and `posts.json` has to
-be rebuilt for the homepage teaser and archive to see them. Nothing does that
-on a schedule right now.
+The two GitHub Actions workflows built on the `hill-money-watch-blog` branch
+(`ingest-digest.yml`, `digest-heartbeat.yml`) were deliberately left out of
+the merge, and the Google Drive relay they served is retired. They still live
+on that branch if a scheduled design is ever revived.
 
 ## Other invariants
 
