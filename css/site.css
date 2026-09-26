@@ -1,12 +1,15 @@
 /* ==========================================================================
-   Samuel Bates — portfolio, v5.2 "Arizona" (on the v5.1 "Palo Verde" look)
-   A field map of the Sonoran desert: chalk-white map paper by day, blue-black
-   night after dark, and one signal colour. The chartreuse is palo verde, the
-   Arizona state tree (green bark, yellow bloom), and also the high-vis of an
-   EMT vest. Archivo Expanded for display, Archivo for reading, Martian Mono
-   for data and labels. The map is real: the hero draws Camelback Mountain's
-   contours and the footer carries the skyline, both from USGS elevation data
-   (scripts/build_terrain.py).
+   Samuel Bates — portfolio, v5.3 "Sedona"
+   The Sonoran desert, day and dusk. By day: Sedona-dust paper, dusk ink, and
+   red rock as the one signal colour, with palo verde and prickly-pear gold
+   for highlights, juniper for support, and prickly-pear magenta kept for
+   rare pops. After dark: an Arizona sunset gone to violet, the rock lit
+   orange by the last light, words lit gold. Archivo Expanded for display,
+   Archivo for reading, Martian Mono for data and labels. What's drawn is
+   real: the hero's contours and the footer skyline are Camelback Mountain
+   from USGS elevation data (scripts/build_terrain.py); the cacti come from
+   scripts/draw_desert.py. See DEV-NOTES.md for the colour roles and the
+   guardrails that keep the red from reading as anyone else's brand.
 
    How this file is organised (top to bottom = general to specific):
      1. Tokens        — every colour, font, and size decision lives here
@@ -24,47 +27,70 @@
 :root {
   color-scheme: light;
 
-  --bg: #eef1ec;              /* chalk: map paper, faintly green-grey */
-  --bg-tint: #e3e8e1;
-  --surface: #f8faf6;
-  --ink: #0e1620;             /* night ink */
-  --ink-2: #384553;
-  --ink-3: #5a6674;
-  --line: rgba(14, 22, 32, 0.12);
-  --line-2: rgba(14, 22, 32, 0.06);
-  --line-strong: rgba(14, 22, 32, 0.24);
-  --accent: #4a7a0c;          /* palo verde leaf: fills, marks, large type (4.5:1 on chalk) */
-  --accent-ink: #3e6800;      /* small accent text: AA on every surface */
-  --accent-soft: rgba(170, 214, 40, 0.18);
+  --bg: #f3ebe6;              /* Sedona dust: the pale rose sand of the red-rock trails */
+  --bg-tint: #ebe0d9;
+  --surface: #fbf7f4;
+  --ink: #1c1624;             /* dusk ink: a saguaro's purple-black against the sunset */
+  --ink-2: #463d52;
+  --ink-3: #625a6c;
+  --line: rgba(28, 22, 36, 0.13);
+  --line-2: rgba(28, 22, 36, 0.06);
+  --line-strong: rgba(28, 22, 36, 0.25);
+  --accent: #a8401d;          /* Sedona red rock: deep iron oxide, never clay (5.2:1 on dust) */
+  --accent-ink: #923616;      /* small accent text: AA on every surface */
+  --accent-soft: rgba(168, 64, 29, 0.1);
   --on-accent: #ffffff;       /* text and ticks drawn on an --accent fill */
-  --hi: #d4f24a;              /* palo verde bloom: highlighter, hover flashes */
-  --on-hi: #0e1620;
+  --hi: #f5cf3d;              /* gold bloom (palo verde, prickly pear flowers): highlighter, hovers */
+  --on-hi: #1c1624;
   --em-color: var(--ink);     /* emphasised words in headlines: ink on a highlighter band… */
   --em-band: var(--hi);
+  --support: #4f7a2a;         /* juniper and palo verde: the desert's greens */
+  --support-ink: #3f6420;
+  --bloom: #b8246a;           /* prickly pear fruit: rare pops only */
   --ok: #2f8a4e;
-  --neg: #b42318;             /* losses and "down" in charts: never the brand colour */
+  --neg: #a3122b;             /* losses in charts: crimson, kept apart from the rock red */
 
   /* schematic fills (work-card SVGs) */
-  --g-soft: rgba(14, 22, 32, 0.1);
-  --g-soft2: rgba(14, 22, 32, 0.24);
+  --g-soft: rgba(28, 22, 36, 0.1);
+  --g-soft2: rgba(28, 22, 36, 0.24);
 
-  /* read by js/topo.js — hex only */
-  --topo-line: #1b2a3a;
-  --topo-accent: #4a7a0c;
-  --topo-alpha: 0.13;
+  /* read by js/topo.js — hex only. Low ground to summit: juniper flats,
+     red-rock slopes, a gold summit. */
+  --topo-low: #4f7a2a;
+  --topo-mid: #a8401d;
+  --topo-high: #c98f12;
+  --topo-alpha: 0.14;
 
-  --shadow: 0 1px 2px rgba(14, 22, 32, 0.05), 0 10px 30px -14px rgba(14, 22, 32, 0.22);
-  --shadow-lg: 0 2px 6px rgba(14, 22, 32, 0.06), 0 30px 60px -24px rgba(14, 22, 32, 0.34);
+  /* an Arizona sunset, horizon up: the Lab's sky and the dusk afterglows */
+  --sun-1: #ffc75a;           /* gold on the horizon */
+  --sun-2: #ff8a3d;
+  --sun-3: #e8466f;           /* hot pink */
+  --sun-4: #8a3a8f;
+  --sun-5: #2b1e5c;           /* indigo */
+  --sun-6: #120c20;           /* the first stars */
 
-  /* the Lab is always a night room, whatever the theme */
-  --lab-bg: #0b1118;
-  --lab-surface: #131d28;
-  --lab-ink: #e8edf1;
-  --lab-ink-2: #b1bcc7;
-  --lab-ink-3: #808c99;
-  --lab-line: rgba(232, 237, 241, 0.11);
-  --lab-line-strong: rgba(232, 237, 241, 0.22);
-  --lab-accent: #cdeb45;
+  /* behind the footer skyline: a little warmth by day, the afterglow at dusk */
+  --afterglow: linear-gradient(to top, rgba(232, 150, 110, 0.14), transparent clamp(120px, 14vw, 220px));
+
+  /* the desert drawings (assets/desert.svg) */
+  --illo-line: rgba(28, 22, 36, 0.26);
+  --illo-fruit: var(--bloom);
+  --illo-flower: #e9b21a;
+  --illo-leaf: var(--support);
+
+  --shadow: 0 1px 2px rgba(28, 22, 36, 0.05), 0 10px 30px -14px rgba(28, 22, 36, 0.22);
+  --shadow-lg: 0 2px 6px rgba(28, 22, 36, 0.06), 0 30px 60px -24px rgba(28, 22, 36, 0.34);
+
+  /* the Lab is always the sunset room, whatever the theme */
+  --lab-bg: #150f24;
+  --lab-surface: #211836;
+  --lab-ink: #f5eef2;
+  --lab-ink-2: #cdc1d3;
+  --lab-ink-3: #a093ab;
+  --lab-line: rgba(245, 238, 242, 0.12);
+  --lab-line-strong: rgba(245, 238, 242, 0.24);
+  --lab-accent: #ff7a45;
+  --lab-hi: #ffc94d;
 
   --display: "Archivo", ui-sans-serif, "Helvetica Neue", Arial, sans-serif;
   --sans: "Archivo", ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif;
@@ -83,38 +109,48 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --bg: #0b1118;              /* desert night */
-  --bg-tint: #0f1720;
-  --surface: #131d28;
-  --ink: #e8edf1;
-  --ink-2: #b1bcc7;
-  --ink-3: #808c99;
-  --line: rgba(232, 237, 241, 0.11);
-  --line-2: rgba(232, 237, 241, 0.06);
-  --line-strong: rgba(232, 237, 241, 0.22);
-  --accent: #cdeb45;          /* at night the bloom itself is the signal */
-  --accent-ink: #d6f25c;
-  --accent-soft: rgba(205, 235, 69, 0.09);
-  --on-accent: #0b1118;
-  --hi: #cdeb45;
-  --on-hi: #0b1118;
-  --em-color: var(--accent);  /* …and lit words at night */
+  --bg: #150f24;              /* Sonoran dusk: the violet after the sun goes down */
+  --bg-tint: #1b1430;
+  --surface: #231a3a;
+  --ink: #f5eef2;
+  --ink-2: #cdc1d3;
+  --ink-3: #a093ab;
+  --line: rgba(245, 238, 242, 0.12);
+  --line-2: rgba(245, 238, 242, 0.06);
+  --line-strong: rgba(245, 238, 242, 0.24);
+  --accent: #ff7a45;          /* red rock in the last light */
+  --accent-ink: #ff9464;
+  --accent-soft: rgba(255, 122, 69, 0.1);
+  --on-accent: #150f24;
+  --hi: #ffc94d;              /* the sun on the horizon */
+  --on-hi: #150f24;
+  --em-color: var(--hi);      /* …and words lit by it at dusk */
   --em-band: transparent;
+  --support: #a9c46c;
+  --support-ink: #b5cf7a;
+  --bloom: #ff5c93;
   --ok: #4fbf75;
   --neg: #ff7b72;
 
-  --g-soft: rgba(232, 237, 241, 0.1);
-  --g-soft2: rgba(232, 237, 241, 0.26);
+  --g-soft: rgba(245, 238, 242, 0.1);
+  --g-soft2: rgba(245, 238, 242, 0.26);
 
-  --topo-line: #e8edf1;
-  --topo-accent: #cdeb45;
-  --topo-alpha: 0.1;
+  /* alpenglow: violet flats, sunlit slopes, gold summits (peaks hold the light longest) */
+  --topo-low: #b69ae6;
+  --topo-mid: #ff7a45;
+  --topo-high: #ffc94d;
+  --topo-alpha: 0.12;
+
+  --afterglow: linear-gradient(to top, rgba(255, 138, 61, 0.3), rgba(232, 70, 111, 0.14) clamp(50px, 6vw, 90px), rgba(138, 58, 143, 0.06) clamp(110px, 12vw, 180px), transparent clamp(170px, 19vw, 280px));
+
+  --illo-line: rgba(245, 238, 242, 0.2);
+  --illo-flower: #ffc94d;
 
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 32px -16px rgba(0, 0, 0, 0.65);
   --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.35), 0 30px 60px -24px rgba(0, 0, 0, 0.8);
 
-  --lab-bg: #070b10;
-  --lab-surface: #101922;
+  --lab-bg: #120c20;
+  --lab-surface: #1d1532;
 }
 
 /* ---------- 2. Base ---------- */
@@ -224,7 +260,7 @@ kbd {
   transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.2s var(--ease);
 }
 .btn:active { transform: translateY(1px); }
-.btn-solid { background: var(--ink); color: var(--bg); }
+.btn-solid { background: var(--accent); color: var(--on-accent); }
 .btn-solid:hover { background: var(--hi); color: var(--on-hi); }
 .btn-ghost { border-color: var(--line-strong); color: var(--ink); background: color-mix(in srgb, var(--surface) 55%, transparent); }
 .btn-ghost:hover { border-color: var(--ink); background: var(--surface); }
@@ -616,7 +652,8 @@ kbd {
   padding-block: clamp(80px, 10vw, 144px);
 }
 .section-tint { background: var(--bg-tint); }
-.section-head { max-width: 900px; margin-bottom: clamp(44px, 6vw, 80px); }
+.section-head { position: relative; margin-bottom: clamp(44px, 6vw, 80px); }
+.section-head > :not(.head-illo) { max-width: 900px; }
 .section-title {
   margin-top: 20px;
   font: 800 semi-expanded clamp(1.9rem, 3.75vw, 3.25rem)/1.04 var(--display);
@@ -955,11 +992,11 @@ html.has-modal { overflow: hidden; }
 
 /* ---------- 5f. Lab (always a night room) ---------- */
 .lab {
-  --em-color: var(--lab-accent);
+  --em-color: var(--lab-hi);
   --em-band: transparent;
-  --hi: var(--lab-accent);
-  --on-hi: #0b1118;
-  --on-accent: #0b1118;
+  --hi: var(--lab-hi);
+  --on-hi: #150f24;
+  --on-accent: #150f24;
   --bg: var(--lab-bg);
   --surface: var(--lab-surface);
   --ink: var(--lab-ink);
@@ -968,12 +1005,15 @@ html.has-modal { overflow: hidden; }
   --line: var(--lab-line);
   --line-strong: var(--lab-line-strong);
   --accent: var(--lab-accent);
-  --accent-ink: #d6f25c;
-  --accent-soft: rgba(205, 235, 69, 0.09);
-  --bg-tint: #0f1720;
-  --line-2: rgba(232, 237, 241, 0.06);
-  --g-soft: rgba(232, 237, 241, 0.1);
-  --g-soft2: rgba(232, 237, 241, 0.26);
+  --accent-ink: #ff9464;
+  --accent-soft: rgba(255, 122, 69, 0.1);
+  --support: #a9c46c;
+  --bloom: #ff5c93;
+  --bg-tint: #1b1430;
+  --line-2: rgba(245, 238, 242, 0.06);
+  --g-soft: rgba(245, 238, 242, 0.1);
+  --g-soft2: rgba(245, 238, 242, 0.26);
+  --illo-line: rgba(245, 238, 242, 0.2);
   color-scheme: dark;
   background: var(--bg);
   color: var(--ink);
@@ -1006,7 +1046,7 @@ html.has-modal { overflow: hidden; }
   font: 500 semi-condensed 0.6875rem var(--mono);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(232, 237, 241, 0.74);
+  color: rgba(245, 238, 242, 0.74);
 }
 .lab-play {
   position: absolute;
@@ -1016,7 +1056,7 @@ html.has-modal { overflow: hidden; }
   align-items: center;
   gap: 10px;
   padding: 14px 22px 14px 18px;
-  border: 1px solid rgba(232, 237, 241, 0.28);
+  border: 1px solid rgba(245, 238, 242, 0.28);
   border-radius: var(--radius-sm);
   background: rgba(10, 10, 14, 0.62);
   -webkit-backdrop-filter: blur(10px);
@@ -1061,7 +1101,7 @@ html.has-modal { overflow: hidden; }
   aspect-ratio: 4 / 3;
   overflow: hidden;
   border-bottom: 1px solid var(--line);
-  background: #05080c;
+  background: #0d0918;
 }
 /* stand-in until the real orb loads: gradients only (large box-shadow glows band on some GPUs) */
 .orb-poster {
@@ -1070,13 +1110,13 @@ html.has-modal { overflow: hidden; }
   display: grid;
   place-items: center;
   padding-bottom: 36px;
-  background: radial-gradient(circle at 50% 44%, rgba(205, 235, 69, 0.2), rgba(205, 235, 69, 0.05) 34%, transparent 58%);
+  background: radial-gradient(circle at 50% 44%, rgba(255, 150, 70, 0.24), rgba(232, 70, 111, 0.07) 36%, transparent 60%);
 }
 .orb-core {
   width: 40%;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(circle at 36% 30%, #ffffff 0%, #e6f2c4 14%, #9fc23a 40%, #2f4a12 72%, #0a1206 100%);
+  background: radial-gradient(circle at 36% 30%, #fff6dc 0%, #ffd66e 15%, #ff8a3d 42%, #c2364f 72%, #3a0f24 100%);
   animation: breathe 5.5s ease-in-out infinite;
 }
 @keyframes breathe { 50% { transform: scale(1.05); } }
@@ -1096,14 +1136,14 @@ html.has-modal { overflow: hidden; }
   left: 50%; bottom: 16px;
   z-index: 2;
   padding: 9px 16px;
-  border: 1px solid rgba(232, 237, 241, 0.25);
+  border: 1px solid rgba(245, 238, 242, 0.25);
   border-radius: var(--radius-sm);
-  background: rgba(10, 10, 14, 0.6);
+  background: rgba(18, 12, 32, 0.6);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   font-size: 0.8125rem;
   font-weight: 500;
-  color: #e8edf1;
+  color: #f5eef2;
   cursor: pointer;
   transform: translateX(-50%);
   transition: background-color 0.2s, border-color 0.2s;
@@ -1120,13 +1160,13 @@ html.has-modal { overflow: hidden; }
   font: 500 semi-condensed 0.6875rem var(--mono);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #8ee0a8;
+  color: var(--support);
 }
 .lab-live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px currentColor; animation: blink 1.8s infinite; }
 .orb-slot.is-live .lab-live { display: inline-flex; }
 @keyframes blink { 50% { opacity: 0.35; } }
 
-.arcade-stage { background: radial-gradient(120% 90% at 50% 120%, var(--accent-soft), transparent 60%), #05080c; }
+.arcade-stage { background: radial-gradient(120% 90% at 50% 120%, var(--accent-soft), transparent 60%), #0d0918; }
 .arcade-stage::before, .arcade-stage::after {
   content: "";
   position: absolute;
@@ -1172,7 +1212,7 @@ html.has-modal { overflow: hidden; }
 }
 @keyframes coin { 50% { opacity: 0.2; } }
 
-.dispatch-stage { display: flex; flex-direction: column; justify-content: flex-end; padding: 22px; background: radial-gradient(100% 80% at 0% 0%, var(--accent-soft), transparent 60%), #05080c; }
+.dispatch-stage { display: flex; flex-direction: column; justify-content: flex-end; padding: 22px; background: radial-gradient(100% 80% at 0% 0%, var(--accent-soft), transparent 60%), #0d0918; }
 .ticker {
   position: absolute;
   top: 20px; left: 0; right: 0;
@@ -1324,7 +1364,7 @@ html.has-modal { overflow: hidden; }
   position: relative;
   overflow: hidden;
   padding: clamp(104px, 13vw, 190px) 0 clamp(64px, 8vw, 110px);
-  background: radial-gradient(70% 60% at 85% 100%, var(--accent-soft), transparent 70%);
+  background: var(--afterglow), radial-gradient(70% 60% at 85% 100%, var(--accent-soft), transparent 70%);
 }
 .contact-title {
   max-width: 15ch;
@@ -1375,6 +1415,118 @@ html.has-modal { overflow: hidden; }
 }
 @media (max-width: 520px) {
   .contact-actions .btn { flex: 1 1 auto; }
+}
+
+/* ---------- 5j. Desert drawings ---------- */
+/* Line drawings of the Sonoran desert (assets/desert.svg, generated by
+   scripts/draw_desert.py) beside the section headings, like margin plates in
+   a field guide. The sprite's paths read custom properties, which inherit
+   into a <use>: --illo-line and --illo-paper colour them, --illo-w sets the
+   stroke in the drawing's own units, --draw (0..1) is how much is drawn. */
+@property --draw { syntax: "<number>"; inherits: true; initial-value: 1; }
+
+.head-illo {
+  position: absolute;
+  /* out past the text column, into the page margin */
+  right: calc(-1 * (max(0px, (100vw - var(--wrap)) / 2) + var(--pad) - var(--edge, 28px)));
+  bottom: calc(-1 * clamp(18px, 2.4vw, 40px));
+  display: flex;
+  align-items: flex-end;
+  pointer-events: none;
+  --illo-paper: var(--bg);
+  --illo-w: 1.8;
+}
+.section-tint .head-illo { --illo-paper: var(--bg-tint); }
+.illo { display: block; width: auto; height: var(--h); overflow: visible; }
+.illo-saguaro { --h: clamp(270px, 25vw, 370px); }
+.illo-saguaro-young { --h: clamp(150px, 14.5vw, 215px); margin-right: -30px; }
+.illo-pear { --h: clamp(170px, 15vw, 230px); }
+.illo-palo { --h: clamp(190px, 18vw, 270px); }
+.illo-sedona { --h: clamp(130px, 12vw, 172px); }
+.head-illo:has(.illo-sedona) { --edge: 76px; }
+.illo-ocotillo { --h: clamp(220px, 21vw, 310px); }
+.illo-barrel { --h: clamp(80px, 7.5vw, 116px); margin-left: -70px; }
+.contact > .wrap { position: relative; }
+/* its box is the padded .wrap, not a heading, so the page padding is already inside it */
+.contact-illo { top: clamp(-30px, -2vw, -10px); bottom: auto; right: calc(-1 * (max(0px, (100vw - var(--wrap)) / 2) - var(--edge, 28px))); }
+
+/* Drawn as the heading arrives: lines first, then fruit and flowers. Without
+   JS, or without @property, they are simply there, fully drawn. */
+.js .reveal .head-illo, .js .head-illo.reveal { --draw: 0; transition: --draw 2.8s var(--ease-out) 0.3s; }
+.js .reveal.in .head-illo, .js .head-illo.reveal.in { --draw: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal .head-illo, .js .head-illo.reveal { transition: none; }
+}
+
+/* Narrower than the margins they live in: they step up to stand on the
+   eyebrow line, top right, small. */
+@media (max-width: 1279px) {
+  .head-illo { right: 0; bottom: calc(100% - 22px); --illo-w: 6; }
+  .contact-illo { right: var(--pad); bottom: auto; top: calc(-1 * clamp(78px, 9vw, 100px)); }
+  .illo-saguaro { --h: clamp(84px, 11vw, 120px); }
+  .illo-saguaro-young { --h: clamp(52px, 6.6vw, 72px); margin-right: -10px; }
+  .illo-pear { --h: clamp(56px, 7vw, 76px); }
+  .illo-palo { --h: clamp(64px, 8vw, 88px); }
+  .illo-sedona { --h: clamp(50px, 6vw, 66px); }
+  .illo-ocotillo { --h: clamp(76px, 9vw, 100px); }
+  .illo-barrel { --h: clamp(30px, 3.6vw, 40px); margin-left: -22px; }
+}
+
+/* ---------- 5k. The Lab's horizon ---------- */
+/* The one room that is always a sunset: sky banded gold to indigo, the sun
+   going down behind the real Camelback range (assets/skyline.svg), and the
+   desert in silhouette on the ground line. */
+.lab { --horizon: clamp(200px, 24vw, 360px); --ground: clamp(22px, 2.6vw, 34px); --sil: #0c0716; overflow: hidden; padding-bottom: calc(var(--horizon) + clamp(24px, 4vw, 56px)); }
+.lab > .wrap { position: relative; z-index: 1; }
+.lab-horizon {
+  position: absolute;
+  inset: auto 0 0;
+  height: var(--horizon);
+  pointer-events: none;
+  background: linear-gradient(to top, var(--sun-1) var(--ground), var(--sun-2) calc(var(--ground) + 9%), var(--sun-3) calc(var(--ground) + 25%), var(--sun-4) calc(var(--ground) + 47%), var(--sun-5) calc(var(--ground) + 70%), transparent);
+}
+.lab-sun {
+  position: absolute;
+  left: 63%;
+  bottom: calc(var(--ground) - clamp(26px, 3vw, 44px));
+  width: clamp(90px, 10vw, 150px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff3c4 0%, #ffd66e 42%, rgba(255, 199, 90, 0.5) 62%, rgba(255, 199, 90, 0) 71%);
+}
+.lab-range {
+  position: absolute;
+  inset: auto 0 calc(var(--ground) - 1px);
+  height: 38%;
+  background: #3a1838;
+  -webkit-mask: url("../assets/skyline.svg") 70% 100% / max(100%, 900px) 100% no-repeat;
+  mask: url("../assets/skyline.svg") 70% 100% / max(100%, 900px) 100% no-repeat;
+}
+.lab-ground { position: absolute; inset: auto 0 0; height: var(--ground); background: var(--sil); }
+.sil {
+  position: absolute;
+  bottom: calc(var(--ground) - 14px);
+  height: var(--h);
+  width: auto;
+  overflow: visible;
+  --illo-line: var(--sil);
+  --illo-paper: var(--sil);
+  --illo-fruit: var(--sil);
+  --illo-flower: var(--sil);
+  --illo-ember: var(--sil);
+  --illo-w: 3;
+}
+.sil-pear { left: 3%; --h: 22%; }
+.sil-saguaro { left: 11%; --h: 86%; }
+.sil-ocotillo { left: 21%; --h: 50%; }
+.sil-barrel { left: 30%; --h: 17%; }
+.sil-palo { left: 44%; --h: 46%; }
+.sil-young { left: 77%; --h: 52%; }
+.sil-saguaro2 { left: 88%; --h: 70%; }
+@media (max-width: 720px) {
+  .sil-palo, .sil-barrel, .sil-young { display: none; }
+  .sil-ocotillo { left: 34%; }
+  .sil-saguaro2 { left: 78%; }
 }
 
 /* ---------- 6. Motion ---------- */

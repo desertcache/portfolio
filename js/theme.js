@@ -6,7 +6,7 @@
  */
 
 const KEY = 'sb-theme';
-const META = { light: '#eef1ec', dark: '#0b1118' };
+const META = { light: '#f3ebe6', dark: '#150f24' };
 
 /** @typedef {'light' | 'dark'} Theme */
 

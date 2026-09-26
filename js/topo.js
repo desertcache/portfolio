@@ -39,8 +39,9 @@ uniform vec2 u_res;       // drawing buffer size, px
 uniform float u_time;     // seconds (only advances while animating)
 uniform vec3 u_hill;      // xy = hill centre in buffer px (origin bottom-left), z = strength 0..1
 uniform float u_hillR;    // hill radius (one sigma), buffer px
-uniform vec3 u_line;      // contour colour
-uniform vec3 u_accent;    // high ground + the hill
+uniform vec3 u_low;       // contour colour on the desert floor
+uniform vec3 u_mid;       // …on the slopes (red rock)
+uniform vec3 u_high;      // …at the summits, and wherever the hill lifts the ground
 uniform float u_alpha;    // base line opacity
 uniform float u_dark;     // 1.0 in dark theme: adds a few stars
 uniform float u_px;       // buffer px per CSS px, keeps line width constant
@@ -64,6 +65,12 @@ float metres(vec2 uv) {
   vec2 f = clamp(p - i, 0.0, 1.0);
   return mix(mix(texel(i), texel(i + vec2(1.0, 0.0)), f.x),
              mix(texel(i + vec2(0.0, 1.0)), texel(i + vec2(1.0, 1.0)), f.x), f.y);
+}
+
+// Colour by elevation, the way a hypsometric map tints: floor, slopes, summit.
+vec3 ramp(float ft) {
+  vec3 c = mix(u_low, u_mid, smoothstep(1400.0, 1800.0, ft));
+  return mix(c, u_high, smoothstep(2350.0, 2650.0, ft));
 }
 
 // Coverage of one family of contours, one every step feet, width CSS px wide.
@@ -93,10 +100,10 @@ void main() {
                   contour(ft, fw, 500.0, 1.5, 0.0) * 1.9);
 
   float high = clamp(smoothstep(1500.0, 2600.0, ground) + hill * 0.8, 0.0, 1.0);
-  vec3 col = mix(u_line, u_accent, high * 0.85);
+  vec3 col = ramp(ft);                            // the hill climbs the ramp too
   float a = clamp(cov * u_alpha * mix(1.0, 2.3, high), 0.0, 1.0);
 
-  if (u_dark > 0.5) {                            // desert night: sparse, slow-twinkling stars
+  if (u_dark > 0.5) {                            // dusk: sparse, slow-twinkling first stars
     vec2 cs = vec2(5.0 * u_px);
     vec2 cell = floor(gl_FragCoord.xy / cs);
     vec2 local = fract(gl_FragCoord.xy / cs) - 0.5;
@@ -105,7 +112,7 @@ void main() {
     float tw = 0.55 + 0.45 * sin(u_time * (0.4 + 1.6 * fract(rnd * 17.0)) + rnd * 60.0);
     float sky = smoothstep(0.25, 0.95, gl_FragCoord.y / u_res.y);
     float s = on * tw * sky * smoothstep(0.42, 0.0, length(local)) * 0.7;
-    col = mix(col, u_line, s * (1.0 - a));
+    col = mix(col, vec3(1.0, 0.95, 0.9), s * (1.0 - a));
     a = a + s * (1.0 - a);
   }
 
@@ -158,8 +165,8 @@ function buildProgram(gl) {
   /** @param {string} name */
   const u = (name) => gl.getUniformLocation(prog, name);
   return {
-    res: u('u_res'), time: u('u_time'), hill: u('u_hill'), hillR: u('u_hillR'), line: u('u_line'),
-    accent: u('u_accent'), alpha: u('u_alpha'), dark: u('u_dark'), px: u('u_px'),
+    res: u('u_res'), time: u('u_time'), hill: u('u_hill'), hillR: u('u_hillR'),
+    low: u('u_low'), mid: u('u_mid'), high: u('u_high'), alpha: u('u_alpha'), dark: u('u_dark'), px: u('u_px'),
     map: u('u_map'), mapSize: u('u_mapSize'), elev: u('u_elev'), uv0: u('u_uv0'), duv: u('u_duv'),
   };
 }
@@ -315,16 +322,17 @@ export async function initTopo(canvas) {
     // hill position in CSS px relative to the hero; target vs eased value
     hx: 0, hy: 0, tx: 0, ty: 0,
     amt: 0, targetAmt: 0,
-    colors: { line: [0, 0, 0], accent: [0, 0, 0], alpha: 0.12, dark: 0 },
+    /** @type {{ low: number[], mid: number[], high: number[], alpha: number, dark: number }} */
+    colors: { low: [0, 0, 0], mid: [0, 0, 0], high: [0, 0, 0], alpha: 0.12, dark: 0 },
   };
 
   function readColors() {
     const cs = getComputedStyle(document.documentElement);
-    const line = hexToRgb(cs.getPropertyValue('--topo-line'));
-    const accent = hexToRgb(cs.getPropertyValue('--topo-accent'));
+    for (const key of /** @type {const} */ (['low', 'mid', 'high'])) {
+      const rgb = hexToRgb(cs.getPropertyValue(`--topo-${key}`));
+      if (rgb) s.colors[key] = rgb;
+    }
     const alpha = parseFloat(cs.getPropertyValue('--topo-alpha'));
-    if (line) s.colors.line = line;
-    if (accent) s.colors.accent = accent;
     if (Number.isFinite(alpha)) s.colors.alpha = alpha;
     s.colors.dark = document.documentElement.getAttribute('data-theme') === 'dark' ? 1 : 0;
   }
@@ -353,8 +361,9 @@ export async function initTopo(canvas) {
     // CSS px (top-left origin) → buffer px (bottom-left origin)
     gl.uniform3f(uniforms.hill, s.hx * s.px, canvas.height - s.hy * s.px, s.amt);
     gl.uniform1f(uniforms.hillR, 0.085 * Math.min(s.h, 1000) * s.px);
-    gl.uniform3f(uniforms.line, c.line[0], c.line[1], c.line[2]);
-    gl.uniform3f(uniforms.accent, c.accent[0], c.accent[1], c.accent[2]);
+    gl.uniform3f(uniforms.low, c.low[0], c.low[1], c.low[2]);
+    gl.uniform3f(uniforms.mid, c.mid[0], c.mid[1], c.mid[2]);
+    gl.uniform3f(uniforms.high, c.high[0], c.high[1], c.high[2]);
     gl.uniform1f(uniforms.alpha, c.alpha);
     gl.uniform1f(uniforms.dark, c.dark);
     gl.uniform1f(uniforms.px, s.px);

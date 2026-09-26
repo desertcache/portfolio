@@ -12,15 +12,18 @@
    ========================================================================== */
 
 /* ---------- 1. Tokens ---------- */
-/* Up and down are semantic (gain green, loss red), never the brand colour:
-   with a green-yellow accent, "down" drawn in the accent would read as good. */
+/* Up and down are semantic (gain green, loss red), never the brand colour.
+   Since v5.3 the brand is red rock, so the selected company is drawn in ink:
+   a selection in the brand red would read as "down". */
 .research {
   --led-ctx: var(--line-strong);
+  --led-sel: var(--ink);
+  --led-sel-wash: color-mix(in srgb, var(--ink) 7%, transparent);
   --led-up: var(--ok-ink);
   --led-dn: var(--neg);
   --led-wash-up: rgba(47, 138, 78, 0.14);
-  --led-wash-dn: rgba(180, 35, 24, 0.1);
-  --led-under: rgba(180, 35, 24, 0.04);
+  --led-wash-dn: rgba(163, 18, 43, 0.1);
+  --led-under: rgba(163, 18, 43, 0.04);
 }
 :root[data-theme="dark"] .research {
   --led-wash-up: rgba(79, 191, 117, 0.17);
@@ -63,7 +66,7 @@
 }
 .led-legend span { display: inline-flex; align-items: center; gap: 8px; }
 .led-key { display: inline-block; width: 20px; border-top: 2px solid var(--led-ctx); }
-.led-key.is-sel { border-top: 3px solid var(--accent); }
+.led-key.is-sel { border-top: 3px solid var(--led-sel); }
 .led-key.is-ipo { border-top: 2px solid var(--ink); }
 .led-seg {
   display: inline-flex;
@@ -126,11 +129,11 @@
 .lx-under { fill: var(--led-under); }
 .lx-ctx { fill: none; stroke: var(--led-ctx); stroke-width: 1.25; stroke-linejoin: round; }
 .lx-pv { fill: none; stroke: var(--ink-2); stroke-width: 1.75; stroke-linejoin: round; }
-.lx-sel { fill: none; stroke: var(--accent); stroke-width: 2.25; stroke-linejoin: round; stroke-linecap: round; }
+.lx-sel { fill: none; stroke: var(--led-sel); stroke-width: 2.25; stroke-linejoin: round; stroke-linecap: round; }
 .lx-water { stroke: var(--ink); stroke-width: 1.5; }
 .lx-zone { font: 500 semi-condensed 10.5px var(--mono); letter-spacing: 0.08em; fill: var(--ink-3); }
 .lx-halo { paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
-.lx-mk { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
+.lx-mk { fill: var(--led-sel); stroke: var(--surface); stroke-width: 2; }
 .lx-mk-pv { fill: var(--ink-2); }
 .lx-mk-ink { fill: var(--ink); }
 .lx-end { font: 600 12.5px var(--sans); fill: var(--ink); }
@@ -172,7 +175,7 @@
 }
 .led-tip-r { display: grid; grid-template-columns: 14px 62px minmax(0, 1fr); gap: 8px; align-items: center; padding: 1px 0; }
 .led-tip-r .led-tip-key { height: 2px; background: var(--led-ctx); }
-.led-tip-r.is-sel .led-tip-key { height: 3px; background: var(--accent); }
+.led-tip-r.is-sel .led-tip-key { height: 3px; background: var(--led-sel); }
 .led-tip-r.is-pv .led-tip-key { background: var(--ink-2); }
 .led-tip-r .led-tip-v { font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
 .led-tip-r .led-tip-n { white-space: nowrap; color: var(--ink-3); }
@@ -264,13 +267,13 @@
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 .led-mini:hover { border-color: var(--ink-3); }
-.led-mini[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.led-mini[aria-pressed="true"] { border-color: var(--led-sel); box-shadow: inset 0 0 0 1px var(--led-sel); }
 .led-mini-top { grid-area: top; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .led-mini-name { min-width: 0; font-size: 0.9375rem; font-weight: 600; line-height: 1.2; color: var(--ink); }
 .led-mini-sub { grid-area: sub; font: 400 semi-condensed 0.6875rem/1.35 var(--mono); color: var(--ink-3); }
 .led-mini-svg { grid-area: svg; display: block; width: 100%; height: 64px; margin: 8px 0 6px; }
 .led-mini-line { fill: none; stroke: var(--ink-2); stroke-width: 1.5; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
-.led-mini[aria-pressed="true"] .led-mini-line { stroke: var(--accent); stroke-width: 1.75; }
+.led-mini[aria-pressed="true"] .led-mini-line { stroke: var(--led-sel); stroke-width: 1.75; }
 .led-mini-ipo { stroke: var(--ink); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .led-mini-row { display: flex; justify-content: space-between; gap: 8px; font-size: 0.78125rem; color: var(--ink-3); font-variant-numeric: tabular-nums; }
 .led-mini-row.r1 { grid-area: r1; }
@@ -294,7 +297,7 @@
 .post-body .led-table td.led-dn { font-weight: 600; }
 .post-body .led-table td.led-up { color: var(--led-up); }
 .post-body .led-table td.led-dn { color: var(--led-dn); }
-.post-body .led-table tr.is-sel td { background: var(--accent-soft); }
+.post-body .led-table tr.is-sel td { background: var(--led-sel-wash); }
 .post-body .led-table a { font-weight: 600; }
 
 .post-body .led-deals { margin: 4px 0 30px; padding: 0; list-style: none; border-top: 1px solid var(--line-strong); }
