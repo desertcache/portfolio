@@ -59,7 +59,7 @@
   background-size: calc(100% / var(--cols)) 100%;
   background-position: -1px 0;
 }
-.rs-track.is-depth { --cols: 8; }
+.rs-track.is-depth { --cols: 9; } /* 0-180 microns: a gridline every 20 */
 
 /* Dose figure: a dot per value on a log axis, value label beside it. */
 .rs-dot {
