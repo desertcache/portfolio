@@ -7,8 +7,8 @@
    orange by the last light, words lit gold. Archivo Expanded for display,
    Archivo for reading, Martian Mono for data and labels. What's drawn is
    real: the hero's contours and the footer skyline are Camelback Mountain
-   from USGS elevation data (scripts/build_terrain.py); the cacti come from
-   scripts/draw_desert.py. See DEV-NOTES.md for the colour roles and the
+   from USGS elevation data (scripts/build_terrain.py); the cacti and the
+   spring wildflowers come from scripts/draw_desert.py. See DEV-NOTES.md for the colour roles and the
    guardrails that keep the red from reading as anyone else's brand.
 
    How this file is organised (top to bottom = general to specific):
@@ -75,8 +75,12 @@
   /* the desert drawings (assets/desert.svg) */
   --illo-line: rgba(28, 22, 36, 0.26);
   --illo-fruit: var(--bloom);
-  --illo-flower: #e9b21a;
-  --illo-leaf: var(--support);
+  --illo-flower: #e9b21a;       /* palo verde, brittlebush, saguaro blossom */
+  --illo-poppy: #ee9a14;        /* Mexican gold poppy */
+  --illo-lupine: #6a4fc4;
+  --illo-mallow: #e5703a;       /* globemallow */
+  --illo-pink: #c42c6c;         /* penstemon, hedgehog cactus */
+  --illo-ember: #d4452a;        /* ocotillo */
 
   --shadow: 0 1px 2px rgba(28, 22, 36, 0.05), 0 10px 30px -14px rgba(28, 22, 36, 0.22);
   --shadow-lg: 0 2px 6px rgba(28, 22, 36, 0.06), 0 30px 60px -24px rgba(28, 22, 36, 0.34);
@@ -145,6 +149,11 @@
 
   --illo-line: rgba(245, 238, 242, 0.2);
   --illo-flower: #ffc94d;
+  --illo-poppy: #ffb547;
+  --illo-lupine: #b09aff;
+  --illo-mallow: #ff9a62;
+  --illo-pink: #ff6fa3;
+  --illo-ember: #ff7a45;
 
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 32px -16px rgba(0, 0, 0, 0.65);
   --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.35), 0 30px 60px -24px rgba(0, 0, 0, 0.8);
@@ -1433,10 +1442,8 @@ html.has-modal { overflow: hidden; }
   display: flex;
   align-items: flex-end;
   pointer-events: none;
-  --illo-paper: var(--bg);
   --illo-w: 1.8;
 }
-.section-tint .head-illo { --illo-paper: var(--bg-tint); }
 .illo { display: block; width: auto; height: var(--h); overflow: visible; }
 .illo-saguaro { --h: clamp(270px, 25vw, 370px); }
 .illo-saguaro-young { --h: clamp(150px, 14.5vw, 215px); margin-right: -30px; }
@@ -1470,6 +1477,72 @@ html.has-modal { overflow: hidden; }
   .illo-sedona { --h: clamp(50px, 6vw, 66px); }
   .illo-ocotillo { --h: clamp(76px, 9vw, 100px); }
   .illo-barrel { --h: clamp(30px, 3.6vw, 40px); margin-left: -22px; }
+}
+
+/* The body of every drawing is filled with the ground it stands on, so a
+   pad in front hides the pad behind; where color-mix exists, that fill takes
+   a breath of juniper green (red for the rocks), which is most of what makes
+   the cacti look alive. */
+.head-illo, .bed { --illo-ground: var(--bg); --illo-paper: var(--illo-ground); }
+.section-tint .head-illo, .section-tint .bed, .footer .bed { --illo-ground: var(--bg-tint); }
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+  .head-illo, .bed { --illo-paper: color-mix(in srgb, var(--support) 11%, var(--illo-ground)); }
+  .illo-sedona { --illo-paper: color-mix(in srgb, var(--accent) 10%, var(--illo-ground)); }
+}
+
+/* ---------- 5l. Wildflowers ---------- */
+/* Poppies, lupine, globemallow, brittlebush and penstemon in beds: along the
+   hero's floor, in the quiet bottom corners of sections, and in front of the
+   footer's skyline. Each plant is its own <svg>, so each can sway on its own
+   timing with a compositor-only transform (no repaint); cacti and agaves
+   (.plant) stand still, as they do. */
+.bed {
+  position: absolute;
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(2px, 0.6vw, 10px);
+  pointer-events: none;
+  --illo-w: 2.1;
+  --k: 1;
+}
+.bed svg { display: block; flex: none; width: auto; height: calc(var(--h) * var(--k)); overflow: visible; }
+/* plants grow in clumps, a little overlapped, not in a row */
+.clump { display: flex; align-items: flex-end; }
+.clump > svg + svg { margin-left: -4px; }
+.flora { transform-origin: 50% 100%; animation: sway var(--sway-t, 6.2s) ease-in-out var(--sway-d, 0s) infinite alternate; }
+.flora:nth-child(3n + 1) { --sway-t: 5.4s; --sway-d: -2.1s; }
+.flora:nth-child(3n + 2) { --sway-t: 7.3s; --sway-d: -4.6s; --sway-a: 1.1deg; }
+.flora:nth-child(4n) { --sway-t: 6.6s; --sway-d: -1.3s; --sway-a: 2deg; }
+@keyframes sway {
+  from { transform: rotate(calc(-1 * var(--sway-a, 1.5deg))); }
+  to { transform: rotate(var(--sway-a, 1.5deg)); }
+}
+
+/* the hero's floor: spread across the page, standing on its bottom edge */
+.hero-bed { left: 0; right: 0; bottom: 0; z-index: 0; max-width: var(--wrap); margin-inline: auto; padding-inline: var(--pad); justify-content: space-between; }
+/* section corners live in the bottom padding, so they never meet content */
+.section > .bed { bottom: 0; }
+.bed-left, .footer-bed-l { left: max(var(--pad), calc((100% - var(--wrap)) / 2 + var(--pad))); }
+.bed-right, .footer-bed-r { right: max(var(--pad), calc((100% - var(--wrap)) / 2 + var(--pad))); }
+/* the footer's superbloom stands on its top edge, in front of the mountains */
+.footer-bed { bottom: 100%; z-index: 1; }
+
+/* they draw on like the other drawings: the hero's at load, the rest as
+   they scroll in */
+@keyframes draw-in { from { --draw: 0; } to { --draw: 1; } }
+.js .hero-bed { animation: draw-in 2.6s var(--ease-out) 0.9s both; }
+.js .bed.reveal { --draw: 0; transition: --draw 2.4s var(--ease-out) 0.2s, opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+.js .bed.reveal.in { --draw: 1; }
+
+@media (max-width: 1100px) { .bed { --k: 0.8; } }
+@media (max-width: 640px) {
+  .bed { --k: 0.62; --illo-w: 2.6; }
+  .hero-bed > :nth-child(3n + 2), .footer-bed > :nth-child(n + 5) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flora { animation: none; }
+  .js .hero-bed { animation: none; }
+  .js .bed.reveal { transition: none; }
 }
 
 /* ---------- 5k. The Lab's horizon ---------- */
@@ -1514,6 +1587,10 @@ html.has-modal { overflow: hidden; }
   --illo-fruit: var(--sil);
   --illo-flower: var(--sil);
   --illo-ember: var(--sil);
+  --illo-poppy: var(--sil);
+  --illo-lupine: var(--sil);
+  --illo-mallow: var(--sil);
+  --illo-pink: var(--sil);
   --illo-w: 3;
 }
 .sil-pear { left: 3%; --h: 22%; }
@@ -1523,8 +1600,13 @@ html.has-modal { overflow: hidden; }
 .sil-palo { left: 44%; --h: 46%; }
 .sil-young { left: 77%; --h: 52%; }
 .sil-saguaro2 { left: 88%; --h: 70%; }
+.sil-agave { left: 67%; --h: 62%; }
+.sil-lupine { left: 26%; --h: 20%; }
+.sil-poppies { left: 58%; --h: 12%; }
+.sil-grass { left: 36%; --h: 11%; }
 @media (max-width: 720px) {
-  .sil-palo, .sil-barrel, .sil-young { display: none; }
+  .sil-palo, .sil-barrel, .sil-young, .sil-poppies, .sil-grass { display: none; }
+  .sil-agave { left: 56%; }
   .sil-ocotillo { left: 34%; }
   .sil-saguaro2 { left: 78%; }
 }

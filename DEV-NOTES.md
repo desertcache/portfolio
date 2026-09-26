@@ -109,6 +109,28 @@ green; v5.3 brings the red back as Sedona rock, on purpose, with guardrails.
 - **The footer at dusk** gets an afterglow behind the skyline
   (`--afterglow`), so the sun has just gone down behind Camelback.
 
+### Wildflowers (v5.4, 2026-09-26)
+
+- **The spring bloom:** Mexican gold poppies, lupine, globemallow,
+  brittlebush, Parry's penstemon, a flowering hedgehog cactus, an agave in
+  bloom and grass tufts, all from the same generator and sprite.
+- **Beds** (`.bed`, plants inside, sized by an inline `--h` in px): along the
+  hero's floor (`.hero-bed`, grouped in `.clump`s), in the bottom padding of
+  sections (`.bed-left` / `.bed-right`, alternating), and standing on the
+  footer's top edge in front of the skyline (`.footer-bed-l/-r`). Beds live
+  in padding on purpose, so they can never sit on content; if you shrink a
+  section's padding, shrink `--k` with it.
+- **The breeze:** every `.flora` sways on its own timing (`--sway-t`,
+  `--sway-d`, `--sway-a`), and each plant is its own `<svg>` so the sway is a
+  compositor-only transform. Cacti and agaves are `.plant` and stand still.
+  Reduced motion stops all of it.
+- **Colour:** each flower has a token (`--illo-poppy`, `--illo-lupine`,
+  `--illo-mallow`, `--illo-pink`, plus `--illo-flower` and `--illo-ember`),
+  day and dusk. Bodies are filled from `--illo-ground` with a breath of
+  juniper through `color-mix` (red for the Sedona rocks), behind an
+  `@supports` guard: without `color-mix` they fall back to the plain ground
+  colour rather than to black.
+
 ### The hero map is real terrain (v5.2 "Arizona", 2026-09-26)
 
 The contours in the hero are Camelback Mountain and the Phoenix Mountains,
