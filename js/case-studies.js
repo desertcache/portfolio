@@ -7,7 +7,7 @@ import { caseStudyFromHash } from './lib.js';
  * inline via :target). This module upgrades them to modals:
  *
  *  - showModal() gives focus trapping, Esc, and an inert page for free
- *  - each open case study gets its own URL (#cs-wfm), so links can be shared
+ *  - each open case study gets its own URL (#cs-workforce), so links can be shared
  *  - opening pushes a history entry, so Back (or the phone's back gesture)
  *    closes the modal instead of leaving the site
  *  - prev/next swaps dialogs in place (replaceState, no history pile-up)

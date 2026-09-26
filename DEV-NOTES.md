@@ -28,7 +28,7 @@ one failure (say, a GPU driver rejecting the shader) can't break the rest.
   link (`href="#cs-ID" data-cs="ID"`) opens the dialog; the dialog's
   prev/next links point at its neighbours. Keep the ids in sync.
 - **Count-up numbers:** add `data-count` to any element whose text is a
-  single number (`94%`, `6,846`, `800+`). The HTML keeps the real value;
+  single number (`42%`, `4,321`, `800+`). The HTML keeps the real value;
   the animation is decoration.
 - **Reveal on scroll:** add `class="reveal"`. CSS only hides it when JS is
   running (`html.js`), and a 4-second safety net in `<head>` un-hides
