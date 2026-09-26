@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Topical PDRN and spicules: what the evidence actually shows</title>
+  <meta name="description" content="PDRN, the salmon-DNA ingredient behind injectable skin boosters, is now sold in creams and serums, often next to microneedle spicules. One small randomized trial tests it topically. What it found, why some bottles carry a token dose, and what spicules can and can't add.">
+  <link rel="canonical" href="https://desertcache.github.io/portfolio/blog/research/pdrn-and-spicules.html">
+  <meta name="theme-color" content="#f5f1ea">
+
+  <!-- Link previews (LinkedIn, Slack, iMessage). og:image must be an absolute URL.
+       Source for the image: scripts/og-pdrn-and-spicules.html -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Samuel Bates">
+  <meta property="og:title" content="Topical PDRN and spicules: what the evidence actually shows">
+  <meta property="og:description" content="One small randomized trial tests PDRN on skin. What it found, why some bottles carry a token dose, and what spicules can and can't add.">
+  <meta property="og:url" content="https://desertcache.github.io/portfolio/blog/research/pdrn-and-spicules.html">
+  <meta property="og:image" content="https://desertcache.github.io/portfolio/assets/og-pdrn-and-spicules.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:published_time" content="2026-09-25">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script>
+    // Same as every blog page: pick the theme before first paint (saved choice,
+    // else the OS setting) and flag that JS is on. `sb-theme` is shared site-wide.
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      setTimeout(function () { if (!root.classList.contains('js-ready')) root.classList.remove('js'); }, 4000);
+      try {
+        var t = localStorage.getItem('sb-theme');
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', t);
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#12100e' : '#f5f1ea');
+      } catch (e) { /* storage blocked: CSS falls back to the system theme */ }
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../css/site.css">
+  <link rel="stylesheet" href="../blog.css?v=2026-09-23">
+  <link rel="stylesheet" href="pdrn-and-spicules.css?v=2026-09-25">
+  <script type="module" src="../../js/blog.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="../../index.html" aria-label="Samuel Bates, home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <path d="M6.2 17.8C5.2 11.6 9.4 6.1 15.6 5.6 21.9 5.1 27.2 9.2 26.8 15.2 26.4 20.4 23.6 22.1 20.1 24.6 16.2 27.4 7.3 25.1 6.2 17.8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M11.4 15.9C11.1 12.2 13.9 9.6 17.4 9.5 21 9.4 23.1 11.9 22.6 15 22.1 18.2 19.8 19.2 17.2 20.1 14.2 21.1 11.7 19.2 11.4 15.9Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <circle cx="17.6" cy="14.7" r="2.6" class="brand-dot"/>
+        </svg>
+        <span class="brand-name">Samuel Bates</span>
+      </a>
+      <nav class="nav-links" aria-label="Sections">
+        <a href="../../index.html#work">Work</a>
+        <a href="../../index.html#lab" aria-current="true">Lab</a>
+        <a href="../../index.html#about">About</a>
+        <a href="../../index.html#contact">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.2 14.6A8.3 8.3 0 0 1 9.4 3.8a8.3 8.3 0 1 0 10.8 10.8Z"/></svg>
+        </button>
+        <a class="btn btn-ghost btn-sm nav-cv" href="../../Samuel_Bates_CV.pdf" target="_blank" rel="noopener">Résumé</a>
+        <a class="btn btn-solid btn-sm" href="mailto:batessambates@gmail.com">Get in touch</a>
+      </div>
+    </div>
+    <div class="nav-progress" aria-hidden="true"></div>
+  </header>
+
+  <main id="main">
+    <article class="post research">
+      <header class="post-head">
+        <a class="eyebrow post-back" href="../index.html"><span class="eyebrow-num">Research</span>From the Lab</a>
+        <h1 class="post-title">Topical PDRN and spicules: what the evidence actually shows</h1>
+        <p class="post-lede">PDRN, the salmon-DNA ingredient behind injectable skin boosters, is now sold in creams and serums, often next to microneedle spicules. Its injected record is long. Its topical record rests on one small randomized trial. Here is what that trial found, why some bottles carry only a token dose, and what spicules can and can't add.</p>
+        <p class="post-meta"><time datetime="2026-09-25">September 25, 2026</time><span>PubMed searched Sep 25, 2026</span><span id="read-time" hidden></span></p>
+      </header>
+
+      <div class="post-body">
+        <p>Polydeoxyribonucleotide, or PDRN, is a mix of DNA fragments, usually purified from salmon or trout sperm. Most of what is known about it comes from injections: wound healing, and more recently aesthetic "skin boosters." The authors of the first randomized topical trial say so directly: most studies and clinical applications of PDRN have focused on injectable use. A 2024 systematic review of polynucleotides in aesthetic medicine found nine studies of injections, 219 patients in all, of low to moderate quality.</p>
+        <p>The topical literature is thin. PubMed lists 80 papers that mention PDRN and skin in the title or abstract. Adding topical use, creams, serums or cosmetics narrows that to 18, and most of those are cell, animal, formulation or review papers. This post covers the human evidence that exists, the dose problem in products that print their dose, and what spicules add. It is personal research, not medical advice.</p>
+
+        <h2>The short version</h2>
+        <ul>
+          <li><strong>One randomized trial tests a topical product whose active is isolated PDRN.</strong> 31 women with sensitive skin used a 0.1% PDRN eye cream on one side of the face and 0.1% retinol on the other for 28 days. The PDRN side improved about twice as much. The trial is short, several authors are from a skincare company, and they say early gains may partly be hydration or plumping.</li>
+          <li><strong>Consumer doses are mostly undisclosed, and one that is printed is tiny.</strong> VT's PDRN Reedle Shot 100 lists sodium DNA at 0.05 ppm: roughly 2.5 micrograms in a 50 mL bottle, 20,000 times below the trial's dose.</li>
+          <li><strong>Plant "PhytoPDRN" rests on lab work by the company selling it.</strong> The most-cited paper never compares its efficacy with salmon PDRN; it calls that comparison future work.</li>
+          <li><strong>Spicules are a real delivery tool.</strong> They open channels about 49 µm deep and have carried large molecules into skin, usually with a liposome carrier. No study has tested them with PDRN.</li>
+          <li><strong>Retinoids still have the deeper evidence.</strong> PDRN's case is tolerability on sensitive, thin skin, and it rests on one 28-day trial.</li>
+        </ul>
+
+        <h2>The one real trial</h2>
+        <p>Ye and colleagues published it in <em>PLoS One</em> in July 2026. The same paper includes cell, lab-skin and penetration work; the clinical part is what matters for a cream on a face.</p>
+        <table class="rs-facts">
+          <tbody>
+            <tr><td>Participants</td><td>31 women in China, aged 35 to 55 (mean 47.5), with self-reported sensitive skin and visible periocular wrinkles</td></tr>
+            <tr><td>Design</td><td>Randomized, double-blind, split-face; both creams used an identical base</td></tr>
+            <tr><td>Treatment</td><td>0.1% PDRN on one side, 0.1% retinol on the other, twice daily for 28 days, with daily sunscreen</td></tr>
+            <tr><td>The PDRN</td><td>From salmon sperm, at least 96% pure, about 1,200 base pairs, average molecular weight up to 850 kDa; the only active in the cream</td></tr>
+            <tr><td>Results</td><td>About twice retinol's gains in dermal thickness, dermal density and eye-bag measures. Crow's-feet wrinkle area and count fell about 20 to 23%, against 6 to 7% with retinol. Elasticity and firmness improved about 1.8 times as much. No adverse reactions on either side.</td></tr>
+            <tr><td>Getting in</td><td>Fluorescent-labeled PDRN reached the dermis of pig skin within 8 to 12 hours. In one volunteer's forearm, the signal reached past 20 µm, at 3.06% relative signal after 24 hours.</td></tr>
+            <tr><td>Caveats</td><td>28 days is short for dermal remodeling, and the authors say early ultrasound gains may partly reflect hydration or plumping. Their Raman imaging can't separate applied PDRN from the skin's own DNA. Several authors are from UNISKIN's research institute at Inertia Shanghai Biotechnology, a skincare company.</td></tr>
+          </tbody>
+        </table>
+        <p>That is a genuinely interesting result, and it is one trial. It compares PDRN with retinol at the same low concentration in people chosen for sensitive skin, a setting that favors the gentler ingredient.</p>
+        <p>Other human data on topical PDRN are thinner still. A double-blind, placebo-controlled trial tested a microalgae extract that contains PDRN alongside other actives. A 10-person test looked at a peony-derived PDRN. A case series of eight patients used a plant-PDRN serum after procedures. The first two were run by the companies that make those ingredients.</p>
+
+        <h2>What is actually in the bottle</h2>
+        <p>Many PDRN products don't state a concentration, which leaves the position on the ingredient list as the only clue. One that does state it is VT's PDRN Reedle Shot 100, which pairs PDRN with spicules. Its own ingredient list reads <code>Sodium DNA(0.05ppm)</code>, near the end of more than 40 ingredients.</p>
+        <figure class="rs-wide rs-fig" aria-labelledby="dose-cap">
+          <p class="rs-fig-h">PDRN concentration</p>
+          <div class="rs-plot" role="img" aria-label="Dot plot on a log scale. VT PDRN Reedle Shot 100 label: 0.05 ppm. Ye 2026 lab penetration test: 250 ppm. Ye 2026 clinical eye cream: 1,000 ppm.">
+            <div class="rs-row">
+              <div class="rs-label">VT PDRN Reedle Shot 100<small>as printed on its ingredient list</small></div>
+              <div class="rs-track"><span class="rs-dot is-accent" style="--x: 11.65%"></span><span class="rs-val" style="--x: 11.65%">0.05 ppm <small>about 2.5 µg per bottle</small></span></div>
+            </div>
+            <div class="rs-row">
+              <div class="rs-label">Ye 2026 penetration test<small>lab skin model, 0.025%</small></div>
+              <div class="rs-track"><span class="rs-dot" style="--x: 73.30%"></span><span class="rs-val is-left" style="--x: 73.30%">250 ppm</span></div>
+            </div>
+            <div class="rs-row">
+              <div class="rs-label">Ye 2026 clinical eye cream<small>the randomized trial, 0.1%</small></div>
+              <div class="rs-track"><span class="rs-dot" style="--x: 83.33%"></span><span class="rs-val is-left" style="--x: 83.33%">1,000 ppm</span></div>
+            </div>
+            <div class="rs-row rs-axis-row">
+              <div class="rs-label"></div>
+              <div class="rs-track rs-axis"><span style="--x: 0%">0.01</span><span class="rs-minor" style="--x: 16.667%">0.1</span><span style="--x: 33.333%">1</span><span class="rs-minor" style="--x: 50%">10</span><span style="--x: 66.667%">100</span><span class="rs-minor" style="--x: 83.333%">1,000</span><span style="--x: 100%">10,000</span></div>
+            </div>
+          </div>
+          <p class="rs-axis-unit">ppm, log scale: each gridline is ten times the one before</p>
+          <figcaption id="dose-cap">0.05 ppm is 0.000005%, roughly 2.5 micrograms of DNA in the whole 50 mL bottle. The trial used 20,000 times more.</figcaption>
+        </figure>
+        <p>Adenosine sits far higher on the same list. It is an established anti-wrinkle ingredient, and it acts on the same A2A receptor that PDRN is said to work through. Whatever receptor signaling that bottle produces is more likely adenosine's doing than the DNA's.</p>
+
+        <h2>Plant PDRN: vendor lab work so far</h2>
+        <p>"PhytoPDRN" claims trace back to a 2023 paper in <em>Molecules</em> on PDRN from cultured ginseng roots. Seven of its eight authors work for Biosolution, which developed the ingredient and also makes the lab skin models used to test it. The work stays in cells and those models:</p>
+        <ul>
+          <li>Cell growth rose about 20%. Adding a blocker of the A2A receptor, the pathway PDRN is supposed to act through, lowered growth by only 7.5% compared with PDRN alone.</li>
+          <li>The skin-model results came from tissue cut with two surgical blades 1 mm apart, or stripped with 2% detergent, before treatment. Nothing tests whether it gets through intact skin.</li>
+          <li>The only comparison with salmon PDRN is fragment size on a gel. The paper's conclusion says the team aims to establish PhytoPDRN as a replacement "through comparison and equivalence experiments," which is to say that work hasn't been done.</li>
+        </ul>
+        <p>The other plant and microbial PDRN papers in the search follow the same pattern: company-authored, mostly cell studies.</p>
+
+        <h2>Spicules: what they add, and what they don't</h2>
+        <p>The spicules in these products are silica needles from <em>Haliclona</em> sponges, about 120 µm long and 7 µm wide, rubbed into the skin. They are a real delivery tool, not a gimmick:</p>
+        <ul>
+          <li>They open about 850 channels per square millimeter, about 49 µm deep, which close over about five days. The spicules themselves stay in the skin for at least 72 hours.</li>
+          <li>They raised skin uptake of a 10 kDa dextran 33 times, and its delivery into and across the dermis 62 times, in pig skin. In mice they beat a Dermaroller by 15 times.</li>
+          <li>With flexible liposomes, they carried 19 times as much 250 kDa hyaluronic acid into skin as plain buffer did, most of it into deep layers.</li>
+          <li>They raised uptake of stem-cell exosomes, which are nanoscale vesicles, 5.9 times, and with cationic liposomes, uptake of siRNA 73 times.</li>
+          <li>With lidocaine, total skin absorption rose about tenfold, and a pilot clinical trial halved the time to numbness.</li>
+        </ul>
+        <p>So spicules can move large molecules. The limits are in the same papers. The gain falls as molecules get larger, and several of the large payloads were paired with a liposome carrier, which consumer products don't disclose. Nearly all of this work also comes from one lab group, at Xiamen University.</p>
+        <figure class="rs-wide rs-fig" aria-labelledby="depth-cap">
+          <p class="rs-fig-h">How deep, measured</p>
+          <div class="rs-plot" role="img" aria-label="Horizontal bars of measured depth in micrometers. PDRN signal in one volunteer: past 20. Sponge-spicule channels: 48.6, plus or minus 13.5. Length of one spicule: 120. Dermaroller channel: 152.5.">
+            <div class="rs-row">
+              <div class="rs-label">PDRN signal, one volunteer<small>Ye 2026 · human forearm · past 20 µm at 8 to 24 h</small></div>
+              <div class="rs-track is-depth"><span class="rs-bar is-accent is-open" style="--w: 11.111%"></span><span class="rs-bar-val" style="--w: 11.111%">past 20 µm</span></div>
+            </div>
+            <div class="rs-row">
+              <div class="rs-label">Sponge-spicule channels<small>Zhang 2019 · 48.6 ± 13.5 µm</small></div>
+              <div class="rs-track is-depth"><span class="rs-bar" style="--w: 27.0%"></span><span class="rs-whisker" style="--from: 19.5%; --to: 34.5%"></span><span class="rs-bar-val" style="--w: 34.5%">48.6 µm</span></div>
+            </div>
+            <div class="rs-row">
+              <div class="rs-label">Length of one spicule (not depth)<small>Zhang 2017 · about 120 × 7 µm</small></div>
+              <div class="rs-track is-depth"><span class="rs-rod" style="--w: 66.667%"></span><span class="rs-bar-val" style="--w: 66.667%">120 µm</span></div>
+            </div>
+            <div class="rs-row">
+              <div class="rs-label">Dermaroller channel<small>Kalluri 2011 · rat skin · 770 µm needles · 152.5 µm</small></div>
+              <div class="rs-track is-depth"><span class="rs-bar" style="--w: 84.722%"></span><span class="rs-bar-val" style="--w: 84.722%">152.5 µm</span></div>
+            </div>
+            <div class="rs-row rs-axis-row">
+              <div class="rs-label"></div>
+              <div class="rs-track rs-axis"><span style="--x: 0%">0</span><span style="--x: 33.333%">60</span><span style="--x: 66.667%">120</span><span style="--x: 100%">180</span></div>
+            </div>
+          </div>
+          <p class="rs-axis-unit">µm below the skin surface; gridlines every 20 µm</p>
+          <figcaption id="depth-cap">Measurements from different studies and skin models, shown on one scale for size. None of them measured where PDRN from a spicule product ends up, because no such study exists.</figcaption>
+        </figure>
+        <p>A different kind of "micro-spicule" has one clinical result. In a 2017 randomized split-face trial of 20 people, dissolving hyaluronic-acid micro-spicules carrying EGF raised dermal density 30.1% and dermal depth 19.5% from baseline at eight weeks, significantly more than EGF alone. Six people had brief redness and prickling. Two of the authors are from a biotech company, Paean Biotechnology, and these dissolving micro-spicules are a different technology from sponge spicules.</p>
+        <p>A PubMed search for spicules together with PDRN returns nothing. Spicules could plausibly help PDRN into skin, but no one has measured it. And they can't fix a product that contains almost none: faster delivery of 0.05 ppm is still 0.05 ppm.</p>
+
+        <h2>Where retinoids fit</h2>
+        <p>Retinoids have decades of photoaging trials behind them, many running 24 weeks or longer. The PDRN trial's own authors call retinoids a cornerstone of photoaging treatment whose use is often limited by irritation, particularly around the eyes. That is the honest case for PDRN: a gentler option for sensitive, thin skin, supported by one 28-day trial. If irritation isn't the constraint, the retinoid remains the better-evidenced choice.</p>
+
+        <h2>How this was checked</h2>
+        <p>Every study below was read in PubMed on September 25, 2026, with full texts read for the PDRN trial, the ginseng PDRN paper and the micro-spicule trial. The search counts come from the three PubMed queries linked below. The VT figure is from the ingredient list on VT's own product page. Unit conversions assume 1 mL weighs about 1 g. This is personal research, not medical advice.</p>
+
+        <h2>Sources</h2>
+        <h3>Studies</h3>
+        <ul class="hmw-sources">
+          <li>Ye R, et al. <a href="https://doi.org/10.1371/journal.pone.0350905">Topical medium-length PDRN enhances dermal extracellular matrix repair in photodamaged skin via PI3K–Akt/TGF-β–regulated pathways</a>. <em>PLoS One</em>, 2026.</li>
+          <li>Lee KS, et al. <a href="https://doi.org/10.3390/molecules28217240">Analysis of skin regeneration and barrier-improvement efficacy of polydeoxyribonucleotide isolated from <em>Panax ginseng</em> adventitious root</a>. <em>Molecules</em>, 2023.</li>
+          <li>Zhang S, et al. <a href="https://doi.org/10.1021/acs.molpharmaceut.7b00468">Skin delivery of hydrophilic biomacromolecules using marine sponge spicules</a>. <em>Molecular Pharmaceutics</em>, 2017.</li>
+          <li>Zhang C, et al. <a href="https://doi.org/10.1039/c8bm01555d">Skin delivery of hyaluronic acid by the combined use of sponge spicules and flexible liposomes</a>. <em>Biomaterials Science</em>, 2019.</li>
+          <li>Zhang K, et al. <a href="https://doi.org/10.2147/IJN.S249751">Topical application of exosomes derived from human umbilical cord mesenchymal stem cells in combination with sponge spicules for treatment of photoaging</a>. <em>International Journal of Nanomedicine</em>, 2020.</li>
+          <li>Liang X, et al. <a href="https://doi.org/10.1016/j.omtn.2020.04.003">Skin delivery of siRNA using sponge spicules in combination with cationic flexible liposomes</a>. <em>Molecular Therapy: Nucleic Acids</em>, 2020.</li>
+          <li>Zhang C, et al. <a href="https://doi.org/10.1007/s13346-025-02030-4">Topical delivery of lidocaine using spicules for local anesthesia</a>. <em>Drug Delivery and Translational Research</em>, 2025.</li>
+          <li>Ha JM, et al. <a href="https://doi.org/10.5021/ad.2017.29.2.187">The effect of micro-spicule containing epidermal growth factor on periocular wrinkles</a>. <em>Annals of Dermatology</em>, 2017.</li>
+          <li>Kalluri H, et al. <a href="https://doi.org/10.1208/s12248-011-9288-3">Characterization of microchannels created by metal microneedles: formation and closure</a>. <em>The AAPS Journal</em>, 2011.</li>
+          <li>Havas F, et al. <a href="https://doi.org/10.3390/md24030099">Hyaluronic acid-like skin plumping and radiance benefits of a sulfated exopolysaccharide- and natural PDRN-rich extract</a>. <em>Marine Drugs</em>, 2026.</li>
+          <li>Bak SU, et al. <a href="https://doi.org/10.3390/ijms27010220">Anti-aging efficacy of low-molecular-weight polydeoxyribonucleotide derived from <em>Paeonia lactiflora</em></a>. <em>International Journal of Molecular Sciences</em>, 2025.</li>
+          <li>Wu Y, et al. <a href="https://doi.org/10.36849/JDD.15491">Real-world cases using phyto polydeoxyribonucleotide (PDRN) serum</a>. <em>Journal of Drugs in Dermatology</em>, 2026.</li>
+          <li>Lampridou S, et al. <a href="https://doi.org/10.1111/jocd.16721">The effectiveness of polynucleotides in esthetic medicine: a systematic review</a>. <em>Journal of Cosmetic Dermatology</em>, 2024.</li>
+        </ul>
+        <h3>Product label</h3>
+        <ul class="hmw-sources">
+          <li>VT Cosmetics, <a href="https://globalvt-cosmetics.com/products/pdrn-reedle-shot-100">PDRN Reedle Shot 100 product page</a> (ingredient list, read September 25, 2026).</li>
+        </ul>
+        <h3>PubMed searches (September 25, 2026)</h3>
+        <ul class="hmw-sources">
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/?term=%28polydeoxyribonucleotide%5Btiab%5D+OR+PDRN%5Btiab%5D%29+AND+skin%5Btiab%5D">PDRN and skin in title or abstract</a>: 80 results.</li>
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/?term=%28polydeoxyribonucleotide%5Btiab%5D+OR+PDRN%5Btiab%5D%29+AND+%28topical%5Btiab%5D+OR+cream%5Btiab%5D+OR+serum%5Btiab%5D+OR+cosmetic%5Btiab%5D+OR+cosmetics%5Btiab%5D%29+AND+skin%5Btiab%5D">The same, with topical, cream, serum or cosmetic</a>: 18 results.</li>
+          <li><a href="https://pubmed.ncbi.nlm.nih.gov/?term=spicule+AND+%28polydeoxyribonucleotide+OR+PDRN%29">Spicules together with PDRN</a>: 0 results.</li>
+        </ul>
+      </div>
+
+      <nav class="cs-nav edition-nav" aria-label="More from the blog">
+        <a href="../index.html"><span class="cs-nav-k">Blog</span><span class="cs-nav-t">All research and editions</span></a>
+      </nav>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p class="footer-copy">© 2026 Samuel Bates. Hand-built with HTML, CSS, and a little JavaScript. No framework.</p>
+      <nav class="side-quests" aria-label="Side quests">
+        <span>Side quests:</span>
+        <a href="../../starship.html">Starship</a>
+        <a href="../../arcade.html">Arcade</a>
+        <a href="../index.html">Hill Money Watch</a>
+        <a href="../../skincare.html">A skincare regimen, run like an ops program</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

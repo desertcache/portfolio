@@ -181,6 +181,13 @@ To refresh the prices: rebuild the JSON (same fields), run
 `py scripts/ledger_scoreboard.py`, re-shoot the OG card, and bump the `?v=` on
 the page's CSS and JS links.
 
+The second is `pdrn-and-spicules.html` (topical PDRN and spicules, 2026-09-25):
+a static page with no script of its own. Its two figures are plain HTML/CSS in
+`pdrn-and-spicules.css` (`rs-*` classes; positions are CSS custom properties,
+log or linear, computed by hand and noted in the markup), so they reflow on a
+phone. Every study is linked in its Sources section; the link preview is
+`assets/og-pdrn-and-spicules.png` from `scripts/og-pdrn-and-spicules.html`.
+
 ## Other invariants
 
 - All asset paths RELATIVE (no leading `/`) — site lives at /portfolio/ sub-path, no CNAME.

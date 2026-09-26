@@ -1,0 +1,173 @@
+/* ==========================================================================
+   Research: topical PDRN and spicules (blog/research/pdrn-and-spicules.html).
+   Sits on css/site.css + blog/blog.css and uses only their tokens. The two
+   figures are plain HTML/CSS (no SVG, no script) so they reflow on a phone
+   and follow the theme. Page-only classes are prefixed rs-.
+   ========================================================================== */
+
+/* Figures may leave the reading column for the wide lane, like tables. */
+.post-body > .rs-wide {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: 100%;
+  max-width: var(--wide);
+  margin: 8px 0 34px;
+}
+.rs-fig {
+  padding: clamp(16px, 2.4vw, 26px);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.rs-fig-h {
+  margin: 0 0 16px;
+  font: 500 0.6875rem/1.3 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.rs-fig figcaption {
+  margin-top: 16px;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--ink-3);
+}
+
+/* A row = label + track. Two columns on wide screens, stacked on a phone. */
+.rs-plot { display: grid; gap: 14px; }
+.rs-row {
+  display: grid;
+  grid-template-columns: minmax(12rem, 17rem) minmax(0, 1fr);
+  gap: 6px 22px;
+  align-items: center;
+}
+@media (max-width: 640px) {
+  .rs-row { grid-template-columns: minmax(0, 1fr); }
+  .rs-axis-row .rs-label { display: none; }
+}
+.rs-label { font-size: 0.9375rem; line-height: 1.35; color: var(--ink); }
+.rs-label small { display: block; margin-top: 2px; font: 400 0.75rem/1.4 var(--mono); color: var(--ink-3); }
+
+/* The track draws its own gridlines: --cols equal steps across the width. */
+.rs-track {
+  --cols: 6;
+  position: relative;
+  height: 34px;
+  border-left: 1px solid var(--line-strong);
+  background-image: linear-gradient(to right, var(--line) 1px, transparent 1px);
+  background-size: calc(100% / var(--cols)) 100%;
+  background-position: -1px 0;
+}
+.rs-track.is-depth { --cols: 8; }
+
+/* Dose figure: a dot per value on a log axis, value label beside it. */
+.rs-dot {
+  position: absolute;
+  top: 50%;
+  left: var(--x);
+  width: 13px;
+  height: 13px;
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  background: var(--ink);
+  transform: translate(-50%, -50%);
+}
+.rs-dot.is-accent { background: var(--accent); }
+.rs-val {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--x) + 13px);
+  transform: translateY(-50%);
+  font: 600 0.875rem/1 var(--sans);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--ink);
+}
+.rs-val.is-left { left: auto; right: calc(100% - var(--x) + 13px); }
+.rs-val small { font-weight: 400; color: var(--ink-3); }
+
+/* Depth figure: bars from the skin surface (left) inward. */
+.rs-bar {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: var(--w);
+  height: 14px;
+  border-radius: 0 4px 4px 0;
+  background: var(--ink-2);
+  transform: translateY(-50%);
+}
+.rs-bar.is-accent { background: var(--accent); }
+/* Open-ended: the signal was seen past this depth, not stopped at it. */
+.rs-bar.is-open { border-radius: 0; -webkit-mask-image: linear-gradient(to right, #000 70%, transparent); mask-image: linear-gradient(to right, #000 70%, transparent); }
+.rs-rod {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: var(--w);
+  height: 3px;
+  border-radius: 2px;
+  background: var(--ink-3);
+  transform: translateY(-50%);
+}
+.rs-whisker {
+  position: absolute;
+  top: 50%;
+  left: var(--from);
+  width: calc(var(--to) - var(--from));
+  height: 12px;
+  border: solid var(--ink);
+  border-width: 0 1.5px;
+  transform: translateY(-50%);
+}
+.rs-whisker::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  border-top: 1.5px solid var(--ink);
+}
+.rs-bar-val {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--w) + 10px);
+  transform: translateY(-50%);
+  font: 600 0.875rem/1 var(--sans);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--ink);
+}
+.rs-bar-val.is-left { left: auto; right: calc(100% - var(--w) + 10px); }
+
+/* Axis labels sit under the last track, at the same fractions as the grid. */
+.rs-axis { height: 22px; border-left: 0; background: none; }
+.rs-axis span {
+  position: absolute;
+  top: 0;
+  left: var(--x);
+  transform: translateX(-50%);
+  font: 400 0.75rem/1 var(--sans);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--ink-3);
+}
+.rs-axis span:first-child { transform: none; }
+.rs-axis span:last-child { transform: translateX(-100%); }
+.rs-axis-unit { margin-top: 6px; font: 400 0.75rem/1.4 var(--mono); color: var(--ink-3); text-align: right; }
+
+/* On a phone the tracks are ~300px: thin the axis to every other decade, and
+   drop the bar-end values (each row's label already carries its number). */
+@media (max-width: 640px) {
+  .rs-axis .rs-minor { display: none; }
+  .rs-bar-val { display: none; }
+}
+
+/* The trial-at-a-glance table: first column is a label, second is prose. */
+.post-body .rs-facts td:last-child { white-space: normal; min-width: 22rem; }
+.post-body .rs-facts td:first-child { white-space: nowrap; color: var(--ink-3); }
+@media (max-width: 640px) {
+  .post-body .rs-facts td:first-child { white-space: normal; }
+  .post-body .rs-facts td:last-child { min-width: 0; }
+}
