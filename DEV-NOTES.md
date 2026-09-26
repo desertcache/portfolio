@@ -74,8 +74,8 @@ cursor raises a hill. It caps the drawing buffer at ~2.2 megapixels, drops to
 ~30fps when idle, stops when the hero is off screen or the tab is hidden, and
 draws one still frame under `prefers-reduced-motion`. No WebGL means no
 canvas, just paper. Colours come from `--topo-*` tokens (hex only). On
-mouse devices a map reticle marks the cursor, the point whose coordinates
-the "field notes" card reads out.
+mouse devices the "field notes" card reads out the coordinates under the
+cursor.
 
 ### Checks
 

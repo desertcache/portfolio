@@ -37,7 +37,6 @@ uniform vec3 u_accent;  // high ground + the hill
 uniform float u_alpha;  // base line opacity
 uniform float u_dark;   // 1.0 in dark theme: adds a few stars
 uniform float u_px;     // buffer px per CSS px, keeps line width constant
-uniform float u_reticle; // 1.0 where a mouse drives the hill: draw a map reticle on it
 
 vec2 hash2(vec2 p) {
   p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
@@ -99,16 +98,7 @@ void main() {
     a = a + s * (1.0 - a);
   }
 
-  // Map reticle on the cursor: a ring and four ticks, drawn over the contours.
-  vec2 dp = (gl_FragCoord.xy - u_hill.xy) / u_px;          // offset in CSS px
-  float r = length(dp);
-  float ring = 1.0 - smoothstep(0.5, 1.3, abs(r - 12.0));
-  float armX = (1.0 - smoothstep(0.45, 1.05, abs(dp.y))) * smoothstep(17.0, 18.0, abs(dp.x)) * (1.0 - smoothstep(29.0, 30.0, abs(dp.x)));
-  float armY = (1.0 - smoothstep(0.45, 1.05, abs(dp.x))) * smoothstep(17.0, 18.0, abs(dp.y)) * (1.0 - smoothstep(29.0, 30.0, abs(dp.y)));
-  float ra = max(ring, max(armX, armY)) * u_hill.z * u_reticle * 0.9;
-
-  // "over" composite, premultiplied: reticle on top of contours and stars
-  gl_FragColor = vec4(u_accent * ra + col * a * (1.0 - ra), ra + a * (1.0 - ra));
+  gl_FragColor = vec4(col * a, a);                // premultiplied alpha
 }
 `;
 
@@ -159,7 +149,6 @@ function buildProgram(gl) {
   return {
     res: u('u_res'), time: u('u_time'), hill: u('u_hill'), line: u('u_line'),
     accent: u('u_accent'), alpha: u('u_alpha'), dark: u('u_dark'), px: u('u_px'),
-    reticle: u('u_reticle'),
   };
 }
 
@@ -237,7 +226,6 @@ export function initTopo(canvas) {
     gl.uniform1f(uniforms.alpha, c.alpha);
     gl.uniform1f(uniforms.dark, c.dark);
     gl.uniform1f(uniforms.px, s.px);
-    gl.uniform1f(uniforms.reticle, canHover ? 1 : 0);
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
