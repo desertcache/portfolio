@@ -31,9 +31,9 @@ export function hexToRgb(hex) {
  */
 
 /**
- * Split a display number like "6,846", "94%", "800+" or "~80%" into parts, so
+ * Split a display number like "4,321", "42%", "800+" or "~60%" into parts, so
  * it can count up from zero and still look like itself on every frame.
- * Anything that isn't exactly one number ("1–7 days", "5+ → 1") returns null
+ * Anything that isn't exactly one number ("2–4 days", "3+ → 1") returns null
  * and is left alone.
  * @param {string} text
  * @returns {Stat | null}
@@ -96,7 +96,7 @@ export function formatPostDate(iso) {
 
 /**
  * Which case study, if any, a URL hash points at.
- * @param {string} hash e.g. "#cs-wfm"
+ * @param {string} hash e.g. "#cs-workforce"
  * @param {Iterable<string>} ids the case-study ids that exist on the page
  * @returns {string | null}
  */

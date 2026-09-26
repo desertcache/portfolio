@@ -19,22 +19,22 @@ test('hexToRgb parses short and long hex, rejects everything else', () => {
 });
 
 test('parseStat keeps prefix, suffix, decimals and grouping', () => {
-  assert.deepEqual(parseStat('94%'), { prefix: '', value: 94, decimals: 0, suffix: '%', grouped: false });
-  assert.deepEqual(parseStat('6,846'), { prefix: '', value: 6846, decimals: 0, suffix: '', grouped: true });
-  assert.deepEqual(parseStat('~80%'), { prefix: '~', value: 80, decimals: 0, suffix: '%', grouped: false });
-  assert.deepEqual(parseStat('0.9%'), { prefix: '', value: 0.9, decimals: 1, suffix: '%', grouped: false });
+  assert.deepEqual(parseStat('42%'), { prefix: '', value: 42, decimals: 0, suffix: '%', grouped: false });
+  assert.deepEqual(parseStat('4,321'), { prefix: '', value: 4321, decimals: 0, suffix: '', grouped: true });
+  assert.deepEqual(parseStat('~60%'), { prefix: '~', value: 60, decimals: 0, suffix: '%', grouped: false });
+  assert.deepEqual(parseStat('2.5%'), { prefix: '', value: 2.5, decimals: 1, suffix: '%', grouped: false });
   assert.equal(parseStat('800+')?.suffix, '+');
 });
 
 test('parseStat leaves ranges and prose alone', () => {
-  assert.equal(parseStat('1–7 days'), null);
-  assert.equal(parseStat('5+ → 1'), null);
+  assert.equal(parseStat('2–4 days'), null);
+  assert.equal(parseStat('3+ → 1'), null);
   assert.equal(parseStat('Under budget'), null);
   assert.equal(parseStat(''), null);
 });
 
 test('formatStat round-trips every counted number on the page', () => {
-  for (const text of ['94%', '800+', '100+', '6,846', '~80%', '0.9%', '1,234,567']) {
+  for (const text of ['8', '800+', '3', '2×', '42%', '4,321', '~60%', '2.5%', '1,234,567']) {
     const stat = parseStat(text);
     assert.ok(stat, text);
     assert.equal(formatStat(stat, stat.value), text);
@@ -42,10 +42,10 @@ test('formatStat round-trips every counted number on the page', () => {
 });
 
 test('formatStat renders intermediate frames in the same shape', () => {
-  const stat = /** @type {import('../js/lib.js').Stat} */ (parseStat('6,846'));
+  const stat = /** @type {import('../js/lib.js').Stat} */ (parseStat('4,321'));
   assert.equal(formatStat(stat, 0), '0');
   assert.equal(formatStat(stat, 1234.4), '1,234');
-  const pct = /** @type {import('../js/lib.js').Stat} */ (parseStat('0.9%'));
+  const pct = /** @type {import('../js/lib.js').Stat} */ (parseStat('2.5%'));
   assert.equal(formatStat(pct, 0.44), '0.4%');
 });
 
@@ -83,12 +83,12 @@ test('formatPostDate does not slide a day in western timezones', () => {
 });
 
 test('caseStudyFromHash only accepts ids that exist', () => {
-  const ids = ['wfm', 'chip', 'ime'];
-  assert.equal(caseStudyFromHash('#cs-wfm', ids), 'wfm');
+  const ids = ['workforce', 'chatbot', 'mapping'];
+  assert.equal(caseStudyFromHash('#cs-workforce', ids), 'workforce');
   assert.equal(caseStudyFromHash('#cs-nope', ids), null);
   assert.equal(caseStudyFromHash('#work', ids), null);
   assert.equal(caseStudyFromHash('', ids), null);
-  assert.equal(caseStudyFromHash('#cs-wfm/../x', ids), null);
+  assert.equal(caseStudyFromHash('#cs-workforce/../x', ids), null);
 });
 
 test('coordsFor centres on downtown Phoenix and clamps to the tile', () => {

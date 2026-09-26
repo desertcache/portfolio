@@ -93,12 +93,12 @@
         <ul>
           <li><strong>Measure retrieval on the real corpus, never a fixture.</strong> Running it against the actual playbook surfaced four defects a test fixture had hidden, including a rare-term scoring rule that is backwards for a support corpus (the valuable terms are frequent precisely because they matter) and a size cutoff tuned for a large document that pruned everything in a small one.</li>
           <li><strong>Displacement as the regression metric.</strong> I tuned the next retrieval change against it: the change had to rescue questions that used to return nothing without pushing the right answer down for the questions that already worked.</li>
-          <li><strong>Usage, compared with the pre-pilot baseline.</strong> Activity per active day rose 5.8x and the number of people with access grew nearly 3x.</li>
+          <li><strong>Usage against the pre-pilot baseline.</strong> Activity per active day and the number of people with access both grew well past it.</li>
         </ul>
 
         <h2>Rolling it out to an outsourced team</h2>
         <p>The first outsourced support team to work inside the tool could not get in, and every failure looked like the same generic error. I proved access one layer at a time: identity, device and network trust, application permissions, and finally an internal call that was blocked and rendered as a network error. Each layer got its own check so the next cohort would not repeat the hunt.</p>
-        <p>Training came from one content module that generates the slide deck, the guides and the reference docs, plus a verifier that checks every generated copy. One rule came out of it: a fix is done only when every copy has been fetched back from where people actually read it and checked. Now I coach the team's live cases against one success metric: the share of cases resolved in under 30 minutes.</p>
+        <p>Training came from one content module that generates the slide deck, the guides and the reference docs, plus a verifier that checks every generated copy. One rule came out of it: a fix is done only when every copy has been fetched back from where people actually read it and checked. Now I coach the team's live cases against one success metric: the share of cases resolved within a set time.</p>
 
         <h2>What I would tell the next team</h2>
         <ul>
