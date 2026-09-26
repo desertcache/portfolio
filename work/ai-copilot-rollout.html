@@ -83,8 +83,8 @@
         <h2>How it is built</h2>
         <ul>
           <li><strong>A browser app and a backend-for-frontend.</strong> The workspace is a React and TypeScript app. A small Node service sits between it and everything else: the company's AI gateway, the internal data services, and the playbook.</li>
-          <li><strong>Retrieval lives on the server.</strong> App bundles are served from a public CDN, so the playbook corpus cannot ship in the browser. It sits behind a retrieval endpoint in the backend, which returns the matching sections with their provenance.</li>
-          <li><strong>Provenance comes from retrieval, not from the model.</strong> Every grounded answer links to the exact section of the playbook it used, and the link is generated from what retrieval returned. The model never gets to invent a citation.</li>
+          <li><strong>Retrieval lives on the server.</strong> The playbook never ships to the browser. It sits behind a retrieval endpoint in the backend, which returns the matching sections with their provenance.</li>
+          <li><strong>Provenance comes from retrieval, not from the model.</strong> Every grounded answer cites the playbook sections that retrieval returned, so the model never gets to invent a citation.</li>
           <li><strong>The model runs through the company gateway.</strong> One place for keys, logging and model changes. Before switching models I prove the route with a few matched requests through the real gateway: a control, the new setting, and one that should fail.</li>
           <li><strong>Other teams' agents plug in as panels.</strong> The workspace became the place agents already are, so other teams embed their own AI agents in it behind the same access model instead of shipping another tab.</li>
         </ul>
@@ -92,7 +92,7 @@
         <h2>How I measured it</h2>
         <ul>
           <li><strong>Measure retrieval on the real corpus, never a fixture.</strong> Running it against the actual playbook surfaced four defects a test fixture had hidden, including a rare-term scoring rule that is backwards for a support corpus (the valuable terms are frequent precisely because they matter) and a size cutoff tuned for a large document that pruned everything in a small one.</li>
-          <li><strong>Displacement as the regression metric.</strong> A retrieval change only ships if it rescues questions that used to return nothing without pushing the right answer down for the questions that already worked.</li>
+          <li><strong>Displacement as the regression metric.</strong> I tuned the next retrieval change against it: the change had to rescue questions that used to return nothing without pushing the right answer down for the questions that already worked.</li>
           <li><strong>Usage, compared with the pre-pilot baseline.</strong> Activity per active day rose 5.8x and the number of people with access grew nearly 3x.</li>
         </ul>
 
