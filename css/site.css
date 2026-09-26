@@ -1,10 +1,10 @@
 /* ==========================================================================
    Samuel Bates — portfolio, v5.3 "Sedona"
    The Sonoran desert, day and dusk. By day: Sedona-dust paper, dusk ink, and
-   red rock as the one signal colour, with palo verde and prickly-pear gold
-   for highlights, juniper for support, and prickly-pear magenta kept for
-   rare pops. After dark: an Arizona sunset gone to violet, the rock lit
-   orange by the last light, words lit gold. Archivo Expanded for display,
+   red rock as the one signal colour, juniper for support, prickly-pear
+   magenta kept for rare pops, and headline words that catch the sunset.
+   After dark: an Arizona sunset gone to violet, the rock lit orange by the
+   last light, words lit amber into pink. Archivo Expanded for display,
    Archivo for reading, Martian Mono for data and labels. What's drawn is
    real: the hero's contours and the footer skyline are Camelback Mountain
    from USGS elevation data (scripts/build_terrain.py); the cacti and the
@@ -40,10 +40,12 @@
   --accent-ink: #923616;      /* small accent text: AA on every surface */
   --accent-soft: rgba(168, 64, 29, 0.1);
   --on-accent: #ffffff;       /* text and ticks drawn on an --accent fill */
-  --hi: #f5cf3d;              /* gold bloom (palo verde, prickly pear flowers): highlighter, hovers */
-  --on-hi: #1c1624;
-  --em-color: var(--ink);     /* emphasised words in headlines: ink on a highlighter band… */
-  --em-band: var(--hi);
+  --accent-hover: #8c3316;    /* a pressed-in red rock, for hovering the solid buttons */
+  --select: #efd0c3;          /* text selection: a wash of red rock */
+  /* emphasised words in headlines catch the sunset: red rock into prickly-pear
+     berry by day (both past 4.5:1 on dust). The first 40% of the gradient is
+     the word at rest; the ink after it is where the light sweeps in from. */
+  --em-sunset: linear-gradient(90deg, #a8401d 0%, #b23346 20%, #c42c6c 40%, var(--ink) 55%, var(--ink) 100%);
   --support: #4f7a2a;         /* juniper and palo verde: the desert's greens */
   --support-ink: #3f6420;
   --bloom: #b8246a;           /* prickly pear fruit: rare pops only */
@@ -94,7 +96,6 @@
   --lab-line: rgba(245, 238, 242, 0.12);
   --lab-line-strong: rgba(245, 238, 242, 0.24);
   --lab-accent: #ff7a45;
-  --lab-hi: #ffc94d;
 
   --display: "Archivo", ui-sans-serif, "Helvetica Neue", Arial, sans-serif;
   --sans: "Archivo", ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif;
@@ -126,10 +127,10 @@
   --accent-ink: #ff9464;
   --accent-soft: rgba(255, 122, 69, 0.1);
   --on-accent: #150f24;
-  --hi: #ffc94d;              /* the sun on the horizon */
-  --on-hi: #150f24;
-  --em-color: var(--hi);      /* …and words lit by it at dusk */
-  --em-band: transparent;
+  --accent-hover: #ff9464;
+  --select: rgba(255, 122, 69, 0.32);
+  /* at dusk the words are the sky itself: amber, orange, pink */
+  --em-sunset: linear-gradient(90deg, #ffb547 0%, #ff7a45 20%, #ff5c93 40%, var(--ink) 55%, var(--ink) 100%);
   --support: #a9c46c;
   --support-ink: #b5cf7a;
   --bloom: #ff5c93;
@@ -205,7 +206,7 @@ kbd {
   background: var(--surface);
 }
 
-::selection { background: var(--hi); color: var(--on-hi); }
+::selection { background: var(--select); color: var(--ink); }
 
 :focus { outline: none; }
 :focus-visible {
@@ -270,7 +271,7 @@ kbd {
 }
 .btn:active { transform: translateY(1px); }
 .btn-solid { background: var(--accent); color: var(--on-accent); }
-.btn-solid:hover { background: var(--hi); color: var(--on-hi); }
+.btn-solid:hover { background: var(--accent-hover); color: var(--on-accent); }
 .btn-ghost { border-color: var(--line-strong); color: var(--ink); background: color-mix(in srgb, var(--surface) 55%, transparent); }
 .btn-ghost:hover { border-color: var(--ink); background: var(--surface); }
 .btn-text { padding: 0 10px; color: var(--ink-2); }
@@ -549,15 +550,35 @@ kbd {
   letter-spacing: -0.045em;
   text-wrap: balance;
 }
-/* Emphasis is a highlighter stroke by day and a lit word at night; --em-color
-   and --em-band decide which, so this is the only emphasis rule. */
+/* Emphasis: the word catches the sunset. Red rock into prickly-pear berry by
+   day, amber into orange into pink at dusk (--em-sunset). As the heading
+   arrives the light sweeps across it from the ink; where background-clip:
+   text isn't supported the word is simply red rock. This is the only
+   emphasis rule. */
 .hero-statement em, .section-title em, .contact-title em {
   font-style: normal;
-  color: var(--em-color);
-  background: linear-gradient(transparent 60%, var(--em-band) 60%, var(--em-band) 93%, transparent 93%);
-  padding: 0 0.05em;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
+  color: var(--accent);
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .hero-statement em, .section-title em, .contact-title em {
+    padding: 0 0.04em;
+    background: var(--em-sunset) 0 0 / 250% 100% no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  /* the light crosses the word in reading order, slowly, like a sunrise */
+  .js .reveal .section-title em, .js .contact-title.reveal em { background-position: 100% 0; transition: background-position 2.2s cubic-bezier(0.5, 0, 0.2, 1) 0.5s; }
+  .js .reveal.in .section-title em, .js .contact-title.reveal.in em { background-position: 0 0; }
+  .js .hero-statement em { animation: sunlit 2.4s cubic-bezier(0.5, 0, 0.2, 1) 0.9s both; }
+}
+@keyframes sunlit { from { background-position: 100% 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal .section-title em, .js .contact-title.reveal em { transition: none; }
+  .js .hero-statement em { animation: none; }
 }
 
 .hero-lede {
@@ -1001,10 +1022,7 @@ html.has-modal { overflow: hidden; }
 
 /* ---------- 5f. Lab (always a night room) ---------- */
 .lab {
-  --em-color: var(--lab-hi);
-  --em-band: transparent;
-  --hi: var(--lab-hi);
-  --on-hi: #150f24;
+  --em-sunset: linear-gradient(90deg, #ffb547 0%, #ff7a45 20%, #ff5c93 40%, var(--lab-ink) 55%, var(--lab-ink) 100%);
   --on-accent: #150f24;
   --bg: var(--lab-bg);
   --surface: var(--lab-surface);
@@ -1077,7 +1095,7 @@ html.has-modal { overflow: hidden; }
   transition: background-color 0.25s, border-color 0.25s, transform 0.4s var(--ease);
 }
 .lab-play svg { width: 16px; height: 16px; fill: currentColor; }
-.lab-poster:hover .lab-play { background: var(--hi); border-color: var(--hi); color: var(--on-hi); transform: translate(-50%, -50%) scale(1.04); }
+.lab-poster:hover .lab-play { background: var(--accent); border-color: var(--accent); color: var(--on-accent); transform: translate(-50%, -50%) scale(1.04); }
 
 .lab-copy { display: flex; flex-direction: column; gap: 14px; }
 .lab-title { font: 800 semi-expanded clamp(1.7rem, 2.8vw, 2.4rem)/1.02 var(--display); letter-spacing: -0.04em; }
@@ -1157,7 +1175,7 @@ html.has-modal { overflow: hidden; }
   transform: translateX(-50%);
   transition: background-color 0.2s, border-color 0.2s;
 }
-.orb-wake:hover { background: var(--hi); border-color: var(--hi); color: var(--on-hi); }
+.orb-wake:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .orb-slot.is-live .orb-wake, .orb-slot.is-loading .orb-wake { display: none; }
 .lab-live {
   position: absolute;

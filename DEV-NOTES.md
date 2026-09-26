@@ -52,11 +52,11 @@ green; v5.3 brings the red back as Sedona rock, on purpose, with guardrails.
 - **Colour by role.** By day: Sedona-dust paper (`#f3ebe6`), dusk ink
   (`#1c1624`, a saguaro's purple-black against the sunset), and
   **red rock** as the signal (`--accent` `#a8401d`: buttons, marks, big
-  numbers, map slopes). The gold of palo verde and prickly-pear flowers is
-  the highlighter (`--hi`), juniper green is the support colour
-  (`--support`), and prickly-pear fruit magenta (`--bloom`) is kept for
-  rare pops. After dark it is Sonoran dusk: deep violet (`#150f24`), the
-  rock in its last light (`#ff7a45`), and headline words lit sun-gold.
+  numbers, map slopes). Juniper green is the support colour (`--support`)
+  and prickly-pear fruit magenta (`--bloom`) is kept for rare pops; gold
+  lives in the drawings and the map's summits, not in the interface. After
+  dark it is Sonoran dusk: deep violet (`#150f24`), the rock in its last
+  light (`#ff7a45`), and headline words lit amber into pink.
 - **Guardrails, so it never drifts back to the Anthropic look.** The red
   has the same hue as Anthropic's clay but is far deeper and more saturated
   (lightness .39 against .60); keep it iron oxide, never lighten it toward
@@ -70,9 +70,17 @@ green; v5.3 brings the red back as Sedona rock, on purpose, with guardrails.
   (`semi-condensed`) for labels and data. Both come from one Google Fonts
   `<link>` that every page repeats; change one, change them all
   (`grep -rl "Archivo:ital" --include=*.html`).
-- **Emphasis.** An `<em>` in a headline is a gold highlighter stroke by day
-  and a sun-lit word at dusk. `--em-color` and `--em-band` decide which, so
-  there is one emphasis rule in `site.css`.
+- **Emphasis.** An `<em>` in a headline catches the sunset: the word is
+  filled with `--em-sunset` through `background-clip: text` (red rock into
+  prickly-pear berry by day, amber into orange into pink at dusk and in the
+  Lab), and as the heading arrives the light crosses it in reading order.
+  The gradient is 250% as wide as the word: its first 40% is the word at
+  rest and the ink after it is where the light starts, so the motion is one
+  `background-position` transition. Without `background-clip: text` the word
+  is plain red rock; with reduced motion it arrives lit. There is one
+  emphasis rule in `site.css`. (v5.4 retired the gold highlighter band,
+  `--hi`: it read as a yellow marker.) Selected text is a red-rock wash
+  (`--select`) with ink on top.
 - **Semantic colours are separate from the brand.** Gains use `--ok`,
   losses use `--neg` (a crimson, kept apart from the rock red). With a red
   brand, a *selection* drawn in the accent would read as "down", so the IPO
