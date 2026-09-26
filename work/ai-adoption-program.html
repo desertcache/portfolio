@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Running an AI adoption program people actually use · Samuel Bates</title>
+  <meta name="description" content="How I run AI enablement as a product: a framework leaders reuse, a series that ends each session with something people keep using, a redesign around the real blocker, and counting adoption instead of attendance.">
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="https://desertcache.github.io/portfolio/work/ai-adoption-program.html">
+  <meta name="theme-color" content="#f5f1ea">
+
+  <script>
+    // Same as every page: pick the theme before first paint and flag that JS is on.
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      setTimeout(function () { if (!root.classList.contains('js-ready')) root.classList.remove('js'); }, 4000);
+      try {
+        var t = localStorage.getItem('sb-theme');
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', t);
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#12100e' : '#f5f1ea');
+      } catch (e) { /* storage blocked: CSS falls back to the system theme */ }
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../blog/blog.css?v=2026-09-23">
+  <script type="module" src="../js/blog.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="../index.html" aria-label="Samuel Bates, home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <path d="M6.2 17.8C5.2 11.6 9.4 6.1 15.6 5.6 21.9 5.1 27.2 9.2 26.8 15.2 26.4 20.4 23.6 22.1 20.1 24.6 16.2 27.4 7.3 25.1 6.2 17.8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M11.4 15.9C11.1 12.2 13.9 9.6 17.4 9.5 21 9.4 23.1 11.9 22.6 15 22.1 18.2 19.8 19.2 17.2 20.1 14.2 21.1 11.7 19.2 11.4 15.9Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <circle cx="17.6" cy="14.7" r="2.6" class="brand-dot"/>
+        </svg>
+        <span class="brand-name">Samuel Bates</span>
+      </a>
+      <nav class="nav-links" aria-label="Sections">
+        <a href="../index.html#work" aria-current="true">Work</a>
+        <a href="../index.html#lab">Lab</a>
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#contact">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.2 14.6A8.3 8.3 0 0 1 9.4 3.8a8.3 8.3 0 1 0 10.8 10.8Z"/></svg>
+        </button>
+        <a class="btn btn-ghost btn-sm nav-cv" href="../Samuel_Bates_CV.pdf" target="_blank" rel="noopener">Résumé</a>
+        <a class="btn btn-solid btn-sm" href="mailto:batessambates@gmail.com">Get in touch</a>
+      </div>
+    </div>
+    <div class="nav-progress" aria-hidden="true"></div>
+  </header>
+
+  <main id="main">
+    <article class="post research">
+      <header class="post-head">
+        <a class="eyebrow post-back" href="../index.html#work"><span class="eyebrow-num">Work sample</span>AI enablement</a>
+        <h1 class="post-title">Running an AI adoption program people actually use</h1>
+        <p class="post-lede">Most AI training produces a good afternoon and no change in how work gets done. I run enablement like a product instead: a framework leaders reuse, sessions that end with something people keep using, a redesign when the real blocker shows up, and adoption counted instead of attendance.</p>
+        <p class="post-meta"><time datetime="2026-09-26">September 2026</time><span>Samuel Bates, AI Solutions Manager</span><span id="read-time" hidden></span></p>
+      </header>
+
+      <div class="post-body">
+        <h2>Start with a framework people can reuse</h2>
+        <p>The first workshop was for senior leaders at an internal leadership summit. I built it around a four-step framework, define, organize, apply, refine, so the takeaway was a way of working rather than a list of prompts. It has since reached 800+ leaders across the consumer and merchant organizations, and it generated follow-on AI projects in several of the teams that attended.</p>
+
+        <h2>Every session ends with something people keep using</h2>
+        <p>The org-wide series for an operations organization runs sessions of roughly 70 to 100+ practitioners. Each one ships a reusable artifact, such as a skill, a template or a shared team setup, that people keep using after the call ends. Session four was a builder showcase: people from the business demoed production work they had shipped themselves, and I checked each merge record before describing their work to their executives.</p>
+
+        <h2>Redesign around the real blocker</h2>
+        <p>Midway through, a domain owner who had onboarded 25 non-engineers showed me that access and hands-on work in the same session deliver neither. One planned session became four parts:</p>
+        <ul>
+          <li><strong>Part 1:</strong> get access, and learn five words: repository, branch, commit, pull request, merge.</li>
+          <li><strong>Part 2:</strong> work inside a team repository.</li>
+          <li><strong>Part 3:</strong> read an existing repository.</li>
+          <li><strong>Part 4:</strong> contribute code, opt-in and with a sponsor.</li>
+        </ul>
+        <p>The line that unlocks a non-technical room turned out to be reversibility, not sophistication: everything here can be undone, and you are not an admin.</p>
+
+        <h2>Recover in front of the room</h2>
+        <p>Minutes after Part 1, the first attendee hit a wall in the access flow. I had tested it as a member with elevated access, which hid a step every newcomer needs. By that afternoon the path was corrected to seven steps with screenshots, and the recap led with the correction and asked everyone to reply with the step they reached. Every access request that day was granted by the next morning.</p>
+
+        <h2>Count adoption, not attendance</h2>
+        <ul>
+          <li><strong>A binary conversion artifact per part:</strong> reached the last access step, opened a first pull request, merged a change.</li>
+          <li><strong>A survey the leaders run themselves,</strong> so the program is steered by the people who own the outcome.</li>
+          <li><strong>A builder showcase,</strong> because the strongest adoption signal is someone outside engineering shipping work to production.</li>
+        </ul>
+      </div>
+
+      <nav class="cs-nav edition-nav" aria-label="More work">
+        <a href="../index.html#work"><span class="cs-nav-k">Work</span><span class="cs-nav-t">All selected work</span></a>
+      </nav>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p class="footer-copy">© 2026 Samuel Bates. Hand-built with HTML, CSS, and a little JavaScript. No framework.</p>
+    </div>
+  </footer>
+</body>
+</html>

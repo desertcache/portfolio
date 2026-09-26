@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Putting an AI copilot into a live support operation · Samuel Bates</title>
+  <meta name="description" content="How I took an AI support workspace from prototype to a multi-agent platform that an outsourced support team now works live cases in: architecture, measurement, rollout, and what I would tell the next team.">
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="https://desertcache.github.io/portfolio/work/ai-copilot-rollout.html">
+  <meta name="theme-color" content="#f5f1ea">
+
+  <script>
+    // Same as every page: pick the theme before first paint and flag that JS is on.
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      setTimeout(function () { if (!root.classList.contains('js-ready')) root.classList.remove('js'); }, 4000);
+      try {
+        var t = localStorage.getItem('sb-theme');
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', t);
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#12100e' : '#f5f1ea');
+      } catch (e) { /* storage blocked: CSS falls back to the system theme */ }
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../blog/blog.css?v=2026-09-23">
+  <script type="module" src="../js/blog.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="../index.html" aria-label="Samuel Bates, home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <path d="M6.2 17.8C5.2 11.6 9.4 6.1 15.6 5.6 21.9 5.1 27.2 9.2 26.8 15.2 26.4 20.4 23.6 22.1 20.1 24.6 16.2 27.4 7.3 25.1 6.2 17.8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M11.4 15.9C11.1 12.2 13.9 9.6 17.4 9.5 21 9.4 23.1 11.9 22.6 15 22.1 18.2 19.8 19.2 17.2 20.1 14.2 21.1 11.7 19.2 11.4 15.9Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <circle cx="17.6" cy="14.7" r="2.6" class="brand-dot"/>
+        </svg>
+        <span class="brand-name">Samuel Bates</span>
+      </a>
+      <nav class="nav-links" aria-label="Sections">
+        <a href="../index.html#work" aria-current="true">Work</a>
+        <a href="../index.html#lab">Lab</a>
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#contact">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.2 14.6A8.3 8.3 0 0 1 9.4 3.8a8.3 8.3 0 1 0 10.8 10.8Z"/></svg>
+        </button>
+        <a class="btn btn-ghost btn-sm nav-cv" href="../Samuel_Bates_CV.pdf" target="_blank" rel="noopener">Résumé</a>
+        <a class="btn btn-solid btn-sm" href="mailto:batessambates@gmail.com">Get in touch</a>
+      </div>
+    </div>
+    <div class="nav-progress" aria-hidden="true"></div>
+  </header>
+
+  <main id="main">
+    <article class="post research">
+      <header class="post-head">
+        <a class="eyebrow post-back" href="../index.html#work"><span class="eyebrow-num">Work sample</span>Production AI</a>
+        <h1 class="post-title">Putting an AI copilot into a live support operation</h1>
+        <p class="post-lede">I took an AI support workspace from a prototype to a multi-agent platform that an outsourced support team now works live cases in. This is how it is built, how I measured it, how it rolled out, and what I would tell the next team.</p>
+        <p class="post-meta"><time datetime="2026-09-26">September 2026</time><span>Samuel Bates, AI Solutions Manager</span><span id="read-time" hidden></span></p>
+      </header>
+
+      <div class="post-body">
+        <h2>The problem</h2>
+        <p>Support agents who handle point-of-sale integration cases diagnose problems across half a dozen internal systems: store status, menu sync jobs, integration health, account history and past cases. The knowledge of what to do next lived in a long troubleshooting playbook, and agents are audited against that playbook. The goal was one workspace that gathers the context for a case and a copilot that answers from the same playbook the agent is graded on.</p>
+
+        <h2>How it is built</h2>
+        <ul>
+          <li><strong>A browser app and a backend-for-frontend.</strong> The workspace is a React and TypeScript app. A small Node service sits between it and everything else: the company's AI gateway, the internal data services, and the playbook.</li>
+          <li><strong>Retrieval lives on the server.</strong> App bundles are served from a public CDN, so the playbook corpus cannot ship in the browser. It sits behind a retrieval endpoint in the backend, which returns the matching sections with their provenance.</li>
+          <li><strong>Provenance comes from retrieval, not from the model.</strong> Every grounded answer links to the exact section of the playbook it used, and the link is generated from what retrieval returned. The model never gets to invent a citation.</li>
+          <li><strong>The model runs through the company gateway.</strong> One place for keys, logging and model changes. Before switching models I prove the route with a few matched requests through the real gateway: a control, the new setting, and one that should fail.</li>
+          <li><strong>Other teams' agents plug in as panels.</strong> The workspace became the place agents already are, so other teams embed their own AI agents in it behind the same access model instead of shipping another tab.</li>
+        </ul>
+
+        <h2>How I measured it</h2>
+        <ul>
+          <li><strong>Measure retrieval on the real corpus, never a fixture.</strong> Running it against the actual playbook surfaced four defects a test fixture had hidden, including a rare-term scoring rule that is backwards for a support corpus (the valuable terms are frequent precisely because they matter) and a size cutoff tuned for a large document that pruned everything in a small one.</li>
+          <li><strong>Displacement as the regression metric.</strong> A retrieval change only ships if it rescues questions that used to return nothing without pushing the right answer down for the questions that already worked.</li>
+          <li><strong>Usage, compared with the pre-pilot baseline.</strong> Activity per active day rose 5.8x and the number of people with access grew nearly 3x.</li>
+        </ul>
+
+        <h2>Rolling it out to an outsourced team</h2>
+        <p>The first outsourced support team to work inside the tool could not get in, and every failure looked like the same generic error. I proved access one layer at a time: identity, device and network trust, application permissions, and finally an internal call that was blocked and rendered as a network error. Each layer got its own check so the next cohort would not repeat the hunt.</p>
+        <p>Training came from one content module that generates the slide deck, the guides and the reference docs, plus a verifier that checks every generated copy. One rule came out of it: a fix is done only when every copy has been fetched back from where people actually read it and checked. Now I coach the team's live cases against one success metric: the share of cases resolved in under 30 minutes.</p>
+
+        <h2>What I would tell the next team</h2>
+        <ul>
+          <li><strong>"The mutation exists" is not "the agent can do it."</strong> Before promising what a copilot can resolve, list the writes it can actually reach from the UI.</li>
+          <li><strong>Two agreeing documents are one source.</strong> When the runbook and the official guide agree, load the live page before trusting either.</li>
+          <li><strong>Put the corpus where you can measure it.</strong> Server-side retrieval is what made honest measurement and honest citations possible.</li>
+        </ul>
+      </div>
+
+      <nav class="cs-nav edition-nav" aria-label="More work">
+        <a href="../index.html#work"><span class="cs-nav-k">Work</span><span class="cs-nav-t">All selected work</span></a>
+      </nav>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p class="footer-copy">© 2026 Samuel Bates. Hand-built with HTML, CSS, and a little JavaScript. No framework.</p>
+    </div>
+  </footer>
+</body>
+</html>
