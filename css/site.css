@@ -8,7 +8,8 @@
    Archivo for reading, Martian Mono for data and labels. What's drawn is
    real: the hero's contours and the footer skyline are Camelback Mountain
    from USGS elevation data (scripts/build_terrain.py); the cacti and the
-   spring wildflowers come from scripts/draw_desert.py. See DEV-NOTES.md for the colour roles and the
+   spring wildflowers come from scripts/draw_desert.py, the roadrunner, birds
+   and hawk from scripts/draw_fauna.py. See DEV-NOTES.md for the colour roles and the
    guardrails that keep the red from reading as anyone else's brand.
 
    How this file is organised (top to bottom = general to specific):
@@ -83,6 +84,13 @@
   --illo-mallow: #e5703a;       /* globemallow */
   --illo-pink: #c42c6c;         /* penstemon, hedgehog cactus */
   --illo-ember: #d4452a;        /* ocotillo */
+  /* the animals (assets/fauna.svg): a firmer line than the plants, so a
+     50 px bird still has a face */
+  --fauna-line: rgba(28, 22, 36, 0.58);
+  --fauna-paper: #ecdccf;       /* roadrunner buff */
+  --fauna-hawk: #c9ae99;        /* a red-tail's brown back, lightened to the map */
+  --hawk-shade: #1c1624;
+  --hawk-shade-a: 0.1;
 
   --shadow: 0 1px 2px rgba(28, 22, 36, 0.05), 0 10px 30px -14px rgba(28, 22, 36, 0.22);
   --shadow-lg: 0 2px 6px rgba(28, 22, 36, 0.06), 0 30px 60px -24px rgba(28, 22, 36, 0.34);
@@ -155,6 +163,11 @@
   --illo-mallow: #ff9a62;
   --illo-pink: #ff6fa3;
   --illo-ember: #ff7a45;
+  --fauna-line: rgba(245, 238, 242, 0.55);
+  --fauna-paper: #2b2036;
+  --fauna-hawk: #4b3747;
+  --hawk-shade: #000;
+  --hawk-shade-a: 0.45;
 
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 32px -16px rgba(0, 0, 0, 0.65);
   --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.35), 0 30px 60px -24px rgba(0, 0, 0, 0.8);
@@ -1629,6 +1642,144 @@ html.has-modal { overflow: hidden; }
   .sil-saguaro2 { left: 78%; }
 }
 
+/* ---------- 5m. Wildlife ---------- */
+/* A roadrunner works the hero's flower bed and the Lab's sunset as you
+   scroll (js/roadrunner.js), birds cross the sunset, and a red-tailed hawk
+   rides a thermal over Camelback. They're drawn in the plants' hand
+   (scripts/draw_fauna.py) and move by transform alone. The roadrunner only
+   moves when you do; what moves on its own (the flock, the hawk) is slow and
+   kept away from the words. With reduced motion they are simply there. */
+@property --frame { syntax: "<integer>"; inherits: true; initial-value: 6; }
+
+/* A trail says where its runner goes: --run-from and --run-to are where the
+   hip is (fractions of the trail's width) at the start and end of the run,
+   and --rest is where it stands without the script. */
+.trail { position: absolute; left: 0; right: 0; pointer-events: none; }
+.runner {
+  position: absolute;
+  bottom: 0;
+  left: calc(var(--rest, var(--run-from)) * 100%);
+  height: 100%;
+  width: auto;
+  overflow: visible;
+  translate: -53.4% 0;  /* the hip on the resting spot (ROADRUNNER.pivot) */
+  --illo-line: var(--fauna-line);
+  --illo-paper: var(--fauna-paper);
+  --illo-eye: var(--ink);
+}
+/* once the script has it, the transform does the placing */
+.trail.is-live .runner { left: 0; translate: none; will-change: transform; }
+/* standing about, a roadrunner flicks its tail */
+.runner[data-state="idle"] { animation: tail-flick 5.2s linear infinite; }
+@keyframes tail-flick {
+  0%, 57% { --frame: 6; }
+  58%, 63% { --frame: 7; }
+  64%, 69% { --frame: 6; }
+  70%, 74% { --frame: 7; }
+  75%, 100% { --frame: 6; }
+}
+/* the hero's: as wide as its flower bed and behind it (the bed comes later
+   in the page); it waits just left of the first clump */
+.hero-trail {
+  left: var(--pad);
+  right: var(--pad);
+  max-width: calc(var(--wrap) - 2 * var(--pad));
+  margin-inline: auto;
+  bottom: 3px;
+  z-index: 0;
+  height: 54px;
+  --run-from: -0.045;
+  --run-to: 1.1;
+}
+/* the Lab's: a silhouette on the sunset's ground line, like the plants,
+   crossing the whole width */
+.lab-trail { bottom: calc(var(--ground) - 5px); height: clamp(30px, 3.9vw, 56px); --run-from: -0.08; --run-to: 1.08; --rest: 0.32; }
+.lab-trail, .flock {
+  --fauna-line: var(--sil);
+  --fauna-paper: var(--sil);
+  --illo-ember: var(--sil);
+  --illo-lupine: var(--sil);
+  --illo-far: 1;
+  --illo-w: 3;
+}
+.lab-trail .runner { --illo-eye: var(--sil); }
+
+/* the flock: each bird crosses the whole sky, flapping and gliding; the
+   crossing is one transform on a full-width track, the wingbeat is the bird
+   scaled vertically through zero */
+.flock { position: absolute; inset: 0 0 var(--ground); overflow: hidden; --illo-line: #1d0f24; }
+.flier {
+  position: absolute;
+  left: 0;
+  top: var(--y);
+  width: 100%;
+  transform: translateX(var(--x));
+  animation: fly var(--t) linear var(--d) infinite;
+}
+.flier.west { animation-direction: reverse; }
+@keyframes fly {
+  from { transform: translateX(-44px); }
+  to { transform: translateX(calc(100% + 44px)); }
+}
+.bird {
+  display: block;
+  width: var(--w);
+  height: auto;
+  overflow: visible;
+  transform-origin: 50% 60%;
+  animation: flap var(--f) ease-in-out var(--fd) infinite;
+}
+.west .bird { transform: scaleX(-1); }
+@keyframes flap {
+  0% { scale: 1 1; }
+  11% { scale: 1 -0.55; }
+  22% { scale: 1 0.95; }
+  33% { scale: 1 -0.55; }
+  44% { scale: 1 0.9; }
+  56%, 100% { scale: 1 0.35; }
+}
+
+/* the hawk circles a thermal over the summit (where js/arizona.js viewFor
+   puts it on a wide screen), its shadow on the ground below and to the side */
+.thermal { position: absolute; z-index: -1; left: 72%; top: min(36%, 330px); pointer-events: none; --r: clamp(64px, 6.4vw, 104px); }
+.soar { position: absolute; left: 0; top: 0; animation: soar 36s linear infinite; }
+.soar-shadow { left: 30px; top: 38px; }
+@keyframes soar { to { transform: rotate(360deg); } }
+.hawk {
+  position: absolute;
+  left: var(--r);
+  top: 0;
+  width: clamp(56px, 4.6vw, 72px);
+  max-width: none;  /* its box is a zero-size pivot; the global svg reset would crush it */
+  height: auto;
+  overflow: visible;
+  translate: -50% -50%;
+  rotate: 180deg;  /* drawn heading up the page; circling clockwise, it heads down at 3 o'clock */
+  --illo-line: var(--fauna-line);
+  --illo-paper: var(--fauna-hawk);
+  --illo-fruit: color-mix(in srgb, var(--accent) 70%, var(--fauna-hawk));
+  --illo-w: 1.9;
+  animation: wing-flex 9s ease-in-out infinite;
+}
+@keyframes wing-flex {
+  0%, 70%, 100% { scale: 1 1; }
+  80% { scale: 0.9 1; }
+  90% { scale: 1.02 1; }
+}
+.soar-shadow .hawk {
+  --illo-line: var(--hawk-shade);
+  --illo-paper: var(--hawk-shade);
+  --illo-fruit: var(--hawk-shade);
+  opacity: var(--hawk-shade-a);
+  filter: blur(2px);
+}
+@media (max-width: 1179px) { .thermal { display: none; } }
+@media (max-width: 1100px) { .hero-trail { height: 46px; } }
+@media (max-width: 640px) { .hero-trail { height: 34px; --run-from: 0.1; } }
+@media (prefers-reduced-motion: reduce) {
+  .flier, .bird, .soar, .hawk { animation: none; }
+}
+
 /* ---------- 6. Motion ---------- */
 /* The first screen animates in with CSS alone, so it never waits on JS. */
 .rise { animation: rise 1s var(--ease-out) both; animation-delay: var(--delay, 0s); }
@@ -1661,7 +1812,7 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
 }
 
 @media print {
-  .nav, .topo, .hero-fade, .lab-grid, .toast, .footer-hint, .orb-slot, .footer::before { display: none !important; }
+  .nav, .topo, .hero-fade, .lab-grid, .toast, .footer-hint, .orb-slot, .footer::before, .thermal, .trail, .flock { display: none !important; }
   .js .reveal { opacity: 1 !important; transform: none !important; }
   .hero { min-height: 0; padding-top: 24px; }
   .section, .contact { padding-block: 32px; }

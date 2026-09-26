@@ -139,6 +139,38 @@ green; v5.3 brings the red back as Sedona rock, on purpose, with guardrails.
   `@supports` guard: without `color-mix` they fall back to the plain ground
   colour rather than to black.
 
+### Wildlife (v5.4, 2026-09-26)
+
+- **Who lives here:** a greater roadrunner on the hero's floor and on the
+  Lab's sunset ground (in silhouette), a loose flock crossing the Lab's sky,
+  and a red-tailed hawk circling a thermal over Camelback on the hero map
+  (wide screens only; on phones the map sits behind the headline). They're
+  drawn by `scripts/draw_fauna.py` into `assets/fauna.svg`, in the plants'
+  hand and colour properties, so the Lab's silhouette rule covers them too.
+- **The roadrunner is a flip-book driven by scroll.** Its symbol holds six
+  run poses and two standing ones (tail down, tail flicked); `--frame` (a
+  registered `<integer>`, inherited into the `<use>`) picks one. Its
+  position is a function of scroll: over the stretch in which its `.trail`
+  rises through the screen, its hip goes from `--run-from` to `--run-to`
+  (fractions of the trail's width, set in CSS so breakpoints can move
+  them). It chases that spot with a 0.12 s lag, so a flick of the wheel reads
+  as a dash; scroll up and it turns round; stop and it stands and flicks its
+  tail (`tail-flick`, on `[data-state="idle"]`).
+- **Why its feet don't skate:** the legs are solved by two-bone IK from a
+  stride loop in which a planted foot sweeps back at an even pace, so one
+  stride carries the bird exactly `STRIDE / STANCE` units. The generator
+  writes that number (and the frame numbers, viewBox and hip) into
+  `js/fauna-data.js`, and `js/roadrunner.js` advances `--frame` by distance
+  covered, capped at 7 strides a second so fast scrolling reads as a blur of
+  legs instead of strobing. Maths in `js/wildlife.js`, tested in
+  `tests/wildlife.test.mjs`; drawing checks in `scripts/test_draw_fauna.py`.
+  Change a number in the generator and re-run it; never edit the outputs.
+- **Cost:** everything moves by transform. The flock and the hawk are pure
+  CSS (a full-width track translated across, the wingbeat a vertical scale
+  through zero); the roadrunner's loop runs only while its trail is on
+  screen and something is moving. Reduced motion stops all of it and leaves
+  each animal standing in its scene (`--rest`, and `--x` for the birds).
+
 ### The hero map is real terrain (v5.2 "Arizona", 2026-09-26)
 
 The contours in the hero are Camelback Mountain and the Phoenix Mountains,
@@ -204,13 +236,14 @@ python3 scripts/build_terrain.py   # needs numpy + Pillow; caches tiles in ~/.ca
 
 ```powershell
 npm install        # once, in this directory
-npm test           # unit tests for js/lib.js, editions.js, arizona.js (Node's built-in runner)
+npm test           # unit tests for js/lib.js, editions.js, arizona.js, wildlife.js (Node's built-in runner)
 npm run check      # type-checks js/ via JSDoc + TypeScript, no build output
-python -m pytest scripts   # the Python scripts: digest ingest, terrain build
+python -m pytest scripts   # the Python scripts: digest ingest, terrain build, drawings
 ```
 
-Pure logic lives in `js/lib.js` (and its newer siblings, `editions.js` and
-`arizona.js`) precisely so it can be tested without a browser. If a new
+Pure logic lives in `js/lib.js` (and its newer siblings, `editions.js`,
+`arizona.js` and `wildlife.js`) precisely so it can be tested without a
+browser. If a new
 helper doesn't touch the DOM, put it in one of those and test it.
 
 ### Images
