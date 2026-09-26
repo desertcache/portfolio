@@ -155,6 +155,32 @@ The two GitHub Actions workflows built on the `hill-money-watch-blog` branch
 the merge, and the Google Drive relay they served is retired. They still live
 on that branch if a scheduled design is ever revived.
 
+## Research pages live in `blog/research/` (2026-09-25)
+
+Long-form research posts are standalone pages, not Hill Money Watch editions.
+They sit in `blog/research/`, **outside `blog/posts/` and `posts.json` on
+purpose**: `ingest_digest.py` rebuilds `posts.json` from `blog/posts/*.html`,
+and everything that reads it (the archive's Latest-edition card, the edition
+numbering, the homepage Dispatch card) assumes every entry is an edition. The
+archive links research pages from a static "Research" list below the editions.
+
+The first one is `delivery-ipo-ledger.html` (15 delivery IPOs, offer price to
+latest close):
+
+| File | Role |
+|------|------|
+| `blog/research/delivery-ipo-ledger.html` | The post. Same chrome as an edition (nav, theme, footer, read time via `js/blog.js`). Its `<main>` has no `data-index`, so `blog.js` skips the archive and edition-nav features. |
+| `blog/research/delivery-ipo-ledger.css` | Page-only styles on the site tokens. Classes are `led-*` (layout) and `lx-*` (inside the SVG charts) so nothing collides with `site.css`. |
+| `blog/research/delivery-ipo-ledger.js` | The charts. A plain `defer` script, deliberately outside `js/` so `tsc` never sees the D3 global. Draws only the parts a page has, which is how the OG card reuses it. |
+| `blog/research/delivery-ipo-ledger.json` | Daily closes and per-company facts (~170 KB). |
+| `blog/research/vendor/d3-7.9.0.min.js` | D3, vendored so the page loads no third-party script. Hash `sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i`, checked against both cdnjs and jsDelivr. |
+| `scripts/ledger_scoreboard.py` | Writes the scoreboard table (plain HTML, readable without JS) between the `scoreboard:start/end` comments. Idempotent. |
+| `scripts/og-delivery-ipo-ledger.html` | Source for `assets/og-delivery-ipo-ledger.png` (1200×630 link preview). |
+
+To refresh the prices: rebuild the JSON (same fields), run
+`py scripts/ledger_scoreboard.py`, re-shoot the OG card, and bump the `?v=` on
+the page's CSS and JS links.
+
 ## Other invariants
 
 - All asset paths RELATIVE (no leading `/`) — site lives at /portfolio/ sub-path, no CNAME.

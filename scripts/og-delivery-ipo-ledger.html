@@ -1,0 +1,53 @@
+<!doctype html>
+<!--
+  Source for assets/og-delivery-ipo-ledger.png, the 1200×630 link preview for
+  blog/research/delivery-ipo-ledger.html. It draws the page's comparison chart
+  from the same data with the same script (data-og turns off the interactive
+  parts), so the preview always matches the post.
+
+  To regenerate: serve the repo root (e.g. `py -m http.server 8080`), open
+  /scripts/og-delivery-ipo-ledger.html in a 1200×630 viewport, wait for the
+  chart, and screenshot the viewport to assets/og-delivery-ipo-ledger.png.
+-->
+<html lang="en" data-theme="light" data-og>
+<head>
+  <meta charset="utf-8">
+  <title>OG card · Delivery IPO ledger</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../blog/blog.css">
+  <link rel="stylesheet" href="../blog/research/delivery-ipo-ledger.css">
+  <style>
+    html, body { width: 1200px; height: 630px; margin: 0; overflow: hidden; background: var(--bg); }
+    .og {
+      display: grid;
+      grid-template-columns: 330px minmax(0, 1fr);
+      gap: 34px;
+      align-items: center;
+      width: 1200px;
+      height: 630px;
+      padding: 56px 40px 48px 64px;
+    }
+    .og-k { font: 500 13px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-ink); }
+    .og-t { margin-top: 18px; font: 400 58px/0.98 var(--serif); letter-spacing: -0.025em; color: var(--ink); }
+    .og-s { margin-top: 20px; font: 400 18px/1.45 var(--sans); color: var(--ink-2); }
+    .og-by { margin-top: 26px; font: 500 13px/1 var(--mono); letter-spacing: 0.06em; color: var(--ink-3); }
+    .og-chart { padding: 18px 8px 10px 10px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
+    #led-cmp { height: 470px; }
+  </style>
+</head>
+<body>
+  <div class="og research" data-ledger-src="../blog/research/delivery-ipo-ledger.json">
+    <div>
+      <p class="og-k">Research</p>
+      <h1 class="og-t">Fifteen delivery IPOs, from offer price to today</h1>
+      <p class="og-s">DoorDash, Uber, Grubhub, Deliveroo and eleven more, against the price their IPO buyers paid.</p>
+      <p class="og-by">Samuel Bates · desertcache.github.io</p>
+    </div>
+    <div class="og-chart"><div class="led-chart" id="led-cmp"></div></div>
+  </div>
+  <script defer src="../blog/research/vendor/d3-7.9.0.min.js"></script>
+  <script defer src="../blog/research/delivery-ipo-ledger.js"></script>
+</body>
+</html>

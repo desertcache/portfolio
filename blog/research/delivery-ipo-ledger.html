@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Fifteen delivery IPOs, from offer price to today</title>
+  <meta name="description" content="DoorDash, Uber, Grubhub, Deliveroo and eleven more, measured against the price their IPO buyers paid. Eight are above it, seven are below, and every one fell at least 38% along the way.">
+  <link rel="canonical" href="https://desertcache.github.io/portfolio/blog/research/delivery-ipo-ledger.html">
+  <meta name="theme-color" content="#f5f1ea">
+
+  <!-- Link previews (LinkedIn, Slack, iMessage). og:image must be an absolute URL.
+       Source for the image: scripts/og-delivery-ipo-ledger.html -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Samuel Bates">
+  <meta property="og:title" content="Fifteen delivery IPOs, from offer price to today">
+  <meta property="og:description" content="DoorDash, Uber, Grubhub, Deliveroo and eleven more, measured against the price their IPO buyers paid. Eight are above it, seven are below, and every one fell at least 38% along the way.">
+  <meta property="og:url" content="https://desertcache.github.io/portfolio/blog/research/delivery-ipo-ledger.html">
+  <meta property="og:image" content="https://desertcache.github.io/portfolio/assets/og-delivery-ipo-ledger.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:published_time" content="2026-09-25">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script>
+    // Same as every blog page: pick the theme before first paint (saved choice,
+    // else the OS setting) and flag that JS is on. `sb-theme` is shared site-wide.
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      setTimeout(function () { if (!root.classList.contains('js-ready')) root.classList.remove('js'); }, 4000);
+      try {
+        var t = localStorage.getItem('sb-theme');
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', t);
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#12100e' : '#f5f1ea');
+      } catch (e) { /* storage blocked: CSS falls back to the system theme */ }
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../css/site.css">
+  <link rel="stylesheet" href="../blog.css?v=2026-09-23">
+  <link rel="stylesheet" href="delivery-ipo-ledger.css?v=2026-09-25">
+  <script type="module" src="../../js/blog.js"></script>
+  <!-- D3 is vendored (hash-checked against cdnjs and jsDelivr), so the page loads no third-party script. -->
+  <script defer src="vendor/d3-7.9.0.min.js" integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i"></script>
+  <script defer src="delivery-ipo-ledger.js?v=2026-09-25"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="../../index.html" aria-label="Samuel Bates, home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <path d="M6.2 17.8C5.2 11.6 9.4 6.1 15.6 5.6 21.9 5.1 27.2 9.2 26.8 15.2 26.4 20.4 23.6 22.1 20.1 24.6 16.2 27.4 7.3 25.1 6.2 17.8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M11.4 15.9C11.1 12.2 13.9 9.6 17.4 9.5 21 9.4 23.1 11.9 22.6 15 22.1 18.2 19.8 19.2 17.2 20.1 14.2 21.1 11.7 19.2 11.4 15.9Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <circle cx="17.6" cy="14.7" r="2.6" class="brand-dot"/>
+        </svg>
+        <span class="brand-name">Samuel Bates</span>
+      </a>
+      <nav class="nav-links" aria-label="Sections">
+        <a href="../../index.html#work">Work</a>
+        <a href="../../index.html#lab" aria-current="true">Lab</a>
+        <a href="../../index.html#about">About</a>
+        <a href="../../index.html#contact">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.2 14.6A8.3 8.3 0 0 1 9.4 3.8a8.3 8.3 0 1 0 10.8 10.8Z"/></svg>
+        </button>
+        <a class="btn btn-ghost btn-sm nav-cv" href="../../Samuel_Bates_CV.pdf" target="_blank" rel="noopener">Résumé</a>
+        <a class="btn btn-solid btn-sm" href="mailto:batessambates@gmail.com">Get in touch</a>
+      </div>
+    </div>
+    <div class="nav-progress" aria-hidden="true"></div>
+  </header>
+
+  <main id="main">
+    <article class="post research" data-ledger-src="delivery-ipo-ledger.json">
+      <header class="post-head">
+        <a class="eyebrow post-back" href="../index.html"><span class="eyebrow-num">Research</span>From the Lab</a>
+        <h1 class="post-title">Fifteen delivery IPOs, from offer price to today</h1>
+        <p class="post-lede">DoorDash, Uber, Grubhub, Deliveroo and eleven more, measured against the price their IPO buyers paid. Eight are above it, seven are below, and every one fell at least 38% along the way.</p>
+        <p class="post-meta"><time datetime="2026-09-25">September 25, 2026</time><span>Closing prices through Sep 25, 2026</span><span id="read-time" hidden></span></p>
+      </header>
+
+      <div class="post-body">
+        <p>Food delivery went public in waves: Grubhub and Just Eat in 2014; Takeaway.com, Delivery Hero, Meituan, Waitr and Uber between 2016 and 2019; Dada, DoorDash, Deliveroo, Zomato and Grab in the pandemic rush of 2020 and 2021; and Instacart, Swiggy and Talabat from 2023 to 2024. This page puts all fifteen on one scale: every daily close divided by the IPO price, from the first day of trading to the latest close, or to the last trade before a buyer took the company private.</p>
+        <p>Two names are missing on purpose. Uber Eats has no stock of its own; it trades inside Uber, which is included. Postmates never listed: it filed confidentially for an IPO in February 2019, and Uber bought it for $2.65 billion in stock instead, closing on December 1, 2020.</p>
+
+        <h2>The short version</h2>
+        <ul>
+          <li><strong>Eight of fifteen are above their IPO price</strong>, today or on their last day of trading. Seven are below, and Waitr went to effectively zero.</li>
+          <li><strong>Every one fell at least 38% from a high.</strong> Instacart had the mildest drawdown. Seven lost more than 80% at some point, including DoorDash, which fell 82% between November 2021 and October 2022 and now sits 90% above its $102 IPO price.</li>
+          <li><strong>The 2020 and 2021 peaks were the all-time highs in Europe and China.</strong> Just Eat Takeaway topped out at €109.65 in October 2020, Delivery Hero at €144.10 in January 2021 and Meituan at HK$451.40 in February 2021. DoorDash, Uber and Eternal (formerly Zomato) set new records in October 2025.</li>
+          <li><strong>Most exits were sales far below the peak.</strong> DoorDash paid 180p a share for Deliveroo, which had listed at 390p. Prosus paid €20.30 for Just Eat Takeaway, less than a fifth of its high. JD.com took Dada private at $2.00 after a $16 IPO.</li>
+          <li><strong>The consolidation is still running.</strong> Uber's €41.50-a-share offer for Delivery Hero is open until November 5, 2026.</li>
+        </ul>
+
+        <h2>Everyone against the IPO price</h2>
+        <p>Each line is one stock's daily close divided by its IPO price, on a log scale so that halving and doubling take the same space. The heavy line is the IPO price. <em>Years since IPO</em> lines every company up at its first day; <em>Calendar</em> shows the 2021 peak arriving everywhere at once. Hover or tap to read every stock at that point, and select a line to follow it.</p>
+        <figure class="led-wide led-fig">
+          <div class="led-bar">
+            <div class="led-legend" id="led-legend"></div>
+            <div class="led-seg" role="group" aria-label="Time axis">
+              <button type="button" data-mode="since" aria-pressed="true">Years since IPO</button>
+              <button type="button" data-mode="cal" aria-pressed="false">Calendar</button>
+            </div>
+          </div>
+          <div class="led-chart" id="led-cmp"><p class="led-status" id="led-status">Loading the price data…</p></div>
+          <noscript><p class="led-noscript">The charts need JavaScript. The scoreboard below has every number.</p></noscript>
+        </figure>
+
+        <h2>One company at a time</h2>
+        <p>Pick a company to see its full daily history in its own currency. The area is green where the stock closed above its IPO price and red where it closed below; the numbered markers match the dates listed beside the chart.</p>
+        <div class="led-wide led-chips" id="led-chips" role="group" aria-label="Choose a company"></div>
+        <figure class="led-wide led-fig led-detail" id="led-detail">
+          <div class="led-dhead">
+            <div>
+              <div class="led-dname"><h3 id="led-dname">DoorDash</h3><span class="led-tag" id="led-dtag" data-status="trading">Trading</span></div>
+              <p class="led-dmeta" id="led-dmeta">DASH · Nasdaq (listed on NYSE) · prices in US dollars</p>
+            </div>
+            <label class="led-toggle" for="led-log"><input type="checkbox" id="led-log"> Log scale</label>
+          </div>
+          <div class="led-dbody">
+            <div class="led-chart" id="led-det"></div>
+            <div class="led-ticket" id="led-ticket" aria-live="polite"></div>
+          </div>
+        </figure>
+
+        <h2>All fifteen</h2>
+        <p>The same view for every listing, each on its own scale. The flat line is the IPO price. Select a card to open it above.</p>
+        <div class="led-wide led-cards" id="led-grid"></div>
+
+        <h2>Scoreboard</h2>
+        <p>Closing prices in each stock's own currency. Percentages are against the IPO price, or the $10 reference price for Waitr and Grab, which went public through SPAC mergers. Worst drawdown is the largest peak-to-trough fall in the daily closes. Select a name to open its chart.</p>
+        <!-- scoreboard:start (generated by scripts/ledger_scoreboard.py from delivery-ipo-ledger.json) -->
+        <table class="led-table">
+          <thead><tr><th scope="col">Company</th><th scope="col">Went public</th><th scope="col" class="num">IPO price</th><th scope="col" class="num">Day-one close</th><th scope="col" class="num">Peak close</th><th scope="col" class="num">Last or final close</th><th scope="col" class="num">vs IPO price</th><th scope="col" class="num">Worst drawdown</th><th scope="col">Status</th></tr></thead>
+          <tbody>
+          <tr data-id="JE"><td><a href="#JE">Just Eat</a><span class="led-sub">JE. · LSE</span></td><td>Apr 3, 2014<span class="led-sub">IPO</span></td><td class="num">260.00p</td><td class="num">283.00p<span class="led-sub">+8.8%</span></td><td class="num">901.00p<span class="led-sub">Jan 10, 2020</span></td><td class="num">861.00p<span class="led-sub">Feb 28, 2020</span></td><td class="num led-up">+231.2%</td><td class="num">−40.0%</td><td><span class="led-tag" data-status="acquired">Acquired</span></td></tr>
+          <tr data-id="GRUB"><td><a href="#GRUB">Grubhub</a><span class="led-sub">GRUB · NYSE</span></td><td>Apr 4, 2014<span class="led-sub">IPO</span></td><td class="num">$26.00</td><td class="num">$34.00<span class="led-sub">+30.8%</span></td><td class="num">$146.73<span class="led-sub">Sep 11, 2018</span></td><td class="num">$59.89<span class="led-sub">Jun 14, 2021</span></td><td class="num led-up">+130.4%</td><td class="num">−79.5%</td><td><span class="led-tag" data-status="acquired">Acquired</span></td></tr>
+          <tr data-id="TKWY"><td><a href="#TKWY">Just Eat Takeaway</a><span class="led-sub">TKWY · Euronext Amsterdam</span></td><td>Sep 30, 2016<span class="led-sub">IPO</span></td><td class="num">€23.00</td><td class="num">€24.00<span class="led-sub">+4.3% · Oct 3, 2016</span></td><td class="num">€109.65<span class="led-sub">Oct 16, 2020</span></td><td class="num">€20.22<span class="led-sub">Nov 14, 2025</span></td><td class="num led-dn">−12.1%</td><td class="num">−90.5%</td><td><span class="led-tag" data-status="acquired">Acquired</span></td></tr>
+          <tr data-id="DHER"><td><a href="#DHER">Delivery Hero</a><span class="led-sub">DHER · Xetra</span></td><td>Jun 30, 2017<span class="led-sub">IPO</span></td><td class="num">€25.50</td><td class="num">€27.80<span class="led-sub">+9.0%</span></td><td class="num">€144.10<span class="led-sub">Jan 5, 2021</span></td><td class="num">€36.47<span class="led-sub">Sep 24, 2026</span></td><td class="num led-up">+43.0%</td><td class="num">−89.4%</td><td><span class="led-tag" data-status="pending">Takeover pending</span></td></tr>
+          <tr data-id="MEITUAN"><td><a href="#MEITUAN">Meituan</a><span class="led-sub">3690 · HKEX</span></td><td>Sep 20, 2018<span class="led-sub">IPO</span></td><td class="num">HK$69.00</td><td class="num">HK$72.65<span class="led-sub">+5.3%</span></td><td class="num">HK$451.40<span class="led-sub">Feb 17, 2021</span></td><td class="num">HK$71.65<span class="led-sub">Sep 25, 2026</span></td><td class="num led-up">+3.8%</td><td class="num">−86.1%</td><td><span class="led-tag" data-status="trading">Trading</span></td></tr>
+          <tr data-id="WAITR"><td><a href="#WAITR">Waitr</a><span class="led-sub">WTRH · Nasdaq</span></td><td>Nov 16, 2018<span class="led-sub">SPAC merger</span></td><td class="num">$10.00</td><td class="num">$11.81<span class="led-sub">+18.1%</span></td><td class="num">$14.15<span class="led-sub">Mar 13, 2019</span></td><td class="num">$0.000874<span class="led-sub">Apr 2, 2024</span></td><td class="num led-dn">−99.99%</td><td class="num">−99.99%</td><td><span class="led-tag" data-status="bankrupt">Bankrupt</span></td></tr>
+          <tr data-id="UBER"><td><a href="#UBER">Uber</a><span class="led-sub">UBER · NYSE</span></td><td>May 10, 2019<span class="led-sub">IPO</span></td><td class="num">$45.00</td><td class="num">$41.57<span class="led-sub">−7.6%</span></td><td class="num">$100.10<span class="led-sub">Oct 6, 2025</span></td><td class="num">$69.62<span class="led-sub">Sep 25, 2026</span></td><td class="num led-up">+54.7%</td><td class="num">−68.0%</td><td><span class="led-tag" data-status="trading">Trading</span></td></tr>
+          <tr data-id="DADA"><td><a href="#DADA">Dada Nexus</a><span class="led-sub">DADA · Nasdaq</span></td><td>Jun 5, 2020<span class="led-sub">IPO</span></td><td class="num">$16.00</td><td class="num">$15.99<span class="led-sub">−0.1%</span></td><td class="num">$57.95<span class="led-sub">Nov 30, 2020</span></td><td class="num">$1.96<span class="led-sub">Jun 16, 2025</span></td><td class="num led-dn">−87.8%</td><td class="num">−98.2%</td><td><span class="led-tag" data-status="private">Taken private</span></td></tr>
+          <tr data-id="DASH"><td><a href="#DASH">DoorDash</a><span class="led-sub">DASH · Nasdaq</span></td><td>Dec 9, 2020<span class="led-sub">IPO</span></td><td class="num">$102.00</td><td class="num">$189.51<span class="led-sub">+85.8%</span></td><td class="num">$281.74<span class="led-sub">Oct 6, 2025</span></td><td class="num">$193.36<span class="led-sub">Sep 25, 2026</span></td><td class="num led-up">+89.6%</td><td class="num">−82.5%</td><td><span class="led-tag" data-status="trading">Trading</span></td></tr>
+          <tr data-id="ROO"><td><a href="#ROO">Deliveroo</a><span class="led-sub">ROO · LSE</span></td><td>Mar 31, 2021<span class="led-sub">IPO</span></td><td class="num">390.00p</td><td class="num">287.45p<span class="led-sub">−26.3%</span></td><td class="num">395.00p<span class="led-sub">Aug 18, 2021</span></td><td class="num">179.80p<span class="led-sub">Oct 1, 2025</span></td><td class="num led-dn">−53.9%</td><td class="num">−81.7%</td><td><span class="led-tag" data-status="acquired">Acquired</span></td></tr>
+          <tr data-id="ETERNAL"><td><a href="#ETERNAL">Zomato (Eternal)</a><span class="led-sub">ETERNAL · NSE</span></td><td>Jul 23, 2021<span class="led-sub">IPO</span></td><td class="num">₹76.00</td><td class="num">₹126.00<span class="led-sub">+65.8%</span></td><td class="num">₹354.35<span class="led-sub">Oct 15, 2025</span></td><td class="num">₹335.50<span class="led-sub">Sep 24, 2026</span></td><td class="num led-up">+341.4%</td><td class="num">−74.0%</td><td><span class="led-tag" data-status="trading">Trading</span></td></tr>
+          <tr data-id="GRAB"><td><a href="#GRAB">Grab</a><span class="led-sub">GRAB · Nasdaq</span></td><td>Dec 2, 2021<span class="led-sub">SPAC merger</span></td><td class="num">$10.00</td><td class="num">$8.75<span class="led-sub">−12.5%</span></td><td class="num">$9.00<span class="led-sub">Dec 6, 2021</span></td><td class="num">$3.13<span class="led-sub">Sep 25, 2026</span></td><td class="num led-dn">−68.7%</td><td class="num">−74.3%</td><td><span class="led-tag" data-status="trading">Trading</span></td></tr>
+          <tr data-id="CART"><td><a href="#CART">Instacart</a><span class="led-sub">CART · Nasdaq</span></td><td>Sep 19, 2023<span class="led-sub">IPO</span></td><td class="num">$30.00</td><td class="num">$33.70<span class="led-sub">+12.3%</span></td><td class="num">$53.15<span class="led-sub">Feb 19, 2025</span></td><td class="num">$43.19<span class="led-sub">Sep 25, 2026</span></td><td class="num led-up">+44.0%</td><td class="num">−38.0%</td><td><span class="led-tag" data-status="trading">Trading</span></td></tr>
+          <tr data-id="SWIGGY"><td><a href="#SWIGGY">Swiggy</a><span class="led-sub">SWIGGY · NSE</span></td><td>Nov 13, 2024<span class="led-sub">IPO</span></td><td class="num">₹390.00</td><td class="num">₹456.00<span class="led-sub">+16.9%</span></td><td class="num">₹597.45<span class="led-sub">Dec 20, 2024</span></td><td class="num">₹267.45<span class="led-sub">Sep 24, 2026</span></td><td class="num led-dn">−31.4%</td><td class="num">−60.0%</td><td><span class="led-tag" data-status="trading">Trading</span></td></tr>
+          <tr data-id="TALABAT"><td><a href="#TALABAT">Talabat</a><span class="led-sub">TALABAT · DFM</span></td><td>Dec 10, 2024<span class="led-sub">IPO</span></td><td class="num">AED 1.60</td><td class="num">AED 1.49<span class="led-sub">−6.9%</span></td><td class="num">AED 1.64<span class="led-sub">Jan 8, 2025</span></td><td class="num">AED 1.14<span class="led-sub">Sep 25, 2026</span></td><td class="num led-dn">−28.7%</td><td class="num">−59.9%</td><td><span class="led-tag" data-status="trading">Trading</span></td></tr>
+          </tbody>
+        </table>
+        <!-- scoreboard:end -->
+
+        <h2>Who bought whom</h2>
+        <p>Most of these listings ended in a sale. These are the deals that ended them, plus the delivery companies that never listed.</p>
+        <ol class="led-deals">
+          <li><time datetime="2013-08-09">Aug 9, 2013</time><span><strong>Seamless and Grubhub merge.</strong> Both private; terms were not disclosed.</span></li>
+          <li><time datetime="2014-08-04">Aug 4, 2014</time><span><strong>Square buys Caviar</strong> for a reported $90 million in stock.</span></li>
+          <li><time datetime="2019-10-31">Oct 31, 2019</time><span><strong>DoorDash buys Caviar from Square</strong> for $410 million.</span></li>
+          <li><time datetime="2020-01-31">Jan 31, 2020</time><span><strong>Takeaway.com's all-share offer for Just Eat goes unconditional</strong> (about £5.9 billion). Just Eat Takeaway.com trades from February 3.</span></li>
+          <li><time datetime="2020-12-01">Dec 1, 2020</time><span><strong>Uber closes Postmates</strong> for $2.65 billion in stock.</span></li>
+          <li><time datetime="2021-03-02">Mar 2, 2021</time><span><strong>Delivery Hero closes Woowa Brothers</strong> (Baemin, South Korea): $4 billion for 87%.</span></li>
+          <li><time datetime="2021-06-15">Jun 15, 2021</time><span><strong>Just Eat Takeaway.com closes Grubhub</strong>, valued at $7.3 billion in stock when announced.</span></li>
+          <li><time datetime="2022-05-31">May 31, 2022</time><span><strong>DoorDash closes Wolt.</strong> Announced at about €7 billion in stock; worth $2.84 billion at closing after DoorDash shares fell.</span></li>
+          <li><time datetime="2025-01-07">Jan 7, 2025</time><span><strong>Wonder buys Grubhub</strong> from Just Eat Takeaway.com for $650 million, about 91% below the 2021 price.</span></li>
+          <li><time datetime="2025-03">Mar 2025</time><span><strong>Uber drops its $950 million purchase of Foodpanda Taiwan</strong> from Delivery Hero after Taiwan's competition regulator blocked it.</span></li>
+          <li><time datetime="2025-06-16">Jun 16, 2025</time><span><strong>JD.com takes Dada private</strong> at $2.00 per ADS.</span></li>
+          <li><time datetime="2025-10-02">Oct 2, 2025</time><span><strong>DoorDash completes Deliveroo</strong> at 180p a share (£2.9 billion equity value).</span></li>
+          <li><time datetime="2025-11-17">Nov 17, 2025</time><span><strong>Prosus completes Just Eat Takeaway.com</strong> at €20.30 a share (about €4.1 billion); the shares leave Euronext.</span></li>
+          <li><time datetime="2026-07-16">Jul 16, 2026</time><span><strong>Uber offers €41.50 a share for Delivery Hero</strong> (about $14.8 billion for 100%). Pending; the acceptance period runs to November 5, 2026.</span></li>
+        </ol>
+
+        <h2>Data and method</h2>
+        <p><strong>Prices.</strong> Daily closing prices in each stock's own currency, as price change only (dividends excluded). Stock splits are adjusted. Waitr is shown per original share, adjusted for its 1-for-20 reverse split in November 2022, and its line ends on April 2, 2024, the day it filed for Chapter 7 liquidation.</p>
+        <p><strong>Sources.</strong> Yahoo Finance for DoorDash, Uber, Instacart, Grab, Delivery Hero, Meituan, Eternal, Swiggy, Talabat and Waitr. Investing.com for Just Eat Takeaway, Deliveroo, Dada and Just Eat, with Dada's IPO day from Macrotrends' archived copy and Just Eat's first day and final weeks from a Yahoo-derived dataset. Grubhub comes from a public daily-price dataset. IPO dates, prices and deal terms come from company releases, SEC filings and exchange notices.</p>
+        <p><strong>Checks.</strong> Grubhub matches Macrotrends' archived series within 0.8% on all 1,552 shared days, and in its final year it traded at 94.5% to 101.4% of the value implied by the Just Eat Takeaway share-swap terms. Dada's two sources agree within 0.5% on all 1,160 shared days. Investing.com's Deliveroo series contains phantom prints at 25% to 40% of the real price; a continuity check removed 167 of them, and the remaining closes match a separate copy within 1.3% on every shared day.</p>
+        <p><strong>Caveats.</strong> Just Eat Takeaway's series starts October 3, 2016, one trading day after its debut. Indian closes are Yahoo's last traded price, which can differ slightly from the exchange's official close. Returns are in local currency and ignore exchange-rate moves. Not investment advice.</p>
+      </div>
+
+      <nav class="cs-nav edition-nav" aria-label="More from the blog">
+        <a href="../index.html"><span class="cs-nav-k">Blog</span><span class="cs-nav-t">Hill Money Watch</span></a>
+      </nav>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p class="footer-copy">© 2026 Samuel Bates. Hand-built with HTML, CSS, and a little JavaScript. No framework.</p>
+      <nav class="side-quests" aria-label="Side quests">
+        <span>Side quests:</span>
+        <a href="../../starship.html">Starship</a>
+        <a href="../../arcade.html">Arcade</a>
+        <a href="../index.html">Hill Money Watch</a>
+        <a href="../../skincare.html">A skincare regimen, run like an ops program</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>
