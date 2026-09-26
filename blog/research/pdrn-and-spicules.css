@@ -22,7 +22,7 @@
 }
 .rs-fig-h {
   margin: 0 0 16px;
-  font: 500 0.6875rem/1.3 var(--mono);
+  font: 500 semi-condensed 0.6875rem/1.3 var(--mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-3);
@@ -47,7 +47,7 @@
   .rs-axis-row .rs-label { display: none; }
 }
 .rs-label { font-size: 0.9375rem; line-height: 1.35; color: var(--ink); }
-.rs-label small { display: block; margin-top: 2px; font: 400 0.75rem/1.4 var(--mono); color: var(--ink-3); }
+.rs-label small { display: block; margin-top: 2px; font: 400 semi-condensed 0.75rem/1.4 var(--mono); color: var(--ink-3); }
 
 /* The track draws its own gridlines: --cols equal steps across the width. */
 .rs-track {
@@ -155,7 +155,7 @@
 }
 .rs-axis span:first-child { transform: none; }
 .rs-axis span:last-child { transform: translateX(-100%); }
-.rs-axis-unit { margin-top: 6px; font: 400 0.75rem/1.4 var(--mono); color: var(--ink-3); text-align: right; }
+.rs-axis-unit { margin-top: 6px; font: 400 semi-condensed 0.75rem/1.4 var(--mono); color: var(--ink-3); text-align: right; }
 
 /* On a phone the tracks are ~300px: thin the axis to every other decade, and
    drop the bar-end values (each row's label already carries its number). */

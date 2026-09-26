@@ -42,13 +42,40 @@ The inline script in `<head>` picks light/dark before first paint (saved
 own dark-mode rule. The Lab section is always dark: it re-points the same
 tokens to the `--lab-*` values.
 
+### The look: v5.1 "Palo Verde" (2026-09-26)
+
+v5.0 used cream paper, a terracotta accent and Instrument Serif, which read
+too close to Anthropic's own brand. v5.1 keeps every layout and interaction
+and changes only the brand layer:
+
+- **Colour.** Chalk map paper by day (`#eef1ec`), blue-black night
+  (`#0b1118`), one signal colour: palo verde, Arizona's state tree, which
+  also doubles as EMT high-vis. By day the accent is the leaf (`#4a7a0c`,
+  4.5:1 on chalk) and the bloom (`--hi`, `#d4f24a`) is only ever a
+  highlighter behind ink. At night the bloom (`#cdeb45`) is the accent.
+- **Type.** Archivo for everything you read: expanded (`semi-expanded`,
+  weight 750–800) for display, normal width for text. Martian Mono
+  (`semi-condensed`) for labels and data. Both come from one Google Fonts
+  `<link>` that every page repeats; change one, change them all
+  (`grep -rl "Archivo:ital" --include=*.html`).
+- **Emphasis.** An `<em>` in a headline is a highlighter stroke by day and a
+  lit word at night. `--em-color` and `--em-band` decide which, so there is
+  one emphasis rule in `site.css`.
+- **Semantic colours are separate from the brand.** Gains use `--ok`,
+  losses use `--neg` (red). With a green-yellow accent, "down" drawn in the
+  accent would read as good news.
+- `--serif` is now an alias of `--display`, kept so older digests and pages
+  that still name it keep resolving.
+
 ### The hero shader (`js/topo.js`)
 
 A WebGL fragment shader draws contour lines over procedural terrain; the
 cursor raises a hill. It caps the drawing buffer at ~2.2 megapixels, drops to
 ~30fps when idle, stops when the hero is off screen or the tab is hidden, and
 draws one still frame under `prefers-reduced-motion`. No WebGL means no
-canvas, just paper. Colours come from `--topo-*` tokens (hex only).
+canvas, just paper. Colours come from `--topo-*` tokens (hex only). On
+mouse devices a map reticle marks the cursor, the point whose coordinates
+the "field notes" card reads out.
 
 ### Checks
 
@@ -193,9 +220,10 @@ phone. Every study is linked in its Sources section; the link preview is
 - All asset paths RELATIVE (no leading `/`) — site lives at /portfolio/ sub-path, no CNAME.
 - `.nojekyll` must stay (serves `arcade/` module folder verbatim).
 - `mockups/` is untracked on purpose — never `git add -A`.
-- Play pages (arcade.html, starship.html) are self-contained (inline CSS) and use the
-  hotter accent `#e34a2b`; the homepage accent stays `#b9442b`. skincare.html is the
-  exception — it tracks the homepage accent and is the only page with a built CSS file.
+- Play pages (arcade.html, starship.html) and skincare.html still carry the
+  v4 look (cream, terracotta, Instrument Serif) in their own inline CSS or
+  Tailwind build. They don't use `css/site.css`, so v5.1 didn't reach them;
+  moving them over is open work.
 - starship.html embeds https://desertcache.github.io/starship/ click-to-load only
   (a live Three.js iframe would burn GPU from page load otherwise).
 - The homepage's section ids (`#work`, `#lab`, `#about`, `#contact`) are

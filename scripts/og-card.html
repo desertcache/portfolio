@@ -8,13 +8,13 @@
   /scripts/og-card.html in a 1200×630 viewport, hover the right-hand side to
   raise the hill, and screenshot the viewport to assets/og.png.
 -->
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <title>OG card · Samuel Bates</title>
   <meta name="robots" content="noindex">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
-  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Martian+Mono:wdth,wght@75..112.5,100..800&display=swap">
+  <link rel="stylesheet" href="../css/site.css?v=2026-09-26">
   <style>
     html, body { width: 1200px; height: 630px; overflow: hidden; }
     .og {
@@ -32,24 +32,28 @@
       -webkit-mask-image: linear-gradient(100deg, rgba(0, 0, 0, 0.3) 15%, #000 62%);
       mask-image: linear-gradient(100deg, rgba(0, 0, 0, 0.3) 15%, #000 62%);
     }
-    .og-id { display: flex; align-items: center; gap: 14px; font: 500 26px/1 var(--sans); }
+    .og-id { display: flex; align-items: center; gap: 14px; font: 750 semi-expanded 24px/1 var(--display); letter-spacing: -0.02em; }
     .og-id .brand-mark { width: 40px; height: 40px; }
     .og-id span { color: var(--ink-3); font-weight: 400; }
     .og-statement {
-      max-width: 11ch;
-      font: 400 104px/0.92 var(--serif);
-      letter-spacing: -0.028em;
+      max-width: 13ch;
+      font: 800 semi-expanded 76px/0.96 var(--display);
+      letter-spacing: -0.045em;
     }
-    .og-statement em { color: var(--accent); }
+    .og-statement em {
+      font-style: normal;
+      color: var(--em-color);
+      background: linear-gradient(transparent 60%, var(--em-band) 60%, var(--em-band) 93%, transparent 93%);
+    }
     .og-foot {
       display: flex;
       gap: 36px;
       align-items: baseline;
-      font: 500 17px/1.2 var(--mono);
+      font: 500 semi-condensed 16px/1.2 var(--mono);
       letter-spacing: 0.04em;
       color: var(--ink-2);
     }
-    .og-foot b { font: 400 34px/1 var(--serif); letter-spacing: -0.01em; color: var(--ink); margin-right: 8px; }
+    .og-foot b { font: 800 semi-expanded 28px/1 var(--display); letter-spacing: -0.04em; color: var(--ink); margin-right: 10px; }
     .og-url { margin-left: auto; color: var(--accent-ink); }
   </style>
 </head>
