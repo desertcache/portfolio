@@ -1,23 +1,29 @@
 // @ts-check
-import { hexToRgb, coordsFor } from './lib.js';
+import { hexToRgb } from './lib.js';
+import { viewFor, pointAt, shaderUV, decodeHeightmap, readout, scaleBar } from './arizona.js';
+import { TERRAIN } from './terrain-data.js';
 
 /**
- * The hero's topographic field.
+ * The hero's topographic map: real contour lines around Camelback Mountain.
  *
- * Mental model: the fragment shader computes a height for every pixel
- * (domain-warped gradient noise, i.e. fake terrain), then draws a line
- * wherever that height crosses an even step, the way a topo map does.
- * `fwidth` tells us how fast the height changes per pixel, which is what
- * keeps the lines a constant ~1px wide and anti-aliased no matter how steep
- * the terrain gets. The cursor adds a soft hill on top.
+ * Mental model: scripts/build_terrain.py baked USGS elevation into an image
+ * (12 bits per pixel across its red and green channels). The fragment shader
+ * reads the elevation under every pixel and draws a line wherever it crosses
+ * a round number of feet, the way a USGS quad does: thin lines every 20 ft,
+ * stronger ones every 100, a bold index line every 500. `fwidth` says how fast
+ * the elevation changes per pixel, which keeps lines ~1px wide and
+ * anti-aliased on any slope, and lets a family of lines fade out where it
+ * would crowd. The cursor adds a soft hill on top; the view drifts on a slow
+ * loop; the legend reads out the real coordinates and elevation under the
+ * pointer. js/arizona.js holds the geometry, so it is unit-tested.
  *
  * Cost control, because this runs behind the most important screen:
- *  - one full-screen triangle, no textures, no geometry
+ *  - one full-screen triangle, one 160 KB texture, fetched after first paint
  *  - drawing buffer capped at ~2.2 megapixels whatever the display
- *  - ~30fps while idle (the drift is slow), full rate only while the hill moves
+ *  - ~20fps while idle (the drift is slow), full rate only while the hill moves
  *  - stops entirely when the hero is off screen or the tab is hidden
- *  - reduced motion: one still frame, redrawn only on resize or theme change
- *  - no WebGL: the canvas stays invisible and the paper background shows
+ *  - reduced motion: one still frame; the readout still works, the hill doesn't
+ *  - no WebGL, or no heightmap: the canvas stays invisible and paper shows
  */
 
 const VERT = `
@@ -29,86 +35,88 @@ const FRAG = `
 #extension GL_OES_standard_derivatives : enable
 precision highp float;
 
-uniform vec2 u_res;     // drawing buffer size, px
-uniform float u_time;   // seconds (only advances while animating)
-uniform vec3 u_hill;    // xy = hill centre in buffer px (origin bottom-left), z = strength 0..1
-uniform vec3 u_line;    // contour colour
-uniform vec3 u_accent;  // high ground + the hill
-uniform float u_alpha;  // base line opacity
-uniform float u_dark;   // 1.0 in dark theme: adds a few stars
-uniform float u_px;     // buffer px per CSS px, keeps line width constant
-uniform float u_reticle; // 1.0 where a mouse drives the hill: draw a map reticle on it
+uniform vec2 u_res;       // drawing buffer size, px
+uniform float u_time;     // seconds (only advances while animating)
+uniform vec3 u_hill;      // xy = hill centre in buffer px (origin bottom-left), z = strength 0..1
+uniform float u_hillR;    // hill radius (one sigma), buffer px
+uniform vec3 u_low;       // contour colour on the desert floor
+uniform vec3 u_mid;       // …on the slopes (red rock)
+uniform vec3 u_high;      // …at the summits, and wherever the hill lifts the ground
+uniform float u_alpha;    // base line opacity
+uniform float u_dark;     // 1.0 in dark theme: adds a few stars
+uniform float u_px;       // buffer px per CSS px, keeps line width constant
+uniform sampler2D u_map;  // the heightmap
+uniform vec2 u_mapSize;   // its texels, cols x rows
+uniform vec2 u_elev;      // metres at packed value 0 and at 4095
+uniform vec2 u_uv0;       // heightmap uv at buffer pixel (0, 0)
+uniform vec2 u_duv;       // heightmap uv per buffer pixel
 
-vec2 hash2(vec2 p) {
-  p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
-  return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
+float texel(vec2 ij) {
+  vec3 c = texture2D(u_map, (ij + 0.5) / u_mapSize).rgb;
+  float v = c.r * 4080.0 + c.g * 15.9375;        // 16*R + G/16, with R and G in 0..255
+  return mix(u_elev.x, u_elev.y, v / 4095.0);
 }
-float noise(vec2 p) {
-  vec2 i = floor(p);
-  vec2 f = fract(p);
-  vec2 u = f * f * (3.0 - 2.0 * f);
-  return mix(mix(dot(hash2(i), f), dot(hash2(i + vec2(1.0, 0.0)), f - vec2(1.0, 0.0)), u.x),
-             mix(dot(hash2(i + vec2(0.0, 1.0)), f - vec2(0.0, 1.0)), dot(hash2(i + vec2(1.0)), f - vec2(1.0)), u.x), u.y);
+
+// Bilinear by hand, on a NEAREST texture: a GPU filtering the two packed
+// channels itself may round each to 8 bits, which terraces the lines.
+float metres(vec2 uv) {
+  vec2 p = uv * u_mapSize - 0.5;
+  vec2 i = clamp(floor(p), vec2(0.0), u_mapSize - 2.0);
+  vec2 f = clamp(p - i, 0.0, 1.0);
+  return mix(mix(texel(i), texel(i + vec2(1.0, 0.0)), f.x),
+             mix(texel(i + vec2(0.0, 1.0)), texel(i + vec2(1.0, 1.0)), f.x), f.y);
 }
-const mat2 ROT = mat2(1.6, 1.2, -1.2, 1.6);
-float fbm3(vec2 p) {
-  float v = 0.0; float a = 0.5;
-  for (int i = 0; i < 3; i++) { v += a * noise(p); p = ROT * p; a *= 0.5; }
-  return v;
+
+// Colour by elevation, the way a hypsometric map tints: floor, slopes, summit.
+vec3 ramp(float ft) {
+  vec3 c = mix(u_low, u_mid, smoothstep(1400.0, 1800.0, ft));
+  return mix(c, u_high, smoothstep(2350.0, 2650.0, ft));
 }
-float fbm5(vec2 p) {
-  float v = 0.0; float a = 0.5;
-  for (int i = 0; i < 5; i++) { v += a * noise(p); p = ROT * p; a *= 0.5; }
-  return v;
+
+// Coverage of one family of contours, one every step feet, width CSS px wide.
+// It fades out where its lines would sit closer than crowd CSS px apart, so
+// steep ground keeps its bold lines instead of going solid.
+float contour(float ft, float fw, float step, float width, float crowd) {
+  float x = ft / step;
+  float fx = max(fw / step, 1e-5);
+  float d = abs(x - floor(x + 0.5)) / fx;        // buffer px to the nearest line
+  float w = width * u_px;
+  float cov = 1.0 - smoothstep(w * 0.5 - 0.5, w * 0.5 + 0.6, d);
+  if (crowd <= 0.0) return cov;
+  return cov * smoothstep(crowd, crowd * 2.0, 1.0 / (fx * u_px));
 }
 
 void main() {
-  vec2 uv = gl_FragCoord.xy / u_res.y;           // height-normalised, so terrain doesn't stretch
-  float t = u_time * 0.016;
-  vec2 p = uv * 1.35 + vec2(3.1, 7.7);
-  vec2 warp = vec2(fbm3(p + vec2(0.0, t)), fbm3(p + vec2(5.2, 1.3) - t * 0.8));
-  float h = fbm5(p + 0.95 * warp);
+  float ground = metres(u_uv0 + gl_FragCoord.xy * u_duv) * 3.28084;   // feet
 
-  vec2 m = u_hill.xy / u_res.y;
-  float d = distance(uv, m);
-  float hill = u_hill.z * 0.36 * exp(-d * d / 0.02);
-  h += hill;
+  // the cursor's hill, sized to the screen rather than the map
+  float r = distance(gl_FragCoord.xy, u_hill.xy) / u_hillR;
+  float hill = u_hill.z * exp(-0.5 * r * r);
+  float ft = ground + hill * 340.0;
+  float fw = fwidth(ft);
 
-  float x = h * 15.0;                            // 15 contour steps per unit of height
-  float idx = floor(x + 0.5);
-  float fw = max(fwidth(x), 1e-4);
-  float px = abs(x - idx) / fw;                  // distance to nearest contour, in pixels
-  float major = 1.0 - step(0.5, mod(idx, 5.0));  // every fifth line is an index contour
-  float w = mix(0.85, 1.5, major) * u_px;
-  float cov = 1.0 - smoothstep(w * 0.5 - 0.5, w * 0.5 + 0.6, px);
+  float cov = max(max(contour(ft, fw, 20.0, 0.75, 5.0) * 0.55,
+                      contour(ft, fw, 100.0, 0.9, 2.5)),
+                  contour(ft, fw, 500.0, 1.5, 0.0) * 1.9);
 
-  float high = clamp(smoothstep(0.04, 0.34, h) + hill * 2.2, 0.0, 1.0);
-  vec3 col = mix(u_line, u_accent, high * 0.85);
-  float a = cov * u_alpha * mix(1.0, 1.9, major) * mix(1.0, 2.3, high);
+  float high = clamp(smoothstep(1500.0, 2600.0, ground) + hill * 0.8, 0.0, 1.0);
+  vec3 col = ramp(ft);                            // the hill climbs the ramp too
+  float a = clamp(cov * u_alpha * mix(1.0, 2.3, high), 0.0, 1.0);
 
-  if (u_dark > 0.5) {                            // desert night: sparse, slow-twinkling stars
+  if (u_dark > 0.5) {                            // dusk: sparse, slow-twinkling first stars
     vec2 cs = vec2(5.0 * u_px);
     vec2 cell = floor(gl_FragCoord.xy / cs);
     vec2 local = fract(gl_FragCoord.xy / cs) - 0.5;
-    float r = fract(sin(dot(cell, vec2(12.9898, 78.233))) * 43758.5453);
-    float on = step(0.9972, r);
-    float tw = 0.55 + 0.45 * sin(u_time * (0.4 + 1.6 * fract(r * 17.0)) + r * 60.0);
+    float rnd = fract(sin(dot(cell, vec2(12.9898, 78.233))) * 43758.5453);
+    float on = step(0.9972, rnd);
+    float tw = 0.55 + 0.45 * sin(u_time * (0.4 + 1.6 * fract(rnd * 17.0)) + rnd * 60.0);
     float sky = smoothstep(0.25, 0.95, gl_FragCoord.y / u_res.y);
     float s = on * tw * sky * smoothstep(0.42, 0.0, length(local)) * 0.7;
-    col = mix(col, u_line, s * (1.0 - a));
+    col = mix(col, vec3(1.0, 0.95, 0.9), s * (1.0 - a));
     a = a + s * (1.0 - a);
   }
 
-  // Map reticle on the cursor: a ring and four ticks, drawn over the contours.
-  vec2 dp = (gl_FragCoord.xy - u_hill.xy) / u_px;          // offset in CSS px
-  float r = length(dp);
-  float ring = 1.0 - smoothstep(0.5, 1.3, abs(r - 12.0));
-  float armX = (1.0 - smoothstep(0.45, 1.05, abs(dp.y))) * smoothstep(17.0, 18.0, abs(dp.x)) * (1.0 - smoothstep(29.0, 30.0, abs(dp.x)));
-  float armY = (1.0 - smoothstep(0.45, 1.05, abs(dp.x))) * smoothstep(17.0, 18.0, abs(dp.y)) * (1.0 - smoothstep(29.0, 30.0, abs(dp.y)));
-  float ra = max(ring, max(armX, armY)) * u_hill.z * u_reticle * 0.9;
-
-  // "over" composite, premultiplied: reticle on top of contours and stars
-  gl_FragColor = vec4(u_accent * ra + col * a * (1.0 - ra), ra + a * (1.0 - ra));
+  gl_FragColor = vec4(col * a, a);                // premultiplied alpha
 }
 `;
 
@@ -157,16 +165,118 @@ function buildProgram(gl) {
   /** @param {string} name */
   const u = (name) => gl.getUniformLocation(prog, name);
   return {
-    res: u('u_res'), time: u('u_time'), hill: u('u_hill'), line: u('u_line'),
-    accent: u('u_accent'), alpha: u('u_alpha'), dark: u('u_dark'), px: u('u_px'),
-    reticle: u('u_reticle'),
+    res: u('u_res'), time: u('u_time'), hill: u('u_hill'), hillR: u('u_hillR'),
+    low: u('u_low'), mid: u('u_mid'), high: u('u_high'), alpha: u('u_alpha'), dark: u('u_dark'), px: u('u_px'),
+    map: u('u_map'), mapSize: u('u_mapSize'), elev: u('u_elev'), uv0: u('u_uv0'), duv: u('u_duv'),
+  };
+}
+
+/** @typedef {ImageBitmap | HTMLImageElement} Heightmap */
+
+/**
+ * Fetch and decode the heightmap with no colour management: the bytes are
+ * data, and a colour profile "correcting" them would move mountains.
+ * @param {string} url
+ * @returns {Promise<Heightmap>}
+ */
+async function loadHeightmap(url) {
+  if ('createImageBitmap' in window) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await createImageBitmap(await res.blob(), { colorSpaceConversion: 'none', premultiplyAlpha: 'none' });
+    } catch (err) {
+      console.warn('[topo] createImageBitmap path failed, trying <img>:', err);
+    }
+  }
+  const img = new Image();
+  img.src = url;
+  await img.decode();
+  return img;
+}
+
+/**
+ * @param {WebGLRenderingContext} gl
+ * @param {Heightmap} source
+ */
+function uploadHeightmap(gl, source) {
+  const tex = gl.createTexture();
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
+  gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, source);
+  // NEAREST + clamp + no mipmaps: legal for a non-power-of-two texture in WebGL 1
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  return tex;
+}
+
+/**
+ * The same heightmap as numbers, for the legend's elevation readout. Null if
+ * the browser won't hand the pixels back (some privacy modes); the readout
+ * then shows coordinates and summits only.
+ * @param {Heightmap} source
+ * @returns {Uint16Array | null}
+ */
+function readHeightmap(source) {
+  try {
+    const c = document.createElement('canvas');
+    c.width = TERRAIN.cols;
+    c.height = TERRAIN.rows;
+    const ctx = c.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return null;
+    ctx.drawImage(source, 0, 0);
+    return decodeHeightmap(ctx.getImageData(0, 0, TERRAIN.cols, TERRAIN.rows).data, TERRAIN.cols, TERRAIN.rows);
+  } catch (err) {
+    console.warn('[topo] heightmap readback failed:', err);
+    return null;
+  }
+}
+
+/**
+ * The legend's live fields. Writes only what changed, so a moving pointer
+ * doesn't cost a layout per event.
+ * @param {HTMLElement} hero
+ */
+function legendFields(hero) {
+  /** @param {string} attr */
+  const q = (attr) => hero.querySelector(`[${attr}]`);
+  const fields = { lat: q('data-lat'), lon: q('data-lon'), elev: q('data-elev'), place: q('data-place') };
+  // what the place reads when the pointer is on no named peak
+  const place = fields.place?.getAttribute('data-place') ?? '';
+  const bar = q('data-scale');
+  const barLabel = q('data-scale-label');
+  /** @type {Record<string, string>} */
+  const last = {};
+  return {
+    /** @param {{ lat: string, lon: string, elev: string | null, place: string | null }} r */
+    show(r) {
+      const next = { lat: r.lat, lon: r.lon, elev: r.elev ?? '', place: r.place ?? place };
+      for (const [key, el] of Object.entries(fields)) {
+        const text = next[/** @type {keyof typeof next} */ (key)];
+        if (el && last[key] !== text) {
+          el.textContent = text;
+          last[key] = text;
+        }
+      }
+    },
+    /** @param {number} mpp */
+    scale(mpp) {
+      const s = scaleBar(mpp);
+      if (bar instanceof HTMLElement) bar.style.setProperty('--scale-w', `${s.px}px`);
+      if (barLabel && barLabel.textContent !== s.label) barLabel.textContent = s.label;
+    },
   };
 }
 
 /**
  * @param {HTMLCanvasElement} canvas
  */
-export function initTopo(canvas) {
+export async function initTopo(canvas) {
   const hero = canvas.closest('.hero');
   if (!(hero instanceof HTMLElement)) return;
 
@@ -182,34 +292,47 @@ export function initTopo(canvas) {
   let uniforms = buildProgram(gl);
   if (!uniforms) return;
 
-  const lat = hero.querySelector('[data-lat]');
-  const lon = hero.querySelector('[data-lon]');
+  // The heightmap path is relative to the site root; resolve it from this
+  // module so pages in subfolders (scripts/og-card.html) find it too.
+  const source = await loadHeightmap(new URL(`../${TERRAIN.src}`, import.meta.url).href);
+  if (source.width !== TERRAIN.cols || source.height !== TERRAIN.rows) {
+    console.warn('[topo] heightmap size does not match js/terrain-data.js; rerun scripts/build_terrain.py');
+    return;
+  }
+  uploadHeightmap(gl, source);
+  const grid = readHeightmap(source);
+  const legend = legendFields(hero);
+  const home = () => legend.show(readout(TERRAIN, grid, TERRAIN.focus.lat, TERRAIN.focus.lon));
 
   const s = {
-    // A different stretch of terrain every visit, unless data-seed pins it
-    // (scripts/og-card.html does, so the preview image is reproducible).
-    time: canvas.dataset.seed !== undefined ? Number(canvas.dataset.seed) || 0 : Math.random() * 400,
+    // data-seed pins the moment (scripts/og-card.html does, for a reproducible
+    // preview image); otherwise the loop starts where the framing was designed.
+    time: Number(canvas.dataset.seed) || 0,
     px: 1,
+    w: 1, h: 1,                    // canvas size, CSS px (read on resize, not per frame)
+    view: viewFor(TERRAIN, 1, 1),
     visible: true,
     raf: 0,
     last: 0,
     lastDraw: 0,
     lastMove: -Infinity,
-    lastCoords: 0,
+    lastRead: 0,
     lost: false,
+    inside: false,
     // hill position in CSS px relative to the hero; target vs eased value
     hx: 0, hy: 0, tx: 0, ty: 0,
     amt: 0, targetAmt: 0,
-    colors: { line: [0, 0, 0], accent: [0, 0, 0], alpha: 0.12, dark: 0 },
+    /** @type {{ low: number[], mid: number[], high: number[], alpha: number, dark: number }} */
+    colors: { low: [0, 0, 0], mid: [0, 0, 0], high: [0, 0, 0], alpha: 0.12, dark: 0 },
   };
 
   function readColors() {
     const cs = getComputedStyle(document.documentElement);
-    const line = hexToRgb(cs.getPropertyValue('--topo-line'));
-    const accent = hexToRgb(cs.getPropertyValue('--topo-accent'));
+    for (const key of /** @type {const} */ (['low', 'mid', 'high'])) {
+      const rgb = hexToRgb(cs.getPropertyValue(`--topo-${key}`));
+      if (rgb) s.colors[key] = rgb;
+    }
     const alpha = parseFloat(cs.getPropertyValue('--topo-alpha'));
-    if (line) s.colors.line = line;
-    if (accent) s.colors.accent = accent;
     if (Number.isFinite(alpha)) s.colors.alpha = alpha;
     s.colors.dark = document.documentElement.getAttribute('data-theme') === 'dark' ? 1 : 0;
   }
@@ -218,39 +341,54 @@ export function initTopo(canvas) {
     const w = canvas.clientWidth;
     const h = canvas.clientHeight;
     if (!w || !h || !gl) return;
+    s.w = w;
+    s.h = h;
     const dpr = window.devicePixelRatio || 1;
     s.px = Math.max(0.6, Math.min(dpr, 1.5, Math.sqrt(MAX_PIXELS / (w * h))));
     canvas.width = Math.round(w * s.px);
     canvas.height = Math.round(h * s.px);
     gl.viewport(0, 0, canvas.width, canvas.height);
+    legend.scale(viewFor(TERRAIN, w, h, s.time).mpp);
   }
 
   function draw() {
     if (!gl || !uniforms || s.lost) return;
     const c = s.colors;
+    s.view = viewFor(TERRAIN, s.w, s.h, s.time);
+    const map = shaderUV(TERRAIN, s.view, canvas.height, s.px);
     gl.uniform2f(uniforms.res, canvas.width, canvas.height);
     gl.uniform1f(uniforms.time, s.time);
     // CSS px (top-left origin) → buffer px (bottom-left origin)
     gl.uniform3f(uniforms.hill, s.hx * s.px, canvas.height - s.hy * s.px, s.amt);
-    gl.uniform3f(uniforms.line, c.line[0], c.line[1], c.line[2]);
-    gl.uniform3f(uniforms.accent, c.accent[0], c.accent[1], c.accent[2]);
+    gl.uniform1f(uniforms.hillR, 0.085 * Math.min(s.h, 1000) * s.px);
+    gl.uniform3f(uniforms.low, c.low[0], c.low[1], c.low[2]);
+    gl.uniform3f(uniforms.mid, c.mid[0], c.mid[1], c.mid[2]);
+    gl.uniform3f(uniforms.high, c.high[0], c.high[1], c.high[2]);
     gl.uniform1f(uniforms.alpha, c.alpha);
     gl.uniform1f(uniforms.dark, c.dark);
     gl.uniform1f(uniforms.px, s.px);
-    gl.uniform1f(uniforms.reticle, canHover ? 1 : 0);
+    gl.uniform1i(uniforms.map, 0);
+    gl.uniform2f(uniforms.mapSize, TERRAIN.cols, TERRAIN.rows);
+    gl.uniform2f(uniforms.elev, TERRAIN.elevLoM, TERRAIN.elevHiM);
+    gl.uniform2f(uniforms.uv0, map.u0, map.v0);
+    gl.uniform2f(uniforms.duv, map.du, map.dv);
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     canvas.classList.add('is-ready');
   }
 
+  /** What's under the pointer, from the view as last drawn. */
+  function readPointer() {
+    const p = pointAt(TERRAIN, s.view, s.tx, s.ty);
+    legend.show(readout(TERRAIN, grid, p.lat, p.lon));
+  }
+
   /** Touch screens get no cursor, so the hill wanders on its own. */
   function wander() {
-    const w = canvas.clientWidth;
-    const h = canvas.clientHeight;
     const t = s.time * 0.12;
-    s.tx = w * (0.68 + 0.2 * Math.sin(t * 1.3));
-    s.ty = h * (0.42 + 0.22 * Math.sin(t * 0.9 + 1.2));
+    s.tx = s.w * (0.68 + 0.2 * Math.sin(t * 1.3));
+    s.ty = s.h * (0.42 + 0.22 * Math.sin(t * 0.9 + 1.2));
     s.targetAmt = 0.75;
   }
 
@@ -261,8 +399,8 @@ export function initTopo(canvas) {
     const dt = s.last ? Math.min(0.05, (now - s.last) / 1000) : 1 / 60;
     s.last = now;
     const busy = now - s.lastMove < 1800 || Math.abs(s.amt - s.targetAmt) > 0.004;
-    // Idle: ~30fps is plenty for terrain drifting this slowly.
-    if (busy || now - s.lastDraw >= 32) {
+    // Idle: ~20fps is plenty for a map drifting this slowly.
+    if (busy || now - s.lastDraw >= 48) {
       // advance by real elapsed time, but never jump after a pause
       s.time += Math.min(0.1, s.lastDraw ? (now - s.lastDraw) / 1000 : dt);
       if (!canHover) wander();
@@ -272,6 +410,11 @@ export function initTopo(canvas) {
       s.amt += (s.targetAmt - s.amt) * (1 - Math.exp(-dt * 3));
       draw();
       s.lastDraw = now;
+      // the ground drifts under a still pointer, so keep its readout honest
+      if (s.inside && now - s.lastRead > 250) {
+        s.lastRead = now;
+        readPointer();
+      }
     }
     s.raf = requestAnimationFrame(frame);
   }
@@ -292,6 +435,7 @@ export function initTopo(canvas) {
   if (!canHover) wander();
   s.hx = s.tx; s.hy = s.ty;
   draw();
+  home();
 
   new ResizeObserver(() => { resize(); draw(); }).observe(canvas);
 
@@ -303,24 +447,27 @@ export function initTopo(canvas) {
   document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
   document.addEventListener('sb:themechange', () => { readColors(); draw(); });
 
-  if (canHover && !reduced) {
+  if (canHover) {
     hero.addEventListener('pointermove', (e) => {
       const r = canvas.getBoundingClientRect();
       s.tx = e.clientX - r.left;
       s.ty = e.clientY - r.top;
-      s.targetAmt = 1;
-      s.lastMove = performance.now();
-      if (s.lastMove - s.lastCoords > 60 && lat && lon) {
-        s.lastCoords = s.lastMove;
-        const c = coordsFor(s.tx / r.width, s.ty / r.height);
-        lat.textContent = c.lat;
-        lon.textContent = c.lon;
+      s.inside = true;
+      const now = performance.now();
+      if (now - s.lastRead > 60) {
+        s.lastRead = now;
+        readPointer();
       }
+      if (reduced) return;                        // the readout is information; the hill is motion
+      s.targetAmt = 1;
+      s.lastMove = now;
       start();
     }, { passive: true });
     hero.addEventListener('pointerleave', () => {
+      s.inside = false;
       s.targetAmt = 0;
       s.lastMove = performance.now();
+      home();
     });
   }
 
@@ -334,6 +481,7 @@ export function initTopo(canvas) {
     gl.getExtension('OES_standard_derivatives');
     uniforms = buildProgram(gl);
     if (!uniforms) return;
+    uploadHeightmap(gl, source);  // textures die with the context
     resize();
     draw();
     start();

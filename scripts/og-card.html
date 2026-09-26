@@ -1,12 +1,13 @@
 <!doctype html>
 <!--
   Source for assets/og.png, the 1200×630 image LinkedIn, Slack, and iMessage
-  show when someone shares the site. It renders the real hero shader with a
-  pinned seed, so the result is reproducible.
+  show when someone shares the site. It renders the real hero shader: the
+  contours of Camelback Mountain, with data-seed="0" pinning the slow drift
+  to the framing js/arizona.js designs, so the result is reproducible.
 
   To regenerate: serve the repo root (e.g. `npx serve .`), open
-  /scripts/og-card.html in a 1200×630 viewport, hover the right-hand side to
-  raise the hill, and screenshot the viewport to assets/og.png.
+  /scripts/og-card.html in a 1200×630 viewport, wait a second for the
+  heightmap, and screenshot the viewport to assets/og.png.
 -->
 <html lang="en" data-theme="dark">
 <head>
@@ -14,9 +15,11 @@
   <title>OG card · Samuel Bates</title>
   <meta name="robots" content="noindex">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Martian+Mono:wdth,wght@75..112.5,100..800&display=swap">
-  <link rel="stylesheet" href="../css/site.css?v=2026-09-26">
+  <link rel="stylesheet" href="../css/site.css?v=2026-09-26c">
   <style>
     html, body { width: 1200px; height: 630px; overflow: hidden; }
+    /* link previews are small: stronger lines than the hero's, so Camelback survives the thumbnail */
+    :root[data-theme="dark"] { --topo-alpha: 0.17; }
     .og {
       display: flex;
       flex-direction: column;
@@ -59,7 +62,7 @@
 </head>
 <body>
   <div class="hero og">
-    <canvas class="topo" id="topo" data-seed="137" aria-hidden="true"></canvas>
+    <canvas class="topo" id="topo" data-seed="0" aria-hidden="true"></canvas>
     <p class="og-id">
       <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
         <path d="M6.2 17.8C5.2 11.6 9.4 6.1 15.6 5.6 21.9 5.1 27.2 9.2 26.8 15.2 26.4 20.4 23.6 22.1 20.1 24.6 16.2 27.4 7.3 25.1 6.2 17.8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
