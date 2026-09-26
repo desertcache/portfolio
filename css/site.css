@@ -1,14 +1,15 @@
 /* ==========================================================================
    Samuel Bates — portfolio, v5.3 "Sedona"
    The Sonoran desert, day and dusk. By day: Sedona-dust paper, dusk ink, and
-   red rock as the one signal colour, with palo verde and prickly-pear gold
-   for highlights, juniper for support, and prickly-pear magenta kept for
-   rare pops. After dark: an Arizona sunset gone to violet, the rock lit
-   orange by the last light, words lit gold. Archivo Expanded for display,
+   red rock as the one signal colour, juniper for support, prickly-pear
+   magenta kept for rare pops, and headline words that catch the sunset.
+   After dark: an Arizona sunset gone to violet, the rock lit orange by the
+   last light, words lit amber into pink. Archivo Expanded for display,
    Archivo for reading, Martian Mono for data and labels. What's drawn is
    real: the hero's contours and the footer skyline are Camelback Mountain
-   from USGS elevation data (scripts/build_terrain.py); the cacti come from
-   scripts/draw_desert.py. See DEV-NOTES.md for the colour roles and the
+   from USGS elevation data (scripts/build_terrain.py); the cacti and the
+   spring wildflowers come from scripts/draw_desert.py, the roadrunner, birds
+   and hawk from scripts/draw_fauna.py. See DEV-NOTES.md for the colour roles and the
    guardrails that keep the red from reading as anyone else's brand.
 
    How this file is organised (top to bottom = general to specific):
@@ -40,10 +41,12 @@
   --accent-ink: #923616;      /* small accent text: AA on every surface */
   --accent-soft: rgba(168, 64, 29, 0.1);
   --on-accent: #ffffff;       /* text and ticks drawn on an --accent fill */
-  --hi: #f5cf3d;              /* gold bloom (palo verde, prickly pear flowers): highlighter, hovers */
-  --on-hi: #1c1624;
-  --em-color: var(--ink);     /* emphasised words in headlines: ink on a highlighter band… */
-  --em-band: var(--hi);
+  --accent-hover: #8c3316;    /* a pressed-in red rock, for hovering the solid buttons */
+  --select: #efd0c3;          /* text selection: a wash of red rock */
+  /* emphasised words in headlines catch the sunset: red rock into prickly-pear
+     berry by day (both past 4.5:1 on dust). The first 40% of the gradient is
+     the word at rest; the ink after it is where the light sweeps in from. */
+  --em-sunset: linear-gradient(90deg, #a8401d 0%, #b23346 20%, #c42c6c 40%, var(--ink) 55%, var(--ink) 100%);
   --support: #4f7a2a;         /* juniper and palo verde: the desert's greens */
   --support-ink: #3f6420;
   --bloom: #b8246a;           /* prickly pear fruit: rare pops only */
@@ -75,8 +78,19 @@
   /* the desert drawings (assets/desert.svg) */
   --illo-line: rgba(28, 22, 36, 0.26);
   --illo-fruit: var(--bloom);
-  --illo-flower: #e9b21a;
-  --illo-leaf: var(--support);
+  --illo-flower: #e9b21a;       /* palo verde, brittlebush, saguaro blossom */
+  --illo-poppy: #ee9a14;        /* Mexican gold poppy */
+  --illo-lupine: #6a4fc4;
+  --illo-mallow: #e5703a;       /* globemallow */
+  --illo-pink: #c42c6c;         /* penstemon, hedgehog cactus */
+  --illo-ember: #d4452a;        /* ocotillo */
+  /* the animals (assets/fauna.svg): a firmer line than the plants, so a
+     50 px bird still has a face */
+  --fauna-line: rgba(28, 22, 36, 0.58);
+  --fauna-paper: #ecdccf;       /* roadrunner buff */
+  --fauna-hawk: #c9ae99;        /* a red-tail's brown back, lightened to the map */
+  --hawk-shade: #1c1624;
+  --hawk-shade-a: 0.1;
 
   --shadow: 0 1px 2px rgba(28, 22, 36, 0.05), 0 10px 30px -14px rgba(28, 22, 36, 0.22);
   --shadow-lg: 0 2px 6px rgba(28, 22, 36, 0.06), 0 30px 60px -24px rgba(28, 22, 36, 0.34);
@@ -90,7 +104,6 @@
   --lab-line: rgba(245, 238, 242, 0.12);
   --lab-line-strong: rgba(245, 238, 242, 0.24);
   --lab-accent: #ff7a45;
-  --lab-hi: #ffc94d;
 
   --display: "Archivo", ui-sans-serif, "Helvetica Neue", Arial, sans-serif;
   --sans: "Archivo", ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif;
@@ -122,10 +135,10 @@
   --accent-ink: #ff9464;
   --accent-soft: rgba(255, 122, 69, 0.1);
   --on-accent: #150f24;
-  --hi: #ffc94d;              /* the sun on the horizon */
-  --on-hi: #150f24;
-  --em-color: var(--hi);      /* …and words lit by it at dusk */
-  --em-band: transparent;
+  --accent-hover: #ff9464;
+  --select: rgba(255, 122, 69, 0.32);
+  /* at dusk the words are the sky itself: amber, orange, pink */
+  --em-sunset: linear-gradient(90deg, #ffb547 0%, #ff7a45 20%, #ff5c93 40%, var(--ink) 55%, var(--ink) 100%);
   --support: #a9c46c;
   --support-ink: #b5cf7a;
   --bloom: #ff5c93;
@@ -145,6 +158,16 @@
 
   --illo-line: rgba(245, 238, 242, 0.2);
   --illo-flower: #ffc94d;
+  --illo-poppy: #ffb547;
+  --illo-lupine: #b09aff;
+  --illo-mallow: #ff9a62;
+  --illo-pink: #ff6fa3;
+  --illo-ember: #ff7a45;
+  --fauna-line: rgba(245, 238, 242, 0.55);
+  --fauna-paper: #2b2036;
+  --fauna-hawk: #4b3747;
+  --hawk-shade: #000;
+  --hawk-shade-a: 0.45;
 
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 32px -16px rgba(0, 0, 0, 0.65);
   --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.35), 0 30px 60px -24px rgba(0, 0, 0, 0.8);
@@ -196,7 +219,7 @@ kbd {
   background: var(--surface);
 }
 
-::selection { background: var(--hi); color: var(--on-hi); }
+::selection { background: var(--select); color: var(--ink); }
 
 :focus { outline: none; }
 :focus-visible {
@@ -261,7 +284,7 @@ kbd {
 }
 .btn:active { transform: translateY(1px); }
 .btn-solid { background: var(--accent); color: var(--on-accent); }
-.btn-solid:hover { background: var(--hi); color: var(--on-hi); }
+.btn-solid:hover { background: var(--accent-hover); color: var(--on-accent); }
 .btn-ghost { border-color: var(--line-strong); color: var(--ink); background: color-mix(in srgb, var(--surface) 55%, transparent); }
 .btn-ghost:hover { border-color: var(--ink); background: var(--surface); }
 .btn-text { padding: 0 10px; color: var(--ink-2); }
@@ -540,15 +563,35 @@ kbd {
   letter-spacing: -0.045em;
   text-wrap: balance;
 }
-/* Emphasis is a highlighter stroke by day and a lit word at night; --em-color
-   and --em-band decide which, so this is the only emphasis rule. */
+/* Emphasis: the word catches the sunset. Red rock into prickly-pear berry by
+   day, amber into orange into pink at dusk (--em-sunset). As the heading
+   arrives the light sweeps across it from the ink; where background-clip:
+   text isn't supported the word is simply red rock. This is the only
+   emphasis rule. */
 .hero-statement em, .section-title em, .contact-title em {
   font-style: normal;
-  color: var(--em-color);
-  background: linear-gradient(transparent 60%, var(--em-band) 60%, var(--em-band) 93%, transparent 93%);
-  padding: 0 0.05em;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
+  color: var(--accent);
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .hero-statement em, .section-title em, .contact-title em {
+    padding: 0 0.04em;
+    background: var(--em-sunset) 0 0 / 250% 100% no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  /* the light crosses the word in reading order, slowly, like a sunrise */
+  .js .reveal .section-title em, .js .contact-title.reveal em { background-position: 100% 0; transition: background-position 2.2s cubic-bezier(0.5, 0, 0.2, 1) 0.5s; }
+  .js .reveal.in .section-title em, .js .contact-title.reveal.in em { background-position: 0 0; }
+  .js .hero-statement em { animation: sunlit 2.4s cubic-bezier(0.5, 0, 0.2, 1) 0.9s both; }
+}
+@keyframes sunlit { from { background-position: 100% 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal .section-title em, .js .contact-title.reveal em { transition: none; }
+  .js .hero-statement em { animation: none; }
 }
 
 .hero-lede {
@@ -992,10 +1035,7 @@ html.has-modal { overflow: hidden; }
 
 /* ---------- 5f. Lab (always a night room) ---------- */
 .lab {
-  --em-color: var(--lab-hi);
-  --em-band: transparent;
-  --hi: var(--lab-hi);
-  --on-hi: #150f24;
+  --em-sunset: linear-gradient(90deg, #ffb547 0%, #ff7a45 20%, #ff5c93 40%, var(--lab-ink) 55%, var(--lab-ink) 100%);
   --on-accent: #150f24;
   --bg: var(--lab-bg);
   --surface: var(--lab-surface);
@@ -1068,7 +1108,7 @@ html.has-modal { overflow: hidden; }
   transition: background-color 0.25s, border-color 0.25s, transform 0.4s var(--ease);
 }
 .lab-play svg { width: 16px; height: 16px; fill: currentColor; }
-.lab-poster:hover .lab-play { background: var(--hi); border-color: var(--hi); color: var(--on-hi); transform: translate(-50%, -50%) scale(1.04); }
+.lab-poster:hover .lab-play { background: var(--accent); border-color: var(--accent); color: var(--on-accent); transform: translate(-50%, -50%) scale(1.04); }
 
 .lab-copy { display: flex; flex-direction: column; gap: 14px; }
 .lab-title { font: 800 semi-expanded clamp(1.7rem, 2.8vw, 2.4rem)/1.02 var(--display); letter-spacing: -0.04em; }
@@ -1148,7 +1188,7 @@ html.has-modal { overflow: hidden; }
   transform: translateX(-50%);
   transition: background-color 0.2s, border-color 0.2s;
 }
-.orb-wake:hover { background: var(--hi); border-color: var(--hi); color: var(--on-hi); }
+.orb-wake:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .orb-slot.is-live .orb-wake, .orb-slot.is-loading .orb-wake { display: none; }
 .lab-live {
   position: absolute;
@@ -1433,10 +1473,8 @@ html.has-modal { overflow: hidden; }
   display: flex;
   align-items: flex-end;
   pointer-events: none;
-  --illo-paper: var(--bg);
   --illo-w: 1.8;
 }
-.section-tint .head-illo { --illo-paper: var(--bg-tint); }
 .illo { display: block; width: auto; height: var(--h); overflow: visible; }
 .illo-saguaro { --h: clamp(270px, 25vw, 370px); }
 .illo-saguaro-young { --h: clamp(150px, 14.5vw, 215px); margin-right: -30px; }
@@ -1470,6 +1508,72 @@ html.has-modal { overflow: hidden; }
   .illo-sedona { --h: clamp(50px, 6vw, 66px); }
   .illo-ocotillo { --h: clamp(76px, 9vw, 100px); }
   .illo-barrel { --h: clamp(30px, 3.6vw, 40px); margin-left: -22px; }
+}
+
+/* The body of every drawing is filled with the ground it stands on, so a
+   pad in front hides the pad behind; where color-mix exists, that fill takes
+   a breath of juniper green (red for the rocks), which is most of what makes
+   the cacti look alive. */
+.head-illo, .bed { --illo-ground: var(--bg); --illo-paper: var(--illo-ground); }
+.section-tint .head-illo, .section-tint .bed, .footer .bed { --illo-ground: var(--bg-tint); }
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+  .head-illo, .bed { --illo-paper: color-mix(in srgb, var(--support) 11%, var(--illo-ground)); }
+  .illo-sedona { --illo-paper: color-mix(in srgb, var(--accent) 10%, var(--illo-ground)); }
+}
+
+/* ---------- 5l. Wildflowers ---------- */
+/* Poppies, lupine, globemallow, brittlebush and penstemon in beds: along the
+   hero's floor, in the quiet bottom corners of sections, and in front of the
+   footer's skyline. Each plant is its own <svg>, so each can sway on its own
+   timing with a compositor-only transform (no repaint); cacti and agaves
+   (.plant) stand still, as they do. */
+.bed {
+  position: absolute;
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(2px, 0.6vw, 10px);
+  pointer-events: none;
+  --illo-w: 2.1;
+  --k: 1;
+}
+.bed svg { display: block; flex: none; width: auto; height: calc(var(--h) * var(--k)); overflow: visible; }
+/* plants grow in clumps, a little overlapped, not in a row */
+.clump { display: flex; align-items: flex-end; }
+.clump > svg + svg { margin-left: -4px; }
+.flora { transform-origin: 50% 100%; animation: sway var(--sway-t, 6.2s) ease-in-out var(--sway-d, 0s) infinite alternate; }
+.flora:nth-child(3n + 1) { --sway-t: 5.4s; --sway-d: -2.1s; }
+.flora:nth-child(3n + 2) { --sway-t: 7.3s; --sway-d: -4.6s; --sway-a: 1.1deg; }
+.flora:nth-child(4n) { --sway-t: 6.6s; --sway-d: -1.3s; --sway-a: 2deg; }
+@keyframes sway {
+  from { transform: rotate(calc(-1 * var(--sway-a, 1.5deg))); }
+  to { transform: rotate(var(--sway-a, 1.5deg)); }
+}
+
+/* the hero's floor: spread across the page, standing on its bottom edge */
+.hero-bed { left: 0; right: 0; bottom: 0; z-index: 0; max-width: var(--wrap); margin-inline: auto; padding-inline: var(--pad); justify-content: space-between; }
+/* section corners live in the bottom padding, so they never meet content */
+.section > .bed { bottom: 0; }
+.bed-left, .footer-bed-l { left: max(var(--pad), calc((100% - var(--wrap)) / 2 + var(--pad))); }
+.bed-right, .footer-bed-r { right: max(var(--pad), calc((100% - var(--wrap)) / 2 + var(--pad))); }
+/* the footer's superbloom stands on its top edge, in front of the mountains */
+.footer-bed { bottom: 100%; z-index: 1; }
+
+/* they draw on like the other drawings: the hero's at load, the rest as
+   they scroll in */
+@keyframes draw-in { from { --draw: 0; } to { --draw: 1; } }
+.js .hero-bed { animation: draw-in 2.6s var(--ease-out) 0.9s both; }
+.js .bed.reveal { --draw: 0; transition: --draw 2.4s var(--ease-out) 0.2s, opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+.js .bed.reveal.in { --draw: 1; }
+
+@media (max-width: 1100px) { .bed { --k: 0.8; } }
+@media (max-width: 640px) {
+  .bed { --k: 0.62; --illo-w: 2.6; }
+  .hero-bed > :nth-child(3n + 2), .footer-bed > :nth-child(n + 5) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flora { animation: none; }
+  .js .hero-bed { animation: none; }
+  .js .bed.reveal { transition: none; }
 }
 
 /* ---------- 5k. The Lab's horizon ---------- */
@@ -1514,6 +1618,10 @@ html.has-modal { overflow: hidden; }
   --illo-fruit: var(--sil);
   --illo-flower: var(--sil);
   --illo-ember: var(--sil);
+  --illo-poppy: var(--sil);
+  --illo-lupine: var(--sil);
+  --illo-mallow: var(--sil);
+  --illo-pink: var(--sil);
   --illo-w: 3;
 }
 .sil-pear { left: 3%; --h: 22%; }
@@ -1523,10 +1631,153 @@ html.has-modal { overflow: hidden; }
 .sil-palo { left: 44%; --h: 46%; }
 .sil-young { left: 77%; --h: 52%; }
 .sil-saguaro2 { left: 88%; --h: 70%; }
+.sil-agave { left: 67%; --h: 62%; }
+.sil-lupine { left: 26%; --h: 20%; }
+.sil-poppies { left: 58%; --h: 12%; }
+.sil-grass { left: 36%; --h: 11%; }
 @media (max-width: 720px) {
-  .sil-palo, .sil-barrel, .sil-young { display: none; }
+  .sil-palo, .sil-barrel, .sil-young, .sil-poppies, .sil-grass { display: none; }
+  .sil-agave { left: 56%; }
   .sil-ocotillo { left: 34%; }
   .sil-saguaro2 { left: 78%; }
+}
+
+/* ---------- 5m. Wildlife ---------- */
+/* A roadrunner works the hero's flower bed and the Lab's sunset as you
+   scroll (js/roadrunner.js), birds cross the sunset, and a red-tailed hawk
+   rides a thermal over Camelback. They're drawn in the plants' hand
+   (scripts/draw_fauna.py) and move by transform alone. The roadrunner only
+   moves when you do; what moves on its own (the flock, the hawk) is slow and
+   kept away from the words. With reduced motion they are simply there. */
+@property --frame { syntax: "<integer>"; inherits: true; initial-value: 6; }
+
+/* A trail says where its runner goes: --run-from and --run-to are where the
+   hip is (fractions of the trail's width) at the start and end of the run,
+   and --rest is where it stands without the script. */
+.trail { position: absolute; left: 0; right: 0; pointer-events: none; }
+.runner {
+  position: absolute;
+  bottom: 0;
+  left: calc(var(--rest, var(--run-from)) * 100%);
+  height: 100%;
+  width: auto;
+  overflow: visible;
+  translate: -53.4% 0;  /* the hip on the resting spot (ROADRUNNER.pivot) */
+  --illo-line: var(--fauna-line);
+  --illo-paper: var(--fauna-paper);
+  --illo-eye: var(--ink);
+}
+/* once the script has it, the transform does the placing */
+.trail.is-live .runner { left: 0; translate: none; will-change: transform; }
+/* standing about, a roadrunner flicks its tail */
+.runner[data-state="idle"] { animation: tail-flick 5.2s linear infinite; }
+@keyframes tail-flick {
+  0%, 57% { --frame: 6; }
+  58%, 63% { --frame: 7; }
+  64%, 69% { --frame: 6; }
+  70%, 74% { --frame: 7; }
+  75%, 100% { --frame: 6; }
+}
+/* the hero's: as wide as its flower bed and behind it (the bed comes later
+   in the page); it waits just left of the first clump */
+.hero-trail {
+  left: var(--pad);
+  right: var(--pad);
+  max-width: calc(var(--wrap) - 2 * var(--pad));
+  margin-inline: auto;
+  bottom: 3px;
+  z-index: 0;
+  height: 54px;
+  --run-from: -0.045;
+  --run-to: 1.1;
+}
+/* the Lab's: a silhouette on the sunset's ground line, like the plants,
+   crossing the whole width */
+.lab-trail { bottom: calc(var(--ground) - 5px); height: clamp(30px, 3.9vw, 56px); --run-from: -0.08; --run-to: 1.08; --rest: 0.32; }
+.lab-trail, .flock {
+  --fauna-line: var(--sil);
+  --fauna-paper: var(--sil);
+  --illo-ember: var(--sil);
+  --illo-lupine: var(--sil);
+  --illo-far: 1;
+  --illo-w: 3;
+}
+.lab-trail .runner { --illo-eye: var(--sil); }
+
+/* the flock: each bird crosses the whole sky, flapping and gliding; the
+   crossing is one transform on a full-width track, the wingbeat is the bird
+   scaled vertically through zero */
+.flock { position: absolute; inset: 0 0 var(--ground); overflow: hidden; --illo-line: #1d0f24; }
+.flier {
+  position: absolute;
+  left: 0;
+  top: var(--y);
+  width: 100%;
+  transform: translateX(var(--x));
+  animation: fly var(--t) linear var(--d) infinite;
+}
+.flier.west { animation-direction: reverse; }
+@keyframes fly {
+  from { transform: translateX(-44px); }
+  to { transform: translateX(calc(100% + 44px)); }
+}
+.bird {
+  display: block;
+  width: var(--w);
+  height: auto;
+  overflow: visible;
+  transform-origin: 50% 60%;
+  animation: flap var(--f) ease-in-out var(--fd) infinite;
+}
+.west .bird { transform: scaleX(-1); }
+@keyframes flap {
+  0% { scale: 1 1; }
+  11% { scale: 1 -0.55; }
+  22% { scale: 1 0.95; }
+  33% { scale: 1 -0.55; }
+  44% { scale: 1 0.9; }
+  56%, 100% { scale: 1 0.35; }
+}
+
+/* the hawk circles a thermal over the summit (where js/arizona.js viewFor
+   puts it on a wide screen), its shadow on the ground below and to the side */
+.thermal { position: absolute; z-index: -1; left: 72%; top: min(36%, 330px); pointer-events: none; --r: clamp(64px, 6.4vw, 104px); }
+.soar { position: absolute; left: 0; top: 0; animation: soar 36s linear infinite; }
+.soar-shadow { left: 30px; top: 38px; }
+@keyframes soar { to { transform: rotate(360deg); } }
+.hawk {
+  position: absolute;
+  left: var(--r);
+  top: 0;
+  width: clamp(56px, 4.6vw, 72px);
+  max-width: none;  /* its box is a zero-size pivot; the global svg reset would crush it */
+  height: auto;
+  overflow: visible;
+  translate: -50% -50%;
+  rotate: 180deg;  /* drawn heading up the page; circling clockwise, it heads down at 3 o'clock */
+  --illo-line: var(--fauna-line);
+  --illo-paper: var(--fauna-hawk);
+  --illo-fruit: color-mix(in srgb, var(--accent) 70%, var(--fauna-hawk));
+  --illo-w: 1.9;
+  animation: wing-flex 9s ease-in-out infinite;
+}
+@keyframes wing-flex {
+  0%, 70%, 100% { scale: 1 1; }
+  80% { scale: 0.9 1; }
+  90% { scale: 1.02 1; }
+}
+.soar-shadow .hawk {
+  --illo-line: var(--hawk-shade);
+  --illo-paper: var(--hawk-shade);
+  --illo-fruit: var(--hawk-shade);
+  opacity: var(--hawk-shade-a);
+  filter: blur(2px);
+}
+@media (max-width: 1179px) { .thermal { display: none; } }
+@media (max-width: 1100px) { .hero-trail { height: 46px; } }
+@media (max-width: 640px) { .hero-trail { height: 34px; --run-from: 0.1; } }
+@media (prefers-reduced-motion: reduce) {
+  .flier, .bird, .soar, .hawk { animation: none; }
 }
 
 /* ---------- 6. Motion ---------- */
@@ -1561,7 +1812,7 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
 }
 
 @media print {
-  .nav, .topo, .hero-fade, .lab-grid, .toast, .footer-hint, .orb-slot, .footer::before { display: none !important; }
+  .nav, .topo, .hero-fade, .lab-grid, .toast, .footer-hint, .orb-slot, .footer::before, .thermal, .trail, .flock { display: none !important; }
   .js .reveal { opacity: 1 !important; transform: none !important; }
   .hero { min-height: 0; padding-top: 24px; }
   .section, .contact { padding-block: 32px; }

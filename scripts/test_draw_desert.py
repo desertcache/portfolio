@@ -14,7 +14,8 @@ import pytest
 import draw_desert as dd
 
 SVG_NS = "{http://www.w3.org/2000/svg}"
-EXPECTED = {"saguaro", "saguaro-young", "prickly-pear", "barrel", "ocotillo", "palo-verde", "sedona"}
+EXPECTED = {"saguaro", "saguaro-young", "prickly-pear", "barrel", "ocotillo", "palo-verde", "sedona",
+            "agave", "poppies", "lupine", "globemallow", "brittlebush", "penstemon", "hedgehog", "grass"}
 
 
 @pytest.fixture(scope="module")
@@ -56,8 +57,9 @@ def test_no_broken_numbers_in_any_path(sprite):
 
 
 def test_sprite_stays_small():
-    # It ships on every homepage view; 70 KB raw is ~20 KB gzipped.
-    assert len(dd.build().encode()) < 70_000
+    # It ships on every homepage view: 100 KB raw is under 30 KB gzipped.
+    # Past that, thin the finest detail first (see n0 and the stroke petals).
+    assert len(dd.build().encode()) < 100_000
 
 
 def test_ellipse_is_closed_and_centred():

@@ -1,8 +1,10 @@
 """Draw the site's desert illustrations into assets/desert.svg.
 
-The homepage's sections carry line drawings of the Sonoran desert: saguaros,
-prickly pear in fruit and flower, a palo verde in bloom, a barrel cactus, an
-ocotillo, and the red rocks of Sedona. They are generated rather than
+The homepage carries line drawings of the Sonoran desert: saguaros, prickly
+pear in fruit and flower, a palo verde in bloom, a barrel cactus, an
+ocotillo, an agave sending up its bloom stalk, the red rocks of Sedona, and
+the spring wildflowers (gold poppies, lupine, globemallow, brittlebush,
+penstemon, a flowering hedgehog cactus). They are generated rather than
 hand-plotted because the details are geometry: a saguaro's ribs follow the
 curve of its trunk, a prickly pear's areoles stay inside their pads, a
 butte's strata stop at its walls. Change a number here and re-run; the
@@ -21,6 +23,10 @@ page's CSS picks colour and mode without reaching into the sprite:
     --illo-fruit   prickly pear fruit, saguaro fruit
     --illo-flower  blossoms (palo verde, cactus flowers)
     --illo-ember   ocotillo flowers
+    --illo-poppy   Mexican gold poppies
+    --illo-lupine  lupine
+    --illo-mallow  globemallow
+    --illo-pink    penstemon and hedgehog cactus flowers
     --illo-w       stroke width, in the symbol's own units
     --draw         0..1, how much of each line is drawn. Every stroked path
                    has pathLength="1", so this one number animates them all;
@@ -49,6 +55,14 @@ STYLE = {
     "fruit": f"fill:var(--illo-fruit,#b8246a);stroke:none;{_BLOOM}",
     "flower": f"fill:var(--illo-flower,#e9b21a);stroke:none;{_BLOOM}",
     "ember": f"fill:var(--illo-ember,#d4452a);stroke:none;{_BLOOM}",
+    "poppy": f"fill:var(--illo-poppy,#ee9a14);stroke:none;{_BLOOM}",
+    "lupine": f"fill:var(--illo-lupine,#6a4fc4);stroke:none;{_BLOOM}",
+    "mallow": f"fill:var(--illo-mallow,#e5703a);stroke:none;{_BLOOM}",
+    "pink": f"fill:var(--illo-pink,#c42c6c);stroke:none;{_BLOOM}",
+    "centre": f"fill:var(--illo-line,currentColor);stroke:none;{_BLOOM}",
+    # petals drawn as round-capped strokes: a flower in a dozen bytes
+    "mallow-dots": "fill:none;stroke:var(--illo-mallow,#e5703a);stroke-width:calc(var(--illo-w,1.6) * 2.2);stroke-linecap:round;" + _BLOOM,
+    "rays": "fill:none;stroke:var(--illo-flower,#e9b21a);stroke-width:calc(var(--illo-w,1.6) * 1.35);stroke-linecap:round;" + _BLOOM,
     "blooms": "fill:none;stroke:var(--illo-flower,#e9b21a);stroke-width:calc(var(--illo-w,1.6) * 2.6);stroke-linecap:round;" + _BLOOM,
 }
 STROKED = {"outline", "line"}
@@ -58,6 +72,11 @@ def n(v: float) -> str:
     """Compact number: one decimal, no trailing zeros."""
     s = f"{v:.1f}".rstrip("0").rstrip(".")
     return "0" if s in ("-0", "") else s
+
+
+def n0(v: float) -> str:
+    """Whole units, for fine detail nobody can see at a tenth of a unit."""
+    return str(int(round(v)))
 
 
 def smooth(points: list[tuple[float, float]], closed: bool = False, tension: float = 1.0) -> str:
@@ -383,7 +402,8 @@ def palo_verde(sym_id: str, *, cx: float, base: float, seed: int = 11) -> Symbol
         kink = rnd.uniform(-.16, .16) * length                  # palo verde limbs zig-zag
         mx = (x + ex) / 2 + kink * math.cos(ang)
         my = (y + ey) / 2 + kink * math.sin(ang)
-        seg = f"M{n(x)} {n(y)}Q{n(mx)} {n(my)} {n(ex)} {n(ey)}"
+        seg = (f"M{n(x)} {n(y)}Q{n(mx)} {n(my)} {n(ex)} {n(ey)}" if depth >= 3
+               else f"M{n0(x)} {n0(y)}Q{n0(mx)} {n0(my)} {n0(ex)} {n0(ey)}")
         if depth >= 3:
             limbs += seg
         else:
@@ -467,6 +487,323 @@ def sedona(sym_id: str, *, width: float, base: float, seed: int = 13) -> Symbol:
     return sym
 
 
+# ---------------------------------------------------------------------------
+# Spring wildflowers and a few more plants
+#
+# Shared idea: stems and leaves are lines (or outlines filled with the
+# paper colour), petals are colour. Every helper returns path data; the
+# symbol decides which colour class it gets.
+
+
+def rotate_pts(pts: list[tuple[float, float]], cx: float, cy: float, deg: float) -> list[tuple[float, float]]:
+    r = math.radians(deg)
+    c, s_ = math.cos(r), math.sin(r)
+    return [(cx + (x - cx) * c - (y - cy) * s_, cy + (x - cx) * s_ + (y - cy) * c) for x, y in pts]
+
+
+def cup_d(x: float, y: float, w: float, h: float, tilt: float, notch: float = .2) -> str:
+    """A flower cup seen from the side, opening upward from (x, y), with a
+    rim dipping `notch` of the height where the petals overlap."""
+    pts = [(x - w / 2, y - h), (x - w * .42, y - h * .35), (x - w * .16, y - h * .04), (x, y),
+           (x + w * .16, y - h * .04), (x + w * .42, y - h * .35), (x + w / 2, y - h),
+           (x + w * .22, y - h * (1 - notch)), (x, y - h * (1 - notch * .2)), (x - w * .22, y - h * (1 - notch))]
+    return smooth(rotate_pts(pts, x, y, tilt), closed=True, tension=.9)
+
+
+def stem_d(x0: float, y0: float, x1: float, y1: float, bend: float) -> str:
+    mx, my = (x0 + x1) / 2 + bend, (y0 + y1) / 2
+    return f"M{n(x0)} {n(y0)}Q{n(mx)} {n(my)} {n(x1)} {n(y1)}"
+
+
+def on_quad(x0: float, y0: float, mx: float, my: float, x1: float, y1: float, t: float) -> tuple[float, float]:
+    return ((1 - t) ** 2 * x0 + 2 * (1 - t) * t * mx + t * t * x1, (1 - t) ** 2 * y0 + 2 * (1 - t) * t * my + t * t * y1)
+
+
+def poppies(sym_id: str, *, width: float, base: float, count: int = 6, seed: int = 21) -> Symbol:
+    """Mexican gold poppies: silky cups on bare stems over a lace of
+    finely cut leaves. Some open, some cupped, one still in bud."""
+    rnd = random.Random(seed)
+    sym = Symbol(sym_id, width, base + 6)
+    leaves, stems, cups, insides, centres = "", "", "", "", []
+    for _ in range(5):                                    # basal leaves: feathery fans
+        x = rnd.uniform(width * .15, width * .85)
+        for k in range(5):
+            a = math.radians(-70 + k * 35 + rnd.uniform(-8, 8))
+            L = rnd.uniform(9, 15)
+            ex, ey = x + math.sin(a) * L, base - math.cos(a) * L * .7
+            leaves += f"M{n(x)} {n(base)}L{n(ex)} {n(ey)}"
+            for f in (.45, .75):
+                px, py = x + (ex - x) * f, base + (ey - base) * f
+                leaves += f"M{n(px)} {n(py)}l{n(math.cos(a) * 3)} {n(-2.4)}M{n(px)} {n(py)}l{n(-math.cos(a) * 3)} {n(-2.4)}"
+    for i in range(count):
+        x0 = width * (.12 + .76 * (i + rnd.uniform(.2, .8)) / count)
+        h = rnd.uniform(.5, .92) * (base - 16)
+        x1 = x0 + rnd.uniform(-14, 14)
+        y1 = base - h
+        stems += stem_d(x0, base, x1, y1, rnd.uniform(-8, 8))
+        kind = "bud" if i == count // 2 else ("open" if i % 3 == 1 else "cup")
+        if kind == "bud":
+            cups += ellipse_d(x1, y1 - 5, 3, 6, rnd.uniform(-15, 15))
+        elif kind == "cup":                               # a silky bowl, its gold inside catching the light
+            w, h, tilt = rnd.uniform(17, 21), rnd.uniform(10, 12), rnd.uniform(-16, 16)
+            cups += cup_d(x1, y1 + 1, w, h, tilt, notch=.05)
+            ix, iy = rotate_pts([(x1, y1 + 1 - h * .93)], x1, y1 + 1, tilt)[0]
+            insides += ellipse_d(ix, iy, w * .44, h * .26, tilt)
+        else:
+            r = rnd.uniform(6.5, 8)
+            for k in range(4):
+                a = rnd.uniform(0, 90) + k * 90
+                ax, ay = x1 + math.cos(math.radians(a)) * r * .62, y1 - 6 + math.sin(math.radians(a)) * r * .62
+                cups += ellipse_d(ax, ay, r * .72, r * .58, a)
+            centres.append((x1, y1 - 6))
+    sym.add(leaves, "line")
+    sym.add(stems, "line")
+    sym.add(cups, "poppy")
+    sym.add(insides, "flower")
+    sym.add(dots_d(centres), "centre")
+    return sym
+
+
+def lupine(sym_id: str, *, width: float, base: float, spikes: int = 3, seed: int = 23) -> Symbol:
+    """Desert lupine: spikes of pea flowers in blue-violet, smaller toward the
+    tip, over palm-shaped leaves."""
+    rnd = random.Random(seed)
+    sym = Symbol(sym_id, width, base + 6)
+    stalks, leaves, flowers = "", "", ""
+    for i in range(spikes):
+        x0 = width * (.2 + .6 * (i + .5) / spikes) + rnd.uniform(-6, 6)
+        h = rnd.uniform(.62, .95) * (base - 8)
+        bend = rnd.uniform(-6, 6)
+        x1, y1 = x0 + bend * .8, base - h
+        mx, my = x0 + bend, base - h / 2
+        stalks += f"M{n(x0)} {n(base)}Q{n(mx)} {n(my)} {n(x1)} {n(y1)}"
+        whorls = int(h / 8)
+        for k in range(whorls):
+            t = .42 + .58 * k / max(1, whorls - 1)
+            px, py = on_quad(x0, base, mx, my, x1, y1, t)
+            size = 4.6 - 2.6 * (k / whorls)
+            for side in (-1, 1):
+                flowers += ellipse_d(px + side * size * .9, py + size * .25, size, size * .62, side * 28)
+        # palmate leaves near the ground
+        for side in (-1, 1):
+            lx, ly = x0 + side * rnd.uniform(9, 14), base - rnd.uniform(9, 16)
+            leaves += f"M{n(x0)} {n(base - 2)}Q{n((x0 + lx) / 2)} {n(ly + 4)} {n(lx)} {n(ly)}"
+            for k in range(7):
+                a = math.radians(-100 + k * 33 + side * 10)
+                leaves += f"M{n(lx)} {n(ly)}l{n(math.cos(a) * 6.5)} {n(math.sin(a) * 6.5)}"
+    sym.add(leaves, "line")
+    sym.add(stalks, "line")
+    sym.add(flowers, "lupine")
+    return sym
+
+
+def daisy(x: float, y: float, r: float, rays: int = 8) -> str:
+    """Ray petals as short strokes out from the disc (style "rays")."""
+    return "".join(f"M{n(x + math.cos(a) * r * .45)} {n(y + math.sin(a) * r * .45)}l{n(math.cos(a) * r)} {n(math.sin(a) * r)}"
+                   for a in (k / rays * math.tau + .2 for k in range(rays)))
+
+
+def globemallow(sym_id: str, *, width: float, base: float, wands: int = 4, seed: int = 25) -> Symbol:
+    """Desert globemallow: tall wands with small apricot cups along their
+    upper reach and little three-lobed leaves below."""
+    rnd = random.Random(seed)
+    sym = Symbol(sym_id, width, base + 6)
+    stems, leaves, petals, hearts = "", "", "", []
+    for i in range(wands):
+        x0 = width / 2 + (i - (wands - 1) / 2) * rnd.uniform(5, 8)
+        ang = math.radians((i - (wands - 1) / 2) * 11 + rnd.uniform(-5, 5))
+        h = rnd.uniform(.7, .96) * (base - 10)
+        x1, y1 = x0 + math.sin(ang) * h, base - math.cos(ang) * h
+        mx, my = (x0 + x1) / 2 + rnd.uniform(-6, 6), (base + y1) / 2
+        stems += f"M{n(x0)} {n(base)}Q{n(mx)} {n(my)} {n(x1)} {n(y1)}"
+        for k in range(5):
+            t = .55 + .45 * k / 4
+            px, py = on_quad(x0, base, mx, my, x1, y1, t)
+            side = -1 if k % 2 else 1
+            fx, fy = px + side * 5, py - 1
+            petals += dots_d([(fx + math.cos(math.radians(q * 72 - 90)) * 2.3, fy + math.sin(math.radians(q * 72 - 90)) * 2.3) for q in range(5)])
+            hearts.append((fx, fy))
+        for t in (.18, .3, .42):
+            px, py = on_quad(x0, base, mx, my, x1, y1, t)
+            side = 1 if rnd.random() < .5 else -1
+            leaves += f"M{n(px)} {n(py)}l{n(side * 6)} {n(-3)}l{n(side * 2)} {n(-3)}M{n(px + side * 6)} {n(py - 3)}l{n(side * 3)} {n(1.5)}"
+    sym.add(leaves, "line")
+    sym.add(stems, "line")
+    sym.add(petals, "mallow-dots")
+    sym.add(dots_d(hearts), "centre")
+    return sym
+
+
+def brittlebush(sym_id: str, *, width: float, base: float, seed: int = 27) -> Symbol:
+    """Brittlebush in March: a silver-green dome, and yellow daisies held
+    well above it on bare stalks."""
+    rnd = random.Random(seed)
+    sym = Symbol(sym_id, width, base + 6)
+    cx, rx, ry = width / 2, width * .36, (base) * .34
+    dome = [(cx - rx, base)]
+    for k in range(9):
+        a = math.pi * (1 - k / 8)
+        rr = rnd.uniform(.9, 1.06)
+        dome.append((cx + math.cos(a) * rx * rr, base - 1 - math.sin(a) * ry * rr))
+    dome.append((cx + rx, base))
+    sym.add(smooth(dome), "outline")
+    texture = ""
+    for _ in range(26):                                  # leaf texture inside the dome
+        a = rnd.uniform(.15, math.pi - .15)
+        f = rnd.uniform(.25, .82)
+        x, y = cx + math.cos(a) * rx * f, base - 2 - math.sin(a) * ry * f
+        texture += f"M{n(x)} {n(y)}q{n(2.5)} {n(-2.5)} {n(5)} {n(-.5)}"
+    sym.add(texture, "line")
+    stalks, rays, disks = "", "", []
+    for k in range(9):
+        a = math.pi * (.08 + .84 * (k + rnd.uniform(.2, .8)) / 9)
+        sx, sy = cx + math.cos(a) * rx * .7, base - math.sin(a) * ry * .7
+        tx = sx + math.cos(a) * rnd.uniform(4, 14)
+        ty = base - ry - rnd.uniform(12, base - ry - 12)
+        stalks += stem_d(sx, sy, tx, ty, rnd.uniform(-4, 4))
+        rays += daisy(tx, ty, rnd.uniform(4.2, 5.4))
+        disks.append((tx, ty))
+    sym.add(stalks, "line")
+    sym.add(rays, "rays")
+    sym.add(dots_d(disks), "centre")
+    return sym
+
+
+def trumpet_d(x: float, y: float, length: float, mouth: float, angle: float) -> str:
+    """A tubular flower leaving a stalk at (x, y): narrow at the base,
+    flaring to a two-lobed mouth. `angle` is the direction it points,
+    degrees clockwise from straight down."""
+    a = math.radians(angle)
+    ux, uy = math.sin(a), math.cos(a)              # along the tube
+    vx, vy = uy, -ux                               # across it
+
+    def at(t: float, w: float) -> tuple[float, float]:
+        return (x + ux * length * t + vx * w, y + uy * length * t + vy * w)
+    pts = [at(0, -.5), at(.6, -mouth * .3), at(.98, -mouth * .5), at(.94, 0), at(.98, mouth * .5), at(.6, mouth * .3), at(0, .5)]
+    return smooth(pts, closed=True, tension=.8)
+
+
+def penstemon(sym_id: str, *, width: float, base: float, stalks: int = 3, seed: int = 29) -> Symbol:
+    """Parry's penstemon: tall stalks hung with rose-pink trumpets,
+    hummingbird food in March."""
+    rnd = random.Random(seed)
+    sym = Symbol(sym_id, width, base + 6)
+    stems, leaves, tubes = "", "", ""
+    for i in range(stalks):
+        x0 = width * (.3 + .4 * (i + .5) / stalks) + rnd.uniform(-4, 4)
+        h = rnd.uniform(.72, .97) * (base - 6)
+        bend = rnd.uniform(-10, 10)
+        x1, y1 = x0 + bend * .7, base - h
+        mx, my = x0 + bend, base - h / 2
+        stems += f"M{n(x0)} {n(base)}Q{n(mx)} {n(my)} {n(x1)} {n(y1)}"
+        for k in range(8):
+            t = .45 + .55 * k / 7
+            px, py = on_quad(x0, base, mx, my, x1, y1, t)
+            side = -1 if k % 2 else 1
+            tubes += trumpet_d(px, py, 8.5 - 3 * k / 7, 4.2 - 1.2 * k / 7, side * rnd.uniform(58, 78) + 180)
+        for side in (-1, 1):                              # lance-shaped basal leaves
+            L = rnd.uniform(15, 20)
+            a = math.radians(side * rnd.uniform(58, 72))
+            tip = (x0 + math.sin(a) * L, base - 1 - math.cos(a) * L)
+            mid = (x0 + math.sin(a) * L * .5, base - 1 - math.cos(a) * L * .5)
+            nx, ny = math.cos(a) * 3.2, math.sin(a) * 3.2
+            leaves += smooth([(x0, base - 1), (mid[0] - nx, mid[1] - ny), tip, (mid[0] + nx, mid[1] + ny), (x0, base - 1)], tension=.8)
+    sym.add(leaves, "outline")
+    sym.add(stems, "line")
+    sym.add(tubes, "pink")
+    return sym
+
+
+def hedgehog(sym_id: str, *, width: float, base: float, seed: int = 31) -> Symbol:
+    """A hedgehog cactus clump in April: stubby ribbed stems and big
+    magenta cups sitting right on the spines."""
+    rnd = random.Random(seed)
+    sym = Symbol(sym_id, width, base + 6)
+    stems = [(width * .32, 36, 13), (width * .5, 48, 15), (width * .68, 32, 12), (width * .43, 24, 11)]
+    ribs, dots, cups, hearts = "", [], "", []
+    for x, h, hw in stems:
+        top = base - h
+        sym.add(f"M{n(x - hw)} {n(base)}L{n(x - hw)} {n(top + hw)}A{n(hw)} {n(hw)} 0 0 1 {n(x + hw)} {n(top + hw)}L{n(x + hw)} {n(base)}", "outline")
+        for k in range(4):
+            t = -1 + 2 * (k + .5) / 4
+            dx = hw * math.sin(t * math.pi / 2 * .85)
+            ribs += f"M{n(x + dx)} {n(base - 1)}L{n(x + dx)} {n(top + hw)}Q{n(x + dx)} {n(top + 3)} {n(x + dx * .3)} {n(top + 2)}"
+            yy = top + hw + 2
+            while yy < base - 3:
+                dots.append((x + dx, yy))
+                yy += 6.5
+    for x, h, hw in stems[:2]:
+        fx, fy = x + rnd.uniform(-3, 3), base - h - 2
+        cups += cup_d(fx, fy + 4, hw * 1.7, hw * 1.35, rnd.uniform(-10, 10))
+        hearts.append((fx, fy - hw * .5))
+    sym.add(ribs, "line")
+    sym.add(dots_d(dots), "dots")
+    sym.add(cups, "pink")
+    sym.add(dots_d(hearts), "flower")
+    ground(sym, width * .1, width * .9, base, rnd, tufts=1)
+    return sym
+
+
+def agave(sym_id: str, *, width: float, base: float, seed: int = 33) -> Symbol:
+    """A century plant in its one bloom: a rosette of armoured leaves and a
+    stalk three times its height, branching into gold flower clusters."""
+    rnd = random.Random(seed)
+    sym = Symbol(sym_id, width, base + 6)
+    cx = width / 2
+    rosette = []
+    for k in range(11):
+        t = -1 + 2 * k / 10
+        ang = t * 72 + rnd.uniform(-5, 5)
+        L = (1 - .38 * abs(t)) * rnd.uniform(62, 74)
+        rosette.append((abs(t), ang, L))
+    rosette.sort(key=lambda r: -r[0])                    # outer leaves behind, inner in front
+    spines = ""
+    for _, ang, L in rosette:
+        a = math.radians(ang)
+        tipx, tipy = cx + math.sin(a) * L, base - 4 - math.cos(a) * L
+        w = 12.5                                          # broad at the base, like a real agave
+        nx, ny = math.cos(a) * w, math.sin(a) * w
+        leaf = [(cx - nx, base - 2 + ny * .2), (cx - nx * .75 + math.sin(a) * L * .55, base - 4 - math.cos(a) * L * .55),
+                (tipx, tipy), (cx + nx * .75 + math.sin(a) * L * .55, base - 4 - math.cos(a) * L * .55), (cx + nx, base - 2 - ny * .2)]
+        sym.add(smooth(leaf, tension=.7), "outline")
+        spines += f"M{n(tipx)} {n(tipy)}l{n(math.sin(a) * 4)} {n(-math.cos(a) * 4)}"
+    sym.add(spines, "line")
+    # the bloom stalk and its candelabra of branches
+    top = 18
+    stalk = f"M{n(cx)} {n(base - 30)}Q{n(cx + 4)} {n((base + top) / 2)} {n(cx + 2)} {n(top)}"
+    branches, clusters = "", []
+    for k in range(7):
+        y = top + 12 + k * 13
+        span = 16 + k * 3.5
+        for side in (-1, 1):
+            ex, ey = cx + 2 + side * span, y - 7 - rnd.uniform(0, 4)
+            branches += f"M{n(cx + 2 - (y - top) * .02)} {n(y)}Q{n(cx + 2 + side * span * .6)} {n(y + 2)} {n(ex)} {n(ey)}"
+            for _ in range(6):
+                clusters.append((ex + rnd.uniform(-4.5, 4.5), ey + rnd.uniform(-4.5, 2)))
+    sym.add(stalk + branches, "line")
+    sym.add(dots_d(clusters), "blooms")
+    ground(sym, cx - 80, cx + 80, base, rnd, tufts=2)
+    return sym
+
+
+def grass(sym_id: str, *, width: float, base: float, seed: int = 35) -> Symbol:
+    """A tuft of desert grass with seed heads."""
+    rnd = random.Random(seed)
+    sym = Symbol(sym_id, width, base + 4)
+    d, heads = "", []
+    for k in range(9):
+        a = math.radians(-50 + k * 12.5 + rnd.uniform(-5, 5))
+        L = rnd.uniform(.55, 1) * (base - 4)
+        x0 = width / 2 + (k - 4) * .8
+        ex, ey = x0 + math.sin(a) * L, base - math.cos(a) * L
+        d += stem_d(x0, base, ex, ey, math.sin(a) * L * .25)
+        if k % 3 == 1:
+            heads.append((ex, ey))
+    sym.add(d, "line")
+    sym.add(dots_d(heads), "dots")
+    return sym
+
+
 def build() -> str:
     symbols = [
         saguaro("saguaro", cx=120, base=520, top=40, half=26, seed=4, blossoms=5, fruit=2, arms=(
@@ -487,6 +824,14 @@ def build() -> str:
         ocotillo("ocotillo", cx=150, base=330),
         palo_verde("palo-verde", cx=200, base=330),
         sedona("sedona", width=620, base=290),
+        agave("agave", width=200, base=300),
+        poppies("poppies", width=110, base=70),
+        lupine("lupine", width=80, base=110),
+        globemallow("globemallow", width=90, base=120),
+        brittlebush("brittlebush", width=130, base=90),
+        penstemon("penstemon", width=70, base=130),
+        hedgehog("hedgehog", width=110, base=80),
+        grass("grass", width=60, base=44),
     ]
     return '<svg xmlns="http://www.w3.org/2000/svg">' + "".join(s.svg() for s in symbols) + "</svg>\n"
 

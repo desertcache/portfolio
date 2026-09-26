@@ -11,6 +11,7 @@ import { initCaseStudies } from './case-studies.js';
 import { initOrb, initLatestDispatch } from './lab.js';
 import { initNav, initScrollSpy, initCopyEmail, initWarp, greet } from './chrome.js';
 import { initClock } from './clock.js';
+import { initRoadrunners } from './roadrunner.js';
 
 // Tells the <head> safety net that JS arrived (it un-hides content otherwise).
 document.documentElement.classList.add('js-ready');
@@ -29,6 +30,7 @@ const features = [
   ['scroll-spy', initScrollSpy],
   ['copy email', initCopyEmail],
   ['phoenix clock', initClock],
+  ['roadrunners', initRoadrunners],
   ['orb', initOrb],
   ['latest dispatch', initLatestDispatch],
   ['warp', initWarp],

@@ -52,11 +52,11 @@ green; v5.3 brings the red back as Sedona rock, on purpose, with guardrails.
 - **Colour by role.** By day: Sedona-dust paper (`#f3ebe6`), dusk ink
   (`#1c1624`, a saguaro's purple-black against the sunset), and
   **red rock** as the signal (`--accent` `#a8401d`: buttons, marks, big
-  numbers, map slopes). The gold of palo verde and prickly-pear flowers is
-  the highlighter (`--hi`), juniper green is the support colour
-  (`--support`), and prickly-pear fruit magenta (`--bloom`) is kept for
-  rare pops. After dark it is Sonoran dusk: deep violet (`#150f24`), the
-  rock in its last light (`#ff7a45`), and headline words lit sun-gold.
+  numbers, map slopes). Juniper green is the support colour (`--support`)
+  and prickly-pear fruit magenta (`--bloom`) is kept for rare pops; gold
+  lives in the drawings and the map's summits, not in the interface. After
+  dark it is Sonoran dusk: deep violet (`#150f24`), the rock in its last
+  light (`#ff7a45`), and headline words lit amber into pink.
 - **Guardrails, so it never drifts back to the Anthropic look.** The red
   has the same hue as Anthropic's clay but is far deeper and more saturated
   (lightness .39 against .60); keep it iron oxide, never lighten it toward
@@ -70,9 +70,17 @@ green; v5.3 brings the red back as Sedona rock, on purpose, with guardrails.
   (`semi-condensed`) for labels and data. Both come from one Google Fonts
   `<link>` that every page repeats; change one, change them all
   (`grep -rl "Archivo:ital" --include=*.html`).
-- **Emphasis.** An `<em>` in a headline is a gold highlighter stroke by day
-  and a sun-lit word at dusk. `--em-color` and `--em-band` decide which, so
-  there is one emphasis rule in `site.css`.
+- **Emphasis.** An `<em>` in a headline catches the sunset: the word is
+  filled with `--em-sunset` through `background-clip: text` (red rock into
+  prickly-pear berry by day, amber into orange into pink at dusk and in the
+  Lab), and as the heading arrives the light crosses it in reading order.
+  The gradient is 250% as wide as the word: its first 40% is the word at
+  rest and the ink after it is where the light starts, so the motion is one
+  `background-position` transition. Without `background-clip: text` the word
+  is plain red rock; with reduced motion it arrives lit. There is one
+  emphasis rule in `site.css`. (v5.4 retired the gold highlighter band,
+  `--hi`: it read as a yellow marker.) Selected text is a red-rock wash
+  (`--select`) with ink on top.
 - **Semantic colours are separate from the brand.** Gains use `--ok`,
   losses use `--neg` (a crimson, kept apart from the rock red). With a red
   brand, a *selection* drawn in the accent would read as "down", so the IPO
@@ -108,6 +116,60 @@ green; v5.3 brings the red back as Sedona rock, on purpose, with guardrails.
   ground line. The orb's stand-in is a setting sun.
 - **The footer at dusk** gets an afterglow behind the skyline
   (`--afterglow`), so the sun has just gone down behind Camelback.
+
+### Wildflowers (v5.4, 2026-09-26)
+
+- **The spring bloom:** Mexican gold poppies, lupine, globemallow,
+  brittlebush, Parry's penstemon, a flowering hedgehog cactus, an agave in
+  bloom and grass tufts, all from the same generator and sprite.
+- **Beds** (`.bed`, plants inside, sized by an inline `--h` in px): along the
+  hero's floor (`.hero-bed`, grouped in `.clump`s), in the bottom padding of
+  sections (`.bed-left` / `.bed-right`, alternating), and standing on the
+  footer's top edge in front of the skyline (`.footer-bed-l/-r`). Beds live
+  in padding on purpose, so they can never sit on content; if you shrink a
+  section's padding, shrink `--k` with it.
+- **The breeze:** every `.flora` sways on its own timing (`--sway-t`,
+  `--sway-d`, `--sway-a`), and each plant is its own `<svg>` so the sway is a
+  compositor-only transform. Cacti and agaves are `.plant` and stand still.
+  Reduced motion stops all of it.
+- **Colour:** each flower has a token (`--illo-poppy`, `--illo-lupine`,
+  `--illo-mallow`, `--illo-pink`, plus `--illo-flower` and `--illo-ember`),
+  day and dusk. Bodies are filled from `--illo-ground` with a breath of
+  juniper through `color-mix` (red for the Sedona rocks), behind an
+  `@supports` guard: without `color-mix` they fall back to the plain ground
+  colour rather than to black.
+
+### Wildlife (v5.4, 2026-09-26)
+
+- **Who lives here:** a greater roadrunner on the hero's floor and on the
+  Lab's sunset ground (in silhouette), a loose flock crossing the Lab's sky,
+  and a red-tailed hawk circling a thermal over Camelback on the hero map
+  (wide screens only; on phones the map sits behind the headline). They're
+  drawn by `scripts/draw_fauna.py` into `assets/fauna.svg`, in the plants'
+  hand and colour properties, so the Lab's silhouette rule covers them too.
+- **The roadrunner is a flip-book driven by scroll.** Its symbol holds six
+  run poses and two standing ones (tail down, tail flicked); `--frame` (a
+  registered `<integer>`, inherited into the `<use>`) picks one. Its
+  position is a function of scroll: over the stretch in which its `.trail`
+  rises through the screen, its hip goes from `--run-from` to `--run-to`
+  (fractions of the trail's width, set in CSS so breakpoints can move
+  them). It chases that spot with a 0.12 s lag, so a flick of the wheel reads
+  as a dash; scroll up and it turns round; stop and it stands and flicks its
+  tail (`tail-flick`, on `[data-state="idle"]`).
+- **Why its feet don't skate:** the legs are solved by two-bone IK from a
+  stride loop in which a planted foot sweeps back at an even pace, so one
+  stride carries the bird exactly `STRIDE / STANCE` units. The generator
+  writes that number (and the frame numbers, viewBox and hip) into
+  `js/fauna-data.js`, and `js/roadrunner.js` advances `--frame` by distance
+  covered, capped at 7 strides a second so fast scrolling reads as a blur of
+  legs instead of strobing. Maths in `js/wildlife.js`, tested in
+  `tests/wildlife.test.mjs`; drawing checks in `scripts/test_draw_fauna.py`.
+  Change a number in the generator and re-run it; never edit the outputs.
+- **Cost:** everything moves by transform. The flock and the hawk are pure
+  CSS (a full-width track translated across, the wingbeat a vertical scale
+  through zero); the roadrunner's loop runs only while its trail is on
+  screen and something is moving. Reduced motion stops all of it and leaves
+  each animal standing in its scene (`--rest`, and `--x` for the birds).
 
 ### The hero map is real terrain (v5.2 "Arizona", 2026-09-26)
 
@@ -174,13 +236,14 @@ python3 scripts/build_terrain.py   # needs numpy + Pillow; caches tiles in ~/.ca
 
 ```powershell
 npm install        # once, in this directory
-npm test           # unit tests for js/lib.js, editions.js, arizona.js (Node's built-in runner)
+npm test           # unit tests for js/lib.js, editions.js, arizona.js, wildlife.js (Node's built-in runner)
 npm run check      # type-checks js/ via JSDoc + TypeScript, no build output
-python -m pytest scripts   # the Python scripts: digest ingest, terrain build
+python -m pytest scripts   # the Python scripts: digest ingest, terrain build, drawings
 ```
 
-Pure logic lives in `js/lib.js` (and its newer siblings, `editions.js` and
-`arizona.js`) precisely so it can be tested without a browser. If a new
+Pure logic lives in `js/lib.js` (and its newer siblings, `editions.js`,
+`arizona.js` and `wildlife.js`) precisely so it can be tested without a
+browser. If a new
 helper doesn't touch the DOM, put it in one of those and test it.
 
 ### Images
