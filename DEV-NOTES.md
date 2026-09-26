@@ -67,34 +67,90 @@ and changes only the brand layer:
 - `--serif` is now an alias of `--display`, kept so older digests and pages
   that still name it keep resolving.
 
-### The hero shader (`js/topo.js`)
+### The hero map is real terrain (v5.2 "Arizona", 2026-09-26)
 
-A WebGL fragment shader draws contour lines over procedural terrain; the
-cursor raises a hill. It caps the drawing buffer at ~2.2 megapixels, drops to
-~30fps when idle, stops when the hero is off screen or the tab is hidden, and
-draws one still frame under `prefers-reduced-motion`. No WebGL means no
-canvas, just paper. Colours come from `--topo-*` tokens (hex only). On
-mouse devices the "field notes" card reads out the coordinates under the
-cursor.
+The contours in the hero are Camelback Mountain and the Phoenix Mountains,
+drawn from USGS elevation data, not noise. The cursor still raises a hill,
+and the "field notes" card reads out the real coordinates and elevation
+under the pointer, the named peak when you're on one, and a true scale bar.
+
+| File | Job |
+|---|---|
+| `scripts/build_terrain.py` | Fetches AWS Terrain Tiles, checks the named summits against the data (it refuses to build if one is more than 15 m off), and writes the next three files. Run it only to change the map; the site never runs it. Tests: `scripts/test_build_terrain.py`, offline, on synthetic terrain. |
+| `assets/terrain/heightmap.webp` | Elevation on a north-up lat/lon grid (16 m texels, ~160 KB), 12 bits packed into red and green: `v = 16*R + G/16`. Lossless; never re-save it through an image editor. |
+| `js/terrain-data.js` | Generated: extent, size, elevation range, named peaks. Don't hand-edit. |
+| `js/arizona.js` | Pure helpers: which ground the canvas frames (`viewFor`), pixel-to-coordinate mapping, heightmap decoding and sampling, the legend readout, the scale bar, Phoenix time. Tested in `tests/arizona.test.mjs`. |
+| `js/topo.js` | WebGL: uploads the heightmap, draws USGS-style contours (20 ft, 100 ft, a bold index line every 500 ft), the cursor hill and the night sky, and keeps the legend current. |
+
+Things worth knowing before touching it:
+
+- **The shader does its own bilinear filtering**, on a NEAREST texture. A GPU
+  filtering the two packed bytes itself may round each to 8 bits, which
+  terraces the lines.
+- **Colour management is off when decoding the heightmap**
+  (`createImageBitmap` with `colorSpaceConversion: 'none'`, or
+  `UNPACK_COLORSPACE_CONVERSION_WEBGL = NONE` on the `<img>` fallback). A
+  colour profile "correcting" those bytes would move mountains.
+- **Framing.** `viewFor` keeps Camelback at a designed spot (upper right on
+  desktop, behind the headline on a phone) and zooms in rather than show
+  ground the heightmap doesn't have. The view drifts about 100 m on a slow
+  loop; `data-seed` on the canvas pins that moment (the OG card uses 0, the
+  framing as designed).
+- **Elevation readout.** The terrain's value, except within ~90 m of a named
+  summit, where it shows the published spot height: the data is smoothed,
+  so summits read about 20 ft low, and a local would notice.
+- **Cost** is lower than the old procedural shader: one full-screen triangle,
+  four texture reads a pixel, the ~2.2-megapixel buffer cap, ~20fps while
+  idle, nothing while the hero is off screen or the tab is hidden. Reduced
+  motion gets one still frame (the readout still works; the hill doesn't).
+  No WebGL, or no heightmap, means no canvas, just paper.
+- **Cache safety.** The new helpers went into new files (`arizona.js`,
+  `clock.js`, `terrain-data.js`) and `lib.js` kept its exports, including
+  the now-unused `coordsFor`, for the same reason `editions.js` exists.
+  `coordsFor` can go in any later release.
+
+### The skyline and the clock
+
+- **The footer skyline** is `.footer::before`: `assets/skyline.svg` as a CSS
+  mask, filled with `--bg-tint`. It is the real skyline, looking north
+  across the city from about 8 km south-southwest of Camelback (eye 60 m up,
+  heights doubled), built by the same script from the same data. CSS only,
+  so every page with the shared footer has it; phones see a 900px-wide crop
+  that keeps Camelback in view.
+- **The Phoenix clock** in the contact section is `js/clock.js`
+  (`Intl.DateTimeFormat`, `America/Phoenix`), ticking on the minute. With
+  JS off, the line still names the time zone.
+
+To change the map (a different peak, extent, or texel size), edit the
+constants at the top of `scripts/build_terrain.py` and run it:
+
+```bash
+python3 scripts/build_terrain.py   # needs numpy + Pillow; caches tiles in ~/.cache/portfolio-terrain
+```
 
 ### Checks
 
 ```powershell
 npm install        # once, in this directory
-npm test           # unit tests for js/lib.js (Node's built-in runner)
+npm test           # unit tests for js/lib.js, editions.js, arizona.js (Node's built-in runner)
 npm run check      # type-checks js/ via JSDoc + TypeScript, no build output
+python -m pytest scripts   # the Python scripts: digest ingest, terrain build
 ```
 
-Pure logic lives in `js/lib.js` precisely so it can be tested without a
-browser. If a new helper doesn't touch the DOM, put it there and test it.
+Pure logic lives in `js/lib.js` (and its newer siblings, `editions.js` and
+`arizona.js`) precisely so it can be tested without a browser. If a new
+helper doesn't touch the DOM, put it in one of those and test it.
 
 ### Images
 
 - `assets/headshot-600.*` and `headshot-96.*` are square crops of the
   original headshot (WebP with a JPEG fallback via `<picture>`).
 - `assets/og.png` is the link-preview image. Its source is
-  `scripts/og-card.html`, which renders the real shader with a pinned seed;
-  the steps to regenerate are in that file's header comment.
+  `scripts/og-card.html`, which renders the real hero map (Camelback) with
+  the drift pinned; the steps to regenerate are in that file's header
+  comment.
+- `assets/terrain/heightmap.webp` and `assets/skyline.svg` are generated by
+  `scripts/build_terrain.py` (see "The hero map is real terrain").
 - `favicon.svg` and `assets/apple-touch-icon.png` share the contour mark
   used in the nav.
 

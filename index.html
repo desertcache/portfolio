@@ -47,7 +47,7 @@
 
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="css/site.css?v=2026-09-26">
+  <link rel="stylesheet" href="css/site.css?v=2026-09-26b">
   <script type="module" src="js/main.js"></script>
 
   <script type="application/ld+json">
@@ -130,7 +130,7 @@
         <aside class="legend rise" style="--delay: .46s" aria-label="Selected outcomes">
           <div class="legend-head">
             <p class="legend-title">Field notes</p>
-            <p class="legend-coords" aria-hidden="true"><span data-lat>33.4484° N</span> <span data-lon>112.0740° W</span></p>
+            <p class="legend-coords" aria-hidden="true"><span data-lat>33.5147° N</span> <span data-lon>111.9616° W</span></p>
           </div>
           <ul class="proof">
             <li>
@@ -159,8 +159,8 @@
             </li>
           </ul>
           <div class="legend-foot" aria-hidden="true">
-            <span class="scale"><i></i><i></i><i></i><i></i></span><span>1 km</span>
-            <span class="legend-place">Phoenix, AZ</span>
+            <span class="scale" data-scale><i></i><i></i><i></i><i></i></span><span data-scale-label>¼ mi</span>
+            <span class="legend-place"><span data-place="Phoenix, AZ">Camelback Mtn</span> <span class="legend-elev" data-elev>2,706 ft</span></span>
           </div>
         </aside>
       </div>
@@ -557,7 +557,10 @@
       <div class="wrap">
         <h2 class="contact-title reveal" id="contact-title">Let's build the system that fixes <em>the bottleneck.</em></h2>
         <div class="contact-grid reveal">
-          <p class="contact-lede">Email is the fastest way to reach me.</p>
+          <div class="contact-lede">
+            <p>Email is the fastest way to reach me.</p>
+            <p class="contact-clock"><span data-phoenix-time>Phoenix time</span> · UTC−7 all year; Arizona skips daylight saving</p>
+          </div>
           <div class="contact-actions">
             <a class="btn btn-solid btn-lg" href="mailto:batessambates@gmail.com">Email me <span class="btn-arrow" aria-hidden="true">↗</span></a>
             <button class="btn btn-ghost btn-lg copy-email" type="button" data-email="batessambates@gmail.com"><span class="copy-label">Copy address</span></button>
@@ -575,7 +578,7 @@
 
   <footer class="footer">
     <div class="wrap footer-inner">
-      <p class="footer-copy">© 2026 Samuel Bates. Hand-built with HTML, CSS, and a little JavaScript. No framework.</p>
+      <p class="footer-copy">© 2026 Samuel Bates. Hand-built in Phoenix with HTML, CSS, and a little JavaScript. No framework.</p>
       <nav class="side-quests" aria-label="Side quests">
         <span>Side quests:</span>
         <a href="starship.html">Starship</a>
@@ -583,6 +586,7 @@
         <a href="blog/index.html">Hill Money Watch</a>
         <a href="skincare.html">A skincare regimen, run like an ops program</a>
       </nav>
+      <p class="footer-note">The contour map up top and the mountains above this footer are real: Camelback and the Phoenix Mountains, drawn from USGS elevation data.</p>
       <p class="footer-hint"><kbd>`</kbd> warps you to the starship.</p>
     </div>
   </footer>
