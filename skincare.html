@@ -5,61 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Skincare Protocol · Samuel Bates</title>
     <meta name="description" content="A personal skincare regimen run as an operational system: two campaigns and a deload, load rules, a red-team changelog, and a PubMed evidence base.">
-    <meta name="theme-color" content="#f6f3ee">
+    <link rel="canonical" href="https://desertcache.github.io/portfolio/skincare.html">
+    <meta name="theme-color" content="#f3ebe6">
 
     <script>
-      // no-FOUC: apply saved/system theme before first paint. Shares the
-      // `sb-theme` key with index.html so the choice carries across pages.
+      // Same as every page: pick the theme before first paint and flag that JS is on.
       (function () {
+        var root = document.documentElement;
+        root.classList.add('js');
+        setTimeout(function () { if (!root.classList.contains('js-ready')) root.classList.remove('js'); }, 4000);
         try {
           var t = localStorage.getItem('sb-theme');
           if (t !== 'dark' && t !== 'light') {
             t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
           }
-          document.documentElement.setAttribute('data-theme', t);
-          var m = document.querySelector('meta[name="theme-color"]');
-          if (m) m.setAttribute('content', t === 'dark' ? '#161412' : '#f6f3ee');
-        } catch (e) { /* storage blocked — stay light */ }
+          root.setAttribute('data-theme', t);
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#150f24' : '#f3ebe6');
+        } catch (e) { /* storage blocked: CSS falls back to the system theme */ }
       })();
     </script>
 
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-
-    <!-- Portfolio type system: Instrument Serif + Geist + Geist Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Martian+Mono:wdth,wght@75..112.5,100..800&display=swap">
 
-    <!-- Compiled from skincare.src.css + tailwind.skincare.config.js.
-         Static sheet, not the Tailwind play CDN: no third-party script, no
-         in-browser JIT, no flash of unstyled content. See DEV-NOTES.md. -->
-    <link rel="stylesheet" href="skincare.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+    <!-- The site's stylesheet for the chrome (nav, footer, tokens), then this
+         page's own: compiled from skincare.src.css + tailwind.skincare.config.js
+         (npm run build:skincare). See DEV-NOTES.md. -->
+    <link rel="stylesheet" href="css/site.css?v=2026-09-27a">
+    <link rel="stylesheet" href="skincare.css?v=2026-09-27">
+    <script type="module" src="js/page.js"></script>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-ochre-light selection:text-ochre">
 
-    <!-- Portfolio chrome -->
-    <div class="border-b border-hairline">
-        <div class="topbar">
-            <a href="index.html" class="brand">
-                <span class="brand-mark">S</span>
-                <span>Samuel Bates</span>
-                <span class="ver">· v2026.07</span>
-            </a>
-            <div class="topbar-right">
-                <nav>
-                    <a href="index.html">[01] Portfolio</a>
-                    <a href="index.html#work">[02] Work</a>
-                    <a href="arcade.html">[03] Arcade</a>
-                    <a href="starship.html">[04] Starship</a>
-                    <a href="skincare.html" class="active">[05] Protocol</a>
-                </nav>
-                <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">◐</button>
-            </div>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="nav" id="nav">
+      <div class="nav-inner">
+        <a class="brand" href="index.html" aria-label="Samuel Bates, home">
+          <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <path d="M6.2 17.8C5.2 11.6 9.4 6.1 15.6 5.6 21.9 5.1 27.2 9.2 26.8 15.2 26.4 20.4 23.6 22.1 20.1 24.6 16.2 27.4 7.3 25.1 6.2 17.8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M11.4 15.9C11.1 12.2 13.9 9.6 17.4 9.5 21 9.4 23.1 11.9 22.6 15 22.1 18.2 19.8 19.2 17.2 20.1 14.2 21.1 11.7 19.2 11.4 15.9Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <circle cx="17.6" cy="14.7" r="2.6" class="brand-dot"/>
+          </svg>
+          <span class="brand-name">Samuel Bates</span>
+        </a>
+        <nav class="nav-links" aria-label="Sections">
+          <a href="index.html#work">Work</a>
+          <a href="index.html#lab">Lab</a>
+          <a href="index.html#about">About</a>
+          <a href="index.html#contact">Contact</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.2 14.6A8.3 8.3 0 0 1 9.4 3.8a8.3 8.3 0 1 0 10.8 10.8Z"/></svg>
+          </button>
+          <a class="btn btn-ghost btn-sm nav-cv" href="Samuel_Bates_CV.pdf" target="_blank" rel="noopener">Résumé</a>
+          <a class="btn btn-solid btn-sm" href="mailto:batessambates@gmail.com">Get in touch</a>
         </div>
-    </div>
+      </div>
+      <div class="nav-progress" aria-hidden="true"></div>
+    </header>
 
     <!-- Document Header & Metadata Banner -->
-    <header class="border-b border-hairline bg-paper sticky top-0 z-50 backdrop-blur-md bg-opacity-90">
+    <header class="doc-head border-b border-hairline bg-paper lg:sticky z-40 backdrop-blur-md bg-opacity-90">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
             <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
                 <div>
@@ -108,7 +120,7 @@
     </header>
 
     <!-- Main Content Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+    <main id="main" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
 
         <!-- ========================================== -->
         <!-- TAB 01: OVERVIEW & CHANGELOG -->
@@ -870,40 +882,25 @@
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-hairline bg-paper py-8 text-center text-xs font-mono text-ink-secondary">
+    <div class="border-t border-hairline bg-paper pt-8 pb-28 px-4 text-center text-xs font-mono text-ink-secondary">
         <p>Canonical execution lives in Reminders app ("AM Skincare", "PM — Adapalene night", "PM — BHA night", "PM — Recovery night").</p>
         <p class="text-[10px] text-ink-muted mt-1">v3 supersedes v2 (2026-07-26) · Sonoran Desert Architectural Protocol</p>
-        <p class="mt-4"><a href="index.html" class="text-ochre hover:underline">← Back to portfolio</a></p>
+    </div>
+
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <p class="footer-copy">© 2026 Samuel Bates. Hand-built in Phoenix with HTML, CSS, and a little JavaScript. No framework.</p>
+        <nav class="side-quests" aria-label="Side quests">
+          <span>Side quests:</span>
+          <a href="starship.html">Starship</a>
+          <a href="arcade.html">Arcade</a>
+          <a href="blog/index.html">Hill Money Watch</a>
+          <a href="skincare.html" aria-current="page">A skincare regimen, run like an ops program</a>
+        </nav>
+      </div>
     </footer>
 
     <!-- Interactive Logic Scripts -->
-    <script>
-        // Theme toggle. alive.js can't be reused here — it gates its boot on
-        // `.receipt` from the homepage — so this is the same contract in
-        // miniature: same `sb-theme` key, same data-theme attribute.
-        (function () {
-            var root = document.documentElement;
-            var btn = document.getElementById('theme-toggle');
-            function current() {
-                return root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-            }
-            function apply(t) {
-                root.classList.add('theme-fade');
-                root.setAttribute('data-theme', t);
-                try { localStorage.setItem('sb-theme', t); } catch (e) {}
-                var m = document.querySelector('meta[name="theme-color"]');
-                if (m) m.setAttribute('content', t === 'dark' ? '#161412' : '#f6f3ee');
-                if (btn) btn.setAttribute('aria-pressed', String(t === 'dark'));
-                setTimeout(function () { root.classList.remove('theme-fade'); }, 500);
-            }
-            if (btn) {
-                btn.setAttribute('aria-pressed', String(current() === 'dark'));
-                btn.addEventListener('click', function () {
-                    apply(current() === 'dark' ? 'light' : 'dark');
-                });
-            }
-        })();
-    </script>
 
     <script>
         // Tab switching logic

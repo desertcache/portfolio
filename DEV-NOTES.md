@@ -334,7 +334,7 @@ Things worth knowing before touching the blog:
 - **The archive list is rendered by JS** from `blog/posts.json`. With JS off
   (or if `js/blog.js` never arrives), a fallback line points at the homepage.
 
-## skincare.html is precompiled too (2026-08-15)
+## skincare.html is precompiled too (2026-08-15, reskinned 2026-09-27)
 
 The skincare protocol page is written in Tailwind utility classes, but it does
 **not** load the Tailwind play CDN. `skincare.css` is a static 19KB sheet built
@@ -355,7 +355,7 @@ the third-party script entirely.
 Two things about that build worth knowing before you touch it:
 
 - The palette lives in CSS custom properties as **rgb channel triplets**
-  (`--sk-ink: 24 22 19`), wired into the Tailwind config as
+  (`--sk-ink: 28 22 36`), wired into the Tailwind config as
   `rgb(var(--sk-ink) / <alpha-value>)`. That form is what keeps opacity
   modifiers (`bg-paper/50`, `bg-ochre-light/40`, `bg-opacity-90`) generating
   correct CSS. Plain `var(--x)` would silently break all of them.
@@ -365,8 +365,39 @@ Two things about that build worth knowing before you touch it:
   runtime. (When grepping the built file: the minifier unquotes attribute
   selectors to `[data-theme=dark]` and collapses `::after` to `:after`.)
 
-The page carries its own miniature theme toggle. Same `sb-theme` localStorage
-key as every other page, so the light/dark choice follows you around the site.
+Since v5.5 it wears the site's look. `css/site.css` loads first for the nav,
+the footer and the tokens; `skincare.css` (with Tailwind's preflight) comes
+after, so the document keeps the base it was built on while the nav and
+footer, styled by class, are untouched. `js/page.js` runs the site's theme
+toggle and nav (same `sb-theme` key as every page). The `--sk-*` palette is
+the site's Sedona day and Sonoran dusk (ochre is red rock; sage and slate
+keep their meanings, recovery and BHA, and clear 4.5:1 on their tints);
+`font-serif` headings take the site's display cut (Archivo semi-expanded,
+750) and `font-mono` is Martian Mono set semi-condensed, as everywhere else.
+The document header pins under the fixed nav on wide screens only
+(`lg:sticky` + `.doc-head`); on a phone it's too tall to pin. The end-note
+keeps `pb-28` so the footer's skyline, which rises into the space above the
+footer, doesn't cover it.
+
+## The Lab's rooms: arcade.html and starship.html (2026-09-27)
+
+Both wear the site's chrome: the real nav (Lab marked current), the
+homepage's section head (eyebrow, a title whose `<em>` catches the sunset,
+a lede, a desert drawing) and the footer with the side quests. `css/play.css`
+is the room itself: dark in both themes like the Lab, with the sunset's glow
+along its floor. `js/page.js` is their script entry (theme toggle, nav).
+
+- `arcade/main.js` owns the cabinet's contents. Keep every hook it reaches
+  for: `#arcade-section`, `#gameCanvas`, `#arcade-menu`, `.arcade-btn`,
+  `[data-game]`, `#btn-*`, `#game-over-screen`, `#final-score`,
+  `#hud-score`, `#current-score`, `.crt-off`. Pac-Man draws its own score
+  (`ownHud`), so the page's HUD shows only for the other games.
+- The arcade no longer sets `user-scalable=no` (it blocked pinch zoom, an
+  accessibility failure); `touch-action: manipulation` on the cabinet stops
+  double-tap zoom mid-game instead.
+- The starship is a separate app (desertcache/starship), framed only when
+  you board; this page is the dock. Touch-only or narrow screens get the
+  poster and a note.
 
 ## The blog does not update itself (2026-08-15, updated 2026-09-23)
 

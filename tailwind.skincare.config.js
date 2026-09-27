@@ -15,9 +15,12 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Geist', '-apple-system', 'Helvetica Neue', 'sans-serif'],
-        serif: ['Instrument Serif', 'Georgia', 'serif'],
-        mono: ['Geist Mono', 'JetBrains Mono', 'ui-monospace', 'monospace'],
+        // the site's type (css/site.css): Archivo for reading and, set
+        // semi-expanded, for display (what `font-serif` means here since
+        // v5.5); Martian Mono for labels and data
+        sans: ['Archivo', 'ui-sans-serif', '-apple-system', 'Segoe UI', 'sans-serif'],
+        serif: ['Archivo', 'ui-sans-serif', 'Helvetica Neue', 'sans-serif'],
+        mono: ['Martian Mono', 'ui-monospace', 'SF Mono', 'Menlo', 'monospace'],
       },
       colors: {
         paper: 'rgb(var(--sk-paper) / <alpha-value>)',
