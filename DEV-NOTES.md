@@ -275,10 +275,17 @@ python3 scripts/build_terrain.py   # needs numpy + Pillow; caches tiles in ~/.ca
 
 ```powershell
 npm install        # once, in this directory
-npm test           # unit tests for js/lib.js, editions.js, arizona.js, wildlife.js (Node's built-in runner)
+npm test           # unit tests for js/lib.js, editions.js, arizona.js, wildlife.js, plus the homepage content
+                   # checks (tests/homepage-content.test.mjs) (Node's built-in runner)
 npm run check      # type-checks js/ via JSDoc + TypeScript, no build output
 python -m pytest scripts   # the Python scripts: digest ingest, terrain build, drawings
 ```
+
+`tests/homepage-content.test.mjs` holds the copy rules that apply to every edit: no em dash anywhere a
+reader looks on the homepage or a work sample (text, SVG labels, tab title, link-preview text), every
+`#link` and `data-cs` resolves, and each work card has its dialog, in card order, with prev/next links
+that go round in one loop. Public copy also has to pass the job-search repo's
+`strategy-2026-09/grep-gate.py` (no DoorDash-internal numbers, codenames or vendor names).
 
 Pure logic lives in `js/lib.js` (and its newer siblings, `editions.js`,
 `arizona.js` and `wildlife.js`) precisely so it can be tested without a

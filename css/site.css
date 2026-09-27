@@ -569,6 +569,7 @@ kbd {
   box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--line-strong);
 }
 .hero-role { color: var(--ink-3); font-weight: 400; }
+.hero-sep { white-space: pre; }
 .hero-statement {
   display: block;
   max-width: 13ch;
@@ -697,6 +698,7 @@ kbd {
   .hero { min-height: 0; }
   .hero-statement { font-size: clamp(2.05rem, 10.2vw, 2.7rem); max-width: none; }
   .hero-role { display: block; font-size: 0.875rem; }
+  .hero-sep { display: none; }
   .avatar { width: 40px; height: 40px; }
   .hero-cta .btn { flex: 1 1 auto; }
   .hero-cta .copy-email { flex-basis: 100%; }
@@ -826,6 +828,7 @@ kbd {
 .mini-stats dt { font: 500 semi-condensed 0.6875rem var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
 .mini-stats dd { margin-top: 6px; font: 800 semi-expanded clamp(1.2rem, 1.7vw, 1.45rem)/1.1 var(--display); letter-spacing: -0.03em; }
 .mini-stats small { display: block; margin-top: 4px; font: 400 0.875rem/1.35 var(--sans); letter-spacing: 0; color: var(--ink-3); }
+.step-more { margin-top: 24px; }
 
 @media (max-width: 900px) {
   .mig { grid-template-columns: 1fr; }
@@ -1009,6 +1012,7 @@ kbd {
 .cs-body section { display: grid; grid-template-columns: 9.5rem 1fr; gap: 20px; padding: 22px 0; border-bottom: 1px solid var(--line-2); }
 .cs-body h4 { padding-top: 5px; font: 500 semi-condensed 0.75rem var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-ink); }
 .cs-body p { font-size: 1.0625rem; line-height: 1.7; color: var(--ink-2); text-wrap: pretty; }
+.cs-body .cs-more { margin-top: 14px; }
 .cs-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 32px; }
 .cs-nav a {
   display: flex;
