@@ -133,13 +133,29 @@ green; v5.3 brings the red back as Sedona rock, on purpose, with guardrails.
   compositor-only transform. Cacti and agaves are `.plant` and stand still.
   Reduced motion stops all of it.
 - **Colour:** each flower has a token (`--illo-poppy`, `--illo-lupine`,
-  `--illo-mallow`, `--illo-pink`, plus `--illo-flower` and `--illo-ember`),
-  day and dusk. Bodies are filled from `--illo-ground` with a breath of
+  `--illo-mallow`, `--illo-pink`, `--illo-blue`, `--illo-violet`,
+  `--illo-cream`, plus `--illo-flower` and `--illo-ember`), day and dusk. Bodies are filled from `--illo-ground` with a breath of
   juniper through `color-mix` (red for the Sedona rocks), behind an
   `@supports` guard: without `color-mix` they fall back to the plain ground
   colour rather than to black.
 
-### Wildlife (v5.4, 2026-09-26)
+### The second flush: no bed repeats itself (v5.5, 2026-09-27)
+
+- **Twenty more drawings** in `assets/bloom.svg` (also from
+  `scripts/draw_desert.py`, `build_bloom()`): fairy duster, chuparosa,
+  desert bluebells, owl's clover, sand verbena, pincushion cactus, desert
+  marigold, sacred datura, teddy bear cholla, purple three-awn, creosote and
+  soaptree yucca, plus seeded variants of the first flush (the functions take
+  a `seed`: same species, different individual) and two colour variants,
+  firecracker penstemon and claret cup. `desert.svg` stayed byte-identical.
+- **The rule, enforced:** across every bed on the homepage a drawing appears
+  at most twice, never twice in one bed, and its second appearance is
+  mirrored (`.flip`, the individual `scale` property, so the sway's
+  `transform` still applies). `test_no_bed_repeats_itself` fails the build if
+  an edit breaks it. When you add a bed, pick drawings that are on the page
+  once or not at all.
+
+### Wildlife (v5.4, 2026-09-26; the neighbourhood v5.5, 2026-09-27)
 
 - **Who lives here:** a greater roadrunner on the hero's floor and on the
   Lab's sunset ground (in silhouette), a loose flock crossing the Lab's sky,
@@ -165,6 +181,29 @@ green; v5.3 brings the red back as Sedona rock, on purpose, with guardrails.
   legs instead of strobing. Maths in `js/wildlife.js`, tested in
   `tests/wildlife.test.mjs`; drawing checks in `scripts/test_draw_fauna.py`.
   Change a number in the generator and re-run it; never edit the outputs.
+- **The neighbourhood** (`assets/critters.svg`, `js/critter-data.js`, from
+  `build_critters()`): one animal to a section, each on its own `.trail` in
+  the section's bottom padding, behind its flower bed, and each with its own
+  gait in `js/trails.js`. A rattlesnake slithers across the Featured Program
+  section (a wave travels down its body, stepped by distance like the
+  roadrunner's legs) and at rest flicks its tongue and buzzes its rattle. A
+  desert hairy scorpion darts across Work (it commits to a spot, dashes,
+  freezes; `dart()` in `js/gaits.js`), raises its tail at rest, and glows
+  cyan at dusk the way scorpions do under ultraviolet. A Sonoran Desert toad
+  hops across Background in whole hops (`hop()`: it can't stop in mid-air)
+  and blinks and breathes at rest. A javelina trots into the footer as the
+  page ends and roots about. Frame 6 is every animal's resting pose, so the
+  registered `--frame` (initial 6) is right for all of them.
+- **One engine:** `js/trails.js` drives every animal on a trail (gaits:
+  run, dart, hop). `js/roadrunner.js` is now a one-line re-export kept only so
+  a cached older `main.js` still finds it; new pure logic went into a new
+  module (`gaits.js`) rather than new exports on an old one, for the same
+  reason.
+- **ViewBoxes start at 0 0.** A `<use>` lays its symbol's viewport at the
+  outer `<svg>`'s origin, so a symbol whose viewBox starts elsewhere is drawn
+  shifted by that much (v5.4's roadrunner stood 13 units below its own feet).
+  The generators now shift the drawing into a `0 0 w h` box, measured from
+  the paths themselves (`path_points`), and a test holds every symbol to it.
 - **Cost:** everything moves by transform. The flock and the hawk are pure
   CSS (a full-width track translated across, the wingbeat a vertical scale
   through zero); the roadrunner's loop runs only while its trail is on
