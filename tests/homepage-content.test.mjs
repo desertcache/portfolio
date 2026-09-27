@@ -49,6 +49,21 @@ test('the homepage and the work samples show no em dash anywhere a reader looks'
   }
 });
 
+test('the blog pages and the posts index show no em dash anywhere a reader looks', () => {
+  const dir = (d) => readdirSync(new URL(`../${d}/`, import.meta.url)).filter((f) => f.endsWith('.html')).map((f) => `${d}/${f}`);
+  for (const path of ['blog/index.html', ...dir('blog/posts'), ...dir('blog/research')]) {
+    const text = readerText(read(path));
+    const i = text.indexOf('—');
+    assert.equal(i, -1, `${path}: em dash in "${text.slice(Math.max(0, i - 40), i + 40).replace(/\s+/g, ' ')}"`);
+  }
+  // posts.json feeds the homepage's Lab card and the archive rows.
+  for (const post of JSON.parse(read('blog/posts.json')).posts) {
+    for (const field of ['title', 'summary']) {
+      assert.ok(!String(post[field]).includes('—'), `posts.json ${post.slug}.${field}: ${post[field]}`);
+    }
+  }
+});
+
 test('every in-page link on the homepage points at an element that exists', () => {
   const ids = new Set([...HOME.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
   const targets = [...HOME.matchAll(/\shref="#([^"]+)"/g)].map((m) => m[1]);

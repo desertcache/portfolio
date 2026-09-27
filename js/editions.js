@@ -66,13 +66,14 @@ function fileSlug(href) {
 
 /**
  * A post title without the series name, for lists that already carry it:
- * "Hill Money Watch — August 16, 2026" → "August 16, 2026". Any other title
+ * "Hill Money Watch: August 16, 2026" → "August 16, 2026". Titles from before
+ * 2026-09-27 used a dash as the separator; those still work. Any other title
  * comes back unchanged.
  * @param {string} title
  * @returns {string}
  */
 export function editionTitle(title) {
-  const short = title.replace(/^\s*Hill Money Watch\s*[—–-]\s*/, '').trim();
+  const short = title.replace(/^\s*Hill Money Watch\s*[:—–-]\s*/, '').trim();
   return short || title;
 }
 

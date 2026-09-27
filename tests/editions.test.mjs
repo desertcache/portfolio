@@ -56,6 +56,7 @@ test('postNeighbors finds the editions either side, by file name', () => {
 test('editionTitle drops the series name and nothing else', () => {
   assert.equal(editionTitle('Hill Money Watch — August 16, 2026'), 'August 16, 2026');
   assert.equal(editionTitle('Hill Money Watch - August 16, 2026'), 'August 16, 2026');
+  assert.equal(editionTitle('Hill Money Watch: August 16, 2026'), 'August 16, 2026');
   assert.equal(editionTitle('A special edition'), 'A special edition');
   assert.equal(editionTitle('Hill Money Watch'), 'Hill Money Watch');
 });
