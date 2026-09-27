@@ -62,6 +62,64 @@ def test_sprite_stays_small():
     assert len(dd.build().encode()) < 100_000
 
 
+BLOOM = {"poppies-b", "poppies-c", "lupine-b", "globemallow-b", "brittlebush-b", "grass-b", "firecracker",
+         "claret-cup", "fairy-duster", "chuparosa", "bluebells", "owls-clover", "sand-verbena", "pincushion",
+         "marigold", "datura", "cholla", "threeawn", "creosote", "yucca"}
+
+
+@pytest.fixture(scope="module")
+def bloom() -> ET.Element:
+    return ET.fromstring(dd.build_bloom())
+
+
+def test_the_second_flush_is_all_there_and_well_formed(bloom):
+    symbols = {s.get("id"): s for s in bloom.iter(f"{SVG_NS}symbol")}
+    assert set(symbols) == BLOOM
+    assert not BLOOM & EXPECTED, "a bloom id shadows a desert id"
+    for p in bloom.iter(f"{SVG_NS}path"):
+        d, style = p.get("d"), p.get("style")
+        assert d and "nan" not in d.lower() and re.fullmatch(r"[MLCQAZahlmqz0-9 .\-]+", d), d[:80]
+        assert "var(--draw" in style
+        if "stroke-dasharray" in style:
+            assert p.get("pathLength") == "1"
+
+
+def test_the_page_uses_the_bloom_viewboxes(bloom):
+    html = open(dd.OUT.parent.parent / "index.html", encoding="utf-8").read()
+    for s in bloom.iter(f"{SVG_NS}symbol"):
+        used = re.findall(rf'viewBox="([^"]+)"[^>]*><use href="assets/bloom.svg#{s.get("id")}"', html)
+        assert used, f"{s.get('id')} is not on the page"
+        assert set(used) == {s.get("viewBox")}, s.get("id")
+
+
+def test_bloom_stays_small():
+    assert len(dd.build_bloom().encode()) < 100_000
+
+
+def test_the_committed_sprites_are_current():
+    assert dd.OUT.read_text(encoding="utf-8") == dd.build()
+    assert dd.BLOOM_OUT.read_text(encoding="utf-8") == dd.build_bloom()
+
+
+def test_no_bed_repeats_itself():
+    """The rule that keeps the beds fresh: across every flower bed on the
+    homepage, a drawing appears at most twice, never twice in one bed, and
+    its second appearance is mirrored."""
+    html = open(dd.OUT.parent.parent / "index.html", encoding="utf-8").read()
+    beds = re.findall(r'<div class="bed [^"]*"[^>]*>(.*?)</div>', html)
+    assert len(beds) >= 5
+    seen: dict[str, int] = {}
+    for bed in beds:
+        plants = re.findall(r'<svg class="([^"]*)"[^>]*><use href="assets/(?:desert|bloom)\.svg#([a-z-]+)"', bed)
+        ids = [sid for _, sid in plants]
+        assert len(ids) == len(set(ids)), f"a bed repeats a drawing: {ids}"
+        for cls, sid in plants:
+            seen[sid] = seen.get(sid, 0) + 1
+            assert seen[sid] <= 2, f"{sid} is on the page {seen[sid]} times"
+            if seen[sid] == 2:
+                assert "flip" in cls.split(), f"the second {sid} should be mirrored"
+
+
 def test_ellipse_is_closed_and_centred():
     d = dd.ellipse_d(10, 20, 5, 3, 0)
     assert d.startswith("M5 20") and d.endswith("Z")

@@ -9,4 +9,4 @@
  * around at `pivot` (a fraction of its width: the hip).
  * @type {{ viewBox: number[], runFrames: number, stand: number, flick: number, cycle: number, pivot: number }}
  */
-export const ROADRUNNER = {"viewBox": [0, -13, 176, 115], "runFrames": 6, "stand": 6, "flick": 7, "cycle": 73.913, "pivot": 0.5341};
+export const ROADRUNNER = {"viewBox": [0, 0, 176, 115], "runFrames": 6, "stand": 6, "flick": 7, "cycle": 73.913, "pivot": 0.5341};

@@ -8,8 +8,8 @@
    Archivo for reading, Martian Mono for data and labels. What's drawn is
    real: the hero's contours and the footer skyline are Camelback Mountain
    from USGS elevation data (scripts/build_terrain.py); the cacti and the
-   spring wildflowers come from scripts/draw_desert.py, the roadrunner, birds
-   and hawk from scripts/draw_fauna.py. See DEV-NOTES.md for the colour roles and the
+   spring wildflowers come from scripts/draw_desert.py, the animals from
+   scripts/draw_fauna.py. See DEV-NOTES.md for the colour roles and the
    guardrails that keep the red from reading as anyone else's brand.
 
    How this file is organised (top to bottom = general to specific):
@@ -84,6 +84,9 @@
   --illo-mallow: #e5703a;       /* globemallow */
   --illo-pink: #c42c6c;         /* penstemon, hedgehog cactus */
   --illo-ember: #d4452a;        /* ocotillo */
+  --illo-blue: #3553c9;         /* desert bluebells */
+  --illo-violet: #9a3db3;       /* sand verbena, three-awn */
+  --illo-cream: #fff8e8;        /* datura, yucca bells */
   /* the animals (assets/fauna.svg): a firmer line than the plants, so a
      50 px bird still has a face */
   --fauna-line: rgba(28, 22, 36, 0.58);
@@ -91,6 +94,10 @@
   --fauna-hawk: #c9ae99;        /* a red-tail's brown back, lightened to the map */
   --hawk-shade: #1c1624;
   --hawk-shade-a: 0.1;
+  --fauna-javelina: #cbbfb4;    /* grizzled grey */
+  --fauna-snake: #e5d3b3;       /* diamondback tan */
+  --fauna-scorpion: #ecdcab;    /* desert hairy scorpion straw */
+  --fauna-toad: #cfcca0;        /* Sonoran Desert toad olive */
 
   --shadow: 0 1px 2px rgba(28, 22, 36, 0.05), 0 10px 30px -14px rgba(28, 22, 36, 0.22);
   --shadow-lg: 0 2px 6px rgba(28, 22, 36, 0.06), 0 30px 60px -24px rgba(28, 22, 36, 0.34);
@@ -163,11 +170,18 @@
   --illo-mallow: #ff9a62;
   --illo-pink: #ff6fa3;
   --illo-ember: #ff7a45;
+  --illo-blue: #8ea4ff;
+  --illo-violet: #d79cff;
+  --illo-cream: #efe3cc;
   --fauna-line: rgba(245, 238, 242, 0.55);
   --fauna-paper: #2b2036;
   --fauna-hawk: #4b3747;
   --hawk-shade: #000;
   --hawk-shade-a: 0.45;
+  --fauna-javelina: #3b3040;
+  --fauna-snake: #3e3341;
+  --fauna-scorpion: rgba(80, 255, 220, 0.14);
+  --fauna-toad: #34382b;
 
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 32px -16px rgba(0, 0, 0, 0.65);
   --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.35), 0 30px 60px -24px rgba(0, 0, 0, 0.8);
@@ -1539,6 +1553,9 @@ html.has-modal { overflow: hidden; }
 .bed svg { display: block; flex: none; width: auto; height: calc(var(--h) * var(--k)); overflow: visible; }
 /* plants grow in clumps, a little overlapped, not in a row */
 .clump { display: flex; align-items: flex-end; }
+/* a drawing's second appearance on the page is its mirror image (the
+   individual scale property, so the sway's transform still applies) */
+.bed svg.flip { scale: -1 1; }
 .clump > svg + svg { margin-left: -4px; }
 .flora { transform-origin: 50% 100%; animation: sway var(--sway-t, 6.2s) ease-in-out var(--sway-d, 0s) infinite alternate; }
 .flora:nth-child(3n + 1) { --sway-t: 5.4s; --sway-d: -2.1s; }
@@ -1622,6 +1639,9 @@ html.has-modal { overflow: hidden; }
   --illo-lupine: var(--sil);
   --illo-mallow: var(--sil);
   --illo-pink: var(--sil);
+  --illo-blue: var(--sil);
+  --illo-violet: var(--sil);
+  --illo-cream: var(--sil);
   --illo-w: 3;
 }
 .sil-pear { left: 3%; --h: 22%; }
@@ -1703,6 +1723,82 @@ html.has-modal { overflow: hidden; }
   --illo-w: 3;
 }
 .lab-trail .runner { --illo-eye: var(--sil); }
+
+/* The rest of the neighbourhood (assets/critters.svg), one to a section and
+   each on its own trail in the section's bottom padding, behind its flower
+   bed: a rattlesnake that slithers, a scorpion that darts, a toad that hops,
+   and a javelina that trots into the footer (js/trails.js has their gaits). */
+.walker {
+  position: absolute;
+  bottom: 0;
+  left: calc(var(--rest, var(--run-from)) * 100%);
+  height: 100%;
+  width: auto;
+  max-width: none;
+  overflow: visible;
+  translate: -50% 0;
+  --illo-line: var(--fauna-line);
+  --illo-eye: var(--ink);
+}
+.trail.is-live .walker { left: 0; translate: none; will-change: transform; }
+.walker[data-animal="javelina"] { --illo-paper: var(--fauna-javelina); }
+.walker[data-animal="rattlesnake"] { --illo-paper: var(--fauna-snake); }
+.walker[data-animal="scorpion"] { --illo-paper: var(--fauna-scorpion); }
+.walker[data-animal="toad"] { --illo-paper: var(--fauna-toad); }
+/* at dusk the scorpion glows, the way scorpions do under ultraviolet light */
+[data-theme="dark"] .walker[data-animal="scorpion"] {
+  --illo-line: #8ffbe6;
+  --illo-eye: #8ffbe6;
+  --illo-far: 0.6;
+  filter: drop-shadow(0 0 3px rgba(80, 255, 220, 0.7));
+}
+/* these runs start and end off-screen, in sections that don't clip; clip the
+   trail sideways only (a toad in mid-hop rises out of its box) */
+.trail-snake, .trail-scorpion, .trail-toad, .trail-javelina { overflow-x: clip; }
+.trail-snake { bottom: 10px; height: clamp(15px, 1.5vw, 21px); --run-from: 1.1; --run-to: -0.1; --rest: 0.64; }
+.trail-scorpion { bottom: 8px; height: clamp(26px, 2.4vw, 34px); --run-from: -0.06; --run-to: 0.74; --rest: 0.4; }
+.trail-toad { bottom: 6px; height: clamp(26px, 2.4vw, 34px); --run-from: 0.84; --run-to: 0.58; --rest: 0.66; }
+/* the javelina stands on the footer's top edge, among its flowers (which
+   come later in the page, so they're in front) */
+.trail-javelina { bottom: 100%; z-index: 1; height: clamp(40px, 4.2vw, 60px); --run-from: 1.12; --run-to: 0.56; --rest: 0.56; }
+
+/* what each does while it rests (frames: 6 at rest, then its own) */
+.walker[data-state="idle"] { animation: var(--resting) steps(1, end) infinite; }
+.walker[data-animal="javelina"] { --resting: rooting 6.4s; }
+.walker[data-animal="rattlesnake"] { --resting: rattling 7.2s; }
+.walker[data-animal="scorpion"] { --resting: warning 6.8s; }
+.walker[data-animal="toad"] { --resting: blinking 5.6s; }
+@keyframes rooting {
+  0%, 38% { --frame: 6; }
+  40%, 58% { --frame: 7; }
+  60%, 64% { --frame: 6; }
+  66%, 80% { --frame: 7; }
+  82%, 100% { --frame: 6; }
+}
+@keyframes rattling {
+  0%, 30% { --frame: 6; }
+  31%, 32.5% { --frame: 7; }
+  33%, 34.5% { --frame: 6; }
+  35%, 36.5% { --frame: 7; }
+  37%, 68% { --frame: 6; }
+  69% { --frame: 8; } 70% { --frame: 9; } 71% { --frame: 8; } 72% { --frame: 9; }
+  73% { --frame: 8; } 74% { --frame: 9; } 75% { --frame: 8; } 76% { --frame: 9; }
+  77%, 100% { --frame: 6; }
+}
+@keyframes warning {
+  0%, 58% { --frame: 6; }
+  60%, 78% { --frame: 7; }
+  80%, 100% { --frame: 6; }
+}
+@keyframes blinking {
+  0%, 22% { --frame: 6; }
+  23%, 25% { --frame: 7; }
+  26%, 48% { --frame: 6; }
+  50%, 53% { --frame: 8; }
+  55%, 58% { --frame: 6; }
+  60%, 63% { --frame: 8; }
+  65%, 100% { --frame: 6; }
+}
 
 /* the flock: each bird crosses the whole sky, flapping and gliding; the
    crossing is one transform on a full-width track, the wingbeat is the bird
