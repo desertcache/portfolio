@@ -10,137 +10,106 @@
 /* ---------------------------------------------------------------
    Everything below is deliberately NOT wrapped in a layer directive.
 
-   `data-theme="dark"` and `.theme-fade` only ever exist at runtime —
-   the theme script sets them, they appear nowhere in skincare.html.
-   Keeping these rules out of a layer keeps them out of reach of the
-   content scanner no matter how the config later changes. As a bonus,
-   sitting after the utilities they win the cascade for the chrome.
+   `data-theme="dark"` only ever exists at runtime (the theme script
+   sets it; it appears nowhere in skincare.html). Keeping these rules
+   out of a layer keeps them out of reach of the content scanner no
+   matter how the config later changes. As a bonus, sitting after the
+   utilities they win the cascade.
+
+   The page loads css/site.css first, for the nav, the footer and the
+   site's tokens (--nav-h, --em-sunset); this sheet is only the
+   document itself.
 
    NOTE when grepping the built file: the minifier unquotes attribute
    selectors ([data-theme=dark]) and collapses ::after to :after.
    --------------------------------------------------------------- */
 
 /* ---- palette ------------------------------------------------
-   Portfolio paper / ink / terracotta, plus the two day-type
-   semantics this document needs: sage = recovery, slate = BHA.
-   Values are rgb channel triplets so Tailwind's opacity
-   modifiers can compose against them.
+   The site's Sedona day and Sonoran dusk (css/site.css), plus the
+   two day-type semantics this document needs: sage = recovery,
+   slate = BHA. Ochre is the site's red rock. Values are rgb channel
+   triplets so Tailwind's opacity modifiers can compose against
+   them. Every colour on its own tint clears 4.5:1 in both themes.
    ------------------------------------------------------------ */
 :root {
-  --sk-paper:      246 243 238;   /* #f6f3ee — portfolio paper  */
-  --sk-surface:    255 253 249;   /* warm white — cards lift    */
-  --sk-ink:         24  22  19;   /* #181613                    */
-  --sk-ink-2:       58  53  48;   /* #3a3530                    */
-  --sk-ink-3:      106  99  91;   /* #6a635b                    */
-  --sk-hairline:    24  22  19;
+  --sk-paper:      243 235 230;   /* #f3ebe6 — Sedona dust        */
+  --sk-surface:    251 247 244;   /* #fbf7f4 — cards lift         */
+  --sk-ink:         28  22  36;   /* #1c1624 — dusk ink           */
+  --sk-ink-2:       70  61  82;   /* #463d52                      */
+  --sk-ink-3:       98  90 108;   /* #625a6c                      */
+  --sk-hairline:    28  22  36;
   --sk-hairline-a:  0.12;
-  --sk-ochre:      185  68  43;   /* #b9442b — portfolio accent */
-  --sk-ochre-l:    250 240 235;
-  --sk-ochre-b:    231 203 191;
-  --sk-sage:        58  96  82;
-  --sk-sage-l:     240 245 241;
-  --sk-sage-b:     197 214 207;
-  --sk-slate:       43  58  74;
-  --sk-slate-l:    239 242 246;
-  --sk-slate-b:    200 211 223;
+  --sk-ochre:      168  64  29;   /* #a8401d — red rock           */
+  --sk-ochre-l:    244 231 225;
+  --sk-ochre-b:    226 192 179;
+  --sk-sage:        63 100  32;   /* #3f6420 — juniper, for text  */
+  --sk-sage-l:     228 229 218;
+  --sk-sage-b:     195 203 180;
+  --sk-slate:       67  77 140;   /* #434d8c — dusk slate         */
+  --sk-slate-l:    228 226 232;
+  --sk-slate-b:    196 196 213;
 
-  --sk-serif: "Instrument Serif", Georgia, serif;
-  --sk-sans:  "Geist", -apple-system, "Helvetica Neue", sans-serif;
-  --sk-mono:  "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
+  --sk-sans:  "Archivo", ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
+  --sk-mono:  "Martian Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
 
 [data-theme="dark"] {
-  --sk-paper:       22  20  18;   /* #161412 — portfolio night  */
-  --sk-surface:     31  28  25;   /* #1f1c19 — cards still lift */
-  --sk-ink:        241 236 228;   /* #f1ece4                    */
-  --sk-ink-2:      214 206 195;   /* #d6cec3                    */
-  --sk-ink-3:      140 133 124;   /* #8c857c                    */
-  --sk-hairline:   241 236 228;
+  --sk-paper:       21  15  36;   /* #150f24 — Sonoran dusk       */
+  --sk-surface:     35  26  58;   /* #231a3a                      */
+  --sk-ink:        245 238 242;   /* #f5eef2                      */
+  --sk-ink-2:      205 193 211;   /* #cdc1d3                      */
+  --sk-ink-3:      160 147 171;   /* #a093ab                      */
+  --sk-hairline:   245 238 242;
   --sk-hairline-a: 0.13;
-  --sk-ochre:      233 129 102;   /* #e98166 — portfolio night  */
-  --sk-ochre-l:     47  34  29;
-  --sk-ochre-b:     92  60  48;
-  --sk-sage:       127 174 155;
-  --sk-sage-l:      27  36  32;
-  --sk-sage-b:      58  79  69;
-  --sk-slate:      139 166 192;
-  --sk-slate-l:     26  32  39;
-  --sk-slate-b:     55  70  87;
+  --sk-ochre:      255 122  69;   /* #ff7a45 — rock in last light */
+  --sk-ochre-l:     66  39  60;
+  --sk-ochre-b:    114  61  62;
+  --sk-sage:       169 196 108;   /* #a9c46c                      */
+  --sk-sage-l:      54  50  65;
+  --sk-sage-b:      83  87  76;
+  --sk-slate:      154 166 238;   /* #9aa6ee                      */
+  --sk-slate-l:     52  46  83;
+  --sk-slate-b:     78  76 123;
 }
 
 body {
   background-color: rgb(var(--sk-paper));
   color: rgb(var(--sk-ink));
   font-family: var(--sk-sans);
-  font-feature-settings: "ss01", "ss02", "cv11";
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  /* the site's nav is fixed; the document starts below it */
+  padding-top: var(--nav-h, 68px);
 }
 
-/* Instrument Serif ships weight 400 only — stop the browser faking
-   500/600 on the `font-serif font-medium` headings. */
-.font-serif { font-synthesis-weight: none; }
+/* on wide screens the document header (and its tabs) sticks just under
+   the nav, and anchors land below both; on a phone it's too tall to pin */
+.doc-head { top: var(--nav-h, 68px); }
+@media (min-width: 1024px) { html { scroll-padding-top: calc(var(--nav-h, 68px) + 230px); } }
 
-::selection { background: rgb(var(--sk-ochre)); color: rgb(var(--sk-paper)); }
+/* `font-serif` headings take the site's display cut: Archivo,
+   semi-expanded and heavy (element + class, so it outranks the
+   `font-medium` utility on the same heading) */
+h1.font-serif, h2.font-serif, h3.font-serif {
+  font-stretch: semi-expanded;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+}
+blockquote.font-serif { font-family: var(--sk-sans); }
 
-/* ---- top bar: matches arcade.html / starship.html ---- */
-.topbar {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 16px; flex-wrap: wrap;
-  max-width: 80rem; margin: 0 auto;
-  padding: 14px clamp(16px, 4vw, 32px) 12px;
-}
-.topbar a { color: inherit; text-decoration: none; }
-.brand {
-  display: flex; align-items: center; gap: 10px;
-  font-family: var(--sk-mono); font-size: 12px; letter-spacing: 0.02em;
-  color: rgb(var(--sk-ink));
-}
-.brand-mark {
-  width: 24px; height: 24px; display: grid; place-items: center;
-  background: rgb(var(--sk-ink)); color: rgb(var(--sk-paper));
-  border-radius: 4px;
-  font-family: var(--sk-serif); font-style: italic;
-  font-size: 16px; padding-bottom: 2px;
-}
-.brand .ver { color: rgb(var(--sk-ink-3)); }
-.topbar-right {
-  display: flex; align-items: center; gap: 20px;
-  flex: 1 1 auto; justify-content: flex-end;
-  min-width: 0;   /* without this the flex item refuses to shrink below its
-                     content width and the 5-item nav widens the whole page */
-}
-.topbar nav {
-  display: flex; gap: 22px; overflow-x: auto;
-  font-family: var(--sk-mono); font-size: 12px; letter-spacing: 0.02em;
-  scrollbar-width: none;
-  min-width: 0;   /* ditto — overflow-x only engages once shrinking is allowed */
-}
-.topbar nav::-webkit-scrollbar { display: none; }
-.topbar nav a {
-  color: rgb(var(--sk-ink-2)); white-space: nowrap;
-  position: relative; transition: color .2s;
-}
-.topbar nav a:hover { color: rgb(var(--sk-ochre)); }
-.topbar nav a.active { color: rgb(var(--sk-ink)); }
-.topbar nav a.active::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: -4px;
-  height: 1px; background: rgb(var(--sk-ochre));
-}
+/* Martian Mono runs wide; the site always sets it semi-condensed */
+.font-mono { font-stretch: semi-condensed; }
 
-.theme-toggle {
-  background: none; border: 0; padding: 4px;
-  font-size: 15px; line-height: 1;
-  color: rgb(var(--sk-ink-3)); cursor: pointer;
-  transition: color .18s, transform .3s;
-}
-.theme-toggle:hover { color: rgb(var(--sk-ochre)); transform: rotate(180deg); }
-
-/* transient cross-fade while toggling, then removed */
-html.theme-fade, html.theme-fade body,
-html.theme-fade *, html.theme-fade *::before, html.theme-fade *::after {
-  transition: background-color .45s ease, color .45s ease,
-              border-color .45s ease, box-shadow .45s ease !important;
+/* an <em> in a heading catches the sunset, as it does on the homepage */
+.font-serif em { font-style: normal; }
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .font-serif em {
+    background: var(--em-sunset) 0 0 / 250% 100% no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
 }
 
 .tab-btn { position: relative; transition: all 0.15s ease; }
@@ -165,12 +134,3 @@ html.theme-fade *, html.theme-fade *::before, html.theme-fade *::after {
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover { background: rgb(var(--sk-ink-3)); }
-
-@media (prefers-reduced-motion: reduce) {
-  html.theme-fade, html.theme-fade body,
-  html.theme-fade *, html.theme-fade *::before, html.theme-fade *::after {
-    transition: none !important;
-  }
-  .theme-toggle { transition: color .18s; }
-  .theme-toggle:hover { transform: none; }
-}
