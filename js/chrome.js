@@ -96,7 +96,7 @@ export function initWarp() {
 /** For the engineers who open DevTools on every portfolio. */
 export function greet() {
   console.log(
-    '%cHi.%c This page is hand-written HTML, CSS, and a few ES modules: no framework, no build step. View source is the documentation.\nPress ` to warp to the starship.',
+    '%cHi.%c This page is plain HTML, CSS, and a few ES modules: no framework, no build step. View source is the documentation.\nPress ` to warp to the starship.',
     'font: 800 22px system-ui, sans-serif; color: #150f24; background: #ffc94d; padding: 2px 8px;',
     'font: 13px/1.5 ui-monospace, monospace;',
   );
