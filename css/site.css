@@ -84,6 +84,9 @@
   --illo-mallow: #e5703a;       /* globemallow */
   --illo-pink: #c42c6c;         /* penstemon, hedgehog cactus */
   --illo-ember: #d4452a;        /* ocotillo */
+  --illo-blue: #3553c9;         /* desert bluebells */
+  --illo-violet: #9a3db3;       /* sand verbena, three-awn */
+  --illo-cream: #fff8e8;        /* datura, yucca bells */
   /* the animals (assets/fauna.svg): a firmer line than the plants, so a
      50 px bird still has a face */
   --fauna-line: rgba(28, 22, 36, 0.58);
@@ -163,6 +166,9 @@
   --illo-mallow: #ff9a62;
   --illo-pink: #ff6fa3;
   --illo-ember: #ff7a45;
+  --illo-blue: #8ea4ff;
+  --illo-violet: #d79cff;
+  --illo-cream: #efe3cc;
   --fauna-line: rgba(245, 238, 242, 0.55);
   --fauna-paper: #2b2036;
   --fauna-hawk: #4b3747;
@@ -1539,6 +1545,9 @@ html.has-modal { overflow: hidden; }
 .bed svg { display: block; flex: none; width: auto; height: calc(var(--h) * var(--k)); overflow: visible; }
 /* plants grow in clumps, a little overlapped, not in a row */
 .clump { display: flex; align-items: flex-end; }
+/* a drawing's second appearance on the page is its mirror image (the
+   individual scale property, so the sway's transform still applies) */
+.bed svg.flip { scale: -1 1; }
 .clump > svg + svg { margin-left: -4px; }
 .flora { transform-origin: 50% 100%; animation: sway var(--sway-t, 6.2s) ease-in-out var(--sway-d, 0s) infinite alternate; }
 .flora:nth-child(3n + 1) { --sway-t: 5.4s; --sway-d: -2.1s; }
@@ -1622,6 +1631,9 @@ html.has-modal { overflow: hidden; }
   --illo-lupine: var(--sil);
   --illo-mallow: var(--sil);
   --illo-pink: var(--sil);
+  --illo-blue: var(--sil);
+  --illo-violet: var(--sil);
+  --illo-cream: var(--sil);
   --illo-w: 3;
 }
 .sil-pear { left: 3%; --h: 22%; }
