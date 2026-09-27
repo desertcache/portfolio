@@ -24,7 +24,7 @@ from ingest_digest import (
 )
 
 GOOD = """<!doctype html><html><head>
-<title>Hill Money Watch — August 11, 2026</title>
+<title>Hill Money Watch: August 11, 2026</title>
 <meta name="hmw-date" content="2026-08-11">
 <meta name="hmw-summary" content="A summary.">
 </head><body><article class="hmw-digest"><p>{}</p></article></body></html>""".format("x " * 400)
@@ -36,9 +36,21 @@ GOOD = """<!doctype html><html><head>
 
 def test_accepts_a_well_formed_digest():
     title, summary, body = parse_digest(GOOD, "2026-08-11")
-    assert title == "Hill Money Watch — August 11, 2026"
+    assert title == "Hill Money Watch: August 11, 2026"
     assert summary == "A summary."
     assert "<p>" in body
+
+
+def test_rejects_em_dashes_anywhere_a_reader_sees():
+    """Sam's standing style rule: no em dash in anything published under his name.
+    The title feeds the homepage card and the archive, the summary the archive rows."""
+    raw = (
+        GOOD.replace("Hill Money Watch: August 11, 2026", "Hill Money Watch — August 11, 2026")
+        .replace("A summary.", "Quiet day &mdash; nothing new.")
+        .replace("<p>", "<p>Pelosi bought — again. ", 1)
+    )
+    with pytest.raises(ContractError, match=r"3 em dashes"):
+        parse_digest(raw, "2026-08-11")
 
 
 def test_rejects_date_mismatch():
@@ -59,13 +71,13 @@ def test_reports_every_problem_at_once():
 
 
 def test_decodes_entities_in_title_and_summary():
-    """The task may emit &amp;/&mdash;; downstream must see the character, not the entity."""
+    """The task may emit &amp;/&ndash;; downstream must see the character, not the entity."""
     raw = GOOD.replace("A summary.", "Pelosi &amp; Green").replace(
-        "August 11, 2026", "August 11, 2026 &mdash; Q3"
+        "August 11, 2026", "August 11, 2026 &ndash; Q3"
     )
     title, summary, _ = parse_digest(raw, "2026-08-11")
     assert summary == "Pelosi & Green"
-    assert "—" in title and "&mdash;" not in title
+    assert "–" in title and "&ndash;" not in title
 
 
 def test_demotes_a_stray_h1_in_the_body():

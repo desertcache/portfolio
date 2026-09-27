@@ -62,6 +62,7 @@ POST_TEMPLATE = BLOG_DIR / "_post.template.html"
 # A real digest is never this short. Catches truncated uploads and error pages
 # that happen to be valid HTML.
 MIN_BODY_CHARS = 400
+EM_DASH = "—"
 HTTP_TIMEOUT_S = 30
 LOOKBACK_DAYS = 90
 
@@ -307,6 +308,18 @@ def parse_digest(raw_html: str, expected_date: str) -> tuple[str, str, str]:
                 f"and would be dropped at publish, leaving the digest unstyled -- "
                 f"move them inside the article"
             )
+    # Sam's standing rule: no em dash in anything published under his name (it
+    # reads as machine-written). The title reaches the homepage card and the
+    # archive, the summary the archive rows, the article text the post itself.
+    # Style and script text is not prose, so it is not counted.
+    readable = [title, summary]
+    if article is not None:
+        readable += [s for s in article.find_all(string=True) if s.parent.name not in ("style", "script")]
+    if dashes := sum(s.count(EM_DASH) for s in readable):
+        problems.append(
+            f"{dashes} em dash{'es' if dashes != 1 else ''} in the title, summary or body -- "
+            f"use a colon, comma, semicolon or parentheses (an en dash for an empty table cell)"
+        )
     if problems:
         raise ContractError("; ".join(problems))
 
