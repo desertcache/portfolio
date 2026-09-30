@@ -17,8 +17,8 @@
      2. Base          — element defaults, focus, selection
      3. Primitives    — wrap, buttons, eyebrows, tags, links
      4. Chrome        — nav, footer, toast, skip link
-     5. Sections      — hero, migration, work, case studies, lab, about,
-                        toolkit, contact (in page order)
+     5. Sections      — hero, migration, work, case studies, how I build,
+                        lab, about, toolkit, contact (in page order)
      6. Motion        — reveal-on-scroll, reduced-motion
    Theme switching works by swapping tokens under [data-theme="dark"]; no
    component below should ever need its own dark-mode rule.
@@ -618,6 +618,16 @@ kbd {
   text-wrap: pretty;
 }
 .hero-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: clamp(24px, 3.4vh, 36px); }
+/* Under the calls to action: the note from Anthropic's Claude Code team,
+   pointing down to How I build. It lives in this column, not in the field
+   notes card: a taller card would rise into the hawk's thermal. */
+.hero-note { margin-top: clamp(20px, 2.8vh, 30px); }
+.hero-note a { display: inline-flex; flex-direction: column; gap: 5px; padding-top: 14px; border-top: 1px solid var(--line); }
+.hero-note-title { font: 800 semi-expanded clamp(1.02rem, 1.25vw, 1.12rem)/1.2 var(--display); letter-spacing: -0.025em; transition: color 0.25s; }
+.hero-note-text { font-size: 0.9375rem; line-height: 1.45; color: var(--ink-2); text-wrap: pretty; }
+.hero-note-arrow { display: inline-block; color: var(--accent-ink); transition: transform 0.25s var(--ease); }
+.hero-note a:hover .hero-note-title { color: var(--accent); }
+.hero-note a:hover .hero-note-arrow { transform: translateY(2px); }
 .copy-email .icon-copy { width: 16px; height: 16px; opacity: 0.7; }
 .copy-email.is-copied .icon-copy { opacity: 1; stroke: var(--ok); }
 
@@ -1051,6 +1061,34 @@ kbd {
 
 html.has-modal { overflow: hidden; }
 
+/* ---------- 5n. How I build ---------- */
+/* Between Work and the Lab: the card from Anthropic's Claude Code team (a
+   print like the portrait in About, landscape: .portrait-wide) and its words,
+   set the way the card sets them, beside the practices, which reuse the
+   Featured program's .steps. */
+.build {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: clamp(40px, 6vw, 96px);
+  align-items: start;
+}
+.build-side { position: sticky; top: calc(var(--nav-h) + 32px); }
+.pull { margin: 34px 0 0; padding-left: 22px; border-left: 2px solid var(--accent); }
+.pull blockquote { margin: 0; }
+.pull p { font-size: 1rem; line-height: 1.6; color: var(--ink-2); text-wrap: pretty; }
+.pull p + p { margin-top: 10px; }
+.pull .pull-lead { font: 800 semi-expanded clamp(1.15rem, 1.55vw, 1.35rem)/1.25 var(--display); letter-spacing: -0.03em; color: var(--ink); text-wrap: balance; }
+.pull figcaption { margin-top: 14px; font: 500 semi-condensed 0.75rem/1.4 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+/* links inside the practices: underlined, like the footer's side quests */
+.build-main .step a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; transition: color 0.2s, text-decoration-color 0.2s; }
+.build-main .step a:hover { color: var(--accent-ink); text-decoration-color: currentColor; }
+.build-more { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 26px; }
+
+@media (max-width: 900px) {
+  .build { grid-template-columns: 1fr; }
+  .build-side { position: static; max-width: 620px; }
+}
+
 /* ---------- 5f. Lab (always a night room) ---------- */
 .lab {
   --em-sunset: linear-gradient(90deg, #ffb547 0%, #ff7a45 20%, #ff5c93 40%, var(--lab-ink) 55%, var(--lab-ink) 100%);
@@ -1323,6 +1361,9 @@ html.has-modal { overflow: hidden; }
 .portrait img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; }
 .portrait figcaption { margin-top: 12px; font: 400 semi-condensed 0.8125rem/1.5 var(--mono); color: var(--ink-3); }
 .fig { color: var(--ink); font-weight: 500; margin-right: 4px; }
+/* the same print, landscape and tipped the other way: the Claude Code card in How I build */
+.portrait-wide { transform: rotate(1.1deg); }
+.portrait-wide img { aspect-ratio: 4 / 3; }
 .facts { margin-top: 28px; }
 .facts div { padding: 13px 0; border-top: 1px solid var(--line); }
 .facts dt { font: 500 semi-condensed 0.6875rem var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
@@ -1388,6 +1429,7 @@ html.has-modal { overflow: hidden; }
 @media (max-width: 560px) {
   .about-side { grid-template-columns: 1fr; }
   .portrait { max-width: 300px; }
+  .portrait-wide { max-width: none; }
   .tl { grid-template-columns: 1fr; gap: 4px; }
 }
 
@@ -1502,6 +1544,7 @@ html.has-modal { overflow: hidden; }
 .head-illo:has(.illo-sedona) { --edge: 76px; }
 .illo-ocotillo { --h: clamp(220px, 21vw, 310px); }
 .illo-barrel { --h: clamp(80px, 7.5vw, 116px); margin-left: -70px; }
+.illo-agave { --h: clamp(190px, 18vw, 262px); }
 .contact > .wrap { position: relative; }
 /* its box is the padded .wrap, not a heading, so the page padding is already inside it */
 .contact-illo { top: clamp(-30px, -2vw, -10px); bottom: auto; right: calc(-1 * (max(0px, (100vw - var(--wrap)) / 2) - var(--edge, 28px))); }
@@ -1526,6 +1569,7 @@ html.has-modal { overflow: hidden; }
   .illo-sedona { --h: clamp(50px, 6vw, 66px); }
   .illo-ocotillo { --h: clamp(76px, 9vw, 100px); }
   .illo-barrel { --h: clamp(30px, 3.6vw, 40px); margin-left: -22px; }
+  .illo-agave { --h: clamp(62px, 7.6vw, 86px); }
 }
 
 /* The body of every drawing is filled with the ground it stands on, so a
@@ -1917,5 +1961,5 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
   .hero { min-height: 0; padding-top: 24px; }
   .section, .contact { padding-block: 32px; }
   .lab { --bg: #fff; --ink: #000; --ink-2: #222; --ink-3: #444; --surface: #fff; }
-  .mig-viz, .about-side { position: static; }
+  .mig-viz, .about-side, .build-side { position: static; }
 }
