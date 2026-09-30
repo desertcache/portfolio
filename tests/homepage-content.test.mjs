@@ -49,6 +49,23 @@ test('the homepage and the work samples show no em dash anywhere a reader looks'
   }
 });
 
+test('the card from Anthropic\'s Claude Code team is quoted word for word, and never inflated', () => {
+  const text = readerText(HOME).replace(/\s+/g, ' ');
+  for (const line of [
+    "We're making it official: you're a Claude Code power user.",
+    "You're one of Claude Code's top users, and we wouldn't be here without you. Thank you for building with us.",
+  ]) {
+    assert.ok(text.includes(line), `the card's words, exactly: "${line}"`);
+  }
+  assert.doesNotMatch(text, /top\s+(?:1|one)\s*(?:%|percent)/i, 'the card says "top users", nothing more');
+});
+
+test('training is counted in people, never leaders', () => {
+  for (const path of ['index.html', ...WORK_SAMPLES]) {
+    assert.doesNotMatch(readerText(read(path)), /800\+\s*leaders/i, `${path} says "800+ leaders"`);
+  }
+});
+
 test('the blog pages and the posts index show no em dash anywhere a reader looks', () => {
   const dir = (d) => readdirSync(new URL(`../${d}/`, import.meta.url)).filter((f) => f.endsWith('.html')).map((f) => `${d}/${f}`);
   for (const path of ['blog/index.html', ...dir('blog/posts'), ...dir('blog/research')]) {

@@ -284,8 +284,10 @@ python -m pytest scripts   # the Python scripts: digest ingest, terrain build, d
 `tests/homepage-content.test.mjs` holds the copy rules that apply to every edit: no em dash anywhere a
 reader looks on the homepage or a work sample (text, SVG labels, tab title, link-preview text), every
 `#link` and `data-cs` resolves, and each work card has its dialog, in card order, with prev/next links
-that go round in one loop. Public copy also has to pass the job-search repo's
-`strategy-2026-09/grep-gate.py` (no DoorDash-internal numbers, codenames or vendor names).
+that go round in one loop. It also holds the card from Anthropic's Claude Code team to its exact words
+(quote it, never inflate it) and counts training in people, never leaders. Public copy also has to pass
+the job-search repo's `strategy-2026-09/grep-gate.py` (no DoorDash-internal numbers, codenames or vendor
+names, and no head counts for the outsourced teams).
 
 Pure logic lives in `js/lib.js` (and its newer siblings, `editions.js`,
 `arizona.js` and `wildlife.js`) precisely so it can be tested without a
@@ -296,6 +298,11 @@ helper doesn't touch the DOM, put it in one of those and test it.
 
 - `assets/headshot-600.*` and `headshot-96.*` are square crops of the
   original headshot (WebP with a JPEG fallback via `<picture>`).
+- `assets/claude-code-card.*` (How I build, Fig. 1) is Sam's photo of the
+  package from Anthropic's Claude Code team: a 4:3 crop of the original,
+  converted from Display P3 to sRGB, every metadata tag stripped, 1200×900,
+  WebP with a JPEG fallback, lazy-loaded. It is personal recognition: keep
+  it away from anything that says which employer's account it came from.
 - `assets/og.png` is the link-preview image. Its source is
   `scripts/og-card.html`, which renders the real hero map (Camelback) with
   the drift pinned; the steps to regenerate are in that file's header
