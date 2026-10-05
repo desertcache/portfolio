@@ -1,17 +1,19 @@
-// Dust Devil Pinball physics: one rolling ball on a tilted table, stepped at 60 Hz
-// in fixed substeps. Pure module (no DOM), so Node tests drive exactly the code the
-// browser runs.
+// Dust Devil Pinball physics: one rolling ball on a tilted table, stepped at 60 Hz in fixed
+// substeps. Pure module (no DOM), so Node tests drive exactly the code the browser runs.
 //
 // How the ball is kept honest:
-//  * Every 1/60 s tick is cut into SUBSTEPS slices. At the speed limit the ball
-//    moves 2.5 px a slice, a quarter of its 10 px radius, and every wall is at
-//    least 6 px thick, so it can never jump over one between two checks.
-//  * After each slice the ball is pushed out of whatever it overlaps along the
-//    contact normal, then its velocity is corrected from the speed *relative to
-//    the surface at the contact point*. A flipper's surface moves at
-//    (angular speed x distance from the pivot), so a hit near the tip is faster.
-//  * Moving parts (flippers, plunger) are kinematic: they move first, the ball is
-//    resolved against them after.
+//  * Every 1/60 s tick is cut into SUBSTEPS slices. At the speed limit the ball moves 2.5 px a
+//    slice, a quarter of its 10 px radius, and every wall is at least 6 px thick, so it can never
+//    jump over one between two checks. (Half-plane walls and the arch cannot be jumped at all:
+//    a ball found on the wrong side is pushed back in.)
+//  * After each slice the ball is pushed out of whatever it overlaps along the contact normal,
+//    then its velocity is corrected from its speed *relative to the surface at the contact
+//    point*. A flipper's surface moves at (angular speed x distance from the pivot), so a hit
+//    near the tip is faster than one near the pivot, and a ball resting on a flipper that swings
+//    up is thrown with the flipper's own speed.
+//  * Moving parts (flippers, plunger) are kinematic: they move first, the ball is resolved
+//    against them after. Friction only acts on a ball that is sliding, so a rolling ball never
+//    sticks to a surface or balances on the top of a post.
 import { BALL_R, TABLE } from './table.js';
 
 export { BALL_R };
@@ -22,6 +24,7 @@ export const DT = TICK_DT / SUBSTEPS;
 export const VMAX = 1800; // px/s: speed limit (2.5 px per substep)
 export const DRAG = 0.1; // 1/s: a hair of rolling resistance
 export const REST_V = 40; // approach speeds below this don't bounce
+export const ROLL_V = 6; // px/s: sliding slower than this is rolling, which has no friction
 export const ITERATIONS = 4;
 
 // Surfaces: e = restitution (bounciness), mu = friction against the surface.
@@ -33,6 +36,7 @@ export const MAT = {
   target: { e: 0.3, mu: 0.012 },
   plunger: { e: 0.05, mu: 0.02 },
   gate: { e: 0.15, mu: 0.01 },
+  felt: { e: 0.15, mu: 0.03 }, // the sand-drift strip up the left wall: a ball hitting it slides on instead of bouncing off
 };
 
 export const BUMPER_KICK = 560; // px/s: a pop bumper throws the ball away at this speed
@@ -41,6 +45,7 @@ export const SLING_KICK = 560;
 export const SLING_MIN = 90;
 export const TARGET_MIN = 60;
 export const PULL_RATE = 1.25; // plunger pull, fraction of full travel per second
+export const PLUNGE_MIN = 0.7; // the least pull that clears the shooter gate (the meter turns green here); tested
 export const PLUNGER_OMEGA = 36; // rad/s: spring stiffness. launch speed = travel * pull * omega
 export const SEARCH_TICKS = 240; // 4 s of barely moving before the ball is nudged free
 export const SEARCH_RADIUS = 3; // px
@@ -90,7 +95,9 @@ function respond(b, nx, ny, depth, mat, svx, svy) {
   const tvx = rvx - vn * nx, tvy = rvy - vn * ny;
   const tl = Math.sqrt(tvx * tvx + tvy * tvy);
   let fx = 0, fy = 0;
-  if (tl > 1e-9) {
+  // Friction only slows a ball that is sliding. A real ball rolls, so it never sticks to a surface:
+  // without this threshold a ball set down within a pixel of the top of a rubber post stays there.
+  if (tl > ROLL_V) {
     const cut = Math.min(tl, mat.mu * (1 + e) * -vn) / tl;
     fx = -tvx * cut; fy = -tvy * cut;
   }
@@ -125,7 +132,7 @@ export function createWorld(table = TABLE, { rng = Math.random, search = true } 
     tick: 0,
     ball: {
       x: table.SPAWN.x, y: table.SPAWN.y, vx: 0, vy: 0, active: false, inLane: true,
-      spin: 0, flipTouch: -99, flipSide: '', ax: 0, ay: 0, still: 0,
+      flipTouch: -99, flipSide: '', ax: 0, ay: 0, still: 0,
     },
     statics: table.statics.map(prepStatic),
     flippers: table.flippers.map((f) => ({ ...f, angle: f.rest, omega: 0, held: false, cool: 0 })),
@@ -143,7 +150,7 @@ export function createWorld(table = TABLE, { rng = Math.random, search = true } 
     stats: { searches: 0, escapes: 0, maxSpeed: 0, ticks: 0 },
   };
   w.ball.ax = w.ball.x; w.ball.ay = w.ball.y;
-  for (const g of w.gates) g.prev = gateSide(g, w.ball.x, w.ball.y);
+  w.laneGate = w.gates.find((g) => g.kind === 'lane') || null;
   return w;
 }
 
@@ -152,7 +159,6 @@ export function placeBall(w, x, y, vx = 0, vy = 0) {
   const b = w.ball;
   b.x = x; b.y = y; b.vx = vx; b.vy = vy;
   b.active = true; b.still = 0; b.ax = x; b.ay = y;
-  for (const g of w.gates) g.prev = gateSide(g, x, y);
   for (const l of w.lanes) l.inside = (x - l.x) * (x - l.x) + (y - l.y) * (y - l.y) < l.r * l.r;
   updateInLane(w);
 }
@@ -177,6 +183,11 @@ export function nudge(w, dvx, dvy) {
   return true;
 }
 
+/** Raise every drop target again (the bank resets). */
+export function resetTargets(w) {
+  for (const t of w.targets) { t.down = false; t.flash = 14; }
+}
+
 /** Fire the plunger at once with the given pull (0..1). */
 export function launch(w, power) {
   const p = w.plunger;
@@ -186,19 +197,35 @@ export function launch(w, power) {
   p.held = false;
 }
 
-/** Is the ball resting on the plunger, ready to be pulled and launched? */
+/**
+ * Is the ball resting on the plunger head (wherever the head is, pulled back or not), moving with
+ * it? Once the head fires and the ball leaves it, or while it is in flight, this is false.
+ */
 export function ballOnPlunger(w) {
   const b = w.ball, p = w.plunger;
-  if (!b.active) return false;
-  return b.inLane && b.y > p.y0 - p.r - BALL_R - 14 && Math.abs(b.vy) < 60 && Math.abs(b.vx) < 60;
+  if (!b.active || !b.inLane) return false;
+  const seat = p.y - p.r - BALL_R; // where a ball sitting on the head has its centre
+  return Math.abs(b.y - seat) < 6 && Math.abs(b.vy - p.vy) < 90 && Math.abs(b.vx) < 60;
 }
 
 function gateSide(g, x, y) { return (x - g.ax) * g.nx + (y - g.ay) * g.ny; }
 
+/** Did the ball's path (x0,y0)->(x1,y1) cross the gate's own segment from its open side to its blocked side? */
+function gateCrossed(g, x0, y0, x1, y1) {
+  const s0 = gateSide(g, x0, y0), s1 = gateSide(g, x1, y1);
+  if (!(s0 <= 0 && s1 > 0)) return false;
+  const t = s0 / (s0 - s1);
+  const ix = x0 + (x1 - x0) * t, iy = y0 + (y1 - y0) * t;
+  const u = ((ix - g.ax) * (g.bx - g.ax) + (iy - g.ay) * (g.by - g.ay)) / ((g.bx - g.ax) ** 2 + (g.by - g.ay) ** 2);
+  return u >= -0.1 && u <= 1.1;
+}
+
+// The ball is "in the shooter lane" while it is in the lane's channel and has not yet
+// passed the lane's one-way gate. (The orbit's flap and gate are other gates entirely.)
 function updateInLane(w) {
   const b = w.ball;
   let lane = w.table.inShooter(b.x, b.y);
-  if (lane) for (const g of w.gates) if (gateSide(g, b.x, b.y) > 0) lane = false;
+  if (lane && w.laneGate && gateSide(w.laneGate, b.x, b.y) > 0) lane = false;
   b.inLane = lane;
 }
 
@@ -222,7 +249,6 @@ function advanceParts(w) {
     if (phase >= Math.PI / 2) {
       p.vy = (p.y0 - p.y) / DT;
       p.y = p.y0; p.state = 'idle'; p.pull = 0;
-      p.endTick = w.tick;
       p.fired = true;
     } else {
       const ny = p.y0 + p.travel * p.s0 * Math.cos(phase);
@@ -305,6 +331,7 @@ function resolveGates(w) {
   const b = w.ball;
   let any = false;
   for (const g of w.gates) {
+    if (g.solid === false) continue; // a sensor line only
     if (gateSide(g, b.x, b.y) <= 0) continue; // on the open side: it passes
     if (!capsule(b.x, b.y, g.ax, g.ay, g.bx, g.by, 1.5, 1.5)) continue;
     const vn = b.vx * g.nx + b.vy * g.ny;
@@ -455,9 +482,7 @@ function sensors(w, x0, y0) {
   }
   for (let i = 0; i < w.gates.length; i++) {
     const g = w.gates[i];
-    const side = gateSide(g, b.x, b.y);
-    if (g.prev <= 0 && side > 0) w.events.push({ type: 'gate', i, vx: b.vx, vy: b.vy });
-    g.prev = side;
+    if (gateCrossed(g, x0, y0, b.x, b.y)) w.events.push({ type: 'gate', i, kind: g.kind, vx: b.vx, vy: b.vy });
   }
 }
 
@@ -503,7 +528,6 @@ function afterTick(w) {
 
   const sp = Math.hypot(b.vx, b.vy);
   if (sp > w.stats.maxSpeed) w.stats.maxSpeed = sp;
-  b.spin += (b.vx / BALL_R) * TICK_DT * 0.6;
 
   updateInLane(w);
   if (b.y > w.table.DRAIN_Y) {

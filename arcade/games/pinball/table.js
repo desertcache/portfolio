@@ -6,6 +6,13 @@
 //   wall  one-sided straight wall, the ball is kept on the side of (nx, ny)
 //   arc   circular wall; 'in' keeps the ball inside the circle, 'band' is a thick rail
 //   seg   a capsule (segment with radius), solid on both sides; a post is a seg with a == b
+//   gate  a line with a normal: a ball may cross it the way the normal points, never back.
+//         kind 'lane' is the shooter lane's mouth, 'orbit' the top of the orbit, 'flap' the flap
+//         on the left wall; with solid:false it is only a sensor line (kind 'entry', orbit's foot)
+//
+// The layout is built around these shots (all measured in tests/pinball.test.mjs): the right
+// flipper's outer half throws the ball up the left wall into the orbit, the left flipper's outer
+// half hits the drop targets, and the inner half of either shoots the pop bumpers.
 export const W = 450;
 export const H = 720;
 export const BALL_R = 10;
@@ -20,12 +27,18 @@ export const mirror = (x) => 2 * MX - x;
 // The shooter lane on the right: the ball rests on the plunger head and is thrown up it,
 // round the top-right of the arch, and out through a one-way gate at this angle.
 export const LANE = { x0: 408, x1: 436, cx: 422 };
-const GATE_ANGLE = (305 * Math.PI) / 180; // measured from +x, y down: up and to the right of center
+export const GATE_ANGLE = (305 * Math.PI) / 180; // measured from +x, y down: up and to the right of center
 export const PLUNGER = { x0: 413, x1: 431, y0: 653, travel: 36, r: 3 };
 export const SPAWN = { x: LANE.cx, y: PLUNGER.y0 - PLUNGER.r - BALL_R };
 export const DRAIN_Y = 730; // a ball whose center passes this line has left the table
 
 const deg = Math.PI / 180;
+// The orbit: a lane on the arch, from where the left wall turns into it (a0) up to its one-way gate (a1).
+export const ORBIT = { r: ARCH.r - 36, a0: 190 * deg, a1: 235 * deg };
+export const FELT = { y0: 262, y1: 430 };
+// A ledge on the right wall, above the right outlane: a ball sliding down the wall (off the lane
+// band, or a bumper kick) lands on it and rolls out into the playfield instead of down the outlane.
+export const LEDGE = { ax: 402, ay: 444, bx: 372, by: 466 };
 
 const seg = (ax, ay, bx, by, r = 3, mat = 'wall') => ({ k: 'seg', ax, ay, bx, by, r, mat });
 const post = (x, y, r, mat = 'post') => ({ k: 'seg', ax: x, ay: y, bx: x, by: y, r, mat });
@@ -35,6 +48,10 @@ function build() {
   const statics = [];
 
   // --- the outer boundary: the ball is kept in ---
+  // A strip of soft sand up the left wall, just below the orbit: a ball thrown at it from across
+  // the table loses its sideways bounce and slides up into the lane instead of rebounding into
+  // the rail's end. (It sits before the wall in the list so it answers first.)
+  statics.push(seg(WALL_L - 3, FELT.y0, WALL_L - 3, FELT.y1, 3, 'felt'));
   statics.push({ k: 'wall', ax: WALL_L, ay: ARCH.cy, bx: WALL_L, by: 760, nx: 1, ny: 0, mat: 'wall' });
   statics.push({ k: 'wall', ax: WALL_R, ay: ARCH.cy, bx: WALL_R, by: 760, nx: -1, ny: 0, mat: 'wall' });
   statics.push({ k: 'arc', side: 'in', cx: ARCH.cx, cy: ARCH.cy, rad: ARCH.r, a0: Math.PI, a1: 2 * Math.PI, mat: 'wall' });
@@ -85,35 +102,53 @@ function build() {
     if (nx * (MX - (ax + bx) / 2) < 0) { nx = -nx; ny = -ny; }
     // The kick leaves steeper than the face: more up the table than across it.
     const kc = SLING_KICK_ANGLE, kdir = side === 'L' ? 1 : -1;
-    slings.push({ side, ax, ay, bx, by, r: 3, nx, ny, kx: Math.cos(kc) * kdir, ky: -Math.sin(kc) });
+    // (cx, cy) is the triangle's third corner, for the art.
+    slings.push({ side, ax, ay, bx, by, cx: m(SL_B[0]), cy: SL_B[1], r: 3, nx, ny, kx: Math.cos(kc) * kdir, ky: -Math.sin(kc) });
   }
 
-  // --- the orbit: a lane up the left wall and round the arch, with the spinner in it ---
-  // The inner rail is concentric with the arch so the channel stays 33 px wide. Its mouth
-  // at the bottom is a one-way flap: a ball shot up goes in, a ball that falls back is
-  // thrown out to the right, onto the slingshot, instead of down the outlane.
-  const ORBIT_R = ARCH.r - 36;
-  const orbitEnd = 235 * deg;
-  statics.push(seg(ARCH.cx - ORBIT_R, 438, ARCH.cx - ORBIT_R, ARCH.cy, 3, "wall"));
-  statics.push({ k: 'arc', side: 'band', cx: ARCH.cx, cy: ARCH.cy, rad: ORBIT_R, a0: Math.PI, a1: orbitEnd, t: 3, mat: 'wall' });
-  statics.push(post(ARCH.cx + ORBIT_R * Math.cos(orbitEnd), ARCH.cy + ORBIT_R * Math.sin(orbitEnd), 3, 'wall'));
-  const flap = (() => {
-    const ax = WALL_L, ay = 452, bx = 64, by = 478;
-    const [dx, dy] = norm(bx - ax, by - ay);
-    return { ax, ay, bx, by, nx: dy, ny: -dx, orbit: true }; // blocks from above
-  })();
-  // The orbit is one-way: a gate across its top lets a ball shot up it through but stops a
-  // hard plunge coming round the arch the other way, which drops into the bumpers instead.
-  const orbitGate = {
-    ax: ARCH.cx + ORBIT_R * Math.cos(orbitEnd), ay: ARCH.cy + ORBIT_R * Math.sin(orbitEnd),
-    bx: ARCH.cx + ARCH.r * Math.cos(orbitEnd), by: ARCH.cy + ARCH.r * Math.sin(orbitEnd),
-    nx: -Math.sin(orbitEnd), ny: Math.cos(orbitEnd), orbit: true,
+  statics.push(seg(LEDGE.ax, LEDGE.ay, LEDGE.bx, LEDGE.by, 3, 'wall')); // the right-wall ledge
+
+  // --- the orbit: a lane that starts where the left wall turns into the arch ---
+  // The right flipper's outer half throws the ball up the left wall; it rebounds into the lane
+  // and rides the arch round, through the spinner, to a one-way gate at the top. The rail's
+  // lower end is open, so there is nothing to clip. If a ball runs out of steam it falls back
+  // down the wall onto a one-way flap and rolls out to the flipper rather than down the outlane.
+  const ORBIT_R = ORBIT.r; // the rail along the arch, concentric with it
+  const orbitStart = ORBIT.a0;
+  const orbitEnd = ORBIT.a1;
+  const onArch = (r, phi) => [ARCH.cx + r * Math.cos(phi), ARCH.cy + r * Math.sin(phi)];
+  statics.push({ k: 'arc', side: 'band', cx: ARCH.cx, cy: ARCH.cy, rad: ORBIT_R, a0: orbitStart, a1: orbitEnd, t: 3, mat: 'wall' });
+  statics.push(post(...onArch(ORBIT_R, orbitStart), 3, 'wall'));
+  statics.push(post(...onArch(ORBIT_R, orbitEnd), 3, 'wall'));
+  // A sensor across the lane's foot (it does not block): the ball is "in the orbit" once it crosses.
+  const entry = {
+    ax: onArch(ARCH.r, orbitStart)[0], ay: onArch(ARCH.r, orbitStart)[1],
+    bx: onArch(ORBIT_R, orbitStart)[0], by: onArch(ORBIT_R, orbitStart)[1],
+    nx: -Math.sin(orbitStart), ny: Math.cos(orbitStart), kind: 'entry', solid: false,
   };
-  const spinners = [{ i: 0, ax: WALL_L, ay: 380, bx: ARCH.cx - ORBIT_R - 3, by: 380 }];
+  // The orbit is one-way at the top: a ball shot up it goes through, but anything coming round
+  // the arch the other way (a hard plunge) is turned back and drops into the bumpers.
+  const orbitGate = {
+    ax: onArch(ORBIT_R, orbitEnd)[0], ay: onArch(ORBIT_R, orbitEnd)[1],
+    bx: onArch(ARCH.r, orbitEnd)[0], by: onArch(ARCH.r, orbitEnd)[1],
+    nx: -Math.sin(orbitEnd), ny: Math.cos(orbitEnd), kind: 'orbit',
+  };
+  // The flap: blocks a ball falling down the left wall (from above), lets one shot up it through.
+  const flap = (() => {
+    const ax = WALL_L, ay = 410, bx = 64, by = 438;
+    const [dx, dy] = norm(bx - ax, by - ay);
+    return { ax, ay, bx, by, nx: dy, ny: -dx, kind: 'flap' };
+  })();
+  const spinPhi = 205 * deg;
+  const spinners = [{
+    i: 0, ax: onArch(ARCH.r, spinPhi)[0], ay: onArch(ARCH.r, spinPhi)[1],
+    bx: onArch(ORBIT_R + 3, spinPhi)[0], by: onArch(ORBIT_R + 3, spinPhi)[1],
+  }];
 
   // --- top rollover lanes: pins and sensors ---
   const laneXs = [183, 225, 267];
-  for (const x of [162, 204, 246, 288]) statics.push(seg(x, 104, x, 128, 4, 'post'));
+  for (const x of [204, 246, 288]) statics.push(seg(x, 104, x, 128, 4, 'post'));
+  statics.push(seg(162, 88, 162, 128, 4, 'post')); // tall: seals the gap under the arch, catches a hard plunge
   const lanes = laneXs.map((x, i) => ({ i, x, y: 116, r: 9 }));
 
   // --- pop bumpers ---
@@ -143,12 +178,12 @@ function build() {
   const gate = {
     ax: ARCH.cx + (ARCH.r - 31) * Math.cos(GATE_ANGLE), ay: ARCH.cy + (ARCH.r - 31) * Math.sin(GATE_ANGLE),
     bx: ARCH.cx + ARCH.r * Math.cos(GATE_ANGLE), by: ARCH.cy + ARCH.r * Math.sin(GATE_ANGLE),
-    nx: Math.sin(GATE_ANGLE), ny: -Math.cos(GATE_ANGLE),
+    nx: Math.sin(GATE_ANGLE), ny: -Math.cos(GATE_ANGLE), kind: 'lane',
   };
 
   return {
     W, H, BALL_R, ARCH, WALL_L, WALL_R, MX, LANE, PLUNGER, SPAWN, DRAIN_Y,
-    statics, slings, flippers, bumpers, targets, lanes, gates: [gate, flap, orbitGate], spinners, inShooter, onTable,
+    statics, slings, flippers, bumpers, targets, lanes, gates: [gate, entry, orbitGate, flap], spinners, inShooter, onTable,
   };
 }
 
