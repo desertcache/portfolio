@@ -9,6 +9,7 @@ import { DIRS, tileOf, centerOf, stepActor, wrapTunnel, resetTileMemory, isRever
 import { createGhost, updateGhost, reverseGhost, ghostTarget, dirName } from './ghosts.js';
 import { drawPac, drawPacDeath, drawGhost, drawFruit, GHOST_COLORS } from './sprites.js';
 import { drawText } from '../../engine/font.js';
+import { createAutopilot } from './autopilot.js';
 import {
   playIntro, playWaka, playFruit, playGhostEat, playExtraLife, playDeath,
   sirenLoop, frightLoop, eyesLoop,
@@ -35,8 +36,11 @@ export default {
   ownHud: true, // renders its own score/lives HUD in-canvas
   start(env) {
     const { ctx, W, H } = env;
-    const rng = env.debug ? mulberry32(0xc0ffee) : Math.random;
+    // Debug runs are seeded (env.seed lets headless tests vary the seed).
+    const rng = env.debug ? mulberry32(env.seed ?? 0xc0ffee) : Math.random;
     const maze = createMaze();
+    // "Watch the AI play": the autopilot drives until a human takes over.
+    const auto = env.autopilot ? createAutopilot(maze, env.debug ? env.autopilotTune : null) : null;
 
     // --- persistent-across-levels state ---
     let level = 1;
@@ -136,9 +140,12 @@ export default {
     };
     env.input.onKeyDown((e) => {
       const d = keyDirs[e.key];
+      if (auto && (e.key === 'o' || e.key === 'O')) auto.toggleOverlay();
+      if (d && auto) auto.takeOver(animTick); // any steering input grabs the wheel
       if (d) pac.nextDir = DIRS[d];
     });
     env.input.onSwipe((d) => {
+      if (auto) auto.takeOver(animTick);
       pac.nextDir = DIRS[d];
     });
 
@@ -406,6 +413,51 @@ export default {
       blinky: ghosts.blinky,
     });
 
+    // --- autopilot plumbing (only used when env.autopilot is set) ---
+    const NEVER = 1e9;
+    function aiSnapshot() {
+      // Ticks until the next scatter/chase flip (the wave clock pauses in fright).
+      const waveSeconds = spec.waves[waveIndex];
+      const flipIn = waveSeconds === Infinity ? NEVER : frightTimer + Math.max(0, waveSeconds * 60 - waveTimer);
+      // Rough wait before each ghost still in the house is released.
+      const homeWait = {};
+      let wait = null;
+      for (const name of HOUSE_PREFERENCE) {
+        const g = ghosts[name];
+        if (g.state !== 'home') continue;
+        if (wait === null) {
+          const need = usePersonalCounters
+            ? spec.houseDotLimits[name] - g.dotCounter
+            : spec.globalDotLimits[name] - globalDotCounter;
+          const noDotLeft = spec.noDotReleaseSeconds * 60 - noDotTimer;
+          wait = Math.max(0, Math.min(Math.max(0, need) * 9, noDotLeft));
+        } else {
+          wait += 150;
+        }
+        homeWait[name] = wait;
+      }
+      return {
+        pac,
+        ghosts: ghostList,
+        spec,
+        mode: ghostMode,
+        frightTimer,
+        flipIn,
+        homeWait,
+        doorX: HOUSE.doorX,
+        exitY: MAZE_Y + 11 * TILE + TILE / 2,
+        fruit,
+        dots: maze.dots,
+        energizers: maze.energizers,
+      };
+    }
+
+    function autopilotStep() {
+      if (!auto || !auto.active) return;
+      const dir = auto.update(aiSnapshot(), animTick);
+      if (dir) pac.nextDir = dir;
+    }
+
     function draw() {
       ctx.fillStyle = '#0a0a0e';
       ctx.fillRect(0, 0, W, H);
@@ -415,6 +467,7 @@ export default {
         maze.drawDots(ctx, { blinkOn: Math.floor(animTick / 10) % 2 === 0 });
       }
       drawHud();
+      if (auto && (phase === 'play' || phase === 'ready')) auto.drawUnder(ctx, pac);
     }
 
     function expose() {
@@ -438,6 +491,7 @@ export default {
           tile: tileOf(g),
           target: g.state === 'normal' && !g.frightened ? ghostTarget(g, world()) : null,
         }])),
+        ...(auto ? { ai: auto.stats() } : {}),
       });
     }
 
@@ -479,6 +533,7 @@ export default {
         switch (phase) {
           case 'ready': {
             phaseTimer--;
+            autopilotStep();
             draw();
             drawActors();
             drawText(ctx, 'READY!', 14 * TILE, MAZE_Y + 17 * TILE, { color: '#ffff00', align: 'center' });
@@ -495,6 +550,7 @@ export default {
               break;
             }
             updateWaves();
+            autopilotStep();
             movePac();
             const w = world();
             for (const g of ghostList) updateGhost(g, w);
@@ -563,6 +619,7 @@ export default {
           default: break;
         }
 
+        if (auto && phase !== 'gameover') auto.drawOver(ctx, W, animTick, phase);
         expose();
       },
     };
