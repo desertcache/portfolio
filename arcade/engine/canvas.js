@@ -22,11 +22,22 @@ export function createScreen(displayCanvas) {
     resize();
   }
 
+  // Width comes from the room around the bezel, never the bezel itself: the bezel
+  // shrink-wraps whatever canvas it holds, so measuring it let a narrow game
+  // (portrait Pac-Man) pin every later landscape game at Pac-Man's width.
+  const bezel = displayCanvas.parentElement;
+  const room = bezel.parentElement || bezel;
+  const px = (/** @type {CSSStyleDeclaration} */ s, /** @type {string[]} */ props) =>
+    props.reduce((sum, p) => sum + (parseFloat(s.getPropertyValue(p)) || 0), 0);
+
   function availableBox() {
-    const holder = displayCanvas.parentElement;
-    const styles = getComputedStyle(holder);
-    const padX = parseFloat(styles.paddingLeft) + parseFloat(styles.paddingRight);
-    const w = Math.max(160, holder.clientWidth - padX);
+    // clientWidth already excludes the room's border; take off its padding, then the
+    // bezel's padding and border so the bezel's outer edge fits the room.
+    const roomInner = room === bezel ? room.clientWidth
+      : room.clientWidth - px(getComputedStyle(room), ['padding-left', 'padding-right']);
+    const bezelEdge = room === bezel ? 0
+      : px(getComputedStyle(bezel), ['padding-left', 'padding-right', 'border-left-width', 'border-right-width']);
+    const w = Math.max(160, roomInner - bezelEdge);
     // Height budget: don't exceed the viewport so the whole screen stays visible.
     const h = Math.max(160, Math.min(window.innerHeight * 0.72, mode.pixelArt ? 620 : 520));
     return { w: Math.min(w, mode.pixelArt ? 560 : 800), h };
@@ -71,7 +82,7 @@ export function createScreen(displayCanvas) {
   }
 
   const observer = new ResizeObserver(() => resize());
-  observer.observe(displayCanvas.parentElement);
+  observer.observe(room);
   window.addEventListener('resize', resize);
 
   setMode('landscape');
