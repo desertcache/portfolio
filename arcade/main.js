@@ -93,6 +93,24 @@ if (crtBtn) {
 }
 renderCrt();
 
+// Fill screen: the stage (cabinet + game bar) goes fullscreen and the screen takes the room
+// (engine/canvas.js sizes to it). Hidden where the browser can't fullscreen an element (iPhone).
+const stage = document.getElementById('arcade-stage');
+const fillBtn = document.getElementById('btn-fill');
+if (fillBtn && stage && stage.requestFullscreen && document.fullscreenEnabled) {
+  fillBtn.addEventListener('click', () => {
+    fillBtn.blur(); // keep Space (fire, flap, drop) from clicking the button again
+    if (document.fullscreenElement) document.exitFullscreen();
+    else stage.requestFullscreen().catch(() => {});
+  });
+  document.addEventListener('fullscreenchange', () => {
+    fillBtn.textContent = document.fullscreenElement ? 'EXIT FILL' : 'FILL SCREEN';
+    screen.resize();
+  });
+} else if (fillBtn) {
+  fillBtn.hidden = true;
+}
+
 const muteBtn = document.getElementById('btn-mute');
 function renderMute() {
   if (muteBtn) muteBtn.textContent = audio.muted ? 'SOUND · OFF' : 'SOUND · ON';

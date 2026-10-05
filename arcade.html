@@ -75,11 +75,13 @@
         <div class="head-illo" aria-hidden="true"><svg class="illo illo-ocotillo" viewBox="0 0 300 342" focusable="false"><use href="assets/desert.svg#ocotillo"/></svg></div>
       </header>
 
+      <div id="arcade-stage" class="arcade-stage">
       <div id="arcade-section" class="room arcade-cabinet">
         <div class="cabinet-grid"></div>
         <div class="room-bar cabinet-bar">
           <span>Cabinet · 12 titles</span>
           <span class="cab-right">
+            <button id="btn-fill" class="cab-toggle" type="button">FILL SCREEN</button>
             <button id="btn-crt" class="cab-toggle" type="button">CRT · ON</button>
             <button id="btn-mute" class="cab-toggle" type="button">SOUND · ON</button>
             <span class="live">Canvas · 60fps</span>
@@ -242,6 +244,7 @@
         </div>
         <p class="deck-keys"><kbd>[</kbd> <kbd>]</kbd> switch games</p>
       </nav>
+      </div>
 
       <section class="play-notes how" id="how" aria-labelledby="how-title">
         <p class="label">How it works<span class="how-name" id="how-name">The cabinet</span></p>

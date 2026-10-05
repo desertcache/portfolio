@@ -476,6 +476,16 @@ along its floor. `js/page.js` is their script entry (theme toggle, nav).
   prefixed `.menu-buttons` because the base `.arcade-btn` rules come later in
   `play.css`. A new game needs a tile, a `[data-game]` PB span, an icon, a
   `LABELS` entry, and (if it has an AI twin) an `AI_TWIN` / `HUMAN_TWIN` pair.
+- **Screen size and Fill screen (2026-10-05).** The display canvas used to cap at 800px and 72% of
+  the window height. `engine/canvas.js` now caps per mode at 1200x760 (landscape), 600x860 (tall) and
+  700x800 (portrait), and the height budget is `innerHeight - PAGE_CHROME` (170: nav, cabinet frame,
+  air). Cabinet padding and bezel were trimmed (44px top for the bar, 10px bezel; the CRT overlay,
+  scrim and HUD offsets follow). Above 1200px `.arcade-stage` breaks out of the text column
+  (up to 1360px). The stage wraps the cabinet and the game bar; the cabinet bar's FILL SCREEN button
+  calls `requestFullscreen()` on it, and in fullscreen `availableBox()` ignores the caps and takes
+  the room's own height. Hidden under 600px and where the browser can't fullscreen an element
+  (iPhone). Vector games are scaled up from their fixed logical size, so they soften a little past
+  1x; pixel-art Pac-Man still scales by whole device pixels.
 - **Dust Devil Pinball (2026-10-05).** `games/pinball.js` is the cabinet side
   (input, one tick, sound cues); the game is `games/pinball/`: `physics.js` and
   `rules.js` are pure (Node tests import them), `table.js` holds all geometry as

@@ -3,13 +3,18 @@
 // window mid-game cannot change gameplay geometry (the old arcade.js bug).
 // The display canvas is presentation only: aspect-fit for vector games,
 // device-pixel integer scaling for pixel-art (Pac-Man). maxW and maxH cap the
-// display box in CSS pixels; the height is also held to 72% of the viewport.
+// display box in CSS pixels; the height is also held to what the window leaves under
+// the page header and the cabinet's own frame. In fill-screen mode the caps are off.
 export const MODES = {
-  landscape: { w: 800, h: 500, pixelArt: false, maxW: 800, maxH: 520 },
+  landscape: { w: 800, h: 500, pixelArt: false, maxW: 1200, maxH: 760 },
   // A tall vector screen for the pinball table.
-  tall: { w: 450, h: 720, pixelArt: false, maxW: 480, maxH: 680 },
-  portrait: { w: 224, h: 288, pixelArt: true, maxW: 560, maxH: 620 },
+  tall: { w: 450, h: 720, pixelArt: false, maxW: 600, maxH: 860 },
+  portrait: { w: 224, h: 288, pixelArt: true, maxW: 700, maxH: 800 },
 };
+
+// Vertical space the page keeps for itself while a game is on screen: the fixed nav (68),
+// the cabinet's padding and bezel (about 80), and a little air.
+const PAGE_CHROME = 170;
 
 export function createScreen(displayCanvas) {
   const displayCtx = displayCanvas.getContext('2d');
@@ -41,8 +46,16 @@ export function createScreen(displayCanvas) {
     const bezelEdge = room === bezel ? 0
       : px(getComputedStyle(bezel), ['padding-left', 'padding-right', 'border-left-width', 'border-right-width']);
     const w = Math.max(160, roomInner - bezelEdge);
-    // Height budget: don't exceed the viewport so the whole screen stays visible.
-    const h = Math.max(160, Math.min(window.innerHeight * 0.72, mode.maxH));
+    if (document.fullscreenElement) {
+      // Fill-screen mode: the stage fixes the room's height, so the screen takes all of it.
+      const vEdge = room === bezel ? 0
+        : px(getComputedStyle(room), ['padding-top', 'padding-bottom'])
+          + px(getComputedStyle(bezel), ['padding-top', 'padding-bottom', 'border-top-width', 'border-bottom-width']);
+      return { w, h: Math.max(160, room.clientHeight - vEdge) };
+    }
+    // Height budget: leave room for the page header and the cabinet's frame so the whole
+    // screen stays visible without scrolling.
+    const h = Math.max(160, Math.min(window.innerHeight - PAGE_CHROME, mode.maxH));
     return { w: Math.min(w, mode.maxW), h };
   }
 
