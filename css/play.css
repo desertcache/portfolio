@@ -116,6 +116,17 @@
 }
 @keyframes live { 50% { opacity: 0.5; transform: scale(1.4); } }
 
+/* a dim scrim over the whole screen while the library is up, so the attract demo (and its caption)
+   stays quiet behind the tiles */
+.arcade-cabinet:not(.is-playing) .screen::after {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  z-index: 5;
+  border-radius: 6px;
+  background: rgba(10, 7, 20, 0.6);
+  pointer-events: none;
+}
 /* the CRT: bezel, scanlines, vignette (static CSS) */
 .screen {
   position: relative;
@@ -153,6 +164,7 @@ canvas.pixel-art { image-rendering: pixelated; }
   }
   .screen { padding: 4px; border-radius: 8px; }
   .crt-overlay, .crt-vignette { inset: 4px; }
+  .arcade-cabinet:not(.is-playing) .screen::after { inset: 4px; }
 }
 
 /* the menu and game-over overlays sit on the screen */
@@ -180,22 +192,69 @@ canvas.pixel-art { image-rendering: pixelated; }
   text-transform: uppercase;
   color: var(--lab-ink-3);
 }
-/* ten titles: Pac-Man featured with its "watch the AI" companion, then a compact grid of tiles */
-.menu-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.menu-featured { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr auto; gap: 8px; }
-/* inside the featured row the flagship is one of two columns, not a full-width row */
-.menu-featured .arcade-btn.featured { grid-column: auto; padding: 12px 16px; }
-.menu-buttons > .arcade-btn { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; padding: 10px 12px; font-stretch: condensed; letter-spacing: 0.06em; }
-.menu-buttons > .arcade-btn .title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.arcade-btn.featured-ai { grid-template-columns: auto auto; gap: 12px; padding: 12px 16px; border-color: rgba(255, 201, 77, 0.55); }
-.arcade-btn.featured-ai .num, .arcade-btn.ai .num { color: #ffc94d; }
-/* a shorter heading for the taller menu, so the ghost roll-call behind it stays clear */
-#arcade-menu h2 { font-size: clamp(1.5rem, 3.2vw, 2.2rem); margin-bottom: 16px; }
+/* twelve titles as a library: one tile each, in menu-number order (the number keys follow the
+   grid), four across. Pac-Man and Mesa Lander carry a "watch the AI" strip on their tile. The
+   panel is a dim scrim so the attract-mode demo behind it stays out of the way of the text. */
+#arcade-menu {
+  max-width: 780px;
+  padding: 16px 18px 18px;
+  border: 1px solid rgba(245, 238, 242, 0.08);
+  border-radius: 14px;
+  background: rgba(10, 7, 20, 0.7);
+  backdrop-filter: blur(3px);
+}
+#arcade-menu h2 { margin-bottom: 4px; font-size: clamp(1.5rem, 3.2vw, 2.1rem); }
+#arcade-menu .menu-sub { margin-bottom: 14px; }
+.menu-buttons { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.tile { display: flex; flex-direction: column; min-width: 0; }
+.menu-buttons .tile-main {
+  position: relative;
+  display: grid;
+  flex: 1;
+  grid-template-columns: 40px minmax(0, 1fr);
+  grid-template-rows: auto auto 1fr;
+  grid-template-areas: "icon title" "icon tag" "num hi";
+  column-gap: 10px;
+  row-gap: 2px;
+  align-items: start;
+  min-height: 84px;
+  padding: 11px 12px 10px;
+  text-align: left;
+}
+.tile-icon { grid-area: icon; width: 40px; height: 40px; }
+.tile-icon .cart-icon { display: block; width: 40px; height: 40px; image-rendering: pixelated; transition: transform 0.2s var(--ease); }
+.tile-main:hover .cart-icon, .tile-main:focus-visible .cart-icon { transform: scale(1.1); }
+.menu-buttons .tile-main .title { grid-area: title; font-size: 0.75rem; line-height: 1.2; letter-spacing: 0.04em; }
+.menu-buttons .tile-main .num { grid-area: num; align-self: end; margin: 0; font-size: 0.625rem; text-align: center; }
+.tile-tag { grid-area: tag; font-size: 0.5625rem; line-height: 1.3; letter-spacing: 0.02em; text-transform: none; color: var(--lab-ink-2); }
+.menu-buttons .tile-main .hi { grid-area: hi; align-self: end; }
+/* the AI titles: amber, with a lamp in the corner so they read as a different kind of game */
+.tile-main.ai { border-color: rgba(255, 201, 77, 0.4); }
+.tile-main.ai .num { color: #ffc94d; }
+.tile-main.ai::after { content: "AI"; position: absolute; right: 10px; bottom: 9px; font-size: 0.5rem; letter-spacing: 0.14em; color: #ffc94d; }
+/* a tile with an AI twin: the strip hangs off the tile's foot */
+.menu-buttons .tile-ai {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 12px;
+  border-color: rgba(255, 201, 77, 0.4);
+  border-top-width: 0;
+  border-radius: 0 0 8px 8px;
+  background: rgba(255, 201, 77, 0.09);
+  color: #ffc94d;
+  text-align: left;
+}
+.tile:has(.tile-ai) .tile-main { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.menu-buttons .tile-ai:hover, .menu-buttons .tile-ai:focus-visible { background: rgba(255, 201, 77, 0.2); border-color: #ffc94d; color: #ffe08a; }
 @media (max-width: 600px) {
-  .menu-buttons { grid-template-columns: 1fr 1fr; gap: 6px; }
-  .menu-featured { grid-template-columns: 1fr; }
-  /* narrow tiles: title on its own line, PB under it */
-  .menu-buttons > .arcade-btn { grid-template-columns: 1fr; gap: 2px; }
+  #arcade-menu { padding: 12px 8px 12px; }
+  #arcade-menu .menu-sub { display: none; }
+  .menu-buttons { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  /* narrow tiles stack: icon, number and title, then the personal best */
+  .menu-buttons .tile-main { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto 1fr; grid-template-areas: "icon" "title" "hi"; min-height: 96px; padding: 9px 8px 8px; }
+  .tile-tag, .menu-buttons .tile-main .num { display: none; }
+  .menu-buttons .tile-main .title { font-size: 0.6875rem; line-height: 1.25; }
+  .menu-buttons .tile-ai { padding: 6px 8px; font-size: 0.5625rem; letter-spacing: 0.03em; white-space: nowrap; }
 }
 .arcade-btn, .game-btn {
   border: 1px solid var(--lab-line-strong);
@@ -216,24 +275,15 @@ canvas.pixel-art { image-rendering: pixelated; }
   padding: 13px 16px;
   text-align: left;
 }
-.arcade-btn.featured {
-  grid-column: 1 / -1;
-  padding: 16px;
-  border-color: var(--lab-accent);
-  background: linear-gradient(90deg, rgba(255, 122, 69, 0.18), rgba(18, 12, 32, 0.78) 58%);
-}
-.arcade-btn.featured .title { font-size: 0.8125rem; letter-spacing: 0.14em; }
 .arcade-btn .num { margin-right: 10px; color: var(--lab-accent); }
-.arcade-btn .tag { margin-left: 10px; font-size: 0.5625rem; letter-spacing: 0.16em; color: #ffc94d; }
 .arcade-btn .hi { font-size: 0.625rem; letter-spacing: 0.08em; color: var(--lab-ink-3); }
-.arcade-btn .arrow { color: var(--lab-ink-3); }
 .arcade-btn:hover, .arcade-btn:focus-visible, .game-btn:hover, .game-btn:focus-visible {
   border-color: var(--lab-accent);
   color: var(--lab-accent);
   outline: none;
 }
 .arcade-btn:hover, .arcade-btn:focus-visible { transform: translateY(-1px); }
-.arcade-btn:hover .hi, .arcade-btn:focus-visible .hi, .arcade-btn:hover .arrow { color: var(--lab-ink); }
+.arcade-btn:hover .hi, .arcade-btn:focus-visible .hi { color: var(--lab-ink); }
 
 #game-over-screen { display: none; }
 /* game over, in the colours of the sunset (the Lab's --em-sunset) */
@@ -270,101 +320,84 @@ canvas.pixel-art { image-rendering: pixelated; }
 }
 #hud-score #current-score { color: var(--lab-accent); }
 
-/* the game deck: a row of cartridges under the cabinet, one per game, so any game is
-   one click away mid-play. Dark in both themes, like the cabinet it hangs from. */
-.game-deck { margin-top: 10px; padding: 12px 14px 14px; box-shadow: none; }
-.deck-bar { margin-bottom: 10px; }
-.deck-keys { color: var(--lab-ink-3); }
-.deck-row { display: flex; align-items: stretch; gap: 8px; }
-.deck-carts {
-  display: flex;
-  flex: 1;
-  gap: 6px;
-  min-width: 0;
-  padding: 3px 2px 4px;
-  overflow-x: auto;
-  scroll-snap-type: x proximity;
-  scrollbar-width: none;
-}
-.deck-carts::-webkit-scrollbar { display: none; }
-.cart {
-  position: relative;
-  display: flex;
-  flex: 1 0 74px;
-  flex-direction: column;
+/* the now-playing bar under the cabinet: previous / now playing / next, plus the AI twin and the
+   way back to the menu, so any game is one click away mid-play. Dark in both themes, like the
+   cabinet it hangs from. */
+.game-deck {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1fr) auto;
   align-items: center;
-  gap: 7px;
-  min-width: 74px;
-  padding: 12px 4px 9px;
+  gap: 8px 10px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  box-shadow: none;
+}
+.game-deck [hidden] { display: none; }
+.deck-side {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 8px 12px;
   border: 1px solid rgba(245, 238, 242, 0.12);
-  border-radius: 5px 5px 7px 7px;
-  background: linear-gradient(#1c1432, #120c21);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  color: var(--lab-ink-3);
-  font: 500 semi-condensed 0.5625rem/1.15 var(--mono);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  text-align: center;
-  cursor: pointer;
-  scroll-snap-align: center;
-  transition: transform 0.15s var(--ease), border-color 0.15s, color 0.15s, background-color 0.15s;
-}
-/* the cartridge's label notch */
-.cart::before {
-  content: "";
-  position: absolute;
-  top: 4px; left: 50%;
-  width: 22px; height: 3px;
-  margin-left: -11px;
-  border-radius: 2px;
-  background: rgba(245, 238, 242, 0.08);
-}
-.cart-icon { width: 36px; height: 36px; image-rendering: pixelated; }
-.cart-num { color: #ff7a45; letter-spacing: 0.12em; }
-.cart.ai .cart-num { color: #ffc94d; }
-.cart-name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cart:hover { transform: translateY(-2px); border-color: rgba(245, 238, 242, 0.32); color: var(--lab-ink); }
-.cart:focus-visible { outline: 2px solid #ffc94d; outline-offset: 2px; }
-.cart[aria-current="true"] {
-  border-color: #ffc94d;
-  background: linear-gradient(#2c1f44, #181029);
-  box-shadow: inset 0 0 0 1px rgba(255, 201, 77, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.07);
-  color: var(--lab-ink);
-}
-/* "now playing" lamp */
-.cart[aria-current="true"]::after {
-  content: "";
-  position: absolute;
-  top: 7px; right: 7px;
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: #a9c46c;
-  box-shadow: 0 0 6px #a9c46c;
-  animation: live 1.6s infinite;
-}
-.deck-step {
-  flex: 0 0 32px;
-  border: 1px solid rgba(245, 238, 242, 0.12);
-  border-radius: 5px;
+  border-radius: 8px;
   background: none;
   color: var(--lab-ink-2);
-  font: 500 1.125rem/1 var(--mono);
+  text-align: left;
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s, background-color 0.15s;
 }
-.deck-step:hover, .deck-step:focus-visible { border-color: rgba(245, 238, 242, 0.32); color: var(--lab-ink); background: rgba(245, 238, 242, 0.04); }
+.deck-next { justify-content: flex-end; text-align: right; }
+.deck-side:hover, .deck-side:focus-visible { border-color: #ffc94d; background: rgba(255, 201, 77, 0.07); color: var(--lab-ink); outline: none; }
+.deck-arrow { flex: none; font: 500 1.5rem/1 var(--mono); }
+.deck-side-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; font: 500 semi-condensed 0.75rem/1.2 var(--mono); letter-spacing: 0.04em; text-transform: uppercase; }
+.deck-side-text small { font-size: 0.5rem; letter-spacing: 0.16em; color: var(--lab-ink-3); }
+.deck-side-text > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.deck-now { display: flex; align-items: center; justify-content: center; gap: 12px; min-width: 0; }
+.deck-now-icon { display: block; flex: none; width: 36px; height: 36px; }
+.deck-now-icon .cart-icon { width: 36px; height: 36px; image-rendering: pixelated; }
+.deck-now-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; text-align: left; }
+.deck-now-meta { font: 500 semi-condensed 0.5625rem/1.2 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: #ffc94d; }
+.deck-now-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 semi-expanded 1rem/1.15 var(--display); letter-spacing: -0.02em; color: var(--lab-ink); }
+.deck-actions { display: flex; gap: 8px; }
+.deck-btn {
+  padding: 11px 14px;
+  border: 1px solid var(--lab-line-strong);
+  border-radius: 8px;
+  background: rgba(18, 12, 32, 0.78);
+  color: var(--lab-ink);
+  font: 500 semi-condensed 0.6875rem/1.2 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background-color 0.15s;
+}
+.deck-btn:hover, .deck-btn:focus-visible { border-color: var(--lab-accent); color: var(--lab-accent); outline: none; }
+.deck-btn-ai { border-color: rgba(255, 201, 77, 0.45); color: #ffc94d; }
+.deck-btn-ai:hover, .deck-btn-ai:focus-visible { border-color: #ffc94d; color: #ffe08a; background: rgba(255, 201, 77, 0.12); }
+.deck-keys { grid-column: 1 / -1; margin: 0; font: 500 semi-condensed 0.5625rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; text-align: center; color: var(--lab-ink-3); }
+.deck-keys kbd { padding: 1px 5px; border: 1px solid rgba(245, 238, 242, 0.2); border-radius: 3px; font: inherit; color: var(--lab-ink-2); }
+@media (max-width: 900px) {
+  .game-deck { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+  .deck-now { order: -1; grid-column: 1 / -1; }
+  .deck-actions { grid-column: 1 / -1; }
+  .deck-actions > .deck-btn { flex: 1; }
+}
 @media (max-width: 600px) {
-  /* edge to edge under the cabinet; swipe the row instead of stepping */
-  .game-deck { width: 100vw; margin-top: 0; margin-left: calc(50% - 50vw); border-radius: 0; border-left: 0; border-right: 0; padding: 10px 8px 12px; }
-  .deck-step, .deck-keys { display: none; }
-  .cart { flex: 0 0 78px; min-width: 78px; letter-spacing: 0.04em; }
-  /* the menu needs the tall cabinet; a landscape game doesn't, so the deck stays close */
+  /* edge to edge under the cabinet; big tap targets, no key hints on a phone */
+  .game-deck { grid-template-columns: 56px minmax(0, 1fr) 56px; width: 100vw; margin-top: 0; margin-left: calc(50% - 50vw); border-radius: 0; border-left: 0; border-right: 0; padding: 10px 8px 12px; }
+  .deck-now { order: 0; grid-column: auto; }
+  .deck-side { justify-content: center; padding: 10px 0; }
+  .deck-arrow { font-size: 1.75rem; }
+  .deck-side-text, .deck-keys { display: none; }
+  .deck-now-name { font-size: 0.9375rem; }
+  /* the menu needs the tall cabinet; a landscape game doesn't, so the bar stays close */
   .arcade-cabinet.is-playing { min-height: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .cart { transition: none; }
-  .cart:hover { transform: none; }
-  .cart[aria-current="true"]::after { animation: none; }
+  .deck-side, .deck-btn, .tile-icon .cart-icon { transition: none; }
+  .tile-main:hover .cart-icon, .tile-main:focus-visible .cart-icon { transform: none; }
 }
 
 /* "how it works": the play-notes pattern, swapped with the game */
