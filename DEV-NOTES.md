@@ -409,6 +409,25 @@ along its floor. `js/page.js` is their script entry (theme toggle, nav).
 - The arcade no longer sets `user-scalable=no` (it blocked pinch zoom, an
   accessibility failure); `touch-action: manipulation` on the cabinet stops
   double-tap zoom mid-game instead.
+- **Ten titles plus "Watch the AI play" (2026-10-04).** A game is a module
+  `{ id, title, mode, ownHud?, start(env) => { tick } }` in `arcade/games/`,
+  listed in `GAMES` in `main.js`, with a `#btn-<id lowercased>` tile and a
+  `[data-game=<ID>]` PB span in `arcade.html`. Ids: PACMAN, PACMANAI, SNAKE,
+  FLAPPY, BREAKOUT, ASTEROIDS, FOUR, EVOLVE, CROSSING, SWARM, QUADRA. Bigger
+  games keep helpers in a folder of the same name (`games/swarm/`, ...).
+  PACMANAI is the Pac-Man module started with `env.autopilot = true`; the
+  autopilot lives in `games/pacman/autopilot.js` and must leave PACMAN as is.
+- Menu keys: 1-9 and 0 start the numbered tiles (0 is 10), A starts the AI
+  Pac-Man. Deep links: `?game=<id>`; add `&debug=1` for a seeded RNG and
+  `window.__arcade` (state plus per-game test actions).
+- Style: Crossing and QUADRA are flat ink-and-paper in the desert palette
+  (Crossing draws the site's own roadrunner and plants from `assets/`); Swarm,
+  Asteroids and the rest are neon vector. No trademarked names or the source
+  games' signature mechanics (Swarm has no captured ship).
+- Phones: under 600px the cabinet runs edge to edge with a 4px bezel; the page
+  gutter, cabinet padding and bezel used to leave a 288px canvas at 390px.
+- `audio.noise()` plays a slice of one shared 2 s buffer; don't go back to a
+  fresh buffer per call (1.5 ms spikes in Swarm's explosions).
 - The starship is a separate app (desertcache/starship), framed only when
   you board; this page is the dock. Touch-only or narrow screens get the
   poster and a note.
