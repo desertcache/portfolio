@@ -2,10 +2,13 @@
 // a constant logical size and never see the display size, so resizing the
 // window mid-game cannot change gameplay geometry (the old arcade.js bug).
 // The display canvas is presentation only: aspect-fit for vector games,
-// device-pixel integer scaling for pixel-art (Pac-Man).
+// device-pixel integer scaling for pixel-art (Pac-Man). maxW and maxH cap the
+// display box in CSS pixels; the height is also held to 72% of the viewport.
 export const MODES = {
-  landscape: { w: 800, h: 500, pixelArt: false },
-  portrait: { w: 224, h: 288, pixelArt: true },
+  landscape: { w: 800, h: 500, pixelArt: false, maxW: 800, maxH: 520 },
+  // A tall vector screen for the pinball table.
+  tall: { w: 450, h: 720, pixelArt: false, maxW: 480, maxH: 680 },
+  portrait: { w: 224, h: 288, pixelArt: true, maxW: 560, maxH: 620 },
 };
 
 export function createScreen(displayCanvas) {
@@ -39,8 +42,8 @@ export function createScreen(displayCanvas) {
       : px(getComputedStyle(bezel), ['padding-left', 'padding-right', 'border-left-width', 'border-right-width']);
     const w = Math.max(160, roomInner - bezelEdge);
     // Height budget: don't exceed the viewport so the whole screen stays visible.
-    const h = Math.max(160, Math.min(window.innerHeight * 0.72, mode.pixelArt ? 620 : 520));
-    return { w: Math.min(w, mode.pixelArt ? 560 : 800), h };
+    const h = Math.max(160, Math.min(window.innerHeight * 0.72, mode.maxH));
+    return { w: Math.min(w, mode.maxW), h };
   }
 
   function resize() {
