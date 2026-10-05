@@ -26,11 +26,47 @@ const ORB_SRC = `${ORB_ORIGIN}/samantha-ui/?embed=1&control=1&transparent=1`;
 const STEP_MS = 620;
 const WORD_MS = 22;
 
-/** @typedef {{ id: string, asks: string[], answer: string, points?: string[], next?: string[], link: string | null }} Entry */
+// Suggested questions per section of the page (answer-bank ids; each chip asks the answer's own
+// first phrasing). Shown when the bar opens with no conversation yet, following the section the
+// visitor is reading.
+/** @type {Record<string, string[]>} */
+const SECTION_CHIPS = {
+  top: ['who-is-sam', 'copilot', 'can-he-code'],
+  featured: ['copilot', 'rollout', 'rag'],
+  work: ['api-migration', 'chatbot', 'measurement'],
+  build: ['claude-code', 'power-user', 'mcp'],
+  lab: ['starship', 'orb', 'this-box'],
+  about: ['career-path', 'emt', 'leadership'],
+  stack: ['tech-stack', 'ai-quality', 'data'],
+  contact: ['contact', 'resume', 'why-hire'],
+};
+
+// Phrases that mean "keep going": they continue the last answer through its first follow-up.
+const MORE = /^(?:tell me more|more|go on|keep going|continue|elaborate|what else|anything else|and then|say more)\W*$/i;
+
+/** @typedef {{ id: string, chat?: boolean, asks: string[], answer: string, points?: string[], detail?: string[], next?: string[], link: string | null }} Entry */
+/** @typedef {{ entries: Entry[], fallback: string, fallbacks?: string[] }} Bank */
+
+/**
+ * The answer to show, or null to decline: the same rule as desertcache/ask's js/match.js
+ * (bestMatch), kept here too so this page works with an ask deploy that predates it.
+ * @param {Ranked[]} ranked
+ * @param {number} threshold
+ * @param {number} chatMin
+ * @returns {Ranked | null}
+ */
+function localBestMatch(ranked, threshold, chatMin) {
+  for (const r of ranked) {
+    if (r.score < threshold) return null;
+    if (!r.entry.chat || r.score >= chatMin) return r;
+  }
+  return null;
+}
 /** @typedef {{ entry: Entry, score: number, matched: string, vector: Float32Array }} Ranked */
 /**
  * @typedef {{
- *   entries: Entry[], byId: Map<string, Entry>, fallback: string, starters: Entry[], threshold: number,
+ *   entries: Entry[], byId: Map<string, Entry>, fallbacks: string[], starters: Entry[], threshold: number, chatMin: number,
+ *   bestMatch(ranked: Ranked[], threshold: number, chatMin: number): Ranked | null,
  *   embedder: { dim: number, pieces(t: string): { text: string, known: boolean }[] },
  *   matcher: { size: number, rank(q: string): Ranked[] },
  * }} Engine
@@ -56,15 +92,16 @@ function el(tag, cls, text) {
  * Load the engine from desertcache/ask once. The module URLs are built at run
  * time, so they are plain dynamic imports with no build step.
  * @param {(text: string) => void} progress
+ * @param {Promise<Bank>} bankP the answer bank, fetched on its own so suggestions don't wait for the model
  * @returns {Promise<Engine>}
  */
-async function loadEngine(progress) {
+async function loadEngine(progress, bankP) {
   /** @type {any[]} */
-  const [{ createEmbedder }, { createMatcher }, config] = await Promise.all(
+  const [{ createEmbedder }, { createMatcher, bestMatch }, config] = await Promise.all(
     ['js/embed.js', 'js/match.js', 'js/config.js'].map((p) => import(/* @vite-ignore */ ASK + p)),
   );
   const [bank, vocab] = await Promise.all([
-    fetch(`${ASK}data/bank.json`).then((r) => r.json()),
+    bankP,
     fetch(`${ASK}models/vocab.txt`).then((r) => r.text()),
   ]);
   const res = await fetch(`${ASK}models/${config.MODEL}.bin`);
@@ -92,9 +129,11 @@ async function loadEngine(progress) {
   return {
     entries,
     byId,
-    fallback: bank.fallback,
+    fallbacks: bank.fallbacks?.length ? bank.fallbacks : [bank.fallback],
     starters: config.STARTERS.map((/** @type {string} */ id) => byId.get(id)).filter(Boolean),
     threshold: config.THRESHOLD,
+    chatMin: config.CHAT_MIN ?? 0.6,
+    bestMatch: bestMatch ?? localBestMatch,
     embedder,
     matcher: createMatcher(entries, embedder, config.MATCH_OPTIONS),
   };
@@ -123,12 +162,23 @@ function vectorStrip(v) {
   return svg;
 }
 
-/** The answer: its lead, then its highlights as a list. @param {string} lead @param {string[]} [points] */
-function answerBlock(lead, points = []) {
+/**
+ * The answer: its lead, then either prose paragraphs (detail) or a list (points), whichever shape
+ * the bank gives it. Most answers are prose; lists are only for content that is a list.
+ * @param {string} lead
+ * @param {string[]} [points]
+ * @param {string[]} [detail]
+ */
+function answerBlock(lead, points = [], detail = []) {
   const box = el('div', 'dock-answer-block');
   const p = el('p', 'dock-answer');
   let i = words(p, lead, 0);
   box.append(p);
+  for (const para of detail) {
+    const more = el('p', 'dock-answer');
+    i = words(more, para, i);
+    box.append(more);
+  }
   if (points.length) {
     const ul = el('ul', 'dock-points');
     for (const pt of points) {
@@ -210,14 +260,23 @@ export function initAsk() {
   if (document.readyState === 'complete') idle(mountOrb);
   else window.addEventListener('load', () => idle(mountOrb), { once: true });
 
-  // ---------- the engine, loaded on first intent ----------
+  // ---------- the bank and the engine, loaded on first intent ----------
+  /** @type {Promise<Bank> | null} */
+  let bank = null;
+  const getBank = () => {
+    if (!bank) {
+      bank = fetch(`${ASK}data/bank.json`).then((r) => r.json());
+      bank.catch(() => { bank = null; });
+    }
+    return bank;
+  };
   /** @type {Promise<Engine> | null} */
   let engine = null;
   /** @type {HTMLElement | null} */
   let loadingLine = null;
   const getEngine = () => {
     if (!engine) {
-      engine = loadEngine((text) => { if (loadingLine) loadingLine.textContent = text; });
+      engine = loadEngine((text) => { if (loadingLine) loadingLine.textContent = text; }, getBank());
       engine.catch(() => { engine = null; });
     }
     return engine;
@@ -232,7 +291,52 @@ export function initAsk() {
     collapse.setAttribute('aria-expanded', String(open));
   };
   collapse.addEventListener('click', () => setOpen(false));
-  input.addEventListener('focus', () => { if (log.childElementCount) setOpen(true); });
+  // Clicking or tapping anywhere off the bar folds the answers away (they come back on focus).
+  document.addEventListener('pointerdown', (e) => {
+    if (dock.classList.contains('is-open') && e.target instanceof Node && !dock.contains(e.target)) setOpen(false);
+  });
+  input.addEventListener('focus', () => {
+    if (log.childElementCount) setOpen(true);
+    else showSuggestions();
+  });
+
+  // ---------- suggestions that follow the section being read ----------
+  let section = 'top';
+  /** @type {HTMLElement | null} */
+  let suggest = null;
+  const renderSuggestions = async () => {
+    if (!suggest) return;
+    const b = await getBank().catch(() => null);
+    if (!b || !suggest) return;
+    const byId = new Map(b.entries.map((e) => [e.id, e]));
+    const picks = /** @type {Entry[]} */ ((SECTION_CHIPS[section] ?? SECTION_CHIPS.top).map((id) => byId.get(id)).filter(Boolean));
+    suggest.querySelector('.dock-chips')?.remove();
+    suggest.append(chipRow(picks));
+  };
+  // The first open, before any question: a greeting and three questions about this part of the page.
+  const showSuggestions = () => {
+    if (suggest || log.childElementCount) return;
+    suggest = el('div', 'dock-msg dock-bot dock-suggest');
+    suggest.append(el('p', 'dock-answer', "Ask me anything about Sam's work, or start with this part of the page:"));
+    log.append(suggest);
+    setOpen(true);
+    renderSuggestions();
+  };
+  if ('IntersectionObserver' in window) {
+    // A section counts as "being read" when it crosses the middle band of the screen.
+    const seen = new IntersectionObserver((list) => {
+      for (const entry of list) {
+        if (!entry.isIntersecting || entry.target.id === section) continue;
+        section = entry.target.id;
+        // Re-pick only while the suggestions are still the whole conversation.
+        if (suggest && log.lastElementChild === suggest) renderSuggestions();
+      }
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    for (const id of Object.keys(SECTION_CHIPS)) {
+      const s = document.getElementById(id);
+      if (s) seen.observe(s);
+    }
+  }
   dock.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && dock.classList.contains('is-open')) { setOpen(false); input.focus(); }
   });
@@ -289,6 +393,10 @@ export function initAsk() {
   };
 
   let asking = false;
+  /** @type {Set<string>} answers already given in this conversation */
+  const answered = new Set();
+  /** @type {Entry | null} the last answer given, for "tell me more" */
+  let lastEntry = null;
   /** @param {string} raw */
   async function ask(raw) {
     const q = raw.trim();
@@ -311,11 +419,15 @@ export function initAsk() {
       loadingLine.remove();
       loadingLine = null;
 
+      // "Tell me more" and friends continue the last answer through its first follow-up.
+      const followUp = MORE.test(q) && lastEntry?.next?.length ? eng.byId.get(lastEntry.next[0]) ?? null : null;
+
       const t0 = performance.now();
-      const ranked = eng.matcher.rank(q);
+      const ranked = eng.matcher.rank(followUp ? followUp.asks[0] : q);
       const ms = performance.now() - t0;
       const top = ranked[0];
-      const hit = top.score >= eng.threshold;
+      const best = followUp ? ranked.find((r) => r.entry.id === followUp.id) ?? null : eng.bestMatch(ranked, eng.threshold, eng.chatMin);
+      const hit = Boolean(best);
 
       // The trace: what the model actually did, paced to be read.
       const trace = /** @type {HTMLDetailsElement} */ (el('details', 'dock-trace'));
@@ -337,6 +449,11 @@ export function initAsk() {
         li.classList.replace('is-running', 'is-done');
       };
 
+      if (followUp && lastEntry) {
+        const prev = lastEntry;
+        await step('Picked up the thread', () => el('span', 'dock-detail', `continuing from “${prev.asks[0]}”`));
+        await step('Found the next part of the story', () => el('span', 'dock-detail', `“${followUp.asks[0]}”`));
+      } else {
       await step('Read your question', () => {
         const pieces = eng.embedder.pieces(q);
         const box = el('div', 'dock-pieces');
@@ -353,7 +470,7 @@ export function initAsk() {
       await step('Ranked the closest answers', () => {
         const list = el('ul', 'dock-matches');
         for (const r of ranked.slice(0, 3)) {
-          const li = el('li', r === top && hit ? 'is-best' : '');
+          const li = el('li', r === best ? 'is-best' : '');
           const bar = el('span', 'dock-bar-fill');
           bar.style.setProperty('--w', `${Math.max(0, Math.min(1, r.score)) * 100}%`);
           li.append(el('span', 'dock-m-text', `“${r.matched}”`), bar, el('span', 'dock-m-score', r.score.toFixed(2)));
@@ -361,18 +478,25 @@ export function initAsk() {
         }
         return list;
       });
-      // The confidence check: does the best match clear the threshold?
-      await step(hit ? 'Confident in the best match' : 'Not confident enough to answer', () => el('span', 'dock-detail', hit
-        ? `${top.score.toFixed(2)} clears the ${eng.threshold} bar`
-        : `${top.score.toFixed(2)} is under the ${eng.threshold} bar, so it won't guess`));
+      // The confidence check: does the best match clear its bar? (Small talk needs a higher one.)
+      await step(best ? 'Confident in the best match' : 'Not confident enough to answer', () => el('span', 'dock-detail', best
+        ? `${best.score.toFixed(2)} clears the ${best.entry.chat ? eng.chatMin : eng.threshold} bar${best.entry.chat ? ' for small talk' : ''}`
+        : `${top.score.toFixed(2)} is under the ${top.entry.chat ? eng.chatMin : eng.threshold} bar, so it won't guess`));
+      }
       await wait(STEP_MS * 0.7);
       trace.open = false;
       trace.classList.add('is-done');
       sumText.textContent = `Searched ${eng.matcher.size} phrasings · ${ms < 1 ? '<1' : ms.toFixed(1)} ms`;
 
-      const entry = hit ? top.entry : null;
+      const entry = hit && best ? best.entry : null;
       setOrb('SPEAKING');
-      const { box, words: n } = answerBlock(entry ? entry.answer : eng.fallback, entry?.points);
+      // Conversation awareness: say so when continuing a thread or repeating an answer, and
+      // vary the "I don't know" line instead of repeating one.
+      const aside = followUp ? "Here's more on that." : entry && answered.has(entry.id) ? 'Like I said a moment ago:' : null;
+      if (aside) bot.append(el('p', 'dock-aside', aside));
+      const fallback = eng.fallbacks[Math.floor(Math.random() * eng.fallbacks.length)];
+      const { box, words: n } = answerBlock(entry ? entry.answer : fallback, entry?.points, entry?.detail);
+      if (entry) { answered.add(entry.id); lastEntry = entry; }
       box.style.setProperty('--wms', `${WORD_MS}ms`);
       bot.append(box);
       scrollDown();

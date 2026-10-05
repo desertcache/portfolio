@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Directing a fleet of AI agents to build a game · Samuel Bates</title>
+  <meta name="description" content="How I built Starship Explorer, a procedural Three.js starship you can walk, fly and land, by directing parallel AI coding agents under a written constitution, typed contracts and verification gates.">
+  <link rel="canonical" href="https://desertcache.github.io/portfolio/work/starship-agent-fleet.html">
+  <meta name="theme-color" content="#f3ebe6">
+
+  <script>
+    // Same as every page: pick the theme before first paint and flag that JS is on.
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      setTimeout(function () { if (!root.classList.contains('js-ready')) root.classList.remove('js'); }, 4000);
+      try {
+        var t = localStorage.getItem('sb-theme');
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', t);
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#150f24' : '#f3ebe6');
+      } catch (e) { /* storage blocked: CSS falls back to the system theme */ }
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Martian+Mono:wdth,wght@75..112.5,100..800&display=swap">
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../css/site.css?v=2026-10-04g">
+  <link rel="stylesheet" href="../blog/blog.css?v=2026-09-26">
+  <script type="module" src="../js/blog.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="../index.html" aria-label="Samuel Bates, home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <path d="M6.2 17.8C5.2 11.6 9.4 6.1 15.6 5.6 21.9 5.1 27.2 9.2 26.8 15.2 26.4 20.4 23.6 22.1 20.1 24.6 16.2 27.4 7.3 25.1 6.2 17.8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M11.4 15.9C11.1 12.2 13.9 9.6 17.4 9.5 21 9.4 23.1 11.9 22.6 15 22.1 18.2 19.8 19.2 17.2 20.1 14.2 21.1 11.7 19.2 11.4 15.9Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <circle cx="17.6" cy="14.7" r="2.6" class="brand-dot"/>
+        </svg>
+        <span class="brand-name">Samuel Bates</span>
+      </a>
+      <nav class="nav-links" aria-label="Sections">
+        <a href="../index.html#work">Work</a>
+        <a href="../index.html#lab" aria-current="true">Lab</a>
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#contact">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.2 14.6A8.3 8.3 0 0 1 9.4 3.8a8.3 8.3 0 1 0 10.8 10.8Z"/></svg>
+        </button>
+        <a class="btn btn-ghost btn-sm nav-cv" href="../Samuel_Bates_CV.pdf" target="_blank" rel="noopener">Résumé</a>
+        <a class="btn btn-solid btn-sm" href="mailto:batessambates@gmail.com">Get in touch</a>
+      </div>
+    </div>
+    <div class="nav-progress" aria-hidden="true"></div>
+  </header>
+
+  <main id="main">
+    <article class="post research">
+      <header class="post-head">
+        <a class="eyebrow post-back" href="../index.html#lab"><span class="eyebrow-num">Work sample</span>Building with AI agents</a>
+        <h1 class="post-title">Directing a fleet of AI agents to build a game</h1>
+        <p class="post-lede">Starship Explorer is a first-person starship you can walk, fly and land on a procedural planet, built in Three.js with zero asset files. I built it by directing AI coding agents working in parallel. This is the system that made that work: a written constitution, typed contracts, and gates nothing could merge past.</p>
+        <p class="post-meta"><time datetime="2026-10-04">October 2026</time><span>Samuel Bates</span><span id="read-time" hidden></span></p>
+      </header>
+
+      <div class="post-body">
+        <h2>What it is</h2>
+        <p>Every panel texture, grime overlay, console screen and planet is generated at runtime, and every sound is synthesized with the Web Audio API. You can walk the decks, sleep, eat and work the consoles. You can also take the helm, fly the ship through a seeded field of named planets, and press L to ride an atmospheric entry down to a streamed desert planet, walk out, and board again. The project ran from June 11 to September 29, 2026: 120 commits, tagged v0.1 through v1.2.1, all <a href="https://github.com/desertcache/starship" target="_blank" rel="noopener">public</a>.</p>
+
+        <h2>The constitution comes first</h2>
+        <p>Agents work best with the same things people do: clear rules and a clear order of work. Two files carry them. <code>CLAUDE.md</code> is the constitution, which every agent reads first, and <code>KICKOFF.md</code> is the build order, phase by phase, each ending in a gate.</p>
+        <ul>
+          <li><strong>One file per room, 300 lines at most.</strong> If a file grows past that, it gets split before work continues. Small files are what let several agents work at once without touching each other's code.</li>
+          <li><strong>Typed contracts between parts.</strong> Every room exposes the same interface (its geometry, its colliders, its interactive objects and its cameras), and the code that assembles the ship consumes only that interface. An agent building the galley never needs to read the engine room.</li>
+          <li><strong>No shortcuts in the code.</strong> No <code>any</code>, explicit return types on everything exported, and anything replaced gets disposed: leaks count as bugs.</li>
+        </ul>
+
+        <h2>The harness before the ship</h2>
+        <p>Phase 0 built the eyes before anything worth looking at existed. The game registers named cameras that a test can jump to and reports its own frame times, and one command builds the game, screenshots every camera and writes a performance report. Only then did the first room get built. Functional tests joined the same command as soon as there was something to interact with.</p>
+        <p>That ordering is the point. An agent can't be trusted to say a room looks right; it can be required to produce a screenshot and a passing report.</p>
+
+        <h2>Gates nothing merges past</h2>
+        <ul>
+          <li><strong>Typecheck clean, then every functional test green.</strong> A phase never starts on an uncommitted or failing baseline.</li>
+          <li><strong>A binding frame budget.</strong> An average of at least 60 frames per second, and a 95th-percentile frame time of at most 18 ms, measured on a real GPU from the most expensive camera. If performance fails three times in a row, simplify the geometry rather than micro-optimize shaders to rescue it.</li>
+          <li><strong>Art judged by eye, on a real GPU.</strong> Every headed screenshot gets read, and the rule is written down: do not rationalize a bad screenshot.</li>
+          <li><strong>A reviewer before any merge.</strong> On the big builds, an orchestrator wrote the design contracts, Sonnet and Opus agents built in parallel lanes on separate files, and nothing merged until a reviewer signed off on types, functional tests, real-GPU screenshots and the frame budget.</li>
+        </ul>
+
+        <h2>The expensive lesson</h2>
+        <p>The headless browser in the test harness quietly falls back to software rendering, and software lighting looks different from a real GPU. For about 20 days, art was graded on the wrong renderer: changes that looked right in the harness looked wrong on a real screen. The fix became a rule in the constitution. Headless runs prove behavior; only headed runs on a real GPU are allowed to judge how anything looks, and only they produce frame-rate numbers that count.</p>
+        <p>A second lesson came from the last hardening pass. A test that calls a game's update function directly can pass while the real game loop never runs that code. So the door tests now have to watch a door actually move in rendered frames before anything is fast-forwarded.</p>
+
+        <h2>Where it landed</h2>
+        <p>The final hardening pass ran as parallel lanes again, each agent owning a separate set of files, with an independent code review that found three guard gaps, fixed before release. Verified on September 29, 2026, on a real GPU: all 16 functional tests and every real-input suite passing, and <strong>131 frames per second with a 95th-percentile frame time of 8.2 ms</strong>, against the 18 ms budget, from the most expensive camera.</p>
+
+        <h2>What I'd tell the next team</h2>
+        <ul>
+          <li><strong>Build the eyes before the thing.</strong> If the harness doesn't exist, nobody, human or agent, can prove anything works.</li>
+          <li><strong>Contracts are what make parallel agents safe.</strong> Separate files and typed interfaces turn a fleet of agents into a team instead of a pile of merge conflicts.</li>
+          <li><strong>Judge on the real thing.</strong> A green test on the wrong renderer, or on a hook that skips the real loop, is a false sense of safety.</li>
+          <li><strong>Write the rules down.</strong> Every mistake that cost real time became a line in the constitution, so no agent repeats it.</li>
+        </ul>
+
+        <h2>Links</h2>
+        <ul>
+          <li><a href="../starship.html">Walk the ship</a> (desktop browser)</li>
+          <li><a href="https://github.com/desertcache/starship" target="_blank" rel="noopener">Source, constitution and build order</a> (desertcache/starship)</li>
+        </ul>
+      </div>
+
+      <nav class="cs-nav edition-nav" aria-label="More work">
+        <a href="../index.html#lab"><span class="cs-nav-k">Lab</span><span class="cs-nav-t">Demos you can walk around in</span></a>
+      </nav>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p class="footer-copy">© 2026 Samuel Bates. Built in Phoenix with HTML, CSS, and a little JavaScript. No framework.</p>
+    </div>
+  </footer>
+</body>
+</html>
