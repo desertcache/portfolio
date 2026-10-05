@@ -269,6 +269,10 @@ export function initAsk() {
     collapse.setAttribute('aria-expanded', String(open));
   };
   collapse.addEventListener('click', () => setOpen(false));
+  // Clicking or tapping anywhere off the bar folds the answers away (they come back on focus).
+  document.addEventListener('pointerdown', (e) => {
+    if (dock.classList.contains('is-open') && e.target instanceof Node && !dock.contains(e.target)) setOpen(false);
+  });
   input.addEventListener('focus', () => {
     if (log.childElementCount) setOpen(true);
     else showSuggestions();
