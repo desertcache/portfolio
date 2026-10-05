@@ -21,14 +21,16 @@
 const ASK = 'https://desertcache.github.io/ask/';
 const ORB_ORIGIN = 'https://desertcache.github.io';
 const ORB_SRC = `${ORB_ORIGIN}/samantha-ui/?embed=1&control=1&transparent=1`;
-const STEP_MS = 300;
-const WORD_MS = 16;
+// The trace takes ~3 s on purpose (Sam: thinking that is too fast doesn't read as thinking); every
+// step it shows is real work, and the summary still reports the real compute time.
+const STEP_MS = 620;
+const WORD_MS = 22;
 
-/** @typedef {{ id: string, asks: string[], answer: string, link: string | null }} Entry */
+/** @typedef {{ id: string, asks: string[], answer: string, points?: string[], next?: string[], link: string | null }} Entry */
 /** @typedef {{ entry: Entry, score: number, matched: string, vector: Float32Array }} Ranked */
 /**
  * @typedef {{
- *   entries: Entry[], fallback: string, starters: Entry[], threshold: number,
+ *   entries: Entry[], byId: Map<string, Entry>, fallback: string, starters: Entry[], threshold: number,
  *   embedder: { dim: number, pieces(t: string): { text: string, known: boolean }[] },
  *   matcher: { size: number, rank(q: string): Ranked[] },
  * }} Engine
@@ -89,6 +91,7 @@ async function loadEngine(progress) {
   const embedder = createEmbedder(bytes.buffer, vocab);
   return {
     entries,
+    byId,
     fallback: bank.fallback,
     starters: config.STARTERS.map((/** @type {string} */ id) => byId.get(id)).filter(Boolean),
     threshold: config.THRESHOLD,
@@ -120,10 +123,32 @@ function vectorStrip(v) {
   return svg;
 }
 
-/** Answer text word by word (CSS staggers them in), the email as a mailto link. @param {string} text */
-function answerText(text) {
+/** The answer: its lead, then its highlights as a list. @param {string} lead @param {string[]} [points] */
+function answerBlock(lead, points = []) {
+  const box = el('div', 'dock-answer-block');
   const p = el('p', 'dock-answer');
-  let i = 0;
+  let i = words(p, lead, 0);
+  box.append(p);
+  if (points.length) {
+    const ul = el('ul', 'dock-points');
+    for (const pt of points) {
+      const li = el('li');
+      i = words(li, pt, i);
+      ul.append(li);
+    }
+    box.append(ul);
+  }
+  return { box, words: i };
+}
+
+/**
+ * Text as words for the CSS stagger (each word takes the next --i), with any email address as a
+ * mailto link. Returns the next free index.
+ * @param {HTMLElement} p
+ * @param {string} text
+ * @param {number} i
+ */
+function words(p, text, i) {
   for (const [k, part] of text.split(/([\w.+-]+@[\w-]+\.[\w.]+)/).entries()) {
     if (k % 2) {
       const a = /** @type {HTMLAnchorElement} */ (el('a', 'w', part));
@@ -140,7 +165,7 @@ function answerText(text) {
       p.append(s);
     }
   }
-  return { p, words: i };
+  return i;
 }
 
 export function initAsk() {
@@ -325,7 +350,7 @@ export function initAsk() {
       });
       await step(`Turned it into ${eng.embedder.dim} numbers`, () => vectorStrip(top.vector));
       await step(`Compared it with ${eng.matcher.size} phrasings`, () => el('span', 'dock-detail', `${eng.entries.length} answers · cosine similarity`));
-      await step(hit ? 'Closest matches' : 'Nothing close enough', () => {
+      await step('Ranked the closest answers', () => {
         const list = el('ul', 'dock-matches');
         for (const r of ranked.slice(0, 3)) {
           const li = el('li', r === top && hit ? 'is-best' : '');
@@ -334,23 +359,28 @@ export function initAsk() {
           li.append(el('span', 'dock-m-text', `“${r.matched}”`), bar, el('span', 'dock-m-score', r.score.toFixed(2)));
           list.append(li);
         }
-        if (!hit) list.append(el('li', 'dock-m-note', `The best score is under the ${eng.threshold} bar, so it won't guess.`));
         return list;
       });
-      await wait(STEP_MS * 0.6);
+      // The confidence check: does the best match clear the threshold?
+      await step(hit ? 'Confident in the best match' : 'Not confident enough to answer', () => el('span', 'dock-detail', hit
+        ? `${top.score.toFixed(2)} clears the ${eng.threshold} bar`
+        : `${top.score.toFixed(2)} is under the ${eng.threshold} bar, so it won't guess`));
+      await wait(STEP_MS * 0.7);
       trace.open = false;
       trace.classList.add('is-done');
       sumText.textContent = `Searched ${eng.matcher.size} phrasings · ${ms < 1 ? '<1' : ms.toFixed(1)} ms`;
 
       const entry = hit ? top.entry : null;
       setOrb('SPEAKING');
-      const { p, words } = answerText(entry ? entry.answer : eng.fallback);
-      p.style.setProperty('--wms', `${WORD_MS}ms`);
-      bot.append(p);
+      const { box, words: n } = answerBlock(entry ? entry.answer : eng.fallback, entry?.points);
+      box.style.setProperty('--wms', `${WORD_MS}ms`);
+      bot.append(box);
       scrollDown();
-      await wait(words * WORD_MS + 250);
+      await wait(n * WORD_MS + 250);
       if (entry?.link) bot.append(moreLink(entry.link));
-      bot.append(chipRow(entry ? ranked.slice(1, 3).map((r) => r.entry) : eng.starters));
+      // Follow-ups: the two Sam picked for this answer, else the next-closest matches.
+      const picked = /** @type {Entry[]} */ ((entry?.next ?? []).map((id) => eng.byId.get(id)).filter(Boolean));
+      bot.append(chipRow(entry ? (picked.length ? picked : ranked.slice(1, 3).map((r) => r.entry)) : eng.starters));
       scrollDown();
     } catch (err) {
       console.error('[site] ask failed:', err);

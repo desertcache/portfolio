@@ -2132,23 +2132,53 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
 }
 .dock-input:focus ~ .dock-kbd, .dock-input:not(:placeholder-shown) ~ .dock-kbd { display: none; }
 @media (hover: none) { .dock-kbd { display: none; } }
+/* The send button: a painted Sedona red-rock pebble, the same in both themes. Layers, top to
+   bottom: a warm highlight where the light lands, iron-oxide shade underneath, faint sandstone
+   strata, the rock's red (--accent's #a8401d at the centre), and a fine painted grain (::before). */
 .dock-send {
+  position: relative;
+  isolation: isolate;
   display: grid;
   place-items: center;
   flex: none;
   width: 44px;
   height: 44px;
+  overflow: hidden;
   border: 0;
   border-radius: 50%;
-  background: var(--g-accent);
-  color: var(--g-on-accent);
+  color: #fff3e6;
+  background:
+    radial-gradient(60% 50% at 32% 24%, rgba(255, 224, 192, 0.75), rgba(255, 224, 192, 0) 72%),
+    radial-gradient(85% 70% at 68% 92%, rgba(62, 16, 4, 0.6), rgba(62, 16, 4, 0) 70%),
+    linear-gradient(170deg, transparent 0 30%, rgba(255, 178, 122, 0.22) 32% 38%, transparent 40% 55%, rgba(110, 30, 10, 0.25) 57% 63%, transparent 65% 76%, rgba(255, 178, 122, 0.14) 78% 82%, transparent 84%),
+    linear-gradient(155deg, #cd5d2e 0%, #a8401d 50%, #7c2c0e 100%);
+  box-shadow:
+    inset 0 1px 0.5px rgba(255, 233, 212, 0.8),
+    inset 0 -2px 3px rgba(58, 14, 3, 0.45),
+    0 6px 14px -5px rgba(150, 52, 20, 0.65),
+    0 1px 2px rgba(58, 14, 3, 0.3);
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.15s;
+  transition: transform 0.2s var(--ease), box-shadow 0.25s, filter 0.25s, opacity 0.2s;
 }
-.dock-send svg { width: 20px; height: 20px; }
-.dock-send:hover { background: var(--g-accent-ink); }
-.dock-send:active { transform: scale(0.94); }
-.is-busy .dock-send { opacity: 0.5; pointer-events: none; }
+.dock-send::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.92 0 0 0 0 0.84 0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='64' height='64' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 64px;
+  mix-blend-mode: overlay;
+  opacity: 0.4;
+  pointer-events: none;
+}
+.dock-send svg { position: relative; z-index: 1; width: 20px; height: 20px; filter: drop-shadow(0 1px 0 rgba(70, 18, 6, 0.5)); }
+.dock-send:hover {
+  transform: translateY(-1px);
+  filter: saturate(1.08) brightness(1.05);
+  box-shadow: inset 0 1px 0.5px rgba(255, 233, 212, 0.85), inset 0 -2px 3px rgba(58, 14, 3, 0.45), 0 9px 18px -6px rgba(150, 52, 20, 0.75), 0 1px 2px rgba(58, 14, 3, 0.3);
+}
+.dock-send:active { transform: translateY(0) scale(0.95); }
+.is-busy .dock-send { opacity: 0.55; pointer-events: none; }
 
 /* the answers, opening upward inside the same pane */
 .dock-panel { position: relative; z-index: 1; display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.45s var(--ease-out); }
@@ -2200,7 +2230,12 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
 .dock-loading { font: 400 0.75rem/1.4 var(--mono); color: var(--g-ink-3); }
 .dock-answer { font-size: 0.9375rem; line-height: 1.6; text-wrap: pretty; }
 .dock-answer a { color: var(--g-accent-ink); }
-.dock-answer .w { animation: dock-word 0.32s var(--ease) both; animation-delay: calc(var(--i) * var(--wms, 16ms)); }
+.dock-answer-block .w { animation: dock-word 0.32s var(--ease) both; animation-delay: calc(var(--i) * var(--wms, 16ms)); }
+/* an answer's highlights, marked with small red-rock diamonds */
+.dock-points { display: flex; flex-direction: column; gap: 6px; margin-top: 9px; list-style: none; }
+.dock-points li { position: relative; padding-left: 17px; font-size: 0.875rem; line-height: 1.55; color: var(--g-ink-2); text-wrap: pretty; }
+.dock-points li::before { content: ""; position: absolute; left: 3px; top: 0.62em; width: 6px; height: 6px; border-radius: 1.5px; background: linear-gradient(135deg, #e8885a, #a8401d); transform: rotate(45deg); }
+.dock-points a { color: var(--g-accent-ink); }
 .dock-more { display: inline-flex; gap: 6px; margin-top: 8px; font-size: 0.875rem; font-weight: 500; color: var(--g-accent-ink); text-decoration: none; animation: dock-rise 0.35s var(--ease-out); }
 .dock-more span { transition: transform 0.25s var(--ease); }
 .dock-more:hover span { transform: translateX(3px); }

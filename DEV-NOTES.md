@@ -477,8 +477,13 @@ row (PR #12), which is gone.
   LISTENING at rest, THINKING while the trace runs, SPEAKING while the answer's words appear. The
   orb answers `{ type: 'orb:ready' }` and only accepts messages from desertcache.github.io or
   localhost. It loads after the page does, for every visitor except reduced motion (still CSS orb).
-- **The trace is the real matching work**, paced (~300 ms a step) so it can be read; its summary
-  reports the real compute time. Keep it that way: the bar promises nothing is made up.
+- **The trace is the real matching work**, paced (~620 ms a step, ~3 s in all, Sam's call) so it
+  reads as thinking: word pieces, the vector, the comparison, the ranked answers, and the confidence
+  check against the threshold. Its summary reports the real compute time. Keep it that way: the bar
+  promises nothing is made up.
+- **Answers have a lead, highlights and curated follow-ups** (bank v2: `answer`, `points`, `next`).
+  Chips use `next`, falling back to the next-closest matches. The send button is a painted Sedona
+  red-rock pebble in both themes (section 7).
 - **`js/ask.js` keeps its name and its `initAsk` export on purpose.** Pages caches for 10 minutes;
   a cached `main.js` importing a file that no longer exists would take down every module.
 - The base reset caps iframes at `max-width: 100%`; the orb's iframe sets `max-width: none`, or it
