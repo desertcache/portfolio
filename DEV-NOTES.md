@@ -431,9 +431,17 @@ along its floor. `js/page.js` is their script entry (theme toggle, nav).
   games keep helpers in a folder of the same name (`games/swarm/`, ...).
   PACMANAI is the Pac-Man module started with `env.autopilot = true`; the
   autopilot lives in `games/pacman/autopilot.js` and must leave PACMAN as is.
-- Menu keys: 1-9 and 0 start the numbered tiles (0 is 10), A starts the AI
-  Pac-Man. Deep links: `?game=<id>`; add `&debug=1` for a seeded RNG and
-  `window.__arcade` (state plus per-game test actions).
+- **Twelve titles (2026-10-05):** PINBALL (Dust Devil Pinball) and MESA (Mesa
+  Lander), plus MESAAI ("Watch it learn"), the Mesa module started with
+  `env.learn = true`. PINBALL runs on the `tall` screen mode (450x720 vector).
+  Each mode in `engine/canvas.js` `MODES` carries its own display caps
+  (`maxW`/`maxH`, CSS px); the viewport still caps height at 72%. Landscape and
+  portrait kept their old caps (800/520 and 560/620), so the older games size
+  exactly as before.
+- Menu keys: 1-9, 0, - and = start the numbered tiles (0 is 10, - is 11, = is
+  12), A starts the AI Pac-Man and L starts Watch it learn. Deep links:
+  `?game=<id>`; add `&debug=1` for a seeded RNG and `window.__arcade` (state
+  plus per-game test actions).
 - Style: Crossing and QUADRA are flat ink-and-paper in the desert palette
   (Crossing draws the site's own roadrunner and plants from `assets/`); Swarm,
   Asteroids and the rest are neon vector. No trademarked names or the source
@@ -453,6 +461,42 @@ along its floor. `js/page.js` is their script entry (theme toggle, nav).
   every number in it was read from the game's code or test runs, so update it
   with the code. On phones the cabinet drops its menu height while a game runs
   (`.is-playing`), so the deck sits right under the screen.
+- **Dust Devil Pinball (2026-10-05).** `games/pinball.js` is the cabinet side
+  (input, one tick, sound cues); the game is `games/pinball/`: `physics.js` and
+  `rules.js` are pure (Node tests import them), `table.js` holds all geometry as
+  data for the physics and `art.js` (the still table is painted once
+  offscreen), plus `strip.js` (dot-matrix strip), `sfx.js`, `gfx.js`. 12
+  substeps per tick; flippers bounce the ball off their moving surface. Debug:
+  `__arcade.gameState` (ball, flippers, score, ballNumber, ballsLeft = balls
+  still to come, lanes, targets, tiltWarnings, ballSave in ticks, `.game` =
+  rules) and `__arcade.actions` (placeBall, flip, launch, plunge, drain,
+  nudge, hitTarget, lane). Tests: `tests/pinball.test.mjs` (38, about 2.6 s),
+  including one that pins every number the explainer quotes. Fragile: the
+  table is tuned as a whole (sand strip `FELT` + open rail foot = orbit, right
+  ledge + left flap = outlane drains, tall left lane pin = plunges); tests pin
+  those shots, so change geometry only with them running.
+- **Mesa Lander and Watch it learn (2026-10-05).** `games/mesa.js` is the
+  cartridge: MESA is the player's game (`mesa/play.js`); `mesa-ai.js` starts it
+  with `env.learn = true` for the agent view (`mesa/watch.js`). Physics, levels,
+  the agent's fixed world (`env.js`: one mesa, random starts, free fuel), the
+  hand-written MLP, Adam and PPO (`net.js`, `learn.js`) and the shown flight
+  (`flight.js`) are DOM-free, so Node tests import them. The learner trains
+  inside `tick()` on a time budget (6 ms at 1x up to 12 ms at 4x, capped per
+  tick and trimmed if the page slips) and stops at 1.5M decisions; one seeded
+  RNG feeds every draw, so a seed reproduces training exactly on one JS engine
+  (Node and Chrome differ in the last bits of tanh and exp). The lander on
+  screen is a frozen copy of the newest brain sampling like the learner: no
+  pretrained weights, no hand-written pilot (a scripted pilot exists only
+  inside the tests). Debug: `?debug=1&seed=N`, `window.__arcade.gameState`, and
+  actions (`setState`, `setSpeed`, `newBrain(seed)`, `runSteps(n)`, `trainOn`,
+  `hold({left,main,right})`, `sim(n)`, `setLevel`, `end`). `npm test` covers it
+  (`tests/mesa.test.mjs`, about 3 s); the learning gate,
+  `node scripts/mesa-train-check.mjs` (5 seeds x 60 s, 4 must reach 70% over
+  their last 50 practice attempts), is not in `npm test`. Fragile: the
+  defaults in `learn.js`, `env.js` and `physics.js` ARE the gate's
+  configuration; change one and re-run the gate, then re-check the on-screen
+  labels and the explainer numbers. Known: the side panels' small labels are
+  about 6 CSS px on a phone (key numbers are larger), like EVOLVE's brain panel.
 - The starship is a separate app (desertcache/starship), framed only when
   you board; this page is the dock. Touch-only or narrow screens get the
   poster and a note.
@@ -569,10 +613,9 @@ row (PR #12), which is gone.
 - All asset paths RELATIVE (no leading `/`) — site lives at /portfolio/ sub-path, no CNAME.
 - `.nojekyll` must stay (serves `arcade/` module folder verbatim).
 - `mockups/` is untracked on purpose — never `git add -A`.
-- Play pages (arcade.html, starship.html) and skincare.html still carry the
-  v4 look (cream, terracotta, Instrument Serif) in their own inline CSS or
-  Tailwind build. They don't use `css/site.css`, so v5.1 didn't reach them;
-  moving them over is open work.
+- Every play page loads `css/site.css` for the chrome (since 2026-09-27):
+  arcade.html and starship.html add `css/play.css` (see "The Lab's rooms"),
+  and skincare.html adds its own Tailwind build, `skincare.css`.
 - starship.html embeds https://desertcache.github.io/starship/ click-to-load only
   (a live Three.js iframe would burn GPU from page load otherwise).
 - The homepage's section ids (`#work`, `#lab`, `#about`, `#contact`) are

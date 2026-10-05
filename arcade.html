@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Arcade · Samuel Bates</title>
-  <meta name="description" content="The arcade: ten games in vanilla JS on raw HTML5 Canvas, including a dot-for-dot Pac-Man rebuild with authentic ghost AI and three games that show an AI thinking. No engine, no framework, no dependencies.">
+  <meta name="description" content="The arcade: twelve games in vanilla JS on raw HTML5 Canvas, including a dot-for-dot Pac-Man rebuild with authentic ghost AI, a pinball table with real physics, and four games that show an AI thinking or learning. No engine, no framework, no dependencies.">
   <link rel="canonical" href="https://desertcache.github.io/portfolio/arcade.html">
   <meta name="theme-color" content="#f3ebe6">
 
@@ -71,14 +71,14 @@
       <header class="section-head">
         <p class="eyebrow"><span class="eyebrow-num">Lab</span> The Arcade</p>
         <h1 class="section-title">Take a <em>break.</em></h1>
-        <p class="section-lede">Ten games in vanilla JS on raw HTML5 canvas: no engine, no framework, no dependencies. The flagship is a dot-for-dot Pac-Man rebuild with the original ghost AI, and three titles let you watch an AI think: one plays Pac-Man, one plays you at Four in a Row, and a flock of UFOs learns to fly.</p>
+        <p class="section-lede">Twelve games in vanilla JS on raw HTML5 canvas: no engine, no framework, no dependencies. The flagship is a dot-for-dot Pac-Man rebuild with the original ghost AI, the newest is a pinball table with real physics, and four titles let you watch an AI think: one plays Pac-Man, one plays you at Four in a Row, a flock of UFOs learns to fly, and a lander teaches itself to touch down on a mesa.</p>
         <div class="head-illo" aria-hidden="true"><svg class="illo illo-ocotillo" viewBox="0 0 300 342" focusable="false"><use href="assets/desert.svg#ocotillo"/></svg></div>
       </header>
 
       <div id="arcade-section" class="room arcade-cabinet">
         <div class="cabinet-grid"></div>
         <div class="room-bar cabinet-bar">
-          <span>Cabinet · 10 titles</span>
+          <span>Cabinet · 12 titles</span>
           <span class="cab-right">
             <button id="btn-crt" class="cab-toggle" type="button">CRT · ON</button>
             <button id="btn-mute" class="cab-toggle" type="button">SOUND · ON</button>
@@ -97,20 +97,23 @@
             <div class="menu-featured">
               <button id="btn-pacman" class="arcade-btn featured">
                 <span class="title"><span class="num">01</span>Pac-Man<span class="tag">★ Flagship</span></span>
-                <span class="hi" data-game="PACMAN">PB · —</span>
+                <span class="hi" data-game="PACMAN">PB · –</span>
                 <span class="arrow">→</span>
               </button>
               <button id="btn-pacmanai" class="arcade-btn featured-ai" title="Pac-Man, played by an AI that shows its reasoning"><span class="title"><span class="num">AI</span>Watch the AI play</span><span class="arrow">→</span></button>
             </div>
-            <button id="btn-snake" class="arcade-btn"><span class="title"><span class="num">02</span>Neon Snake</span><span class="hi" data-game="SNAKE">PB · —</span></button>
-            <button id="btn-flappy" class="arcade-btn"><span class="title"><span class="num">03</span>Flappy UFO</span><span class="hi" data-game="FLAPPY">PB · —</span></button>
-            <button id="btn-breakout" class="arcade-btn"><span class="title"><span class="num">04</span>Breakout</span><span class="hi" data-game="BREAKOUT">PB · —</span></button>
-            <button id="btn-asteroids" class="arcade-btn"><span class="title"><span class="num">05</span>Asteroids</span><span class="hi" data-game="ASTEROIDS">PB · —</span></button>
-            <button id="btn-four" class="arcade-btn ai" title="Play an AI that shows its thinking"><span class="title"><span class="num">06</span>Four in a Row</span><span class="hi" data-game="FOUR">PB · —</span></button>
-            <button id="btn-evolve" class="arcade-btn ai" title="Watch a flock of UFOs learn to fly"><span class="title"><span class="num">07</span>UFO Evolution</span><span class="hi" data-game="EVOLVE">PB · —</span></button>
-            <button id="btn-crossing" class="arcade-btn" title="Roadrunner Crossing"><span class="title"><span class="num">08</span>Roadrunner</span><span class="hi" data-game="CROSSING">PB · —</span></button>
-            <button id="btn-swarm" class="arcade-btn"><span class="title"><span class="num">09</span>Swarm</span><span class="hi" data-game="SWARM">PB · —</span></button>
-            <button id="btn-quadra" class="arcade-btn"><span class="title"><span class="num">10</span>QUADRA</span><span class="hi" data-game="QUADRA">PB · —</span></button>
+            <button id="btn-snake" class="arcade-btn"><span class="title"><span class="num">02</span>Neon Snake</span><span class="hi" data-game="SNAKE">PB · –</span></button>
+            <button id="btn-flappy" class="arcade-btn"><span class="title"><span class="num">03</span>Flappy UFO</span><span class="hi" data-game="FLAPPY">PB · –</span></button>
+            <button id="btn-breakout" class="arcade-btn"><span class="title"><span class="num">04</span>Breakout</span><span class="hi" data-game="BREAKOUT">PB · –</span></button>
+            <button id="btn-asteroids" class="arcade-btn"><span class="title"><span class="num">05</span>Asteroids</span><span class="hi" data-game="ASTEROIDS">PB · –</span></button>
+            <button id="btn-four" class="arcade-btn ai" title="Play an AI that shows its thinking"><span class="title"><span class="num">06</span>Four in a Row</span><span class="hi" data-game="FOUR">PB · –</span></button>
+            <button id="btn-evolve" class="arcade-btn ai" title="Watch a flock of UFOs learn to fly"><span class="title"><span class="num">07</span>UFO Evolution</span><span class="hi" data-game="EVOLVE">PB · –</span></button>
+            <button id="btn-crossing" class="arcade-btn" title="Roadrunner Crossing"><span class="title"><span class="num">08</span>Roadrunner</span><span class="hi" data-game="CROSSING">PB · –</span></button>
+            <button id="btn-swarm" class="arcade-btn"><span class="title"><span class="num">09</span>Swarm</span><span class="hi" data-game="SWARM">PB · –</span></button>
+            <button id="btn-quadra" class="arcade-btn"><span class="title"><span class="num">10</span>QUADRA</span><span class="hi" data-game="QUADRA">PB · –</span></button>
+            <button id="btn-pinball" class="arcade-btn" title="Dust Devil Pinball"><span class="title"><span class="num">11</span>Pinball</span><span class="hi" data-game="PINBALL">PB · –</span></button>
+            <button id="btn-mesa" class="arcade-btn" title="Mesa Lander"><span class="title"><span class="num">12</span>Mesa Lander</span><span class="hi" data-game="MESA">PB · –</span></button>
+            <button id="btn-mesaai" class="arcade-btn ai" title="Watch a lander learn to land, from scratch"><span class="title"><span class="num">AI</span>Watch it learn</span><span class="arrow">→</span></button>
           </div>
         </div>
 
@@ -144,7 +147,7 @@
       <section class="play-notes how" id="how" aria-labelledby="how-title">
         <p class="label">How it works<span class="how-name" id="how-name">The cabinet</span></p>
         <div>
-          <h2 class="how-title" id="how-title">One small engine, ten games</h2>
+          <h2 class="how-title" id="how-title">One small engine, twelve games</h2>
           <p id="how-body"></p>
           <dl class="how-rows" id="how-rows"></dl>
           <p class="how-foot">Personal bests stay on this device.</p>

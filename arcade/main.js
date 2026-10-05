@@ -19,19 +19,23 @@ import evolve from './games/evolve.js';
 import crossing from './games/crossing.js';
 import swarm from './games/swarm.js';
 import quadra from './games/quadra.js';
+import pinball from './games/pinball.js';
+import mesa from './games/mesa.js';
+import mesaAi from './games/mesa-ai.js';
 import { createAttract } from './games/attract.js';
 import { EXPLAINERS } from './explainers.js';
 import { iconCanvas } from './icons.js';
 
-const GAMES = [pacman, pacmanAi, snake, flappy, breakout, asteroids, four, evolve, crossing, swarm, quadra];
+const GAMES = [pacman, pacmanAi, snake, flappy, breakout, asteroids, four, evolve, crossing, swarm, quadra, pinball, mesa, mesaAi];
 
 // The deck's cartridges, in GAMES order: menu number and a label short enough for a tile.
 const CARTS = {
   PACMAN: ['01', 'Pac-Man'], PACMANAI: ['AI', 'AI Pac'], SNAKE: ['02', 'Snake'], FLAPPY: ['03', 'Flappy'],
   BREAKOUT: ['04', 'Breakout'], ASTEROIDS: ['05', 'Asteroids'], FOUR: ['06', 'Four'], EVOLVE: ['07', 'Evolve'],
   CROSSING: ['08', 'Roadrunner'], SWARM: ['09', 'Swarm'], QUADRA: ['10', 'QUADRA'],
+  PINBALL: ['11', 'Pinball'], MESA: ['12', 'Mesa'], MESAAI: ['AI', 'AI Mesa'],
 };
-const AI_TITLES = new Set(['PACMANAI', 'FOUR', 'EVOLVE']);
+const AI_TITLES = new Set(['PACMANAI', 'FOUR', 'EVOLVE', 'MESAAI']);
 
 const params = new URLSearchParams(location.search);
 const DEBUG = params.get('debug') === '1';
@@ -117,7 +121,7 @@ function renderPBs() {
   const pbs = getPBs();
   document.querySelectorAll('[data-game]').forEach((el) => {
     const value = pbs[el.dataset.game];
-    el.textContent = value != null ? `PB · ${value}` : 'PB · —';
+    el.textContent = value != null ? `PB · ${value}` : 'PB · –';
   });
 }
 
@@ -325,8 +329,10 @@ document.getElementById('btn-restart').addEventListener('click', () => {
 
 document.getElementById('btn-menu').addEventListener('click', showMenu);
 
-// Menu keyboard navigation: arrows move focus, Enter starts, 1-9 and 0 quick-start the
-// numbered titles (0 is 10), and A starts "Watch the AI play".
+// Menu keyboard navigation: arrows move focus, Enter starts, 1-9, 0, - and = quick-start
+// the numbered titles (0 is 10, - is 11, = is 12), A starts "Watch the AI play" and L
+// starts "Watch it learn".
+const MENU_NUMS = { '0': '10', '-': '11', '=': '12' };
 const menuButtons = [...menuScreen.querySelectorAll('.arcade-btn')];
 document.addEventListener('keydown', (e) => {
   if (menuScreen.style.display === 'none') return;
@@ -337,19 +343,21 @@ document.addEventListener('keydown', (e) => {
   } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
     e.preventDefault();
     menuButtons[(idx - 1 + menuButtons.length) % menuButtons.length].focus();
-  } else if (/^[0-9]$/.test(e.key)) {
-    const num = e.key === '0' ? '10' : e.key.padStart(2, '0');
+  } else if (/^[0-9=-]$/.test(e.key)) {
+    const num = MENU_NUMS[e.key] || e.key.padStart(2, '0');
     const btn = menuButtons.find((b) => b.querySelector('.num')?.textContent === num);
     if (btn) btn.click();
   } else if (e.key === 'a' || e.key === 'A') {
     document.getElementById('btn-pacmanai')?.click();
+  } else if (e.key === 'l' || e.key === 'L') {
+    document.getElementById('btn-mesaai')?.click();
   }
 });
 
 renderPBs();
 showMenu();
 
-// Deep links: ?game=<id>, e.g. ?game=pacman, ?game=pacmanai, ?game=four, ?game=quadra.
+// Deep links: ?game=<id>, e.g. ?game=pacman, ?game=pacmanai, ?game=four, ?game=pinball, ?game=mesaai.
 const requested = (params.get('game') || '').toUpperCase();
 const deepLink = GAMES.find((g) => g.id === requested);
 if (deepLink) startGame(deepLink);
