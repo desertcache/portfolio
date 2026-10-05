@@ -461,6 +461,21 @@ along its floor. `js/page.js` is their script entry (theme toggle, nav).
   every number in it was read from the game's code or test runs, so update it
   with the code. On phones the cabinet drops its menu height while a game runs
   (`.is-playing`), so the deck sits right under the screen.
+- **Library menu and now-playing bar (2026-10-05, replaces the cartridge strip
+  above).** The menu is twelve tiles in menu-number order (4 across on desktop,
+  3 on phones; the number keys follow the grid, arrow keys walk it using the
+  live column count). Tiles are static markup in `arcade.html`; `main.js` only
+  paints their pixel icons (`[data-icon]`). Pac-Man and Mesa Lander carry an AI
+  twin (`btn-pacmanai`, `btn-mesaai`) as a strip on their tile, so there are 12
+  tiles but still 14 `GAMES`; `STEPS` is `GAMES` minus the twins and is what `[`
+  / `]` and the bar's arrows walk (12 stops). Under the cabinet, `#game-deck` is
+  now previous / now playing / next, plus a mode button (Watch the AI / Play it
+  yourself) and All games; `renderDeck()` in `main.js` drives it from
+  `sceneChanged()`. A dim `.screen::after` scrim sits over the attract demo
+  while the menu is up (`.arcade-cabinet:not(.is-playing)`). Tile selectors are
+  prefixed `.menu-buttons` because the base `.arcade-btn` rules come later in
+  `play.css`. A new game needs a tile, a `[data-game]` PB span, an icon, a
+  `LABELS` entry, and (if it has an AI twin) an `AI_TWIN` / `HUMAN_TWIN` pair.
 - **Dust Devil Pinball (2026-10-05).** `games/pinball.js` is the cabinet side
   (input, one tick, sound cues); the game is `games/pinball/`: `physics.js` and
   `rules.js` are pure (Node tests import them), `table.js` holds all geometry as

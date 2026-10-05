@@ -28,14 +28,20 @@ import { iconCanvas } from './icons.js';
 
 const GAMES = [pacman, pacmanAi, snake, flappy, breakout, asteroids, four, evolve, crossing, swarm, quadra, pinball, mesa, mesaAi];
 
-// The deck's cartridges, in GAMES order: menu number and a label short enough for a tile.
-const CARTS = {
-  PACMAN: ['01', 'Pac-Man'], PACMANAI: ['AI', 'AI Pac'], SNAKE: ['02', 'Snake'], FLAPPY: ['03', 'Flappy'],
-  BREAKOUT: ['04', 'Breakout'], ASTEROIDS: ['05', 'Asteroids'], FOUR: ['06', 'Four'], EVOLVE: ['07', 'Evolve'],
-  CROSSING: ['08', 'Roadrunner'], SWARM: ['09', 'Swarm'], QUADRA: ['10', 'QUADRA'],
-  PINBALL: ['11', 'Pinball'], MESA: ['12', 'Mesa'], MESAAI: ['AI', 'AI Mesa'],
+// What the now-playing bar calls each game.
+const LABELS = {
+  PACMAN: 'Pac-Man', PACMANAI: 'Pac-Man · AI', SNAKE: 'Neon Snake', FLAPPY: 'Flappy UFO',
+  BREAKOUT: 'Breakout', ASTEROIDS: 'Asteroids', FOUR: 'Four in a Row', EVOLVE: 'UFO Evolution',
+  CROSSING: 'Roadrunner', SWARM: 'Swarm', QUADRA: 'QUADRA',
+  PINBALL: 'Pinball', MESA: 'Mesa Lander', MESAAI: 'Mesa Lander · AI',
 };
-const AI_TITLES = new Set(['PACMANAI', 'FOUR', 'EVOLVE', 'MESAAI']);
+// The menu has twelve tiles. Two games carry an AI twin that is reached from the same tile
+// (and the bar's mode button) rather than being a tile of its own, so [ and ] step through
+// twelve stops, not fourteen.
+const AI_TWIN = { PACMAN: 'PACMANAI', MESA: 'MESAAI' };
+const HUMAN_TWIN = { PACMANAI: 'PACMAN', MESAAI: 'MESA' };
+const STEPS = GAMES.filter((g) => !(g.id in HUMAN_TWIN));
+const byId = (id) => GAMES.find((g) => g.id === id);
 
 const params = new URLSearchParams(location.search);
 const DEBUG = params.get('debug') === '1';
@@ -126,43 +132,43 @@ function renderPBs() {
 }
 
 // --- The deck and the explainer: both follow whatever is on the screen ---
-const deckCarts = document.getElementById('deck-carts');
-/** @type {Map<string, HTMLButtonElement>} */
-const carts = new Map();
-for (const entry of GAMES) {
-  const [num, label] = CARTS[entry.id] || ['', entry.title];
-  const cart = document.createElement('button');
-  cart.type = 'button';
-  cart.className = AI_TITLES.has(entry.id) ? 'cart ai' : 'cart';
-  cart.title = EXPLAINERS[entry.id]?.name || entry.title;
-  cart.setAttribute('aria-label', cart.title);
-  const numEl = document.createElement('span');
-  numEl.className = 'cart-num';
-  numEl.textContent = num;
-  const nameEl = document.createElement('span');
-  nameEl.className = 'cart-name';
-  nameEl.textContent = label;
-  cart.append(iconCanvas(entry.id), numEl, nameEl);
-  // Hand the keyboard straight back to the game: a focused button would turn the
-  // next Space (fire, flap, drop) into a click that restarts the game.
-  cart.addEventListener('click', () => { cart.blur(); startGame(entry); });
-  deckCarts?.append(cart);
-  carts.set(entry.id, cart);
-}
+// The menu's tiles carry their pixel icons; the markup is static so the page reads without script.
+document.querySelectorAll('.tile-main[data-icon]').forEach((btn) => {
+  btn.querySelector('.tile-icon')?.append(iconCanvas(btn.dataset.icon));
+});
 
+// The bar under the cabinet: previous / now playing / next, plus the AI twin and the way back
+// to the menu. Whatever is on the screen drives it (see sceneChanged).
+const deckEl = (id) => document.getElementById(id);
+const deckNow = { icon: deckEl('deck-now-icon'), name: deckEl('deck-now-name'), meta: deckEl('deck-now-meta') };
+const deckMode = deckEl('deck-mode');
+const deckMenu = deckEl('deck-menu');
+
+/** The game at a step position, counting an AI twin as its human game.
+ * @param {string | null} id */
+function stepIndex(id) {
+  return id ? STEPS.findIndex((g) => g.id === (HUMAN_TWIN[id] || id)) : -1;
+}
 /** @param {number} step */
 function stepGame(step) {
-  const i = activeGame ? GAMES.indexOf(activeGame) : (step > 0 ? -1 : 0);
-  startGame(GAMES[(i + step + GAMES.length) % GAMES.length]);
+  const i = activeGame ? stepIndex(activeGame.id) : (step > 0 ? -1 : 0);
+  startGame(STEPS[(i + step + STEPS.length) % STEPS.length]);
 }
 /** @param {string} id @param {() => void} fn */
 function deckButton(id, fn) {
   const b = document.getElementById(id);
+  // Hand the keyboard straight back to the game: a focused button would turn the
+  // next Space (fire, flap, drop) into a click that restarts the game.
   if (b) b.addEventListener('click', () => { b.blur(); fn(); });
 }
 deckButton('deck-prev', () => stepGame(-1));
 deckButton('deck-next', () => stepGame(1));
 deckButton('deck-menu', () => showMenu());
+deckButton('deck-mode', () => {
+  if (!activeGame) return;
+  const twin = AI_TWIN[activeGame.id] || HUMAN_TWIN[activeGame.id];
+  if (twin) startGame(byId(twin));
+});
 // [ and ] switch games from anywhere on the page, unless you're typing somewhere.
 document.addEventListener('keydown', (e) => {
   if ((e.key !== '[' && e.key !== ']') || e.metaKey || e.ctrlKey || e.altKey) return;
@@ -177,17 +183,30 @@ const howTitle = document.getElementById('how-title');
 const howBody = document.getElementById('how-body');
 const howRows = document.getElementById('how-rows');
 
-/** Light the active cartridge, swap the explainer, and keep the address bar shareable.
+/** @param {string | null} id */
+function renderDeck(id) {
+  const at = stepIndex(id);
+  const prev = STEPS[((at < 0 ? 0 : at) - 1 + STEPS.length) % STEPS.length];
+  const next = STEPS[(at + 1) % STEPS.length];
+  deckEl('deck-prev-name').textContent = LABELS[prev.id];
+  deckEl('deck-next-name').textContent = LABELS[next.id];
+
+  deckNow.icon.replaceChildren(...(id ? [iconCanvas(id)] : []));
+  deckNow.name.textContent = id ? LABELS[id] : 'Pick a game';
+  deckNow.meta.textContent = id ? `Game ${at + 1} of ${STEPS.length}${id in HUMAN_TWIN ? ' · AI mode' : ''}` : `${STEPS.length} games`;
+  deckNow.icon.hidden = id === null;
+
+  const twin = id ? AI_TWIN[id] || HUMAN_TWIN[id] : null;
+  deckMode.hidden = !twin;
+  if (twin) deckMode.textContent = id in AI_TWIN ? 'Watch the AI' : 'Play it yourself';
+  deckMenu.hidden = id === null;
+}
+
+/** Update the now-playing bar, swap the explainer, and keep the address bar shareable.
  * @param {string | null} id */
 function sceneChanged(id) {
   cabinet.classList.toggle('is-playing', id !== null);
-  for (const [cid, cart] of carts) cart.setAttribute('aria-current', String(cid === id));
-  const lit = id ? carts.get(id) : null;
-  if (lit && deckCarts) {
-    // Scroll the row only (scrollIntoView would also scroll the page on phones).
-    const left = lit.offsetLeft - deckCarts.offsetLeft - (deckCarts.clientWidth - lit.offsetWidth) / 2;
-    deckCarts.scrollTo({ left, behavior: REDUCED_MOTION ? 'auto' : 'smooth' });
-  }
+  renderDeck(id);
 
   const ex = EXPLAINERS[id || 'MENU'] || EXPLAINERS.MENU;
   if (howName) howName.textContent = ex.name;
@@ -329,23 +348,26 @@ document.getElementById('btn-restart').addEventListener('click', () => {
 
 document.getElementById('btn-menu').addEventListener('click', showMenu);
 
-// Menu keyboard navigation: arrows move focus, Enter starts, 1-9, 0, - and = quick-start
-// the numbered titles (0 is 10, - is 11, = is 12), A starts "Watch the AI play" and L
-// starts "Watch it learn".
+// Menu keyboard navigation: arrows move across the tile grid, Enter starts, 1-9, 0, - and =
+// quick-start the numbered titles (0 is 10, - is 11, = is 12), A starts "Watch the AI play"
+// and L starts "Watch it learn".
 const MENU_NUMS = { '0': '10', '-': '11', '=': '12' };
-const menuButtons = [...menuScreen.querySelectorAll('.arcade-btn')];
+const menuTiles = [...menuScreen.querySelectorAll('.tile-main')];
 document.addEventListener('keydown', (e) => {
-  if (menuScreen.style.display === 'none') return;
-  const idx = menuButtons.indexOf(document.activeElement);
-  if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+  if (menuScreen.style.display === 'none' || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.key.startsWith('Arrow')) {
+    // Tiles per row, read from the live grid so the phone's 3 columns work like the desktop's 4.
+    const cols = getComputedStyle(menuScreen.querySelector('.menu-buttons')).gridTemplateColumns.split(' ').length;
+    const here = menuTiles.indexOf(document.activeElement?.closest('.tile')?.querySelector('.tile-main'));
+    const move = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -cols, ArrowDown: cols }[e.key];
     e.preventDefault();
-    menuButtons[(idx + 1 + menuButtons.length) % menuButtons.length].focus();
-  } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-    e.preventDefault();
-    menuButtons[(idx - 1 + menuButtons.length) % menuButtons.length].focus();
+    let to = here < 0 ? 0 : here + move;
+    if (here >= 0 && Math.abs(move) === 1) to = (to + menuTiles.length) % menuTiles.length; // rows wrap
+    else if (here >= 0) to = Math.min(Math.max(to, 0), menuTiles.length - 1); // columns stop at the ends
+    menuTiles[to].focus();
   } else if (/^[0-9=-]$/.test(e.key)) {
     const num = MENU_NUMS[e.key] || e.key.padStart(2, '0');
-    const btn = menuButtons.find((b) => b.querySelector('.num')?.textContent === num);
+    const btn = menuTiles.find((b) => b.querySelector('.num')?.textContent === num);
     if (btn) btn.click();
   } else if (e.key === 'a' || e.key === 'A') {
     document.getElementById('btn-pacmanai')?.click();

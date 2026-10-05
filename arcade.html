@@ -93,27 +93,118 @@
 
         <div id="arcade-menu">
           <h2>Select a game</h2>
+          <p class="menu-sub">Tap a game, or press its number · amber = an AI you watch or play against</p>
           <div class="menu-buttons">
-            <div class="menu-featured">
-              <button id="btn-pacman" class="arcade-btn featured">
-                <span class="title"><span class="num">01</span>Pac-Man<span class="tag">★ Flagship</span></span>
+            <div class="tile">
+              <button id="btn-pacman" class="arcade-btn tile-main" type="button" data-icon="PACMAN">
+                <span class="tile-icon"></span>
+                <span class="num">01</span>
+                <span class="title">Pac-Man</span>
+                <span class="tile-tag">The original ghost AI</span>
                 <span class="hi" data-game="PACMAN">PB · –</span>
-                <span class="arrow">→</span>
               </button>
-              <button id="btn-pacmanai" class="arcade-btn featured-ai" title="Pac-Man, played by an AI that shows its reasoning"><span class="title"><span class="num">AI</span>Watch the AI play</span><span class="arrow">→</span></button>
+              <button id="btn-pacmanai" class="arcade-btn tile-ai" type="button" title="Pac-Man, played by an AI that shows its reasoning">Watch the AI <span aria-hidden="true">→</span></button>
             </div>
-            <button id="btn-snake" class="arcade-btn"><span class="title"><span class="num">02</span>Neon Snake</span><span class="hi" data-game="SNAKE">PB · –</span></button>
-            <button id="btn-flappy" class="arcade-btn"><span class="title"><span class="num">03</span>Flappy UFO</span><span class="hi" data-game="FLAPPY">PB · –</span></button>
-            <button id="btn-breakout" class="arcade-btn"><span class="title"><span class="num">04</span>Breakout</span><span class="hi" data-game="BREAKOUT">PB · –</span></button>
-            <button id="btn-asteroids" class="arcade-btn"><span class="title"><span class="num">05</span>Asteroids</span><span class="hi" data-game="ASTEROIDS">PB · –</span></button>
-            <button id="btn-four" class="arcade-btn ai" title="Play an AI that shows its thinking"><span class="title"><span class="num">06</span>Four in a Row</span><span class="hi" data-game="FOUR">PB · –</span></button>
-            <button id="btn-evolve" class="arcade-btn ai" title="Watch a flock of UFOs learn to fly"><span class="title"><span class="num">07</span>UFO Evolution</span><span class="hi" data-game="EVOLVE">PB · –</span></button>
-            <button id="btn-crossing" class="arcade-btn" title="Roadrunner Crossing"><span class="title"><span class="num">08</span>Roadrunner</span><span class="hi" data-game="CROSSING">PB · –</span></button>
-            <button id="btn-swarm" class="arcade-btn"><span class="title"><span class="num">09</span>Swarm</span><span class="hi" data-game="SWARM">PB · –</span></button>
-            <button id="btn-quadra" class="arcade-btn"><span class="title"><span class="num">10</span>QUADRA</span><span class="hi" data-game="QUADRA">PB · –</span></button>
-            <button id="btn-pinball" class="arcade-btn" title="Dust Devil Pinball"><span class="title"><span class="num">11</span>Pinball</span><span class="hi" data-game="PINBALL">PB · –</span></button>
-            <button id="btn-mesa" class="arcade-btn" title="Mesa Lander"><span class="title"><span class="num">12</span>Mesa Lander</span><span class="hi" data-game="MESA">PB · –</span></button>
-            <button id="btn-mesaai" class="arcade-btn ai" title="Watch a lander learn to land, from scratch"><span class="title"><span class="num">AI</span>Watch it learn</span><span class="arrow">→</span></button>
+            <div class="tile">
+              <button id="btn-snake" class="arcade-btn tile-main" type="button" data-icon="SNAKE">
+                <span class="tile-icon"></span>
+                <span class="num">02</span>
+                <span class="title">Neon Snake</span>
+                <span class="tile-tag">A grid and a clock</span>
+                <span class="hi" data-game="SNAKE">PB · –</span>
+              </button>
+            </div>
+            <div class="tile">
+              <button id="btn-flappy" class="arcade-btn tile-main" type="button" data-icon="FLAPPY">
+                <span class="tile-icon"></span>
+                <span class="num">03</span>
+                <span class="title">Flappy UFO</span>
+                <span class="tile-tag">Gravity and one button</span>
+                <span class="hi" data-game="FLAPPY">PB · –</span>
+              </button>
+            </div>
+            <div class="tile">
+              <button id="btn-breakout" class="arcade-btn tile-main" type="button" data-icon="BREAKOUT">
+                <span class="tile-icon"></span>
+                <span class="num">04</span>
+                <span class="title">Breakout</span>
+                <span class="tile-tag">Aim with the paddle</span>
+                <span class="hi" data-game="BREAKOUT">PB · –</span>
+              </button>
+            </div>
+            <div class="tile">
+              <button id="btn-asteroids" class="arcade-btn tile-main" type="button" data-icon="ASTEROIDS">
+                <span class="tile-icon"></span>
+                <span class="num">05</span>
+                <span class="title">Asteroids</span>
+                <span class="tile-tag">A wraparound sky</span>
+                <span class="hi" data-game="ASTEROIDS">PB · –</span>
+              </button>
+            </div>
+            <div class="tile">
+              <button id="btn-four" class="arcade-btn tile-main ai" type="button" data-icon="FOUR" title="Play an AI that shows its thinking">
+                <span class="tile-icon"></span>
+                <span class="num">06</span>
+                <span class="title">Four in a Row</span>
+                <span class="tile-tag">Play an AI, see its search</span>
+                <span class="hi" data-game="FOUR">PB · –</span>
+              </button>
+            </div>
+            <div class="tile">
+              <button id="btn-evolve" class="arcade-btn tile-main ai" type="button" data-icon="EVOLVE" title="Watch a flock of UFOs learn to fly">
+                <span class="tile-icon"></span>
+                <span class="num">07</span>
+                <span class="title">UFO Evolution</span>
+                <span class="tile-tag">Watch a flock learn to fly</span>
+                <span class="hi" data-game="EVOLVE">PB · –</span>
+              </button>
+            </div>
+            <div class="tile">
+              <button id="btn-crossing" class="arcade-btn tile-main" type="button" data-icon="CROSSING" title="Roadrunner Crossing">
+                <span class="tile-icon"></span>
+                <span class="num">08</span>
+                <span class="title">Roadrunner</span>
+                <span class="tile-tag">Lanes on a loop</span>
+                <span class="hi" data-game="CROSSING">PB · –</span>
+              </button>
+            </div>
+            <div class="tile">
+              <button id="btn-swarm" class="arcade-btn tile-main" type="button" data-icon="SWARM">
+                <span class="tile-icon"></span>
+                <span class="num">09</span>
+                <span class="title">Swarm</span>
+                <span class="tile-tag">Choreography, then chaos</span>
+                <span class="hi" data-game="SWARM">PB · –</span>
+              </button>
+            </div>
+            <div class="tile">
+              <button id="btn-quadra" class="arcade-btn tile-main" type="button" data-icon="QUADRA">
+                <span class="tile-icon"></span>
+                <span class="num">10</span>
+                <span class="title">QUADRA</span>
+                <span class="tile-tag">Modern rules, its own name</span>
+                <span class="hi" data-game="QUADRA">PB · –</span>
+              </button>
+            </div>
+            <div class="tile">
+              <button id="btn-pinball" class="arcade-btn tile-main" type="button" data-icon="PINBALL" title="Dust Devil Pinball">
+                <span class="tile-icon"></span>
+                <span class="num">11</span>
+                <span class="title">Pinball</span>
+                <span class="tile-tag">Tiny steps, honest walls</span>
+                <span class="hi" data-game="PINBALL">PB · –</span>
+              </button>
+            </div>
+            <div class="tile">
+              <button id="btn-mesa" class="arcade-btn tile-main" type="button" data-icon="MESA" title="Mesa Lander">
+                <span class="tile-icon"></span>
+                <span class="num">12</span>
+                <span class="title">Mesa Lander</span>
+                <span class="tile-tag">Point first, then push</span>
+                <span class="hi" data-game="MESA">PB · –</span>
+              </button>
+              <button id="btn-mesaai" class="arcade-btn tile-ai" type="button" title="Watch a lander learn to land, from scratch">Watch it learn <span aria-hidden="true">→</span></button>
+            </div>
           </div>
         </div>
 
@@ -130,18 +221,26 @@
       </div>
 
       <nav class="room game-deck" id="game-deck" aria-label="Games">
-        <div class="room-bar deck-bar">
-          <span>Game select</span>
-          <span class="cab-right">
-            <span class="deck-keys">[ and ] to switch</span>
-            <button id="deck-menu" class="cab-toggle" type="button">Menu</button>
+        <button class="deck-side deck-prev" id="deck-prev" type="button" aria-label="Previous game">
+          <span class="deck-arrow" aria-hidden="true">‹</span>
+          <span class="deck-side-text"><small>Previous</small><span id="deck-prev-name">–</span></span>
+        </button>
+        <div class="deck-now" aria-live="polite">
+          <span class="deck-now-icon" id="deck-now-icon" aria-hidden="true"></span>
+          <span class="deck-now-text">
+            <span class="deck-now-meta" id="deck-now-meta">12 games</span>
+            <span class="deck-now-name" id="deck-now-name">Pick a game</span>
           </span>
         </div>
-        <div class="deck-row">
-          <button class="deck-step" id="deck-prev" type="button" aria-label="Previous game">‹</button>
-          <div class="deck-carts" id="deck-carts"></div>
-          <button class="deck-step" id="deck-next" type="button" aria-label="Next game">›</button>
+        <button class="deck-side deck-next" id="deck-next" type="button" aria-label="Next game">
+          <span class="deck-side-text"><small>Next</small><span id="deck-next-name">–</span></span>
+          <span class="deck-arrow" aria-hidden="true">›</span>
+        </button>
+        <div class="deck-actions">
+          <button id="deck-mode" class="deck-btn deck-btn-ai" type="button" hidden>Watch the AI</button>
+          <button id="deck-menu" class="deck-btn" type="button" hidden>All games</button>
         </div>
+        <p class="deck-keys"><kbd>[</kbd> <kbd>]</kbd> switch games</p>
       </nav>
 
       <section class="play-notes how" id="how" aria-labelledby="how-title">
