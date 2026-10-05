@@ -116,6 +116,16 @@
         <p>Matching takes under a millisecond, which reads as nothing happening. Instead of a fake "Thinking…" animation, the trace above each answer shows the steps the model actually performed: the word pieces it read, the 128 numbers it turned them into, the comparison against all 465 phrasings, the three closest answers with their scores, and the confidence check against the threshold. Those steps are paced over about three seconds so a person can follow them, and the summary line still reports the real compute time. Visitors who ask their system for reduced motion get the answer instantly.</p>
         <p>The orb in the bar is my <a href="https://github.com/desertcache/samantha-ui" target="_blank" rel="noopener">Samantha UI</a> shader orb, embedded in a mode the page can drive: it idles while you read, turns violet while the trace runs, and glows coral while the answer appears.</p>
 
+        <h2>Following a conversation</h2>
+        <p>People rarely ask one tidy question. The box now reads each message in the light of the last answer, and it still never writes a word of its own: every reply is an answer I approved or a sentence copied from one, and every step shows in the trace.</p>
+        <ul>
+          <li><strong>Follow-ups.</strong> After the copilot answer, "how long did that take?" gets the one sentence that fits: four weeks from first prototype to internal pilot. A follow-up that names a linked answer, like "does it use RAG?", goes to that answer instead.</li>
+          <li><strong>Two questions at once.</strong> "Can he code, and where is he based?" is split and answered in order, but only when each half confidently matches a different answer.</li>
+          <li><strong>Typos and names.</strong> "wher is he baesd" is repaired against the bank's own words, and "Sam" is read as "he". Both are kept only when they improve the match.</li>
+          <li><strong>"Did you mean" instead of a flat no,</strong> only when a question comes close to an answer and shares a telling word with it.</li>
+        </ul>
+        <p>On a fresh set of test conversations, written blind from the answers' text and scored once, it answers 16 of 18 misspelled questions (was 8), both halves of 10 of 15 two-part messages (was none), and splits just one of eight questions that only look like two. Follow-ups are the honest weak spot: 6 of 15 about the answer just shown land (was 1), but now and then it reads a new question as a follow-up, and when nothing covers a follow-up it can offer the closest sentence where the old box declined. So the trace says "the line that fits best", never "the answer".</p>
+
         <h2>What I'd tell the next person</h2>
         <ul>
           <li><strong>Let the constraints pick the architecture.</strong> A download budget and a rule against invented facts pointed to retrieval over approved text before any model was chosen.</li>
