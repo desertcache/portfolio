@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>A 4 MB model that can't make things up · Samuel Bates</title>
+  <meta name="description" content="How the ask bar on this site works: a 3.9 MB embedding model that runs on your device, matches questions to answers I approved, and is held to its score on questions it never saw while being tuned.">
+  <link rel="canonical" href="https://desertcache.github.io/portfolio/work/answer-finder.html">
+  <meta name="theme-color" content="#f3ebe6">
+
+  <script>
+    // Same as every page: pick the theme before first paint and flag that JS is on.
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      setTimeout(function () { if (!root.classList.contains('js-ready')) root.classList.remove('js'); }, 4000);
+      try {
+        var t = localStorage.getItem('sb-theme');
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', t);
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#150f24' : '#f3ebe6');
+      } catch (e) { /* storage blocked: CSS falls back to the system theme */ }
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Martian+Mono:wdth,wght@75..112.5,100..800&display=swap">
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../css/site.css?v=2026-10-04g">
+  <link rel="stylesheet" href="../blog/blog.css?v=2026-09-26">
+  <script type="module" src="../js/blog.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="../index.html" aria-label="Samuel Bates, home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <path d="M6.2 17.8C5.2 11.6 9.4 6.1 15.6 5.6 21.9 5.1 27.2 9.2 26.8 15.2 26.4 20.4 23.6 22.1 20.1 24.6 16.2 27.4 7.3 25.1 6.2 17.8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M11.4 15.9C11.1 12.2 13.9 9.6 17.4 9.5 21 9.4 23.1 11.9 22.6 15 22.1 18.2 19.8 19.2 17.2 20.1 14.2 21.1 11.7 19.2 11.4 15.9Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <circle cx="17.6" cy="14.7" r="2.6" class="brand-dot"/>
+        </svg>
+        <span class="brand-name">Samuel Bates</span>
+      </a>
+      <nav class="nav-links" aria-label="Sections">
+        <a href="../index.html#work">Work</a>
+        <a href="../index.html#lab" aria-current="true">Lab</a>
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#contact">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.2 14.6A8.3 8.3 0 0 1 9.4 3.8a8.3 8.3 0 1 0 10.8 10.8Z"/></svg>
+        </button>
+        <a class="btn btn-ghost btn-sm nav-cv" href="../Samuel_Bates_CV.pdf" target="_blank" rel="noopener">Résumé</a>
+        <a class="btn btn-solid btn-sm" href="mailto:batessambates@gmail.com">Get in touch</a>
+      </div>
+    </div>
+    <div class="nav-progress" aria-hidden="true"></div>
+  </header>
+
+  <main id="main">
+    <article class="post research">
+      <header class="post-head">
+        <a class="eyebrow post-back" href="../index.html#lab"><span class="eyebrow-num">Build note</span>On-device AI</a>
+        <h1 class="post-title">A 4 MB model that can't make things up</h1>
+        <p class="post-lede">The bar at the bottom of this site answers questions about my work. It runs entirely in your browser, it never generates a word, and it has to hold its score on questions it never saw before any change goes live. This is how it is built, how I chose the model, and how I kept myself from grading my own homework.</p>
+        <p class="post-meta"><time datetime="2026-10-04">October 2026</time><span>Samuel Bates</span><span id="read-time" hidden></span></p>
+      </header>
+
+      <div class="post-body">
+        <h2>Two constraints decided the design</h2>
+        <p><strong>A download budget.</strong> Visitors arrive on phones and slow connections, so I set a ceiling of about 30 MB. The smallest generative models that write usable answers run to hundreds of megabytes, and the useful ones further still. That ruled out a chatbot before any code was written.</p>
+        <p><strong>A portfolio can't invent facts.</strong> A model that confidently states a wrong title or a made-up number about the person it represents is worse than no model at all. So the box never generates text. It finds the best answer among ones I wrote and approved, and when nothing fits well enough it says so and points to my email.</p>
+        <p>Together those make it an <em>answer finder</em>: a small model that understands what a question means, matched against a fixed bank of approved answers.</p>
+
+        <h2>How it works</h2>
+        <ul>
+          <li><strong>A static embedding model, not a neural network at question time.</strong> The model is <a href="https://huggingface.co/minishlab/potion-base-4M" target="_blank" rel="noopener">potion-base-4M</a>, a <a href="https://github.com/MinishLab/model2vec" target="_blank" rel="noopener">model2vec</a> model distilled from bge-base-en-v1.5. Every word piece maps to one 128-number vector, and a sentence is the normalized average of its pieces. There is no inference engine to download.</li>
+          <li><strong>Quantized to 3.9 MB.</strong> I converted the 15 MB float table to 8-bit integers with one scale per row. The whole box, page and model together, transfers about 4 MB.</li>
+          <li><strong>A hand-written tokenizer, checked id for id.</strong> The tokenizer is about 100 lines of plain JavaScript. A test runs it against the reference tokenizer on every string in the bank plus edge cases (accents, emoji, punctuation, very long words) and fails on any difference, because a silent mismatch would quietly corrupt every vector.</li>
+          <li><strong>Matching is a dot product.</strong> Each of the 50 answers has several sample phrasings, 398 in all. A question scores against every phrasing and takes the best. Below a threshold of 0.45, the box declines rather than guess. A full search takes under a millisecond.</li>
+          <li><strong>Answers are shaped like a conversation.</strong> A simple fact gets a sentence, a story gets a short paragraph or two, and a list gets a list only when the content really is one. Each leads with the direct answer, links into the site, and offers two follow-up questions I picked for it.</li>
+        </ul>
+
+        <h2>Choosing the model</h2>
+        <p>I compared the static models against two small transformer models, MiniLM and bge-small, which run through a WebAssembly inference engine in the browser, scoring every model on the same held-out questions:</p>
+        <table>
+          <thead><tr><th>Model</th><th>Download</th><th>Result</th></tr></thead>
+          <tbody>
+            <tr><td>potion-base-4M</td><td>3.9 MB</td><td>Shipped: the best accuracy for its size</td></tr>
+            <tr><td>potion-base-8M</td><td>7.7 MB</td><td>No better than 4M once the answer bank improved, at twice the size</td></tr>
+            <tr><td>MiniLM-L6</td><td>about 37 MB</td><td>Better at picking the first answer, and much better at declining off-topic questions</td></tr>
+            <tr><td>bge-small</td><td>about 48 MB</td><td>The most accurate, at twelve times the download</td></tr>
+          </tbody>
+        </table>
+        <p>The transformers were better, but not by enough to justify a download nine to twelve times larger on every phone that opens the page. Their main advantage was declining off-topic questions, and that matters less here than it would in a chatbot: a wrong match can only ever show an answer I approved, never an invented one.</p>
+
+        <h2>Not grading my own homework</h2>
+        <p>The easiest way to make an answer finder look good is to tune its phrasings until the test questions pass. Then the score measures nothing. Three rules kept it honest:</p>
+        <ul>
+          <li><strong>Write the test before the run.</strong> Each held-out set was written before any model was scored on it: recruiter-style questions, fragments, typos, and off-topic questions the box should decline.</li>
+          <li><strong>Once you've looked, write another.</strong> After I used one set's misses to fix two phrasings, that set was no longer held out. I wrote a third set before scoring the final bank on it, and that third set is the only number I quote.</li>
+          <li><strong>Make copying impossible.</strong> A test fails if any phrasing in the bank copies, or nearly copies, a test question: the same words in any order, with at most one word different. It caught me twice: once when new phrasings came too close to test questions, and once when new test questions came too close to phrasings already in the bank.</li>
+        </ul>
+        <p>On that third set the box puts the right answer first 81% of the time and in its top three 93% of the time, and it declines all ten off-topic questions. Each score is also a floor: a test fails if a future edit to the answers pushes any of them lower.</p>
+
+        <h2>The thinking is the real work, slowed down</h2>
+        <p>Matching takes under a millisecond, which reads as nothing happening. Instead of a fake "Thinking…" animation, the trace above each answer shows the steps the model actually performed: the word pieces it read, the 128 numbers it turned them into, the comparison against all 398 phrasings, the three closest answers with their scores, and the confidence check against the threshold. Those steps are paced over about three seconds so a person can follow them, and the summary line still reports the real compute time. Visitors who ask their system for reduced motion get the answer instantly.</p>
+        <p>The orb in the bar is my <a href="https://github.com/desertcache/samantha-ui" target="_blank" rel="noopener">Samantha UI</a> shader orb, embedded in a mode the page can drive: it idles while you read, turns violet while the trace runs, and glows coral while the answer appears.</p>
+
+        <h2>What I'd tell the next person</h2>
+        <ul>
+          <li><strong>Let the constraints pick the architecture.</strong> A download budget and a rule against invented facts pointed to retrieval over approved text before any model was chosen.</li>
+          <li><strong>A held-out set you've tuned against isn't held out.</strong> Track which sets you have looked at, and quote only the one you haven't.</li>
+          <li><strong>Show the real work.</strong> People trust a system more when they can watch what it did than when it performs effort it isn't making.</li>
+        </ul>
+
+        <h2>Links</h2>
+        <ul>
+          <li><a href="https://github.com/desertcache/ask" target="_blank" rel="noopener">Source, answer bank and evaluation sets</a> (desertcache/ask)</li>
+          <li><a href="https://desertcache.github.io/ask/" target="_blank" rel="noopener">The box on its own page</a></li>
+          <li><a href="https://huggingface.co/minishlab/potion-base-4M" target="_blank" rel="noopener">potion-base-4M</a> and <a href="https://github.com/MinishLab/model2vec" target="_blank" rel="noopener">model2vec</a> by Minish Lab</li>
+          <li><a href="https://huggingface.co/BAAI/bge-base-en-v1.5" target="_blank" rel="noopener">bge-base-en-v1.5</a> by BAAI, the source of the vocabulary</li>
+        </ul>
+      </div>
+
+      <nav class="cs-nav edition-nav" aria-label="More work">
+        <a href="../index.html#lab"><span class="cs-nav-k">Lab</span><span class="cs-nav-t">Demos you can walk around in</span></a>
+      </nav>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p class="footer-copy">© 2026 Samuel Bates. Built in Phoenix with HTML, CSS, and a little JavaScript. No framework.</p>
+    </div>
+  </footer>
+</body>
+</html>

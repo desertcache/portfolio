@@ -26,7 +26,23 @@ const ORB_SRC = `${ORB_ORIGIN}/samantha-ui/?embed=1&control=1&transparent=1`;
 const STEP_MS = 620;
 const WORD_MS = 22;
 
-/** @typedef {{ id: string, asks: string[], answer: string, points?: string[], next?: string[], link: string | null }} Entry */
+// Suggested questions per section of the page (answer-bank ids; each chip asks the answer's own
+// first phrasing). Shown when the bar opens with no conversation yet, following the section the
+// visitor is reading.
+/** @type {Record<string, string[]>} */
+const SECTION_CHIPS = {
+  top: ['who-is-sam', 'copilot', 'can-he-code'],
+  featured: ['copilot', 'rollout', 'rag'],
+  work: ['api-migration', 'chatbot', 'measurement'],
+  build: ['claude-code', 'power-user', 'mcp'],
+  lab: ['starship', 'orb', 'this-box'],
+  about: ['career-path', 'emt', 'leadership'],
+  stack: ['tech-stack', 'ai-quality', 'data'],
+  contact: ['contact', 'resume', 'why-hire'],
+};
+
+/** @typedef {{ id: string, asks: string[], answer: string, points?: string[], detail?: string[], next?: string[], link: string | null }} Entry */
+/** @typedef {{ entries: Entry[], fallback: string }} Bank */
 /** @typedef {{ entry: Entry, score: number, matched: string, vector: Float32Array }} Ranked */
 /**
  * @typedef {{
@@ -56,15 +72,16 @@ function el(tag, cls, text) {
  * Load the engine from desertcache/ask once. The module URLs are built at run
  * time, so they are plain dynamic imports with no build step.
  * @param {(text: string) => void} progress
+ * @param {Promise<Bank>} bankP the answer bank, fetched on its own so suggestions don't wait for the model
  * @returns {Promise<Engine>}
  */
-async function loadEngine(progress) {
+async function loadEngine(progress, bankP) {
   /** @type {any[]} */
   const [{ createEmbedder }, { createMatcher }, config] = await Promise.all(
     ['js/embed.js', 'js/match.js', 'js/config.js'].map((p) => import(/* @vite-ignore */ ASK + p)),
   );
   const [bank, vocab] = await Promise.all([
-    fetch(`${ASK}data/bank.json`).then((r) => r.json()),
+    bankP,
     fetch(`${ASK}models/vocab.txt`).then((r) => r.text()),
   ]);
   const res = await fetch(`${ASK}models/${config.MODEL}.bin`);
@@ -123,12 +140,23 @@ function vectorStrip(v) {
   return svg;
 }
 
-/** The answer: its lead, then its highlights as a list. @param {string} lead @param {string[]} [points] */
-function answerBlock(lead, points = []) {
+/**
+ * The answer: its lead, then either prose paragraphs (detail) or a list (points), whichever shape
+ * the bank gives it. Most answers are prose; lists are only for content that is a list.
+ * @param {string} lead
+ * @param {string[]} [points]
+ * @param {string[]} [detail]
+ */
+function answerBlock(lead, points = [], detail = []) {
   const box = el('div', 'dock-answer-block');
   const p = el('p', 'dock-answer');
   let i = words(p, lead, 0);
   box.append(p);
+  for (const para of detail) {
+    const more = el('p', 'dock-answer');
+    i = words(more, para, i);
+    box.append(more);
+  }
   if (points.length) {
     const ul = el('ul', 'dock-points');
     for (const pt of points) {
@@ -210,14 +238,23 @@ export function initAsk() {
   if (document.readyState === 'complete') idle(mountOrb);
   else window.addEventListener('load', () => idle(mountOrb), { once: true });
 
-  // ---------- the engine, loaded on first intent ----------
+  // ---------- the bank and the engine, loaded on first intent ----------
+  /** @type {Promise<Bank> | null} */
+  let bank = null;
+  const getBank = () => {
+    if (!bank) {
+      bank = fetch(`${ASK}data/bank.json`).then((r) => r.json());
+      bank.catch(() => { bank = null; });
+    }
+    return bank;
+  };
   /** @type {Promise<Engine> | null} */
   let engine = null;
   /** @type {HTMLElement | null} */
   let loadingLine = null;
   const getEngine = () => {
     if (!engine) {
-      engine = loadEngine((text) => { if (loadingLine) loadingLine.textContent = text; });
+      engine = loadEngine((text) => { if (loadingLine) loadingLine.textContent = text; }, getBank());
       engine.catch(() => { engine = null; });
     }
     return engine;
@@ -232,7 +269,48 @@ export function initAsk() {
     collapse.setAttribute('aria-expanded', String(open));
   };
   collapse.addEventListener('click', () => setOpen(false));
-  input.addEventListener('focus', () => { if (log.childElementCount) setOpen(true); });
+  input.addEventListener('focus', () => {
+    if (log.childElementCount) setOpen(true);
+    else showSuggestions();
+  });
+
+  // ---------- suggestions that follow the section being read ----------
+  let section = 'top';
+  /** @type {HTMLElement | null} */
+  let suggest = null;
+  const renderSuggestions = async () => {
+    if (!suggest) return;
+    const b = await getBank().catch(() => null);
+    if (!b || !suggest) return;
+    const byId = new Map(b.entries.map((e) => [e.id, e]));
+    const picks = /** @type {Entry[]} */ ((SECTION_CHIPS[section] ?? SECTION_CHIPS.top).map((id) => byId.get(id)).filter(Boolean));
+    suggest.querySelector('.dock-chips')?.remove();
+    suggest.append(chipRow(picks));
+  };
+  // The first open, before any question: a greeting and three questions about this part of the page.
+  const showSuggestions = () => {
+    if (suggest || log.childElementCount) return;
+    suggest = el('div', 'dock-msg dock-bot dock-suggest');
+    suggest.append(el('p', 'dock-answer', "Ask me anything about Sam's work, or start with this part of the page:"));
+    log.append(suggest);
+    setOpen(true);
+    renderSuggestions();
+  };
+  if ('IntersectionObserver' in window) {
+    // A section counts as "being read" when it crosses the middle band of the screen.
+    const seen = new IntersectionObserver((list) => {
+      for (const entry of list) {
+        if (!entry.isIntersecting || entry.target.id === section) continue;
+        section = entry.target.id;
+        // Re-pick only while the suggestions are still the whole conversation.
+        if (suggest && log.lastElementChild === suggest) renderSuggestions();
+      }
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    for (const id of Object.keys(SECTION_CHIPS)) {
+      const s = document.getElementById(id);
+      if (s) seen.observe(s);
+    }
+  }
   dock.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && dock.classList.contains('is-open')) { setOpen(false); input.focus(); }
   });
@@ -372,7 +450,7 @@ export function initAsk() {
 
       const entry = hit ? top.entry : null;
       setOrb('SPEAKING');
-      const { box, words: n } = answerBlock(entry ? entry.answer : eng.fallback, entry?.points);
+      const { box, words: n } = answerBlock(entry ? entry.answer : eng.fallback, entry?.points, entry?.detail);
       box.style.setProperty('--wms', `${WORD_MS}ms`);
       bot.append(box);
       scrollDown();
