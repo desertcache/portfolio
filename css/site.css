@@ -2066,20 +2066,23 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
   height: 44px;
   overflow: hidden;
   border-radius: 50%;
-  background: #0a0908;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 0 0 3px var(--g-rim-soft), 0 4px 14px -4px rgba(232, 168, 124, 0.55);
-  transition: box-shadow 0.5s;
+  /* The lens is all orb, no black: its own colour follows the orb's state, so even
+     the blob's wobbling edge never shows the dark scene behind it. */
+  background: #e8a87c;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28), 0 0 0 3px var(--g-rim-soft), 0 4px 14px -4px rgba(232, 168, 124, 0.55);
+  transition: box-shadow 0.5s, background-color 0.5s;
 }
-.dock[data-orb="thinking"] .dock-orb { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), 0 0 0 3px var(--g-rim-soft), 0 4px 18px -2px rgba(139, 92, 246, 0.7); }
-.dock[data-orb="speaking"] .dock-orb { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), 0 0 0 3px var(--g-rim-soft), 0 4px 18px -2px rgba(245, 158, 11, 0.65); }
-/* the real orb renders its sphere at ~65% of a square view; overscanned so it fills ~80% of the lens
-   (max-width: none undoes the base reset, which would cap the width and push the orb off-centre) */
-.dock-orb iframe { position: absolute; left: -12%; top: -12%; width: 124%; height: 124%; max-width: none; border: 0; pointer-events: none; opacity: 0; transition: opacity 0.9s var(--ease); }
+.dock[data-orb="thinking"] .dock-orb { background: #8b5cf6; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), 0 0 0 3px var(--g-rim-soft), 0 4px 18px -2px rgba(139, 92, 246, 0.7); }
+.dock[data-orb="speaking"] .dock-orb { background: #e9785f; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), 0 0 0 3px var(--g-rim-soft), 0 4px 18px -2px rgba(245, 158, 11, 0.65); }
+/* the real orb renders its sphere at ~65% of a square view; overscanned to 230% so the sphere
+   is half again as wide as the lens and fills it edge to edge, wobble included (max-width: none
+   undoes the base reset, which would cap the width and push the orb off-centre) */
+.dock-orb iframe { position: absolute; left: -65%; top: -65%; width: 230%; height: 230%; max-width: none; border: 0; pointer-events: none; opacity: 0; transition: opacity 0.9s var(--ease); }
 .dock-orb.is-live iframe { opacity: 1; }
 /* the still orb: the LISTENING colours, until the real one wakes (and for reduced motion) */
 .dock-orb-still {
   position: absolute;
-  inset: 22%;
+  inset: 0;
   border-radius: 50%;
   background: radial-gradient(circle at 38% 34%, #fbd8bd, #e8a87c 55%, #b9734d);
   box-shadow: 0 0 12px rgba(232, 168, 124, 0.6);
