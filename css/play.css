@@ -139,6 +139,21 @@ canvas.pixel-art { image-rendering: pixelated; }
   box-shadow: inset 0 0 70px rgba(255, 122, 69, 0.06);
 }
 .arcade-cabinet.crt-off .crt-overlay, .arcade-cabinet.crt-off .crt-vignette { display: none; }
+/* Phones: page gutter + cabinet padding + bezel ate ~100px, leaving a 288px canvas at 390px.
+   The cabinet runs edge to edge and the bezel slims, so the game gets ~374px. */
+@media (max-width: 600px) {
+  .arcade-cabinet {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+  .screen { padding: 4px; border-radius: 8px; }
+  .crt-overlay, .crt-vignette { inset: 4px; }
+}
 
 /* the menu and game-over overlays sit on the screen */
 #arcade-menu, #game-over-screen {
