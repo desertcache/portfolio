@@ -1173,28 +1173,58 @@ html.has-modal { overflow: hidden; }
 
 .lab-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
   margin-top: clamp(28px, 4vw, 48px);
 }
+/* Each card is one big link (the title's link stretches over it); the orb button,
+   game chips and the small links below sit above that layer and stay their own. */
 .lab-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
+  transition: border-color 0.25s, transform 0.35s var(--ease-out), box-shadow 0.35s;
 }
+.lab-card:hover { border-color: var(--line-strong); transform: translateY(-3px); box-shadow: 0 30px 60px -36px rgba(0, 0, 0, 0.9); }
+.lab-card:has(.lab-card-link:focus-visible) { outline: 2px solid var(--accent); outline-offset: 3px; }
+.lab-card-link { color: inherit; outline: none; }
+.lab-card-link::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.lab-card-go { display: inline-block; margin-left: 8px; color: var(--accent-ink); font-weight: 500; transition: transform 0.25s var(--ease); }
+.lab-card:hover .lab-card-title { color: var(--accent-ink); }
+.lab-card:hover .lab-card-go { transform: translateX(3px); }
+.lab-card .lab-links, .lab-chips { position: relative; z-index: 2; }
+.lab-card .orb-wake { z-index: 2; }
 .lab-card-body { display: flex; flex: 1; flex-direction: column; gap: 12px; padding: 22px 24px 24px; }
-.lab-card-title { font: 800 semi-expanded 1.35rem/1.1 var(--display); letter-spacing: -0.03em; }
+.lab-card-title { font: 800 semi-expanded 1.35rem/1.1 var(--display); letter-spacing: -0.03em; transition: color 0.2s; }
 .lab-card-body > p { font-size: 0.9688rem; line-height: 1.6; color: var(--ink-2); }
+.lab-card-body > p.lab-how { padding-left: 14px; border-left: 2px solid var(--line-strong); font-size: 0.9063rem; line-height: 1.55; color: var(--ink-3); }
+.lab-how-label { display: block; margin-bottom: 4px; font: 500 semi-condensed 0.6875rem/1.3 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-ink); }
 .lab-card .lab-links { margin-top: auto; padding-top: 6px; }
+.lab-try { padding: 0; border: 0; background: none; font-family: inherit; cursor: pointer; }
+.lab-try:hover span { transform: translateY(2px); }
+/* jump-in chips on the Arcade card: tags you can press */
+.lab-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 6px; list-style: none; }
+.lab-chips a {
+  display: inline-block;
+  padding: 8px 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  font: 500 semi-condensed 0.75rem/1 var(--mono);
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+.lab-chips a:hover, .lab-chips a:focus-visible { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
 
 /* stages: the top half of each lab card */
-.orb-slot, .arcade-stage, .dispatch-stage {
+.orb-slot, .arcade-stage, .dispatch-stage, .ask-stage {
   position: relative;
   display: block;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   border-bottom: 1px solid var(--line);
   background: #0d0918;
@@ -1209,7 +1239,7 @@ html.has-modal { overflow: hidden; }
   background: radial-gradient(circle at 50% 44%, rgba(255, 150, 70, 0.24), rgba(232, 70, 111, 0.07) 36%, transparent 60%);
 }
 .orb-core {
-  width: 40%;
+  height: 58%;
   aspect-ratio: 1;
   border-radius: 50%;
   background: radial-gradient(circle at 36% 30%, #fff6dc 0%, #ffd66e 15%, #ff8a3d 42%, #c2364f 72%, #3a0f24 100%);
@@ -1326,17 +1356,65 @@ html.has-modal { overflow: hidden; }
 .dispatch-kicker { font: 500 semi-condensed 0.6875rem var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-ink); }
 .dispatch-title { font: 750 semi-expanded 1.15rem/1.2 var(--display); letter-spacing: -0.02em; color: var(--ink); text-wrap: balance; }
 .dispatch-date { font: 500 semi-condensed 0.75rem var(--mono); color: var(--ink-3); }
-.dispatch-stage:hover .dispatch-title { color: var(--accent); }
+.lab-card:hover .dispatch-title { color: var(--accent); }
+
+/* the Answer Finder's stage: the bar in miniature, and the four real steps it takes */
+.ask-stage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  padding: 0 clamp(18px, 6%, 40px);
+  background: radial-gradient(90% 80% at 50% 110%, rgba(255, 92, 147, 0.12), transparent 60%), #0d0918;
+}
+.ask-mini {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 7px 7px 9px;
+  border: 1px solid rgba(245, 238, 242, 0.16);
+  border-radius: 999px;
+  background: rgba(245, 238, 242, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.ask-mini-orb {
+  flex: 0 0 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, #fff6dc 0%, #ffd66e 15%, #ff8a3d 42%, #c2364f 72%, #3a0f24 100%);
+  animation: breathe 5.5s ease-in-out infinite;
+}
+.ask-mini-q { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.875rem; color: var(--ink-2); }
+.ask-mini-send { flex: 0 0 26px; height: 26px; display: grid; place-items: center; border: 1.6px solid var(--ink-2); border-radius: 50%; }
+.ask-mini-send svg { width: 12px; height: 12px; fill: none; stroke: var(--accent-ink); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ask-steps { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; }
+@media (max-width: 480px) { .ask-steps { grid-template-columns: 1fr; gap: 6px; } }
+.ask-steps span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 500 semi-condensed 0.6875rem/1.3 var(--mono);
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  animation: ask-step 6s infinite;
+}
+.ask-steps span::before { content: ""; flex: 0 0 6px; height: 6px; border-radius: 50%; background: var(--accent-ink); }
+.ask-steps span:nth-child(2) { animation-delay: 0.6s; }
+.ask-steps span:nth-child(3) { animation-delay: 1.2s; }
+.ask-steps span:nth-child(4) { animation-delay: 1.8s; }
+@keyframes ask-step { 0%, 6% { color: var(--ink-3); } 12%, 70% { color: var(--ink); } 80%, 100% { color: var(--ink-3); } }
 
 @media (max-width: 1000px) {
   .lab-feature { grid-template-columns: 1fr; }
-  .lab-grid { grid-template-columns: 1fr 1fr; }
-  .lab-grid .lab-card:last-child { grid-column: 1 / -1; }
-  .lab-grid .lab-card:last-child .dispatch-stage { aspect-ratio: 16 / 7; }
 }
-@media (max-width: 640px) {
+@media (max-width: 720px) {
   .lab-grid { grid-template-columns: 1fr; }
-  .lab-grid .lab-card:last-child .dispatch-stage { aspect-ratio: 4 / 3; }
+  .orb-slot, .arcade-stage, .dispatch-stage, .ask-stage { aspect-ratio: 16 / 10; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lab-card { transition: none; }
+  .lab-card:hover { transform: none; }
+  .ask-steps span, .ask-mini-orb { animation: none; color: var(--ink-2); }
 }
 
 /* ---------- 5g. About ---------- */

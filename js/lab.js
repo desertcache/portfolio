@@ -58,7 +58,7 @@ export function initOrb() {
 export async function initLatestDispatch() {
   const title = document.getElementById('dispatch-title');
   const date = document.getElementById('dispatch-date');
-  const card = title?.closest('a');
+  const card = document.getElementById('dispatch-link');
   if (!title || !date || !card) return;
   try {
     const res = await fetch('blog/posts.json', { cache: 'no-cache' });

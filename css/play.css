@@ -270,16 +270,112 @@ canvas.pixel-art { image-rendering: pixelated; }
 }
 #hud-score #current-score { color: var(--lab-accent); }
 
-.touch-hint {
-  display: none;
-  padding: 12px;
-  text-align: center;
-  font: 500 semi-condensed 0.625rem/1.4 var(--mono);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-3);
+/* the game deck: a row of cartridges under the cabinet, one per game, so any game is
+   one click away mid-play. Dark in both themes, like the cabinet it hangs from. */
+.game-deck { margin-top: 10px; padding: 12px 14px 14px; box-shadow: none; }
+.deck-bar { margin-bottom: 10px; }
+.deck-keys { color: var(--lab-ink-3); }
+.deck-row { display: flex; align-items: stretch; gap: 8px; }
+.deck-carts {
+  display: flex;
+  flex: 1;
+  gap: 6px;
+  min-width: 0;
+  padding: 3px 2px 4px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
 }
-@media (max-width: 768px) { .touch-hint { display: block; } }
+.deck-carts::-webkit-scrollbar { display: none; }
+.cart {
+  position: relative;
+  display: flex;
+  flex: 1 0 74px;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  min-width: 74px;
+  padding: 12px 4px 9px;
+  border: 1px solid rgba(245, 238, 242, 0.12);
+  border-radius: 5px 5px 7px 7px;
+  background: linear-gradient(#1c1432, #120c21);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  color: var(--lab-ink-3);
+  font: 500 semi-condensed 0.5625rem/1.15 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  cursor: pointer;
+  scroll-snap-align: center;
+  transition: transform 0.15s var(--ease), border-color 0.15s, color 0.15s, background-color 0.15s;
+}
+/* the cartridge's label notch */
+.cart::before {
+  content: "";
+  position: absolute;
+  top: 4px; left: 50%;
+  width: 22px; height: 3px;
+  margin-left: -11px;
+  border-radius: 2px;
+  background: rgba(245, 238, 242, 0.08);
+}
+.cart-icon { width: 36px; height: 36px; image-rendering: pixelated; }
+.cart-num { color: #ff7a45; letter-spacing: 0.12em; }
+.cart.ai .cart-num { color: #ffc94d; }
+.cart-name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cart:hover { transform: translateY(-2px); border-color: rgba(245, 238, 242, 0.32); color: var(--lab-ink); }
+.cart:focus-visible { outline: 2px solid #ffc94d; outline-offset: 2px; }
+.cart[aria-current="true"] {
+  border-color: #ffc94d;
+  background: linear-gradient(#2c1f44, #181029);
+  box-shadow: inset 0 0 0 1px rgba(255, 201, 77, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  color: var(--lab-ink);
+}
+/* "now playing" lamp */
+.cart[aria-current="true"]::after {
+  content: "";
+  position: absolute;
+  top: 7px; right: 7px;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: #a9c46c;
+  box-shadow: 0 0 6px #a9c46c;
+  animation: live 1.6s infinite;
+}
+.deck-step {
+  flex: 0 0 32px;
+  border: 1px solid rgba(245, 238, 242, 0.12);
+  border-radius: 5px;
+  background: none;
+  color: var(--lab-ink-2);
+  font: 500 1.125rem/1 var(--mono);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background-color 0.15s;
+}
+.deck-step:hover, .deck-step:focus-visible { border-color: rgba(245, 238, 242, 0.32); color: var(--lab-ink); background: rgba(245, 238, 242, 0.04); }
+@media (max-width: 600px) {
+  /* edge to edge under the cabinet; swipe the row instead of stepping */
+  .game-deck { width: 100vw; margin-top: 0; margin-left: calc(50% - 50vw); border-radius: 0; border-left: 0; border-right: 0; padding: 10px 8px 12px; }
+  .deck-step, .deck-keys { display: none; }
+  .cart { flex: 0 0 78px; min-width: 78px; letter-spacing: 0.04em; }
+  /* the menu needs the tall cabinet; a landscape game doesn't, so the deck stays close */
+  .arcade-cabinet.is-playing { min-height: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cart { transition: none; }
+  .cart:hover { transform: none; }
+  .cart[aria-current="true"]::after { animation: none; }
+}
+
+/* "how it works": the play-notes pattern, swapped with the game */
+.how .label { display: flex; flex-direction: column; gap: 6px; }
+.how-name { color: var(--accent-ink); }
+.how-title { margin-bottom: 10px; font: 800 semi-expanded clamp(1.3rem, 2.2vw, 1.65rem)/1.15 var(--display); letter-spacing: -0.03em; color: var(--ink); }
+.how-rows { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 22px; max-width: 68ch; margin-top: 4px; padding-top: 14px; border-top: 1px solid var(--line-2); }
+.how-rows dt { padding-top: 2px; font: 500 semi-condensed 0.6875rem/1.4 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+.how-rows dd { font-size: 0.9688rem; line-height: 1.5; color: var(--ink-2); }
+.how .how-foot { margin-top: 16px; font: 500 semi-condensed 0.6875rem/1.4 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+@media (max-width: 520px) { .how-rows { grid-template-columns: 1fr; gap: 2px; } .how-rows dd { margin-bottom: 8px; } }
 
 /* ---------- The Starship ---------- */
 .ship-dock {

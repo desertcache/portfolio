@@ -393,6 +393,20 @@ The document header pins under the fixed nav on wide screens only
 keeps `pb-28` so the footer's skyline, which rises into the space above the
 footer, doesn't cover it.
 
+## The homepage Lab grid (2026-10-05)
+
+Four cards in a 2x2 grid (one column under 720px): Samantha UI, The Arcade,
+Answer Finder, Hill Money Watch. Each card is one big link: the title's
+`.lab-card-link` stretches over the card with `::after` (z-index 1), and the
+things that must stay their own (`.orb-wake`, `.lab-chips`, `.lab-links`) sit
+at z-index 2. Keep stages as plain `aria-hidden` divs, never links, or the
+links nest. Every card carries a `.lab-how` "How it works" line. The Arcade
+card's chips deep-link into games (`arcade.html?game=<id>`); the Answer Finder
+card's `[data-ask-focus]` button is wired in `js/ask.js` (no new export, so a
+stale cached module can't break the graph); `initLatestDispatch` fills
+`#dispatch-link` with the newest post. Browser tests that click a card's text
+need `force: true`: the link layer is on top by design.
+
 ## The Lab's rooms: arcade.html and starship.html (2026-09-27)
 
 Both wear the site's chrome: the real nav (Lab marked current), the
@@ -428,6 +442,17 @@ along its floor. `js/page.js` is their script entry (theme toggle, nav).
   gutter, cabinet padding and bezel used to leave a 288px canvas at 390px.
 - `audio.noise()` plays a slice of one shared 2 s buffer; don't go back to a
   fresh buffer per call (1.5 ms spikes in Swarm's explosions).
+- **Game deck and "How it works" (2026-10-05).** Under the cabinet, `#game-deck`
+  holds one cartridge per entry in `GAMES` (built in `main.js`; labels in
+  `CARTS`, pixel icons in `arcade/icons.js` as 12x12 strings). A cartridge
+  click, the arrows, `[` / `]`, and the Menu button all switch without leaving
+  the page; `sceneChanged()` lights the cartridge, swaps the explainer, and
+  rewrites `?game=` with `replaceState`. Buttons blur after a click, or the
+  next Space (fire, flap, drop) would click the cartridge and restart the game.
+  Explainer copy lives in `arcade/explainers.js`, one entry per id plus MENU;
+  every number in it was read from the game's code or test runs, so update it
+  with the code. On phones the cabinet drops its menu height while a game runs
+  (`.is-playing`), so the deck sits right under the screen.
 - The starship is a separate app (desertcache/starship), framed only when
   you board; this page is the dock. Touch-only or narrow screens get the
   poster and a note.

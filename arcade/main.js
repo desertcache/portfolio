@@ -20,8 +20,18 @@ import crossing from './games/crossing.js';
 import swarm from './games/swarm.js';
 import quadra from './games/quadra.js';
 import { createAttract } from './games/attract.js';
+import { EXPLAINERS } from './explainers.js';
+import { iconCanvas } from './icons.js';
 
 const GAMES = [pacman, pacmanAi, snake, flappy, breakout, asteroids, four, evolve, crossing, swarm, quadra];
+
+// The deck's cartridges, in GAMES order: menu number and a label short enough for a tile.
+const CARTS = {
+  PACMAN: ['01', 'Pac-Man'], PACMANAI: ['AI', 'AI Pac'], SNAKE: ['02', 'Snake'], FLAPPY: ['03', 'Flappy'],
+  BREAKOUT: ['04', 'Breakout'], ASTEROIDS: ['05', 'Asteroids'], FOUR: ['06', 'Four'], EVOLVE: ['07', 'Evolve'],
+  CROSSING: ['08', 'Roadrunner'], SWARM: ['09', 'Swarm'], QUADRA: ['10', 'QUADRA'],
+};
+const AI_TITLES = new Set(['PACMANAI', 'FOUR', 'EVOLVE']);
 
 const params = new URLSearchParams(location.search);
 const DEBUG = params.get('debug') === '1';
@@ -111,9 +121,94 @@ function renderPBs() {
   });
 }
 
+// --- The deck and the explainer: both follow whatever is on the screen ---
+const deckCarts = document.getElementById('deck-carts');
+/** @type {Map<string, HTMLButtonElement>} */
+const carts = new Map();
+for (const entry of GAMES) {
+  const [num, label] = CARTS[entry.id] || ['', entry.title];
+  const cart = document.createElement('button');
+  cart.type = 'button';
+  cart.className = AI_TITLES.has(entry.id) ? 'cart ai' : 'cart';
+  cart.title = EXPLAINERS[entry.id]?.name || entry.title;
+  cart.setAttribute('aria-label', cart.title);
+  const numEl = document.createElement('span');
+  numEl.className = 'cart-num';
+  numEl.textContent = num;
+  const nameEl = document.createElement('span');
+  nameEl.className = 'cart-name';
+  nameEl.textContent = label;
+  cart.append(iconCanvas(entry.id), numEl, nameEl);
+  // Hand the keyboard straight back to the game: a focused button would turn the
+  // next Space (fire, flap, drop) into a click that restarts the game.
+  cart.addEventListener('click', () => { cart.blur(); startGame(entry); });
+  deckCarts?.append(cart);
+  carts.set(entry.id, cart);
+}
+
+/** @param {number} step */
+function stepGame(step) {
+  const i = activeGame ? GAMES.indexOf(activeGame) : (step > 0 ? -1 : 0);
+  startGame(GAMES[(i + step + GAMES.length) % GAMES.length]);
+}
+/** @param {string} id @param {() => void} fn */
+function deckButton(id, fn) {
+  const b = document.getElementById(id);
+  if (b) b.addEventListener('click', () => { b.blur(); fn(); });
+}
+deckButton('deck-prev', () => stepGame(-1));
+deckButton('deck-next', () => stepGame(1));
+deckButton('deck-menu', () => showMenu());
+// [ and ] switch games from anywhere on the page, unless you're typing somewhere.
+document.addEventListener('keydown', (e) => {
+  if ((e.key !== '[' && e.key !== ']') || e.metaKey || e.ctrlKey || e.altKey) return;
+  const t = e.target;
+  if (t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+  e.preventDefault();
+  stepGame(e.key === ']' ? 1 : -1);
+});
+
+const howName = document.getElementById('how-name');
+const howTitle = document.getElementById('how-title');
+const howBody = document.getElementById('how-body');
+const howRows = document.getElementById('how-rows');
+
+/** Light the active cartridge, swap the explainer, and keep the address bar shareable.
+ * @param {string | null} id */
+function sceneChanged(id) {
+  cabinet.classList.toggle('is-playing', id !== null);
+  for (const [cid, cart] of carts) cart.setAttribute('aria-current', String(cid === id));
+  const lit = id ? carts.get(id) : null;
+  if (lit && deckCarts) {
+    // Scroll the row only (scrollIntoView would also scroll the page on phones).
+    const left = lit.offsetLeft - deckCarts.offsetLeft - (deckCarts.clientWidth - lit.offsetWidth) / 2;
+    deckCarts.scrollTo({ left, behavior: REDUCED_MOTION ? 'auto' : 'smooth' });
+  }
+
+  const ex = EXPLAINERS[id || 'MENU'] || EXPLAINERS.MENU;
+  if (howName) howName.textContent = ex.name;
+  if (howTitle) howTitle.textContent = ex.title;
+  if (howBody) howBody.textContent = ex.body;
+  if (howRows) {
+    howRows.replaceChildren(...ex.rows.flatMap(([k, v]) => {
+      const dt = document.createElement('dt');
+      dt.textContent = k;
+      const dd = document.createElement('dd');
+      dd.textContent = v;
+      return [dt, dd];
+    }));
+  }
+
+  const url = new URL(location.href);
+  if (id) url.searchParams.set('game', id.toLowerCase());
+  else url.searchParams.delete('game');
+  if (url.href !== location.href) history.replaceState(history.state, '', url);
+}
+
 function showMenu() {
   drainToken++;
   stopScene();
+  sceneChanged(null);
   menuScreen.style.display = 'block';
   gameOverScreen.style.display = 'none';
   hudScore.style.display = 'none';
@@ -146,6 +241,7 @@ function startGame(entry) {
   fx.clear();
 
   activeGame = entry;
+  sceneChanged(entry.id);
   currentScore = 0;
   menuScreen.style.display = 'none';
   gameOverScreen.style.display = 'none';
