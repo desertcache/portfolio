@@ -461,6 +461,42 @@ along its floor. `js/page.js` is their script entry (theme toggle, nav).
   every number in it was read from the game's code or test runs, so update it
   with the code. On phones the cabinet drops its menu height while a game runs
   (`.is-playing`), so the deck sits right under the screen.
+- **Dust Devil Pinball (2026-10-05).** `games/pinball.js` is the cabinet side
+  (input, one tick, sound cues); the game is `games/pinball/`: `physics.js` and
+  `rules.js` are pure (Node tests import them), `table.js` holds all geometry as
+  data for the physics and `art.js` (the still table is painted once
+  offscreen), plus `strip.js` (dot-matrix strip), `sfx.js`, `gfx.js`. 12
+  substeps per tick; flippers bounce the ball off their moving surface. Debug:
+  `__arcade.gameState` (ball, flippers, score, ballNumber, ballsLeft = balls
+  still to come, lanes, targets, tiltWarnings, ballSave in ticks, `.game` =
+  rules) and `__arcade.actions` (placeBall, flip, launch, plunge, drain,
+  nudge, hitTarget, lane). Tests: `tests/pinball.test.mjs` (38, about 2.6 s),
+  including one that pins every number the explainer quotes. Fragile: the
+  table is tuned as a whole (sand strip `FELT` + open rail foot = orbit, right
+  ledge + left flap = outlane drains, tall left lane pin = plunges); tests pin
+  those shots, so change geometry only with them running.
+- **Mesa Lander and Watch it learn (2026-10-05).** `games/mesa.js` is the
+  cartridge: MESA is the player's game (`mesa/play.js`); `mesa-ai.js` starts it
+  with `env.learn = true` for the agent view (`mesa/watch.js`). Physics, levels,
+  the agent's fixed world (`env.js`: one mesa, random starts, free fuel), the
+  hand-written MLP, Adam and PPO (`net.js`, `learn.js`) and the shown flight
+  (`flight.js`) are DOM-free, so Node tests import them. The learner trains
+  inside `tick()` on a time budget (6 ms at 1x up to 12 ms at 4x, capped per
+  tick and trimmed if the page slips) and stops at 1.5M decisions; one seeded
+  RNG feeds every draw, so a seed reproduces training exactly on one JS engine
+  (Node and Chrome differ in the last bits of tanh and exp). The lander on
+  screen is a frozen copy of the newest brain sampling like the learner: no
+  pretrained weights, no hand-written pilot (a scripted pilot exists only
+  inside the tests). Debug: `?debug=1&seed=N`, `window.__arcade.gameState`, and
+  actions (`setState`, `setSpeed`, `newBrain(seed)`, `runSteps(n)`, `trainOn`,
+  `hold({left,main,right})`, `sim(n)`, `setLevel`, `end`). `npm test` covers it
+  (`tests/mesa.test.mjs`, about 3 s); the learning gate,
+  `node scripts/mesa-train-check.mjs` (5 seeds x 60 s, 4 must reach 70% over
+  their last 50 practice attempts), is not in `npm test`. Fragile: the
+  defaults in `learn.js`, `env.js` and `physics.js` ARE the gate's
+  configuration; change one and re-run the gate, then re-check the on-screen
+  labels and the explainer numbers. Known: the side panels' small labels are
+  about 6 CSS px on a phone (key numbers are larger), like EVOLVE's brain panel.
 - The starship is a separate app (desertcache/starship), framed only when
   you board; this page is the dock. Touch-only or narrow screens get the
   poster and a note.

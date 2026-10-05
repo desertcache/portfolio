@@ -127,4 +127,34 @@ export const EXPLAINERS = {
       ['Four lines', '800 points times the level, and 1.5 times that back to back'],
     ],
   },
+  PINBALL: {
+    name: 'Dust Devil Pinball',
+    title: 'Tiny steps, honest walls',
+    body: 'Every frame is cut into twelve tiny physics steps, 720 a second, so a fast ball cannot skip a wall. At top speed (1,800 pixels a second) the ball would cover 30 pixels in a single frame, but the rails are only 6 pixels thick, so one big step could drop it on the far side of a wall and push it out the wrong way, which is called tunneling. Twelve steps keep each move to 2.5 pixels, a quarter of the ball\'s own radius, so every wall gets to push back. A flipper is a moving surface: the game works out how fast it is moving at the exact spot the ball touches (its swing speed times the distance from the pivot) and bounces the ball off that, so a hit near the tip leaves much faster than one near the pivot. Pop bumpers and slingshots simply kick the ball away at a fixed 560 pixels a second, and everything else is gravity on a tilted table.',
+    rows: [
+      ['Keys', 'Z or left arrow flips left, / or right arrow flips right, hold Space and let go to launch, up arrow nudges'],
+      ['Touch', 'Hold the left or right half of the screen to flip; while the ball waits, hold anywhere to pull the plunger and let go to launch'],
+      ['Flip speed', 'A ball at rest leaves a flipper at about 650 pixels a second near the pivot and 1,300 at the tip'],
+    ],
+  },
+  MESA: {
+    name: 'Mesa Lander',
+    title: 'Point first, then push',
+    body: 'Gravity adds 48 pixels per second of downward speed every second, and the engine pushes along whichever way the lander points, about two and a half times harder than gravity. That is the whole puzzle: to move sideways you must first tilt with the side jets, which also nudge you a little, and only then burn. The jets spin you faster the longer you hold them and the spin fades slowly, so a quick tap overshoots. A landing counts only with both feet on the pad and a gentle touchdown. Each level narrows the pad, from 120 pixels down to 54, and from level 3 gusts push the lander sideways.',
+    rows: [
+      ['Keys', 'Left and right turn, Up or Space fires the engine, P pauses'],
+      ['Touch', 'Hold the left or right edge to turn, the lower middle to thrust'],
+      ['Safe touchdown', 'Under 40 px/s down, 24 across and 12.6 degrees of tilt'],
+    ],
+  },
+  MESAAI: {
+    name: 'Watch it learn',
+    title: 'A lander that teaches itself',
+    body: 'Nobody tells this lander how to fly: it starts as a small neural network that picks idle, left, main or right at random, 20 times a second, and it crashes. Each attempt earns a score (a landing pays 30, a crash costs 3 to 10, and getting closer, slower and more upright pays a little), and a second network learns to predict that score from wherever the lander is, which is the needle that sinks before a crash. Every 2,048 decisions the first network is nudged toward the choices that beat the prediction, a method called PPO, one of the reinforcement learning methods that has been used to fine-tune chat models from human feedback. The practice happens out of sight, in the world you see (one mesa, a random start each time, free fuel that costs points), and the lander on screen is a frozen copy of the newest brain rolling the same dice, so the landings you watch are the honest rate.',
+    rows: [
+      ['Keys', '1 to 4 set the speed, R starts a new brain, Esc ends'],
+      ['Touch', 'Use the buttons on screen'],
+      ['Learning time', 'About 30 s to land 70% of practice attempts at 1x (23 to 40 s over five seeds, measured in desktop Chrome)'],
+    ],
+  },
 };

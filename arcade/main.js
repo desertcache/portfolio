@@ -121,7 +121,7 @@ function renderPBs() {
   const pbs = getPBs();
   document.querySelectorAll('[data-game]').forEach((el) => {
     const value = pbs[el.dataset.game];
-    el.textContent = value != null ? `PB · ${value}` : 'PB · —';
+    el.textContent = value != null ? `PB · ${value}` : 'PB · –';
   });
 }
 
