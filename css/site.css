@@ -1166,6 +1166,62 @@ html.has-modal { overflow: hidden; }
 .lab-play svg { width: 16px; height: 16px; fill: currentColor; }
 .lab-poster:hover .lab-play { background: var(--accent); border-color: var(--accent); color: var(--on-accent); transform: translate(-50%, -50%) scale(1.04); }
 
+/* "Ask about my work": the chat (desertcache/ask) by iframe, loaded like the orb (js/ask.js) */
+.lab-ask { margin-top: clamp(40px, 6vw, 72px); }
+.ask-slot {
+  position: relative;
+  height: clamp(480px, 64vh, 580px);
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: #150f24;
+  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.8);
+}
+.ask-slot iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; opacity: 0; transition: opacity 0.6s var(--ease); }
+.ask-slot.is-live iframe { opacity: 1; }
+.ask-slot.is-live .ask-poster { visibility: hidden; }
+.ask-poster { display: flex; flex-direction: column; gap: 18px; height: 100%; padding-bottom: 20px; color: var(--ink); }
+.ask-poster-head { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--line); }
+.ask-poster-head b { display: block; font: 800 semi-expanded 1.05rem/1.15 var(--display); letter-spacing: -0.02em; }
+.ask-poster-head small { display: block; margin-top: 3px; font: 500 semi-condensed 0.625rem/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+.ask-poster-head .ask-orb { width: 34px; height: 34px; }
+.ask-orb {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.55), transparent 32%),
+    radial-gradient(circle at 50% 60%, #ff7a45, #ff5c93 62%, #6b2d7a 100%);
+  box-shadow: 0 0 18px rgba(255, 122, 69, 0.28);
+}
+.ask-poster-msg { display: flex; gap: 10px; padding: 0 20px; }
+.ask-poster-msg p { max-width: 520px; padding-top: 3px; font-size: 0.9688rem; line-height: 1.62; }
+.ask-poster-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 20px 0 58px; }
+.ask-poster-chips span { padding: 7px 12px; border: 1px solid var(--line-strong); border-radius: 999px; font-size: 0.8125rem; color: var(--ink-2); }
+.ask-wake {
+  position: absolute;
+  left: 50%; bottom: 24px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transform: translateX(-50%);
+  transition: background-color 0.2s;
+}
+.ask-wake span { font: 500 semi-condensed 0.6875rem var(--mono); letter-spacing: 0.06em; opacity: 0.75; }
+.ask-wake { white-space: nowrap; }
+.ask-wake:hover { background: var(--accent-ink); }
+.ask-slot.is-live .ask-wake, .ask-slot.is-loading .ask-wake { display: none; }
+
 .lab-copy { display: flex; flex-direction: column; gap: 14px; }
 .lab-title { font: 800 semi-expanded clamp(1.7rem, 2.8vw, 2.4rem)/1.02 var(--display); letter-spacing: -0.04em; }
 .lab-copy > p { color: var(--ink-2); line-height: 1.65; }
@@ -1956,7 +2012,7 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
 }
 
 @media print {
-  .nav, .topo, .hero-fade, .lab-grid, .toast, .footer-hint, .orb-slot, .footer::before, .thermal, .trail, .flock { display: none !important; }
+  .nav, .topo, .hero-fade, .lab-grid, .lab-ask, .toast, .footer-hint, .orb-slot, .footer::before, .thermal, .trail, .flock { display: none !important; }
   .js .reveal { opacity: 1 !important; transform: none !important; }
   .hero { min-height: 0; padding-top: 24px; }
   .section, .contact { padding-block: 32px; }
