@@ -31,7 +31,7 @@ const WORD_MS = 22;
 // visitor is reading.
 /** @type {Record<string, string[]>} */
 const SECTION_CHIPS = {
-  top: ['who-is-sam', 'copilot', 'can-he-code'],
+  top: ['start-here', 'who-is-sam', 'can-he-code'],
   featured: ['copilot', 'rollout', 'rag'],
   work: ['api-migration', 'chatbot', 'measurement'],
   build: ['claude-code', 'power-user', 'mcp'],

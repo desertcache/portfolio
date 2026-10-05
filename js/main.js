@@ -11,6 +11,7 @@ import { initCaseStudies } from './case-studies.js';
 import { initOrb, initLatestDispatch } from './lab.js';
 import { initAsk } from './ask.js';
 import { initNav, initScrollSpy, initCopyEmail, initWarp, greet } from './chrome.js';
+import { initSectionMenu } from './section-menu.js';
 import { initClock } from './clock.js';
 import { initTrails } from './trails.js';
 
@@ -21,6 +22,7 @@ document.documentElement.classList.add('js-ready');
 const features = [
   ['theme', initTheme],
   ['nav', initNav],
+  ['section menu', initSectionMenu],
   ['reveal', initReveal],
   ['count-up', initCountUp],
   ['case studies', initCaseStudies],

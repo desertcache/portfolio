@@ -109,3 +109,33 @@ test('each work card opens its own case study, and the case studies link in one 
     assert.match(html, new RegExp(`<h3 class="cs-title" id="cs-${id}-title">`), `cs-${id} title id`);
   });
 });
+
+test('the homepage and the Answer Finder write-up quote the same answer and phrasing counts', () => {
+  // These go stale whenever desertcache/ask's bank grows; the live box reports its own count, so
+  // update both pages together (data/bank.json there has the numbers).
+  const texts = [readerText(HOME), readerText(read('work/answer-finder.html'))].map((t) => t.replace(/\s+/g, ' '));
+  const answers = new Set(texts.flatMap((t) => [...t.matchAll(/\b(\d+) answers\b/g)].map((m) => m[1])));
+  const phrasings = new Set(texts.flatMap((t) => [...t.matchAll(/\b(\d+) (?:sample )?phrasings\b|phrasings, (\d+) in all/g)].map((m) => m[1] ?? m[2])));
+  assert.equal(answers.size, 1, `answer counts disagree: ${[...answers].join(', ')}`);
+  assert.equal(phrasings.size, 1, `phrasing counts disagree: ${[...phrasings].join(', ')}`);
+});
+
+test('"See the work" and the nav\'s Work link start at the featured program, not past it', () => {
+  assert.match(HOME, /<a class="btn btn-solid" href="#featured">See the work/, 'the hero button');
+  assert.match(HOME, /<nav class="nav-links"[^>]*>\s*<a href="#featured">Work<\/a>/, 'the nav link');
+  assert.ok(HOME.indexOf('id="featured"') < HOME.indexOf('id="work"'), 'the featured program comes first');
+});
+
+test('the phone section menu links every section in page order, numbered like the page', () => {
+  const menu = HOME.match(/<nav class="nav-menu"[\s\S]*?<\/nav>/)?.[0] ?? '';
+  const items = [...menu.matchAll(/<a href="#([a-z-]+)"><span class="nav-menu-num"[^>]*>(\d*)<\/span>([^<]+)<\/a>/g)]
+    .map(([, id, num, label]) => ({ id, num, label }));
+  const sections = [...HOME.matchAll(/<section class="[^"]*" id="([a-z-]+)"/g)].map((m) => m[1]).filter((id) => id !== 'top');
+  assert.deepEqual(items.map((i) => i.id), sections, 'one link per section after the hero, in page order');
+  for (const { id, num, label } of items) {
+    const html = HOME.match(new RegExp(`<section[^>]*id="${id}"[\\s\\S]*?</section>`))?.[0] ?? '';
+    const eyebrow = html.match(/<p class="eyebrow"><span class="eyebrow-num">(\d+)<\/span> ([^<]+)<\/p>/);
+    if (eyebrow) assert.deepEqual([num, label], [eyebrow[1], eyebrow[2]], `#${id} reads like its section's eyebrow`);
+    else assert.equal(num, '', `#${id} has no section number, so its menu item shows none`);
+  }
+});
