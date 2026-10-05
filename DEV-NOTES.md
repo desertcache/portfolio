@@ -482,8 +482,9 @@ row (PR #12), which is gone.
   check against the threshold. Its summary reports the real compute time. Keep it that way: the bar
   promises nothing is made up.
 - **Answers have a lead, highlights and curated follow-ups** (bank v2: `answer`, `points`, `next`).
-  Chips use `next`, falling back to the next-closest matches. The send button is a painted Sedona
-  red-rock pebble in both themes (section 7).
+  Chips use `next`, falling back to the next-closest matches. The send button is drawn like the page's
+  illustrations (paper disc, 1.6px ink line, red-rock arrow; red-rock fill on hover), and it draws
+  itself in when the bar arrives (section 7). Sam rejected a glossy painted version as campy.
 - **`js/ask.js` keeps its name and its `initAsk` export on purpose.** Pages caches for 10 minutes;
   a cached `main.js` importing a file that no longer exists would take down every module.
 - The base reset caps iframes at `max-width: 100%`; the orb's iframe sets `max-width: none`, or it
