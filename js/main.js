@@ -9,6 +9,7 @@ import { initReveal, initCountUp } from './motion.js';
 import { initTopo } from './topo.js';
 import { initCaseStudies } from './case-studies.js';
 import { initOrb, initLatestDispatch } from './lab.js';
+import { initAsk } from './ask.js';
 import { initNav, initScrollSpy, initCopyEmail, initWarp, greet } from './chrome.js';
 import { initClock } from './clock.js';
 import { initTrails } from './trails.js';
@@ -32,6 +33,7 @@ const features = [
   ['phoenix clock', initClock],
   ['wildlife', initTrails],
   ['orb', initOrb],
+  ['ask', initAsk],
   ['latest dispatch', initLatestDispatch],
   ['warp', initWarp],
   ['greeting', greet],
