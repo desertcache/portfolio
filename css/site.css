@@ -1166,62 +1166,6 @@ html.has-modal { overflow: hidden; }
 .lab-play svg { width: 16px; height: 16px; fill: currentColor; }
 .lab-poster:hover .lab-play { background: var(--accent); border-color: var(--accent); color: var(--on-accent); transform: translate(-50%, -50%) scale(1.04); }
 
-/* "Ask about my work": the chat (desertcache/ask) by iframe, loaded like the orb (js/ask.js) */
-.lab-ask { margin-top: clamp(40px, 6vw, 72px); }
-.ask-slot {
-  position: relative;
-  height: clamp(480px, 64vh, 580px);
-  overflow: hidden;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius);
-  background: #150f24;
-  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.8);
-}
-.ask-slot iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; opacity: 0; transition: opacity 0.6s var(--ease); }
-.ask-slot.is-live iframe { opacity: 1; }
-.ask-slot.is-live .ask-poster { visibility: hidden; }
-.ask-poster { display: flex; flex-direction: column; gap: 18px; height: 100%; padding-bottom: 20px; color: var(--ink); }
-.ask-poster-head { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--line); }
-.ask-poster-head b { display: block; font: 800 semi-expanded 1.05rem/1.15 var(--display); letter-spacing: -0.02em; }
-.ask-poster-head small { display: block; margin-top: 3px; font: 500 semi-condensed 0.625rem/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
-.ask-poster-head .ask-orb { width: 34px; height: 34px; }
-.ask-orb {
-  flex: none;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.55), transparent 32%),
-    radial-gradient(circle at 50% 60%, #ff7a45, #ff5c93 62%, #6b2d7a 100%);
-  box-shadow: 0 0 18px rgba(255, 122, 69, 0.28);
-}
-.ask-poster-msg { display: flex; gap: 10px; padding: 0 20px; }
-.ask-poster-msg p { max-width: 520px; padding-top: 3px; font-size: 0.9688rem; line-height: 1.62; }
-.ask-poster-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 20px 0 58px; }
-.ask-poster-chips span { padding: 7px 12px; border: 1px solid var(--line-strong); border-radius: 999px; font-size: 0.8125rem; color: var(--ink-2); }
-.ask-wake {
-  position: absolute;
-  left: 50%; bottom: 24px;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 20px;
-  border: 0;
-  border-radius: 999px;
-  background: var(--accent);
-  color: var(--on-accent);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  cursor: pointer;
-  transform: translateX(-50%);
-  transition: background-color 0.2s;
-}
-.ask-wake span { font: 500 semi-condensed 0.6875rem var(--mono); letter-spacing: 0.06em; opacity: 0.75; }
-.ask-wake { white-space: nowrap; }
-.ask-wake:hover { background: var(--accent-ink); }
-.ask-slot.is-live .ask-wake, .ask-slot.is-loading .ask-wake { display: none; }
-
 .lab-copy { display: flex; flex-direction: column; gap: 14px; }
 .lab-title { font: 800 semi-expanded clamp(1.7rem, 2.8vw, 2.4rem)/1.02 var(--display); letter-spacing: -0.04em; }
 .lab-copy > p { color: var(--ink-2); line-height: 1.65; }
@@ -2012,10 +1956,320 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
 }
 
 @media print {
-  .nav, .topo, .hero-fade, .lab-grid, .lab-ask, .toast, .footer-hint, .orb-slot, .footer::before, .thermal, .trail, .flock { display: none !important; }
+  .nav, .topo, .hero-fade, .lab-grid, .dock, .toast, .footer-hint, .orb-slot, .footer::before, .thermal, .trail, .flock { display: none !important; }
   .js .reveal { opacity: 1 !important; transform: none !important; }
   .hero { min-height: 0; padding-top: 24px; }
   .section, .contact { padding-block: 32px; }
   .lab { --bg: #fff; --ink: #000; --ink-2: #222; --ink-3: #444; --surface: #fff; }
   .mig-viz, .about-side, .build-side { position: static; }
+}
+
+/* ---------- 7. Ask about my work: the glass bar (js/ask.js) ----------
+   Fixed to the bottom of the screen. Liquid glass: a translucent tint over a
+   heavy blur and saturation of whatever scrolls behind it, a specular sheen
+   across the top, and a rim that catches light. The answers open upward inside
+   the same pane. Light glass over the day sections; night glass in dark mode
+   and while the Lab (always a night room) is behind it. */
+.dock {
+  --g-tint-1: rgba(255, 255, 255, 0.62);
+  --g-tint-2: rgba(255, 255, 255, 0.30);
+  --g-rim: rgba(255, 255, 255, 0.75);
+  --g-rim-soft: rgba(255, 255, 255, 0.18);
+  --g-ink: var(--ink);
+  --g-ink-2: var(--ink-2);
+  --g-ink-3: var(--ink-3);
+  --g-line: rgba(28, 22, 36, 0.1);
+  --g-field: rgba(255, 255, 255, 0.55);
+  --g-chip: rgba(255, 255, 255, 0.45);
+  --g-accent: var(--accent);
+  --g-accent-ink: var(--accent-ink);
+  --g-on-accent: #fff;
+  --g-shadow: 0 18px 50px -14px rgba(28, 22, 36, 0.42), 0 3px 10px rgba(28, 22, 36, 0.10);
+  position: fixed;
+  left: 50%;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 250;
+  width: min(680px, calc(100vw - 24px));
+  border-radius: 26px;
+  color: var(--g-ink);
+  background: linear-gradient(140deg, var(--g-tint-1), var(--g-tint-2));
+  -webkit-backdrop-filter: blur(22px) saturate(1.9) brightness(1.04);
+  backdrop-filter: blur(22px) saturate(1.9) brightness(1.04);
+  box-shadow:
+    inset 0 1px 0 var(--g-rim),
+    inset 0 -1px 1px var(--g-rim-soft),
+    inset 0 0 0 1px var(--g-rim-soft),
+    var(--g-shadow);
+  opacity: 0;
+  transform: translate(-50%, 18px);
+  transition: opacity 0.5s var(--ease-out), transform 0.6s var(--ease-out);
+}
+.dock.is-in { opacity: 1; transform: translate(-50%, 0); }
+.dock[hidden] { display: none; }
+/* the sheen: light pooling across the top-left of the pane */
+.dock::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(120% 70% at 18% -10%, rgba(255, 255, 255, 0.55), transparent 55%);
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+/* the rim: a thin edge, brightest where the light hits */
+.dock::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.05) 38%, rgba(255, 255, 255, 0.05) 70%, rgba(255, 255, 255, 0.5));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+:root[data-theme="dark"] .dock, .dock.on-night {
+  --g-tint-1: rgba(48, 36, 82, 0.62);
+  --g-tint-2: rgba(21, 15, 36, 0.42);
+  --g-rim: rgba(255, 255, 255, 0.22);
+  --g-rim-soft: rgba(255, 255, 255, 0.07);
+  --g-ink: #f5eef2;
+  --g-ink-2: #cdc1d3;
+  --g-ink-3: #a093ab;
+  --g-line: rgba(245, 238, 242, 0.1);
+  --g-field: rgba(255, 255, 255, 0.07);
+  --g-chip: rgba(255, 255, 255, 0.06);
+  --g-accent: #ff7a45;
+  --g-accent-ink: #ff9464;
+  --g-on-accent: #150f24;
+  --g-shadow: 0 18px 50px -14px rgba(0, 0, 0, 0.75), 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+:root[data-theme="dark"] .dock::after, .dock.on-night::after {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.03) 38%, rgba(255, 255, 255, 0.03) 70%, rgba(255, 255, 255, 0.2));
+}
+:root[data-theme="dark"] .dock::before, .dock.on-night::before { opacity: 0.35; }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .dock { --g-tint-1: rgba(251, 247, 244, 0.97); --g-tint-2: rgba(243, 235, 230, 0.97); }
+  :root[data-theme="dark"] .dock, .dock.on-night { --g-tint-1: rgba(35, 26, 58, 0.97); --g-tint-2: rgba(21, 15, 36, 0.97); }
+}
+.has-modal .dock { visibility: hidden; }
+.has-dock .footer { padding-bottom: calc(40px + 92px); }
+.has-dock .toast { bottom: calc(max(16px, env(safe-area-inset-bottom)) + 88px); }
+
+/* the bar */
+.dock-bar { position: relative; z-index: 1; display: flex; align-items: center; gap: 10px; padding: 8px; }
+.dock-orb {
+  position: relative;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #0a0908;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 0 0 3px var(--g-rim-soft), 0 4px 14px -4px rgba(232, 168, 124, 0.55);
+  transition: box-shadow 0.5s;
+}
+.dock[data-orb="thinking"] .dock-orb { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), 0 0 0 3px var(--g-rim-soft), 0 4px 18px -2px rgba(139, 92, 246, 0.7); }
+.dock[data-orb="speaking"] .dock-orb { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), 0 0 0 3px var(--g-rim-soft), 0 4px 18px -2px rgba(245, 158, 11, 0.65); }
+/* the real orb renders its sphere at ~65% of a square view; overscanned so it fills ~80% of the lens
+   (max-width: none undoes the base reset, which would cap the width and push the orb off-centre) */
+.dock-orb iframe { position: absolute; left: -12%; top: -12%; width: 124%; height: 124%; max-width: none; border: 0; pointer-events: none; opacity: 0; transition: opacity 0.9s var(--ease); }
+.dock-orb.is-live iframe { opacity: 1; }
+/* the still orb: the LISTENING colours, until the real one wakes (and for reduced motion) */
+.dock-orb-still {
+  position: absolute;
+  inset: 22%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 34%, #fbd8bd, #e8a87c 55%, #b9734d);
+  box-shadow: 0 0 12px rgba(232, 168, 124, 0.6);
+  transition: opacity 0.9s;
+}
+.dock-orb.is-live .dock-orb-still { opacity: 0; }
+.dock[data-orb="thinking"] .dock-orb-still { background: radial-gradient(circle at 38% 34%, #c8f3fb, #8b5cf6 55%, #06b6d4); }
+.dock-input {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--g-field);
+  color: var(--g-ink);
+  font: inherit;
+  font-size: 1rem; /* 16px keeps iOS Safari from zooming in on focus */
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+.dock-input::placeholder { color: var(--g-ink-3); }
+.dock-input:focus { border-color: var(--g-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--g-accent) 18%, transparent); outline: none; }
+.dock-kbd {
+  position: absolute;
+  right: 66px;
+  padding: 1px 7px;
+  border: 1px solid var(--g-line);
+  border-radius: 5px;
+  font: 500 0.6875rem/1.5 var(--mono);
+  color: var(--g-ink-3);
+  pointer-events: none;
+}
+.dock-input:focus ~ .dock-kbd, .dock-input:not(:placeholder-shown) ~ .dock-kbd { display: none; }
+@media (hover: none) { .dock-kbd { display: none; } }
+.dock-send {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--g-accent);
+  color: var(--g-on-accent);
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.15s;
+}
+.dock-send svg { width: 20px; height: 20px; }
+.dock-send:hover { background: var(--g-accent-ink); }
+.dock-send:active { transform: scale(0.94); }
+.is-busy .dock-send { opacity: 0.5; pointer-events: none; }
+
+/* the answers, opening upward inside the same pane */
+.dock-panel { position: relative; z-index: 1; display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.45s var(--ease-out); }
+.dock.is-open .dock-panel { grid-template-rows: 1fr; }
+.dock-panel-inner { min-height: 0; overflow: hidden; }
+.dock-head { display: flex; align-items: center; gap: 10px; padding: 14px 14px 10px 20px; border-bottom: 1px solid var(--g-line); }
+.dock-title { font: 800 semi-expanded 0.9375rem/1.2 var(--display); letter-spacing: -0.02em; }
+.dock-meta { font: 500 semi-condensed 0.625rem/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--g-ink-3); }
+.dock-collapse {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin-left: auto;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--g-ink-2);
+  cursor: pointer;
+}
+.dock-collapse:hover { background: var(--g-chip); color: var(--g-ink); }
+.dock-collapse svg { width: 18px; height: 18px; }
+.dock-log {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: min(48vh, 440px);
+  overflow-y: auto;
+  padding: 14px 20px 6px;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--g-line) transparent;
+}
+.dock-how { padding: 6px 20px 10px; border-bottom: 1px solid var(--g-line); font-size: 0.6875rem; line-height: 1.5; color: var(--g-ink-3); }
+.dock-how a { color: var(--g-accent-ink); text-decoration: none; white-space: nowrap; }
+
+.dock-msg { animation: dock-rise 0.35s var(--ease-out); }
+.dock-me {
+  align-self: flex-end;
+  max-width: 85%;
+  padding: 8px 13px;
+  border-radius: 16px 16px 4px 16px;
+  background: var(--g-chip);
+  box-shadow: inset 0 0 0 1px var(--g-line);
+  font-size: 0.9063rem;
+  overflow-wrap: anywhere;
+}
+.dock-bot { max-width: 100%; }
+.dock-loading { font: 400 0.75rem/1.4 var(--mono); color: var(--g-ink-3); }
+.dock-answer { font-size: 0.9375rem; line-height: 1.6; text-wrap: pretty; }
+.dock-answer a { color: var(--g-accent-ink); }
+.dock-answer .w { animation: dock-word 0.32s var(--ease) both; animation-delay: calc(var(--i) * var(--wms, 16ms)); }
+.dock-more { display: inline-flex; gap: 6px; margin-top: 8px; font-size: 0.875rem; font-weight: 500; color: var(--g-accent-ink); text-decoration: none; animation: dock-rise 0.35s var(--ease-out); }
+.dock-more span { transition: transform 0.25s var(--ease); }
+.dock-more:hover span { transform: translateX(3px); }
+.dock-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; animation: dock-rise 0.4s var(--ease-out); }
+.dock-chip {
+  padding: 6px 11px;
+  border: 1px solid var(--g-line);
+  border-radius: 999px;
+  background: var(--g-chip);
+  color: var(--g-ink-2);
+  font: 500 0.8125rem/1.25 var(--sans);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.dock-chip:hover { border-color: var(--g-accent); color: var(--g-ink); }
+
+/* the trace */
+.dock-trace { margin-bottom: 8px; border-radius: 12px; background: var(--g-chip); box-shadow: inset 0 0 0 1px var(--g-line); font-size: 0.8125rem; }
+.dock-trace-sum {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  list-style: none;
+  cursor: pointer;
+  color: var(--g-ink-2);
+  font: 500 semi-condensed 0.6875rem/1.3 var(--mono);
+  white-space: nowrap;
+  user-select: none;
+}
+.dock-trace-sum::-webkit-details-marker { display: none; }
+.dock-trace-sum::after { content: "▾"; margin-left: auto; color: var(--g-ink-3); transition: transform 0.2s; }
+.dock-trace:not([open]) .dock-trace-sum::after { transform: rotate(-90deg); }
+.dock-spin { flex: none; width: 11px; height: 11px; border: 1.6px solid var(--g-line); border-top-color: #8b5cf6; border-radius: 50%; animation: dock-spin 0.8s linear infinite; }
+.dock-trace.is-done .dock-spin { border-color: var(--support); background: var(--support); animation: none; transform: scale(0.6); }
+.dock-steps { display: flex; flex-direction: column; gap: 9px; padding: 2px 12px 11px; list-style: none; }
+.dock-step { display: grid; grid-template-columns: 15px 1fr; column-gap: 8px; row-gap: 5px; align-items: center; animation: dock-rise 0.3s var(--ease-out); }
+.dock-step > :nth-child(n + 3) { grid-column: 2; }
+.dock-tick { width: 13px; height: 13px; border-radius: 50%; border: 1.6px solid var(--g-line); }
+.dock-step.is-running .dock-tick { border-top-color: #8b5cf6; animation: dock-spin 0.8s linear infinite; }
+.dock-step.is-done .dock-tick { border: 0; background: var(--support) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3.5 7.2l2.3 2.3 4.7-4.9' fill='none' stroke='%23150f24' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 13px no-repeat; }
+.dock-step-title { font-weight: 500; color: var(--g-ink); }
+.dock-step.is-running .dock-step-title { color: var(--g-ink-2); }
+.dock-detail { font: 400 0.6875rem/1.4 var(--mono); color: var(--g-ink-3); }
+.dock-pieces { display: flex; flex-wrap: wrap; gap: 4px; }
+.dock-pieces code, .dock-more-pieces {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--g-accent) 14%, transparent);
+  color: var(--g-accent-ink);
+  font: 500 0.6875rem/1.5 var(--mono);
+  animation: dock-pop 0.25s var(--ease-out) both;
+}
+.dock-pieces code.unk { background: var(--g-chip); color: var(--g-ink-3); text-decoration: line-through; }
+.dock-pieces code.cont { margin-left: -4px; border-left: 1px dashed color-mix(in srgb, var(--g-accent-ink) 50%, transparent); border-radius: 0 4px 4px 0; }
+.dock-pieces code:has(+ .cont) { border-radius: 4px 0 0 4px; }
+.dock-more-pieces { background: none; color: var(--g-ink-3); }
+.dock-vec { display: block; width: 100%; max-width: 380px; height: 26px; }
+.dock-vec .pos { fill: var(--g-accent); }
+.dock-vec .neg { fill: #ff5c93; opacity: 0.65; }
+.dock-vec rect { transform-origin: 50% 50%; transform-box: fill-box; animation: dock-grow 0.4s var(--ease-out) both; }
+.dock-matches { display: flex; flex-direction: column; gap: 4px; list-style: none; }
+.dock-matches li { display: grid; grid-template-columns: minmax(0, 1fr) 64px 32px; gap: 8px; align-items: center; color: var(--g-ink-3); }
+.dock-matches li.is-best { color: var(--g-ink); }
+.dock-m-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.75rem; }
+.dock-bar-fill { position: relative; height: 4px; overflow: hidden; border-radius: 2px; background: var(--g-line); }
+.dock-bar-fill::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--w); border-radius: 2px; background: var(--g-ink-3); animation: dock-fill 0.5s var(--ease-out) both; }
+.is-best .dock-bar-fill::after { background: linear-gradient(90deg, #ffb547, var(--g-accent)); }
+.dock-m-score { font: 500 0.6875rem/1 var(--mono); text-align: right; }
+.dock-matches .dock-m-note { display: block; margin-top: 3px; font-size: 0.75rem; color: var(--g-ink-2); }
+
+@keyframes dock-rise { from { opacity: 0; transform: translateY(5px); } }
+@keyframes dock-word { from { opacity: 0; filter: blur(3px); } }
+@keyframes dock-pop { from { opacity: 0; transform: scale(0.85); } }
+@keyframes dock-grow { from { transform: scaleY(0); } }
+@keyframes dock-fill { from { width: 0; } }
+@keyframes dock-spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 640px) {
+  .dock { bottom: max(10px, env(safe-area-inset-bottom)); border-radius: 24px; }
+  .dock-bar { gap: 8px; padding: 7px; }
+  .dock-head { padding: 12px 10px 8px 16px; }
+  .dock-meta { display: none; }
+  .dock-log { max-height: min(56svh, 460px); padding: 12px 16px 6px; }
+  .dock-how { padding: 6px 16px 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dock, .dock * { animation: none !important; transition: none !important; }
 }
