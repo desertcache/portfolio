@@ -6,8 +6,8 @@
  *   a 3.9 MB embedding model that matches a question to answers Sam approved.
  *   Nothing is generated. Its engine modules, bank and model are loaded from
  *   there on first use (focus, hover or tap), so the page stays light until then.
- * - The orb is the real Samantha orb (desertcache/samantha-ui) in controlled
- *   mode: LISTENING at rest, THINKING while the trace runs, SPEAKING while the
+ * - The orb is the real Samantha orb (desertcache/samantha-ui) in controlled,
+ *   transparent mode (no disc behind it): LISTENING at rest, THINKING while the trace runs, SPEAKING while the
  *   answer's words appear. It loads once the page has, except for visitors who
  *   ask their system for reduced motion, who keep the still orb.
  * - The trace under each question is the real matching work, paced so it can
@@ -20,7 +20,7 @@
 
 const ASK = 'https://desertcache.github.io/ask/';
 const ORB_ORIGIN = 'https://desertcache.github.io';
-const ORB_SRC = `${ORB_ORIGIN}/samantha-ui/?embed=1&control=1`;
+const ORB_SRC = `${ORB_ORIGIN}/samantha-ui/?embed=1&control=1&transparent=1`;
 const STEP_MS = 300;
 const WORD_MS = 16;
 

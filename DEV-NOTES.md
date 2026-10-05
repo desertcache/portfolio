@@ -472,7 +472,8 @@ row (PR #12), which is gone.
   `models/` from `https://desertcache.github.io/ask/` on first focus or hover, never at page load.
   Those modules are a public contract: a change there must stay compatible with this file.
 - **The orb is the real Samantha orb**, `desertcache/samantha-ui` in controlled mode
-  (`?embed=1&control=1`). This page sets its state by `postMessage({ type: 'orb:state', state })`:
+  (`?embed=1&control=1&transparent=1`: no scene background or post-processing, so it floats on the
+  glass with no disc; the glow is a CSS drop-shadow). This page sets its state by `postMessage({ type: 'orb:state', state })`:
   LISTENING at rest, THINKING while the trace runs, SPEAKING while the answer's words appear. The
   orb answers `{ type: 'orb:ready' }` and only accepts messages from desertcache.github.io or
   localhost. It loads after the page does, for every visitor except reduced motion (still CSS orb).
@@ -480,8 +481,9 @@ row (PR #12), which is gone.
   reports the real compute time. Keep it that way: the bar promises nothing is made up.
 - **`js/ask.js` keeps its name and its `initAsk` export on purpose.** Pages caches for 10 minutes;
   a cached `main.js` importing a file that no longer exists would take down every module.
-- The base reset caps iframes at `max-width: 100%`; the orb's overscanned iframe sets
-  `max-width: none`, or the orb renders off-centre in its lens.
+- The base reset caps iframes at `max-width: 100%`; the orb's iframe sets `max-width: none`, or it
+  renders squeezed and off-centre. It also sets `color-scheme: normal` to match the embedded page: a
+  mismatch makes the browser paint the frame opaque.
 - The glass turns to night glass in dark mode and while the Lab is behind it (`.on-night`, set on
   scroll). `.has-dock` pads the footer and lifts the toast above the bar. Hidden in print and while
   a case study is open. `/` focuses it; Esc folds the answers.
