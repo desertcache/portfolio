@@ -42,14 +42,21 @@ export function createAudio({ muted = false, onPlay } = {}) {
     osc.stop(t0 + dur + 0.02);
   }
 
+  // One shared 2 s white-noise buffer, filled once per context; each burst plays a
+  // random slice of it (looping if longer). Filling a fresh buffer per explosion
+  // cost ~1.5 ms a call in busy games.
+  let noiseBuffer = null;
   function noise({ dur = 0.2, vol = 0.15, at = 0, filterFrom = 4000, filterTo = 100 }) {
     const t0 = ctx.currentTime + at;
-    const length = Math.max(1, Math.floor(ctx.sampleRate * dur));
-    const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < length; i++) data[i] = Math.random() * 2 - 1;
+    if (!noiseBuffer || noiseBuffer.sampleRate !== ctx.sampleRate) {
+      const length = ctx.sampleRate * 2;
+      noiseBuffer = ctx.createBuffer(1, length, ctx.sampleRate);
+      const data = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < length; i++) data[i] = Math.random() * 2 - 1;
+    }
     const src = ctx.createBufferSource();
-    src.buffer = buffer;
+    src.buffer = noiseBuffer;
+    src.loop = dur > noiseBuffer.duration;
     const filter = ctx.createBiquadFilter();
     filter.type = 'lowpass';
     filter.frequency.setValueAtTime(filterFrom, t0);
@@ -58,7 +65,8 @@ export function createAudio({ muted = false, onPlay } = {}) {
     gain.gain.setValueAtTime(vol, t0);
     gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
     src.connect(filter).connect(gain).connect(master);
-    src.start(t0);
+    src.start(t0, Math.random() * Math.max(0, noiseBuffer.duration - dur));
+    src.stop(t0 + dur + 0.02);
   }
 
   function seq(steps, stepDur = 0.09) {

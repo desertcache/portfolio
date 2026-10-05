@@ -139,13 +139,30 @@ canvas.pixel-art { image-rendering: pixelated; }
   box-shadow: inset 0 0 70px rgba(255, 122, 69, 0.06);
 }
 .arcade-cabinet.crt-off .crt-overlay, .arcade-cabinet.crt-off .crt-vignette { display: none; }
+/* Phones: page gutter + cabinet padding + bezel ate ~100px, leaving a 288px canvas at 390px.
+   The cabinet runs edge to edge and the bezel slims, so the game gets ~374px. */
+@media (max-width: 600px) {
+  .arcade-cabinet {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+  .screen { padding: 4px; border-radius: 8px; }
+  .crt-overlay, .crt-vignette { inset: 4px; }
+}
 
 /* the menu and game-over overlays sit on the screen */
 #arcade-menu, #game-over-screen {
   position: absolute;
   z-index: 20;
   width: 100%;
-  max-width: 580px;
+  max-width: 720px;
+  max-height: 100%;
+  overflow-y: auto;
   padding: 0 24px;
   text-align: center;
   color: var(--lab-ink);
@@ -163,8 +180,23 @@ canvas.pixel-art { image-rendering: pixelated; }
   text-transform: uppercase;
   color: var(--lab-ink-3);
 }
-.menu-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-@media (max-width: 600px) { .menu-buttons { grid-template-columns: 1fr; } }
+/* ten titles: Pac-Man featured with its "watch the AI" companion, then a compact grid of tiles */
+.menu-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.menu-featured { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+/* inside the featured row the flagship is one of two columns, not a full-width row */
+.menu-featured .arcade-btn.featured { grid-column: auto; padding: 12px 16px; }
+.menu-buttons > .arcade-btn { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; padding: 10px 12px; font-stretch: condensed; letter-spacing: 0.06em; }
+.menu-buttons > .arcade-btn .title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.arcade-btn.featured-ai { grid-template-columns: auto auto; gap: 12px; padding: 12px 16px; border-color: rgba(255, 201, 77, 0.55); }
+.arcade-btn.featured-ai .num, .arcade-btn.ai .num { color: #ffc94d; }
+/* a shorter heading for the taller menu, so the ghost roll-call behind it stays clear */
+#arcade-menu h2 { font-size: clamp(1.5rem, 3.2vw, 2.2rem); margin-bottom: 16px; }
+@media (max-width: 600px) {
+  .menu-buttons { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .menu-featured { grid-template-columns: 1fr; }
+  /* narrow tiles: title on its own line, PB under it */
+  .menu-buttons > .arcade-btn { grid-template-columns: 1fr; gap: 2px; }
+}
 .arcade-btn, .game-btn {
   border: 1px solid var(--lab-line-strong);
   border-radius: 8px;
