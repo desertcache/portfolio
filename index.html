@@ -47,7 +47,7 @@
 
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="css/site.css?v=2026-10-05">
+  <link rel="stylesheet" href="css/site.css?v=2026-10-05b">
   <script type="module" src="js/main.js"></script>
 
   <script type="application/ld+json">
@@ -79,7 +79,7 @@
         <span class="brand-name">Samuel Bates</span>
       </a>
       <nav class="nav-links" aria-label="Sections">
-        <a href="#work">Work</a>
+        <a href="#featured">Work</a>
         <a href="#lab">Lab</a>
         <a href="#about">About</a>
         <a href="#contact">Contact</a>
@@ -91,8 +91,24 @@
         </button>
         <a class="btn btn-ghost btn-sm nav-cv" href="Samuel_Bates_CV.pdf" target="_blank" rel="noopener">Résumé</a>
         <a class="btn btn-solid btn-sm" href="mailto:batessambates@gmail.com">Get in touch</a>
+        <button class="nav-menu-toggle" id="nav-menu-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Sections">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path class="menu-bar menu-bar-1" d="M4.5 7.5h15"/><path class="menu-bar menu-bar-2" d="M4.5 12h15"/><path class="menu-bar menu-bar-3" d="M4.5 16.5h15"/></svg>
+        </button>
       </div>
     </div>
+    <!-- The phone version of the nav: under 900px the links above fold away, so this lists every section. -->
+    <nav class="nav-menu" id="nav-menu" aria-label="Sections on this page" hidden>
+      <ol class="nav-menu-list">
+        <li><a href="#featured"><span class="nav-menu-num">01</span>Featured program</a></li>
+        <li><a href="#work"><span class="nav-menu-num">02</span>Selected work</a></li>
+        <li><a href="#build"><span class="nav-menu-num">03</span>How I build</a></li>
+        <li><a href="#lab"><span class="nav-menu-num">04</span>Lab</a></li>
+        <li><a href="#about"><span class="nav-menu-num">05</span>Background</a></li>
+        <li><a href="#stack"><span class="nav-menu-num">06</span>Toolkit</a></li>
+        <li><a href="#contact"><span class="nav-menu-num" aria-hidden="true"></span>Contact</a></li>
+      </ol>
+      <a class="btn btn-ghost btn-sm nav-menu-cv" href="Samuel_Bates_CV.pdf" target="_blank" rel="noopener">Résumé <span class="btn-meta">PDF</span></a>
+    </nav>
     <div class="nav-progress" aria-hidden="true"></div>
   </header>
 
@@ -120,7 +136,7 @@
           <p class="hero-lede rise" style="--delay: .22s">I build production AI for operations teams, lead the people who run it, and teach organizations to adopt it. At DoorDash: an AI support workspace other teams now run their own agents in, an outsourced support team working live cases in it, and 800+ people trained. Before any of this, I led a crisis-response team as an EMT.</p>
 
           <div class="hero-cta rise" style="--delay: .32s">
-            <a class="btn btn-solid" href="#work">See the work <span class="btn-arrow" aria-hidden="true">↓</span></a>
+            <a class="btn btn-solid" href="#featured">See the work <span class="btn-arrow" aria-hidden="true">↓</span></a>
             <a class="btn btn-ghost" href="Samuel_Bates_CV.pdf" target="_blank" rel="noopener">Résumé <span class="btn-meta">PDF</span></a>
             <button class="btn btn-text copy-email" type="button" data-email="batessambates@gmail.com">
               <span class="copy-label">batessambates@gmail.com</span>
@@ -513,14 +529,14 @@
               <span class="ask-steps">
                 <span>Split into word pieces</span>
                 <span>Turned into a vector</span>
-                <span>Compared with 50 answers</span>
+                <span>Compared with 59 answers</span>
                 <span>Closest one answers</span>
               </span>
             </div>
             <div class="lab-card-body">
               <h3 class="lab-card-title"><a class="lab-card-link" href="work/answer-finder.html">Answer Finder<span class="lab-card-go" aria-hidden="true">→</span></a></h3>
-              <p>The bar at the bottom of this page. A 4 MB model on your own device matches your question to one of 50 answers I approved. Nothing is generated, so it can't make things up.</p>
-              <p class="lab-how"><span class="lab-how-label">How it works</span>A small embedding model turns your question into a vector, and the closest of 398 sample phrasings picks the answer. When nothing is close enough, it says so instead of guessing.</p>
+              <p>The bar at the bottom of this page. A 4 MB model on your own device matches your question to one of 59 answers I approved. Nothing is generated, so it can't make things up.</p>
+              <p class="lab-how"><span class="lab-how-label">How it works</span>A small embedding model turns your question into a vector, and the closest of 465 sample phrasings picks the answer. When nothing is close enough, it says so instead of guessing.</p>
               <ul class="tags"><li>On-device</li><li>4 MB</li><li>No generation</li></ul>
               <div class="lab-links">
                 <button class="link-arrow lab-try" type="button" data-ask-focus>Ask it something <span aria-hidden="true">↓</span></button>

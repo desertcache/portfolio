@@ -546,6 +546,21 @@ row (PR #12), which is gone.
   scroll). `.has-dock` pads the footer and lifts the toast above the bar. Hidden in print and while
   a case study is open. `/` focuses it; Esc folds the answers.
 
+## Getting around: the start of the route and the phone menu (2026-10-05)
+
+- "See the work" and the nav's Work link go to `#featured` (the copilot program), not `#work`, so
+  nobody skips the flagship. The scroll-spy keeps Work lit through both (`alias` in `js/chrome.js`).
+- Under 900px the nav links fold away and a button opens `#nav-menu`: every section, numbered like
+  its eyebrow (a test holds the two together), plus the Résumé. The behaviour is in
+  `js/section-menu.js`, its own file on purpose: a cached `chrome.js` without a new export would stop
+  every module. The scroll-spy marks the section being read in that list too.
+- The phone header row is full. Below 390px the name hides (the mark stays, and the name leads the
+  hero), and the mark never shrinks: before, it gave way first and collapsed to a dot. Those rules
+  are scoped with `.nav:has(.nav-menu-toggle)`, so pages without the menu keep their header.
+- The bar's top-of-page chips start with "Where should I start?" (`start-here` in desertcache/ask),
+  which walks a three-stop route. The Lab card and `work/answer-finder.html` quote the bank's size
+  (59 answers, 465 phrasings); a test keeps the two pages in step, so update both when the bank grows.
+
 ## Other invariants
 
 - All asset paths RELATIVE (no leading `/`) — site lives at /portfolio/ sub-path, no CNAME.
