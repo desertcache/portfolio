@@ -460,6 +460,32 @@ log or linear, computed by hand and noted in the markup), so they reflow on a
 phone. Every study is linked in its Sources section; the link preview is
 `assets/og-pdrn-and-spicules.png` from `scripts/og-pdrn-and-spicules.html`.
 
+## Ask about my work: the glass bar (2026-10-04)
+
+A liquid-glass bar fixed to the bottom of the homepage (`#dock` in `index.html`, styles in
+section 7 of `css/site.css`, behaviour in `js/ask.js`). It replaced the Lab's "Ask about my work"
+row (PR #12), which is gone.
+
+- **Nothing is generated.** The answer finder is [desertcache/ask](https://github.com/desertcache/ask):
+  a 3.9 MB embedding model matches a question to answers Sam approved. `js/ask.js` imports that
+  repo's `js/embed.js`, `js/match.js` and `js/config.js` and fetches its `data/bank.json` and
+  `models/` from `https://desertcache.github.io/ask/` on first focus or hover, never at page load.
+  Those modules are a public contract: a change there must stay compatible with this file.
+- **The orb is the real Samantha orb**, `desertcache/samantha-ui` in controlled mode
+  (`?embed=1&control=1`). This page sets its state by `postMessage({ type: 'orb:state', state })`:
+  LISTENING at rest, THINKING while the trace runs, SPEAKING while the answer's words appear. The
+  orb answers `{ type: 'orb:ready' }` and only accepts messages from desertcache.github.io or
+  localhost. It loads after the page does, for every visitor except reduced motion (still CSS orb).
+- **The trace is the real matching work**, paced (~300 ms a step) so it can be read; its summary
+  reports the real compute time. Keep it that way: the bar promises nothing is made up.
+- **`js/ask.js` keeps its name and its `initAsk` export on purpose.** Pages caches for 10 minutes;
+  a cached `main.js` importing a file that no longer exists would take down every module.
+- The base reset caps iframes at `max-width: 100%`; the orb's overscanned iframe sets
+  `max-width: none`, or the orb renders off-centre in its lens.
+- The glass turns to night glass in dark mode and while the Lab is behind it (`.on-night`, set on
+  scroll). `.has-dock` pads the footer and lifts the toast above the bar. Hidden in print and while
+  a case study is open. `/` focuses it; Esc folds the answers.
+
 ## Other invariants
 
 - All asset paths RELATIVE (no leading `/`) — site lives at /portfolio/ sub-path, no CNAME.
