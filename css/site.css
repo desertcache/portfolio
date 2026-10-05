@@ -2064,32 +2064,47 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
   flex: none;
   width: 44px;
   height: 44px;
-  overflow: hidden;
-  border-radius: 50%;
-  /* The lens is all orb, no black: its own colour follows the orb's state, so even
-     the blob's wobbling edge never shows the dark scene behind it. */
-  background: #e8a87c;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28), 0 0 0 3px var(--g-rim-soft), 0 4px 14px -4px rgba(232, 168, 124, 0.55);
-  transition: box-shadow 0.5s, background-color 0.5s;
+  margin-left: 4px;
 }
-.dock[data-orb="thinking"] .dock-orb { background: #8b5cf6; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), 0 0 0 3px var(--g-rim-soft), 0 4px 18px -2px rgba(139, 92, 246, 0.7); }
-.dock[data-orb="speaking"] .dock-orb { background: #e9785f; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), 0 0 0 3px var(--g-rim-soft), 0 4px 18px -2px rgba(245, 158, 11, 0.65); }
-/* the real orb renders its sphere at ~65% of a square view; overscanned to 230% so the sphere
-   is half again as wide as the lens and fills it edge to edge, wobble included (max-width: none
-   undoes the base reset, which would cap the width and push the orb off-centre) */
-.dock-orb iframe { position: absolute; left: -65%; top: -65%; width: 230%; height: 230%; max-width: none; border: 0; pointer-events: none; opacity: 0; transition: opacity 0.9s var(--ease); }
+/* The orb alone, no disc or ring: samantha-ui in transparent mode renders it on a clear canvas,
+   so the glass shows through right up to its wobbling edge. Its bloom is off in that mode, so
+   the glow is a drop-shadow in the state's colour. The sphere fills about half the frame, so an
+   84px frame centred on the 44px slot gives a ~42px orb; it may wobble past the slot, which is
+   fine (pointer-events: none). max-width: none undoes the base reset, which caps iframes at 100%.
+   color-scheme: normal matches the embedded page; a mismatch makes browsers paint the frame opaque. */
+.dock-orb iframe {
+  position: absolute;
+  left: -20px;
+  top: -20px;
+  width: 84px;
+  height: 84px;
+  max-width: none;
+  border: 0;
+  background: transparent;
+  color-scheme: normal;
+  pointer-events: none;
+  opacity: 0;
+  filter: drop-shadow(0 2px 7px rgba(232, 168, 124, 0.6));
+  transition: opacity 0.9s var(--ease), filter 0.5s;
+}
 .dock-orb.is-live iframe { opacity: 1; }
-/* the still orb: the LISTENING colours, until the real one wakes (and for reduced motion) */
+.dock[data-orb="thinking"] .dock-orb iframe { filter: drop-shadow(0 2px 8px rgba(139, 92, 246, 0.7)); }
+.dock[data-orb="speaking"] .dock-orb iframe { filter: drop-shadow(0 2px 8px rgba(233, 120, 95, 0.65)); }
+/* the still orb: a soft blob in the LISTENING colours, until the real one wakes (and for reduced motion) */
 .dock-orb-still {
   position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: radial-gradient(circle at 38% 34%, #fbd8bd, #e8a87c 55%, #b9734d);
-  box-shadow: 0 0 12px rgba(232, 168, 124, 0.6);
+  inset: 3px;
+  border-radius: 46% 54% 52% 48% / 52% 46% 54% 48%;
+  background: radial-gradient(circle at 38% 34%, #fbd8bd, #e8a87c 55%, #c9805a);
+  filter: drop-shadow(0 2px 7px rgba(232, 168, 124, 0.6));
+  animation: dock-blob 6s ease-in-out infinite;
   transition: opacity 0.9s;
 }
 .dock-orb.is-live .dock-orb-still { opacity: 0; }
 .dock[data-orb="thinking"] .dock-orb-still { background: radial-gradient(circle at 38% 34%, #c8f3fb, #8b5cf6 55%, #06b6d4); }
+@keyframes dock-blob {
+  50% { border-radius: 53% 47% 46% 54% / 47% 54% 46% 53%; }
+}
 .dock-input {
   flex: 1;
   min-width: 0;
