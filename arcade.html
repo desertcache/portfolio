@@ -32,7 +32,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="stylesheet" href="css/site.css?v=2026-09-27b">
-  <link rel="stylesheet" href="css/play.css?v=2026-09-27">
+  <link rel="stylesheet" href="css/play.css?v=2026-10-05">
   <script type="module" src="js/page.js"></script>
 </head>
 <body>
@@ -125,13 +125,31 @@
 
         <div id="hud-score">Score · <span id="current-score">0</span></div>
       </div>
-      <p class="touch-hint">Swipe · tap · drag to play</p>
 
-      <div class="play-meta">
-        <span>Keys · arrows, space, mouse</span>
-        <span>Touch · swipe, tap, drag</span>
-        <span>Personal bests stay on this device</span>
-      </div>
+      <nav class="room game-deck" id="game-deck" aria-label="Games">
+        <div class="room-bar deck-bar">
+          <span>Game select</span>
+          <span class="cab-right">
+            <span class="deck-keys">[ and ] to switch</span>
+            <button id="deck-menu" class="cab-toggle" type="button">Menu</button>
+          </span>
+        </div>
+        <div class="deck-row">
+          <button class="deck-step" id="deck-prev" type="button" aria-label="Previous game">‹</button>
+          <div class="deck-carts" id="deck-carts"></div>
+          <button class="deck-step" id="deck-next" type="button" aria-label="Next game">›</button>
+        </div>
+      </nav>
+
+      <section class="play-notes how" id="how" aria-labelledby="how-title">
+        <p class="label">How it works<span class="how-name" id="how-name">The cabinet</span></p>
+        <div>
+          <h2 class="how-title" id="how-title">One small engine, ten games</h2>
+          <p id="how-body"></p>
+          <dl class="how-rows" id="how-rows"></dl>
+          <p class="how-foot">Personal bests stay on this device.</p>
+        </div>
+      </section>
     </div>
   </main>
 

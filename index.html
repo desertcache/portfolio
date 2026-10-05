@@ -47,7 +47,7 @@
 
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="css/site.css?v=2026-10-04g">
+  <link rel="stylesheet" href="css/site.css?v=2026-10-05">
   <script type="module" src="js/main.js"></script>
 
   <script type="application/ld+json">
@@ -443,7 +443,7 @@
         <header class="section-head reveal">
           <p class="eyebrow"><span class="eyebrow-num">04</span> Lab</p>
           <h2 class="section-title" id="lab-title">Demos you can <em>walk around in.</em></h2>
-          <p class="section-lede">Everything here runs in your browser: a procedural starship you can board, a small model in the bar at the bottom of the screen that answers questions about my work, a GPU orb, and an arcade rebuilt dot for dot. I build them after hours with a fleet of AI coding agents. I design the system and the verification gates, and nothing ships until it passes them.</p>
+          <p class="section-lede">Everything here runs in your browser: a procedural starship you can board, a small model in the bar at the bottom of the screen that answers questions about my work, a GPU orb, and an arcade of ten games, three of which let you watch an AI think. I build them after hours with a fleet of AI coding agents. I design the system and the verification gates, and nothing ships until it passes them.</p>
         </header>
 
         <article class="lab-feature reveal">
@@ -476,47 +476,73 @@
               <span class="lab-live" aria-hidden="true">Live · WebGL</span>
             </div>
             <div class="lab-card-body">
-              <h3 class="lab-card-title">Samantha UI</h3>
+              <h3 class="lab-card-title"><a class="lab-card-link" href="https://desertcache.github.io/samantha-ui/" target="_blank" rel="noopener">Samantha UI<span class="lab-card-go" aria-hidden="true">↗</span></a></h3>
               <p>A <i>Her</i>-inspired soul orb: one GPU-displaced sphere, custom GLSL shaders, audio-reactive at 60fps. It's the real app, idling in its listening state.</p>
+              <p class="lab-how"><span class="lab-how-label">How it works</span>Simplex noise in a vertex shader pushes the sphere's surface in and out. Listening, thinking and speaking each set their own depth and speed of motion, the orb eases between them, and the speaking voice's volume drives the ripples.</p>
               <ul class="tags"><li>React 19</li><li>Three.js</li><li>GLSL</li></ul>
               <div class="lab-links">
-                <a class="link-arrow" href="https://desertcache.github.io/samantha-ui/" target="_blank" rel="noopener">Open full screen <span aria-hidden="true">↗</span></a>
                 <a class="link-arrow" href="https://github.com/desertcache/samantha-ui" target="_blank" rel="noopener">Source <span aria-hidden="true">↗</span></a>
               </div>
             </div>
           </article>
 
           <article class="lab-card reveal">
-            <a class="arcade-stage" href="arcade.html" aria-label="The Arcade: insert coin">
-              <span class="pac" aria-hidden="true"></span>
-              <span class="pellets" aria-hidden="true"></span>
-              <span class="arcade-coin" aria-hidden="true">Insert coin</span>
-            </a>
+            <div class="arcade-stage" aria-hidden="true">
+              <span class="pac"></span>
+              <span class="pellets"></span>
+              <span class="arcade-coin">Insert coin</span>
+            </div>
             <div class="lab-card-body">
-              <h3 class="lab-card-title">The Arcade</h3>
-              <p>Five games in vanilla JS on raw canvas, including a dot-for-dot Pac-Man rebuild with the authentic ghost AI.</p>
-              <ul class="tags"><li>Vanilla JS</li><li>Canvas</li><li>Zero dependencies</li></ul>
+              <h3 class="lab-card-title"><a class="lab-card-link" href="arcade.html">The Arcade<span class="lab-card-go" aria-hidden="true">→</span></a></h3>
+              <p>Ten games in vanilla JS on raw canvas: a dot-for-dot Pac-Man rebuild with the original ghost AI, and three titles where you can watch an AI think.</p>
+              <p class="lab-how"><span class="lab-how-label">How it works</span>Every game is a module on one small engine: a fixed 60-step loop, a fixed screen scaled to yours, and sound synthesized live. No libraries, no sound files, no build step.</p>
+              <ul class="lab-chips" aria-label="Jump straight into a game">
+                <li><a href="arcade.html?game=pacman">Pac-Man</a></li>
+                <li><a href="arcade.html?game=pacmanai">Watch the AI play</a></li>
+                <li><a href="arcade.html?game=four">Four in a Row</a></li>
+                <li><a href="arcade.html?game=evolve">UFO Evolution</a></li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="lab-card reveal">
+            <div class="ask-stage" aria-hidden="true">
+              <span class="ask-mini"><span class="ask-mini-orb"></span><span class="ask-mini-q">What has Sam shipped with AI?</span><span class="ask-mini-send"><svg viewBox="0 0 12 12" focusable="false"><path d="M6 10.5V1.5M2.2 5.2 6 1.5l3.8 3.7"/></svg></span></span>
+              <span class="ask-steps">
+                <span>Split into word pieces</span>
+                <span>Turned into a vector</span>
+                <span>Compared with 50 answers</span>
+                <span>Closest one answers</span>
+              </span>
+            </div>
+            <div class="lab-card-body">
+              <h3 class="lab-card-title"><a class="lab-card-link" href="work/answer-finder.html">Answer Finder<span class="lab-card-go" aria-hidden="true">→</span></a></h3>
+              <p>The bar at the bottom of this page. A 4 MB model on your own device matches your question to one of 50 answers I approved. Nothing is generated, so it can't make things up.</p>
+              <p class="lab-how"><span class="lab-how-label">How it works</span>A small embedding model turns your question into a vector, and the closest of 398 sample phrasings picks the answer. When nothing is close enough, it says so instead of guessing.</p>
+              <ul class="tags"><li>On-device</li><li>4 MB</li><li>No generation</li></ul>
               <div class="lab-links">
-                <a class="link-arrow" href="arcade.html">Insert coin <span aria-hidden="true">→</span></a>
+                <button class="link-arrow lab-try" type="button" data-ask-focus>Ask it something <span aria-hidden="true">↓</span></button>
+                <a class="link-arrow" href="https://github.com/desertcache/ask" target="_blank" rel="noopener">Source <span aria-hidden="true">↗</span></a>
               </div>
             </div>
           </article>
 
           <article class="lab-card reveal">
-            <a class="dispatch-stage" href="blog/index.html" aria-label="Hill Money Watch: read the dispatches">
-              <span class="ticker" aria-hidden="true"><span class="ticker-track"><span>PTR</span><span>Purchase</span><span>$1K–15K</span><span>Sale</span><span>$15K–50K</span><span>Filed late</span><span>$100K–250K</span><span>Exchange</span><span>PTR</span><span>Purchase</span><span>$1K–15K</span><span>Sale</span><span>$15K–50K</span><span>Filed late</span><span>$100K–250K</span><span>Exchange</span></span></span>
+            <div class="dispatch-stage" aria-hidden="true">
+              <span class="ticker"><span class="ticker-track"><span>PTR</span><span>Purchase</span><span>$1K–15K</span><span>Sale</span><span>$15K–50K</span><span>Filed late</span><span>$100K–250K</span><span>Exchange</span><span>PTR</span><span>Purchase</span><span>$1K–15K</span><span>Sale</span><span>$15K–50K</span><span>Filed late</span><span>$100K–250K</span><span>Exchange</span></span></span>
               <span class="dispatch-latest">
                 <span class="dispatch-kicker">Latest dispatch</span>
-                <span class="dispatch-title" id="dispatch-title">Hill Money Watch: September 23, 2026</span>
-                <time class="dispatch-date" id="dispatch-date" datetime="2026-09-23">September 23, 2026</time>
+                <span class="dispatch-title" id="dispatch-title">Hill Money Watch: October 3, 2026</span>
+                <time class="dispatch-date" id="dispatch-date" datetime="2026-10-03">October 3, 2026</time>
               </span>
-            </a>
+            </div>
             <div class="lab-card-body">
-              <h3 class="lab-card-title">Hill Money Watch</h3>
-              <p>A Claude Code skill sweeps congressional trading disclosures, writes the digest, and publishes it through a validation step that rejects anything that breaks the contract. One editorial rule is built in: it reports the gap between trade and filing dates, and never says in its own voice that anyone broke the law.</p>
+              <h3 class="lab-card-title"><a class="lab-card-link" href="blog/index.html">Hill Money Watch<span class="lab-card-go" aria-hidden="true">→</span></a></h3>
+              <p>A running digest of congressional stock-trade disclosures. One editorial rule is built in: it reports the gap between trade and filing dates, and never says in its own voice that anyone broke the law.</p>
+              <p class="lab-how"><span class="lab-how-label">How it works</span>A Claude Code skill sweeps the new filings and writes each edition, and a validation step rejects anything that breaks the publishing contract before it goes live.</p>
               <ul class="tags"><li>Claude Code skill</li><li>Python</li><li>Contract tests</li></ul>
               <div class="lab-links">
-                <a class="link-arrow" href="blog/index.html">Read the dispatches <span aria-hidden="true">→</span></a>
+                <a class="link-arrow" id="dispatch-link" href="blog/index.html">Read the latest <span aria-hidden="true">→</span></a>
               </div>
             </div>
           </article>

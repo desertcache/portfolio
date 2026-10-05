@@ -340,6 +340,8 @@ export function initAsk() {
   dock.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && dock.classList.contains('is-open')) { setOpen(false); input.focus(); }
   });
+  // The Lab's Answer Finder card has an "Ask it something" button that hands you the bar.
+  document.querySelectorAll('[data-ask-focus]').forEach((b) => b.addEventListener('click', () => input.focus()));
   // "/" jumps to the bar from anywhere, unless you're already typing somewhere.
   window.addEventListener('keydown', (e) => {
     if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return;
