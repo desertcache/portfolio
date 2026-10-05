@@ -10,8 +10,8 @@
 // one go (the clipped objective), and nudges the critic toward what really
 // happened. Then it flies the next batch with the improved policy.
 //
-// The learner is a state machine that does its work in small units (16 decisions,
-// or 64 training samples), so a game can hand it a few milliseconds a frame and
+// The learner is a state machine that does its work in small units (8 decisions,
+// or 32 training samples), so a game can hand it a few milliseconds a frame and
 // pick up where it left off. The order of every random draw is fixed, so a seed
 // reproduces a run exactly no matter how the work was cut into frames.
 import { mulberry32, hashSeed } from './rng.js';
@@ -36,9 +36,9 @@ export const HYPER = {
   vfCoef: 0.5,
   maxGradNorm: 0.5,
   targetKl: 0, // 0: never stop an update early
-  chunk: 64, // samples per unit of update work
+  chunk: 32, // samples per unit of update work
   outGain: 0.01, // the policy starts out nearly uniform
-  collectUnit: 16, // decisions per unit of collection work
+  collectUnit: 8, // decisions per unit of collection work
 };
 
 const COLLECT = 0;
@@ -90,6 +90,8 @@ export class Learner {
     this.probs = new Float64Array(N_ACTIONS);
     this.dz = new Float64Array(N_ACTIONS);
     this.dv = new Float64Array(1);
+    this.pinfo = { ratio: 1, logp: 0, entropy: 0 };
+    this.entCoef = h.entropy; // set again at the start of every round of learning
 
     this.phase = COLLECT;
     this.t = 0; // decisions gathered in this batch
@@ -145,7 +147,7 @@ export class Learner {
     return units;
   }
 
-  /** One unit of work: 16 decisions while collecting, or 64 training samples. */
+  /** One unit of work: 8 decisions while collecting, or 32 training samples. */
   advance() {
     if (this.phase === COLLECT) {
       const n = Math.min(this.h.collectUnit, this.h.rollout - this.t);
@@ -294,22 +296,16 @@ export class Learner {
     const us = this.ustats;
     const clipLo = 1 - h.clip;
     const clipHi = 1 + h.clip;
+    const info = this.pinfo;
     for (let pos = this.mbPos; pos < end; pos++) {
       const i = this.perm[pos];
       const z = actor.forward(this.bufObs, i * D);
       softmax(z, probs);
       const a = this.bufAct[i];
-      const logpNew = Math.log(probs[a] + 1e-12);
-      const ratio = Math.exp(logpNew - this.bufLogp[i]);
       const A = this.adv[i];
-      const active = A >= 0 ? ratio < clipHi : ratio > clipLo;
-      const coef = active ? -A * ratio * inv : 0;
-      let H = 0;
-      for (let j = 0; j < N_ACTIONS; j++) H -= probs[j] * Math.log(probs[j] + 1e-12);
-      for (let j = 0; j < N_ACTIONS; j++) {
-        dz[j] = coef * ((j === a ? 1 : 0) - probs[j]) + this.entCoef * inv * probs[j] * (Math.log(probs[j] + 1e-12) + H);
-      }
+      policyGrad(probs, a, A, this.bufLogp[i], h.clip, this.entCoef, inv, dz, info);
       actor.backward(this.bufObs, i * D, dz);
+      const ratio = info.ratio;
 
       const v = critic.forward(this.bufObs, i * D)[0];
       const err = v - this.ret[i];
@@ -318,8 +314,8 @@ export class Learner {
 
       us.pg += -Math.min(A * ratio, A * Math.min(Math.max(ratio, clipLo), clipHi));
       us.vf += 0.5 * err * err;
-      us.ent += H;
-      const kl = ratio - 1 - (logpNew - this.bufLogp[i]);
+      us.ent += info.entropy;
+      const kl = ratio - 1 - (info.logp - this.bufLogp[i]);
       us.kl += kl;
       this.epochKl += kl;
       this.epochN++;
@@ -365,6 +361,33 @@ export class Learner {
     this.phase = COLLECT;
     this.t = 0;
   }
+}
+
+/**
+ * The policy half of PPO for one decision: how the loss changes with each of the four
+ * action scores. `probs` is the softmax of the scores, `a` the action that was taken,
+ * `A` its advantage (how much better than expected it turned out) and `logpOld` the
+ * log-probability the policy gave it when it was chosen. The loss is
+ *   -min(ratio * A, clip(ratio, 1 - clip, 1 + clip) * A) - entCoef * entropy
+ * scaled by `inv` (1 over the minibatch size). The gradient goes into `dz`; `info`
+ * gets the ratio, the new log-probability and the entropy. Nothing is allocated.
+ * @param {Float64Array} probs @param {number} a @param {number} A @param {number} logpOld
+ * @param {number} clip @param {number} entCoef @param {number} inv
+ * @param {Float64Array} dz @param {{ ratio: number, logp: number, entropy: number }} info
+ */
+export function policyGrad(probs, a, A, logpOld, clip, entCoef, inv, dz, info) {
+  const logpNew = Math.log(probs[a] + 1e-12);
+  const ratio = Math.exp(logpNew - logpOld);
+  const active = A >= 0 ? ratio < 1 + clip : ratio > 1 - clip;
+  const coef = active ? -A * ratio * inv : 0;
+  let H = 0;
+  for (let j = 0; j < N_ACTIONS; j++) H -= probs[j] * Math.log(probs[j] + 1e-12);
+  for (let j = 0; j < N_ACTIONS; j++) {
+    dz[j] = coef * ((j === a ? 1 : 0) - probs[j]) + entCoef * inv * probs[j] * (Math.log(probs[j] + 1e-12) + H);
+  }
+  info.ratio = ratio;
+  info.logp = logpNew;
+  info.entropy = H;
 }
 
 /** Softmax of z (length 4) into p, with the usual max-shift for stability. */

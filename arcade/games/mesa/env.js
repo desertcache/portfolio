@@ -25,7 +25,7 @@ export const START = {
 
 // The four actions the agent chooses between, in the order of the policy's outputs.
 export const ACTIONS = ['none', 'left', 'main', 'right'];
-const ACTION_CTL = [0, LEFT, MAIN, RIGHT];
+export const ACTION_CTL = [0, LEFT, MAIN, RIGHT];
 
 export const OBS_DIM = 9;
 

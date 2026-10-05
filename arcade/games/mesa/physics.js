@@ -216,6 +216,11 @@ export function stepLander(s, ctl, t, wind = 0) {
   return touch(s, t);
 }
 
+// Is the ground at x a steep face (more than 2 px of height per px across)?
+function steep(t, x) {
+  return Math.abs(surfaceAt(t, x + 3) - surfaceAt(t, x - 3)) > 12;
+}
+
 // Check the body against the ground and judge a first contact: a landing is both
 // feet on the pad, slow, upright and not spinning; any other touch is a crash.
 function touch(s, t) {
@@ -227,7 +232,9 @@ function touch(s, t) {
   const ly = s.y - fx * sin + fy * cos;
   const rx = s.x + fx * cos - fy * sin;
   const ry = s.y + fx * sin + fy * cos;
-  const feetIn = ly >= surfaceAt(t, lx) || ry >= surfaceAt(t, rx);
+  const leftIn = ly >= surfaceAt(t, lx);
+  const rightIn = ry >= surfaceAt(t, rx);
+  const feetIn = leftIn || rightIn;
 
   let hullIn = false;
   const hull = BODY.hull;
@@ -254,8 +261,10 @@ function touch(s, t) {
   const pad = t.pad;
   const lo = Math.min(lx, rx);
   const hi = Math.max(lx, rx);
+  // A foot that hits a steep face (the side of a mesa) counts as hitting the wall.
+  const onWall = (leftIn && steep(t, lx)) || (rightIn && steep(t, rx));
   let cause = '';
-  if (hullIn) cause = 'wall';
+  if (hullIn || onWall) cause = 'wall';
   else if (lo < pad.x0 - 1 || hi > pad.x1 + 1) cause = 'offpad';
   else if (s.vy > LIMITS.vy) cause = 'fast';
   else if (Math.abs(s.vx) > LIMITS.vx) cause = 'slide';
