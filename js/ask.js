@@ -41,12 +41,32 @@ const SECTION_CHIPS = {
   contact: ['contact', 'resume', 'why-hire'],
 };
 
-/** @typedef {{ id: string, asks: string[], answer: string, points?: string[], detail?: string[], next?: string[], link: string | null }} Entry */
-/** @typedef {{ entries: Entry[], fallback: string }} Bank */
+// Phrases that mean "keep going": they continue the last answer through its first follow-up.
+const MORE = /^(?:tell me more|more|go on|keep going|continue|elaborate|what else|anything else|and then|say more)\W*$/i;
+
+/** @typedef {{ id: string, chat?: boolean, asks: string[], answer: string, points?: string[], detail?: string[], next?: string[], link: string | null }} Entry */
+/** @typedef {{ entries: Entry[], fallback: string, fallbacks?: string[] }} Bank */
+
+/**
+ * The answer to show, or null to decline: the same rule as desertcache/ask's js/match.js
+ * (bestMatch), kept here too so this page works with an ask deploy that predates it.
+ * @param {Ranked[]} ranked
+ * @param {number} threshold
+ * @param {number} chatMin
+ * @returns {Ranked | null}
+ */
+function localBestMatch(ranked, threshold, chatMin) {
+  for (const r of ranked) {
+    if (r.score < threshold) return null;
+    if (!r.entry.chat || r.score >= chatMin) return r;
+  }
+  return null;
+}
 /** @typedef {{ entry: Entry, score: number, matched: string, vector: Float32Array }} Ranked */
 /**
  * @typedef {{
- *   entries: Entry[], byId: Map<string, Entry>, fallback: string, starters: Entry[], threshold: number,
+ *   entries: Entry[], byId: Map<string, Entry>, fallbacks: string[], starters: Entry[], threshold: number, chatMin: number,
+ *   bestMatch(ranked: Ranked[], threshold: number, chatMin: number): Ranked | null,
  *   embedder: { dim: number, pieces(t: string): { text: string, known: boolean }[] },
  *   matcher: { size: number, rank(q: string): Ranked[] },
  * }} Engine
@@ -77,7 +97,7 @@ function el(tag, cls, text) {
  */
 async function loadEngine(progress, bankP) {
   /** @type {any[]} */
-  const [{ createEmbedder }, { createMatcher }, config] = await Promise.all(
+  const [{ createEmbedder }, { createMatcher, bestMatch }, config] = await Promise.all(
     ['js/embed.js', 'js/match.js', 'js/config.js'].map((p) => import(/* @vite-ignore */ ASK + p)),
   );
   const [bank, vocab] = await Promise.all([
@@ -109,9 +129,11 @@ async function loadEngine(progress, bankP) {
   return {
     entries,
     byId,
-    fallback: bank.fallback,
+    fallbacks: bank.fallbacks?.length ? bank.fallbacks : [bank.fallback],
     starters: config.STARTERS.map((/** @type {string} */ id) => byId.get(id)).filter(Boolean),
     threshold: config.THRESHOLD,
+    chatMin: config.CHAT_MIN ?? 0.6,
+    bestMatch: bestMatch ?? localBestMatch,
     embedder,
     matcher: createMatcher(entries, embedder, config.MATCH_OPTIONS),
   };
@@ -371,6 +393,10 @@ export function initAsk() {
   };
 
   let asking = false;
+  /** @type {Set<string>} answers already given in this conversation */
+  const answered = new Set();
+  /** @type {Entry | null} the last answer given, for "tell me more" */
+  let lastEntry = null;
   /** @param {string} raw */
   async function ask(raw) {
     const q = raw.trim();
@@ -393,11 +419,15 @@ export function initAsk() {
       loadingLine.remove();
       loadingLine = null;
 
+      // "Tell me more" and friends continue the last answer through its first follow-up.
+      const followUp = MORE.test(q) && lastEntry?.next?.length ? eng.byId.get(lastEntry.next[0]) ?? null : null;
+
       const t0 = performance.now();
-      const ranked = eng.matcher.rank(q);
+      const ranked = eng.matcher.rank(followUp ? followUp.asks[0] : q);
       const ms = performance.now() - t0;
       const top = ranked[0];
-      const hit = top.score >= eng.threshold;
+      const best = followUp ? ranked.find((r) => r.entry.id === followUp.id) ?? null : eng.bestMatch(ranked, eng.threshold, eng.chatMin);
+      const hit = Boolean(best);
 
       // The trace: what the model actually did, paced to be read.
       const trace = /** @type {HTMLDetailsElement} */ (el('details', 'dock-trace'));
@@ -419,6 +449,11 @@ export function initAsk() {
         li.classList.replace('is-running', 'is-done');
       };
 
+      if (followUp && lastEntry) {
+        const prev = lastEntry;
+        await step('Picked up the thread', () => el('span', 'dock-detail', `continuing from “${prev.asks[0]}”`));
+        await step('Found the next part of the story', () => el('span', 'dock-detail', `“${followUp.asks[0]}”`));
+      } else {
       await step('Read your question', () => {
         const pieces = eng.embedder.pieces(q);
         const box = el('div', 'dock-pieces');
@@ -435,7 +470,7 @@ export function initAsk() {
       await step('Ranked the closest answers', () => {
         const list = el('ul', 'dock-matches');
         for (const r of ranked.slice(0, 3)) {
-          const li = el('li', r === top && hit ? 'is-best' : '');
+          const li = el('li', r === best ? 'is-best' : '');
           const bar = el('span', 'dock-bar-fill');
           bar.style.setProperty('--w', `${Math.max(0, Math.min(1, r.score)) * 100}%`);
           li.append(el('span', 'dock-m-text', `“${r.matched}”`), bar, el('span', 'dock-m-score', r.score.toFixed(2)));
@@ -443,18 +478,25 @@ export function initAsk() {
         }
         return list;
       });
-      // The confidence check: does the best match clear the threshold?
-      await step(hit ? 'Confident in the best match' : 'Not confident enough to answer', () => el('span', 'dock-detail', hit
-        ? `${top.score.toFixed(2)} clears the ${eng.threshold} bar`
-        : `${top.score.toFixed(2)} is under the ${eng.threshold} bar, so it won't guess`));
+      // The confidence check: does the best match clear its bar? (Small talk needs a higher one.)
+      await step(best ? 'Confident in the best match' : 'Not confident enough to answer', () => el('span', 'dock-detail', best
+        ? `${best.score.toFixed(2)} clears the ${best.entry.chat ? eng.chatMin : eng.threshold} bar${best.entry.chat ? ' for small talk' : ''}`
+        : `${top.score.toFixed(2)} is under the ${top.entry.chat ? eng.chatMin : eng.threshold} bar, so it won't guess`));
+      }
       await wait(STEP_MS * 0.7);
       trace.open = false;
       trace.classList.add('is-done');
       sumText.textContent = `Searched ${eng.matcher.size} phrasings · ${ms < 1 ? '<1' : ms.toFixed(1)} ms`;
 
-      const entry = hit ? top.entry : null;
+      const entry = hit && best ? best.entry : null;
       setOrb('SPEAKING');
-      const { box, words: n } = answerBlock(entry ? entry.answer : eng.fallback, entry?.points, entry?.detail);
+      // Conversation awareness: say so when continuing a thread or repeating an answer, and
+      // vary the "I don't know" line instead of repeating one.
+      const aside = followUp ? "Here's more on that." : entry && answered.has(entry.id) ? 'Like I said a moment ago:' : null;
+      if (aside) bot.append(el('p', 'dock-aside', aside));
+      const fallback = eng.fallbacks[Math.floor(Math.random() * eng.fallbacks.length)];
+      const { box, words: n } = answerBlock(entry ? entry.answer : fallback, entry?.points, entry?.detail);
+      if (entry) { answered.add(entry.id); lastEntry = entry; }
       box.style.setProperty('--wms', `${WORD_MS}ms`);
       bot.append(box);
       scrollDown();

@@ -2232,6 +2232,7 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
 .dock-answer { font-size: 0.9375rem; line-height: 1.6; text-wrap: pretty; }
 .dock-answer + .dock-answer { margin-top: 8px; }
 .dock-suggest .dock-answer { color: var(--g-ink-2); }
+.dock-aside { margin-bottom: 4px; font-size: 0.8125rem; font-style: italic; color: var(--g-ink-3); }
 .dock-answer a { color: var(--g-accent-ink); }
 .dock-answer-block .w { animation: dock-word 0.32s var(--ease) both; animation-delay: calc(var(--i) * var(--wms, 16ms)); }
 /* an answer's highlights, marked with small red-rock diamonds */
