@@ -13,9 +13,15 @@ import snake from './games/snake.js';
 import flappy from './games/flappy.js';
 import breakout from './games/breakout.js';
 import asteroids from './games/asteroids.js';
+import pacmanAi from './games/pacman-ai.js';
+import four from './games/four.js';
+import evolve from './games/evolve.js';
+import crossing from './games/crossing.js';
+import swarm from './games/swarm.js';
+import quadra from './games/quadra.js';
 import { createAttract } from './games/attract.js';
 
-const GAMES = [pacman, snake, flappy, breakout, asteroids];
+const GAMES = [pacman, pacmanAi, snake, flappy, breakout, asteroids, four, evolve, crossing, swarm, quadra];
 
 const params = new URLSearchParams(location.search);
 const DEBUG = params.get('debug') === '1';
@@ -223,7 +229,8 @@ document.getElementById('btn-restart').addEventListener('click', () => {
 
 document.getElementById('btn-menu').addEventListener('click', showMenu);
 
-// Menu keyboard navigation: arrows move focus, Enter starts, 1-5 quick-start.
+// Menu keyboard navigation: arrows move focus, Enter starts, 1-9 and 0 quick-start the
+// numbered titles (0 is 10), and A starts "Watch the AI play".
 const menuButtons = [...menuScreen.querySelectorAll('.arcade-btn')];
 document.addEventListener('keydown', (e) => {
   if (menuScreen.style.display === 'none') return;
@@ -234,16 +241,19 @@ document.addEventListener('keydown', (e) => {
   } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
     e.preventDefault();
     menuButtons[(idx - 1 + menuButtons.length) % menuButtons.length].focus();
-  } else if (/^[1-5]$/.test(e.key)) {
-    const btn = menuButtons[Number(e.key) - 1];
+  } else if (/^[0-9]$/.test(e.key)) {
+    const num = e.key === '0' ? '10' : e.key.padStart(2, '0');
+    const btn = menuButtons.find((b) => b.querySelector('.num')?.textContent === num);
     if (btn) btn.click();
+  } else if (e.key === 'a' || e.key === 'A') {
+    document.getElementById('btn-pacmanai')?.click();
   }
 });
 
 renderPBs();
 showMenu();
 
-// Deep links: ?game=snake|flappy|breakout|asteroids (pacman arrives later).
+// Deep links: ?game=<id>, e.g. ?game=pacman, ?game=pacmanai, ?game=four, ?game=quadra.
 const requested = (params.get('game') || '').toUpperCase();
 const deepLink = GAMES.find((g) => g.id === requested);
 if (deepLink) startGame(deepLink);
