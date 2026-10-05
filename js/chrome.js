@@ -40,24 +40,31 @@ export function initNav() {
 
 /**
  * Highlight the nav link for whichever section crosses the middle of the
- * viewport. Sections without a link borrow their neighbour's.
+ * viewport. Sections without a link borrow their neighbour's. The phone menu
+ * links every section, so it needs no borrowing.
  */
 export function initScrollSpy() {
   const links = /** @type {HTMLAnchorElement[]} */ ([...document.querySelectorAll('.nav-links a[href^="#"]')]);
-  if (!links.length || !('IntersectionObserver' in window)) return;
+  const menuLinks = /** @type {HTMLAnchorElement[]} */ ([...document.querySelectorAll('.nav-menu a[href^="#"]')]);
+  if (!(links.length || menuLinks.length) || !('IntersectionObserver' in window)) return;
   /** @type {Record<string, string>} */
-  const alias = { migration: 'work', stack: 'about' };
+  const alias = { work: 'featured', stack: 'about' };
   const byId = new Map(links.map((a) => [a.hash.slice(1), a]));
+  const menuById = new Map(menuLinks.map((a) => [a.hash.slice(1), a]));
+  /** @param {HTMLAnchorElement[]} group @param {HTMLAnchorElement | undefined} active */
+  const mark = (group, active) => {
+    for (const a of group) {
+      if (a === active) a.setAttribute('aria-current', 'true');
+      else a.removeAttribute('aria-current');
+    }
+  };
 
   const io = new IntersectionObserver((entries) => {
     for (const entry of entries) {
       if (!entry.isIntersecting) continue;
       const id = entry.target.id;
-      const active = byId.get(alias[id] ?? id);
-      for (const a of links) {
-        if (a === active) a.setAttribute('aria-current', 'true');
-        else a.removeAttribute('aria-current');
-      }
+      mark(links, byId.get(alias[id] ?? id));
+      mark(menuLinks, menuById.get(id));
     }
   }, { rootMargin: '-45% 0px -54% 0px' });
 
