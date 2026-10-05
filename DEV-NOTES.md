@@ -431,9 +431,17 @@ along its floor. `js/page.js` is their script entry (theme toggle, nav).
   games keep helpers in a folder of the same name (`games/swarm/`, ...).
   PACMANAI is the Pac-Man module started with `env.autopilot = true`; the
   autopilot lives in `games/pacman/autopilot.js` and must leave PACMAN as is.
-- Menu keys: 1-9 and 0 start the numbered tiles (0 is 10), A starts the AI
-  Pac-Man. Deep links: `?game=<id>`; add `&debug=1` for a seeded RNG and
-  `window.__arcade` (state plus per-game test actions).
+- **Twelve titles (2026-10-05):** PINBALL (Dust Devil Pinball) and MESA (Mesa
+  Lander), plus MESAAI ("Watch it learn"), the Mesa module started with
+  `env.learn = true`. PINBALL runs on the `tall` screen mode (450x720 vector).
+  Each mode in `engine/canvas.js` `MODES` carries its own display caps
+  (`maxW`/`maxH`, CSS px); the viewport still caps height at 72%. Landscape and
+  portrait kept their old caps (800/520 and 560/620), so the older games size
+  exactly as before.
+- Menu keys: 1-9, 0, - and = start the numbered tiles (0 is 10, - is 11, = is
+  12), A starts the AI Pac-Man and L starts Watch it learn. Deep links:
+  `?game=<id>`; add `&debug=1` for a seeded RNG and `window.__arcade` (state
+  plus per-game test actions).
 - Style: Crossing and QUADRA are flat ink-and-paper in the desert palette
   (Crossing draws the site's own roadrunner and plants from `assets/`); Swarm,
   Asteroids and the rest are neon vector. No trademarked names or the source
@@ -543,10 +551,9 @@ row (PR #12), which is gone.
 - All asset paths RELATIVE (no leading `/`) — site lives at /portfolio/ sub-path, no CNAME.
 - `.nojekyll` must stay (serves `arcade/` module folder verbatim).
 - `mockups/` is untracked on purpose — never `git add -A`.
-- Play pages (arcade.html, starship.html) and skincare.html still carry the
-  v4 look (cream, terracotta, Instrument Serif) in their own inline CSS or
-  Tailwind build. They don't use `css/site.css`, so v5.1 didn't reach them;
-  moving them over is open work.
+- Every play page loads `css/site.css` for the chrome (since 2026-09-27):
+  arcade.html and starship.html add `css/play.css` (see "The Lab's rooms"),
+  and skincare.html adds its own Tailwind build, `skincare.css`.
 - starship.html embeds https://desertcache.github.io/starship/ click-to-load only
   (a live Three.js iframe would burn GPU from page load otherwise).
 - The homepage's section ids (`#work`, `#lab`, `#about`, `#contact`) are

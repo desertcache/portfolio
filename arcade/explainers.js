@@ -9,10 +9,10 @@
 export const EXPLAINERS = {
   MENU: {
     name: 'The cabinet',
-    title: 'One small engine, ten games',
-    body: 'Every game is a plug-in module on the same tiny engine: a fixed loop of 60 steps a second, a fixed screen (800 by 500, or Pac-Man\'s original 224 by 288) scaled to fit yours, and sound synthesized live with Web Audio. There are no sound files, no libraries and no build step. Switching games is instant, and the address bar follows along, so any game can be linked directly.',
+    title: 'One small engine, twelve games',
+    body: 'Every game is a plug-in module on the same tiny engine: a fixed loop of 60 steps a second, a fixed screen (800 by 500, a tall 450 by 720 for the pinball table, or Pac-Man\'s original 224 by 288) scaled to fit yours, and sound synthesized live with Web Audio. There are no sound files, no libraries and no build step. Switching games is instant, and the address bar follows along, so any game can be linked directly.',
     rows: [
-      ['Keys', '1 to 9 and 0 start a game, A watches the AI, [ and ] switch'],
+      ['Keys', '1 to 9, 0, - and = start a game, A watches the AI play, L watches it learn, [ and ] switch'],
       ['Touch', 'Tap a game below'],
       ['Dependencies', '0'],
     ],
