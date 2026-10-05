@@ -515,6 +515,15 @@ row (PR #12), which is gone.
   repo's `js/embed.js`, `js/match.js` and `js/config.js` and fetches its `data/bank.json` and
   `models/` from `https://desertcache.github.io/ask/` on first focus or hover, never at page load.
   Those modules are a public contract: a change there must stay compatible with this file.
+- **The conversation layer (2026-10-05) is that repo's `js/converse.js`.** It decides each turn:
+  follow-ups read against the last answer (one sentence of it, or a linked answer), two questions in
+  one message, typo repair, "Sam" read as "he", "Did you mean" chips, and a "tell me more" that skips
+  answers already shown. Every reply is still an approved answer or a sentence copied from one. Its
+  `turn()` returns the trace steps, the answer parts and the chips, and this file only renders them
+  (`stepDetail`, the parts loop in `ask`). If `converse.js` fails to load or throws (an older ask
+  deploy, a cache), `legacyConversation` gives the same Turn shape from plain matching, so the bar
+  keeps working; the ask repo ships first either way. The trace text speaks of the box in the third
+  person here (`voice: 'third'`: "so it won't guess") and the first person on its own page.
 - **The orb is the real Samantha orb**, `desertcache/samantha-ui` in controlled mode
   (`?embed=1&control=1&transparent=1`: no scene background or post-processing, so it floats on the
   glass with no disc; the glow is a CSS drop-shadow). This page sets its state by `postMessage({ type: 'orb:state', state })`:
@@ -523,8 +532,10 @@ row (PR #12), which is gone.
   localhost. It loads after the page does, for every visitor except reduced motion (still CSS orb).
 - **The trace is the real matching work**, paced (~620 ms a step, ~3 s in all, Sam's call) so it
   reads as thinking: word pieces, the vector, the comparison, the ranked answers, and the confidence
-  check against the threshold. Its summary reports the real compute time. Keep it that way: the bar
-  promises nothing is made up.
+  check against the threshold, plus any conversation step (a typo fixed, a split, a follow-up). A
+  turn with more steps keeps the ~3 s total (`TRACE_MS`), so each step is shorter. Scores are shown
+  rounded down, so one just under the bar never reads as the bar. Its summary reports the real
+  compute time. Keep it that way: the bar promises nothing is made up.
 - **Answers have a lead, highlights and curated follow-ups** (bank v2: `answer`, `points`, `next`).
   Chips use `next`, falling back to the next-closest matches. The send button is drawn like the page's
   illustrations (paper disc, 1.6px ink line, red-rock arrow; red-rock fill on hover), and it draws
