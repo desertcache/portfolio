@@ -127,14 +127,18 @@
   background: rgba(10, 7, 20, 0.6);
   pointer-events: none;
 }
-/* fill-screen mode: the stage (cabinet + game bar) goes fullscreen and the screen takes the room */
+/* The stage wraps the cabinet and the game bar. It is NOT named .arcade-stage: site.css already
+   uses that for the homepage's Lab card (16:9, overflow hidden), which clipped the cabinet. */
+/* while a game plays the cabinet is as tall as its screen; the menu keeps the tall cabinet */
+.arcade-cabinet.is-playing { min-height: 0; }
 /* big monitors: the stage breaks out of the text column so the screen can grow */
 @media (min-width: 1200px) {
-  .arcade-stage { width: min(1360px, calc(100vw - 80px)); margin-left: calc(50% - min(680px, 50vw - 40px)); }
+  .cabinet-stage { width: min(1360px, calc(100vw - 80px)); margin-left: calc(50% - min(680px, 50vw - 40px)); }
 }
-.arcade-stage:fullscreen { display: flex; flex-direction: column; width: 100%; margin-left: 0; overflow: auto; background: #0a0714; }
-.arcade-stage:fullscreen .arcade-cabinet { flex: 1; min-height: 0; border: 0; border-radius: 0; }
-.arcade-stage:fullscreen .game-deck { margin-top: 0; border-width: 1px 0 0; border-radius: 0; }
+/* fill-screen mode: the stage (cabinet + game bar) goes fullscreen and the screen takes the room */
+.cabinet-stage:fullscreen { display: flex; flex-direction: column; width: 100%; margin-left: 0; overflow: auto; background: #0a0714; }
+.cabinet-stage:fullscreen .arcade-cabinet { flex: 1; min-height: 0; border: 0; border-radius: 0; }
+.cabinet-stage:fullscreen .game-deck { margin-top: 0; border-width: 1px 0 0; border-radius: 0; }
 @media (max-width: 600px) { #btn-fill { display: none; } }
 /* the CRT: bezel, scanlines, vignette (static CSS) */
 .screen {

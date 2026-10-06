@@ -106,6 +106,7 @@ if (fillBtn && stage && stage.requestFullscreen && document.fullscreenEnabled) {
   document.addEventListener('fullscreenchange', () => {
     fillBtn.textContent = document.fullscreenElement ? 'EXIT FILL' : 'FILL SCREEN';
     screen.resize();
+    showStage(false); // leaving fill-screen can leave the page scrolled off the stage
   });
 } else if (fillBtn) {
   fillBtn.hidden = true;
@@ -274,7 +275,18 @@ function stopScene() {
   activeGame = null;
 }
 
-function startGame(entry) {
+// Bring the whole stage (the cabinet and the game bar) into the window when a game starts.
+// engine/canvas.js sizes the screen so the stage fits with its top just under the nav; if any
+// of it is out of view, scroll it up there. Smooth after a click, instant on page load.
+function showStage(instant) {
+  if (!stage || document.fullscreenElement) return;
+  const r = stage.getBoundingClientRect();
+  const navH = document.getElementById('nav')?.offsetHeight || 0;
+  if (r.top >= navH && r.bottom <= window.innerHeight) return;
+  stage.scrollIntoView({ block: 'start', behavior: instant || REDUCED_MOTION ? 'auto' : 'smooth' });
+}
+
+function startGame(entry, instant = false) {
   drainToken++;
   attractLoop.stop();
   if (loop) loop.stop();
@@ -290,6 +302,7 @@ function startGame(entry) {
   currentScoreText.textContent = '0';
 
   screen.setMode(entry.mode);
+  showStage(instant);
   input.attach();
 
   const env = {
@@ -400,4 +413,4 @@ showMenu();
 // Deep links: ?game=<id>, e.g. ?game=pacman, ?game=pacmanai, ?game=four, ?game=pinball, ?game=mesaai.
 const requested = (params.get('game') || '').toUpperCase();
 const deepLink = GAMES.find((g) => g.id === requested);
-if (deepLink) startGame(deepLink);
+if (deepLink) startGame(deepLink, true);

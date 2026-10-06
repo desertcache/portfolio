@@ -435,9 +435,8 @@ along its floor. `js/page.js` is their script entry (theme toggle, nav).
   Lander), plus MESAAI ("Watch it learn"), the Mesa module started with
   `env.learn = true`. PINBALL runs on the `tall` screen mode (450x720 vector).
   Each mode in `engine/canvas.js` `MODES` carries its own display caps
-  (`maxW`/`maxH`, CSS px); the viewport still caps height at 72%. Landscape and
-  portrait kept their old caps (800/520 and 560/620), so the older games size
-  exactly as before.
+  (`maxW`/`maxH`, CSS px); the window caps the height too (see "Screen size and
+  Fill screen" below, which also has the current caps).
 - Menu keys: 1-9, 0, - and = start the numbered tiles (0 is 10, - is 11, = is
   12), A starts the AI Pac-Man and L starts Watch it learn. Deep links:
   `?game=<id>`; add `&debug=1` for a seeded RNG and `window.__arcade` (state
@@ -478,10 +477,21 @@ along its floor. `js/page.js` is their script entry (theme toggle, nav).
   `LABELS` entry, and (if it has an AI twin) an `AI_TWIN` / `HUMAN_TWIN` pair.
 - **Screen size and Fill screen (2026-10-05).** The display canvas used to cap at 800px and 72% of
   the window height. `engine/canvas.js` now caps per mode at 1200x760 (landscape), 600x860 (tall) and
-  700x800 (portrait), and the height budget is `innerHeight - PAGE_CHROME` (170: nav, cabinet frame,
-  air). Cabinet padding and bezel were trimmed (44px top for the bar, 10px bezel; the CRT overlay,
-  scrim and HUD offsets follow). Above 1200px `.arcade-stage` breaks out of the text column
-  (up to 1360px). The stage wraps the cabinet and the game bar; the cabinet bar's FILL SCREEN button
+  700x800 (portrait), and the height budget is `innerHeight - pageChrome()`: the nav, the cabinet's
+  padding and the bezel, the game bar and its gap, all MEASURED from the live layout, plus 24px of
+  air (12 under the nav, where `startGame` scrolls the stage via `showStage()` in `main.js`, which
+  honors the html `scroll-padding-top`; 12 below). So cabinet plus game bar fit the window with no
+  scrolling, down to a 220px screen (`MIN_H`); a landscape phone can't fit and keeps that floor.
+  While a game runs the cabinet drops its 520px menu min-height (`.is-playing`). Pac-Man's integer
+  device-pixel scaling still steps in whole multiples, so at 1x DPR a ~780px window gives it 1x.
+  Cabinet padding and bezel were trimmed (44px top for the bar, 10px bezel; the CRT overlay,
+  scrim and HUD offsets follow). Above 1200px `.cabinet-stage` breaks out of the text column
+  (up to 1360px). **The wrapper is `.cabinet-stage`, never `.arcade-stage`:** `site.css` styles
+  `.arcade-stage` for the homepage Lab card (16:9, `overflow: hidden`, two decorative bars), and
+  the first version of this wrapper reused the name, so at 1360px wide it was pinned to 765px and
+  clipped the bottom of the cabinet and the whole game bar. `play.css` and `site.css` share one
+  namespace on the arcade page, so grep both before naming a class. The stage wraps the cabinet
+  and the game bar; the cabinet bar's FILL SCREEN button
   calls `requestFullscreen()` on it, and in fullscreen `availableBox()` ignores the caps and takes
   the room's own height. Hidden under 600px and where the browser can't fullscreen an element
   (iPhone). Vector games are scaled up from their fixed logical size, so they soften a little past

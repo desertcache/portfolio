@@ -12,9 +12,11 @@ export const MODES = {
   portrait: { w: 224, h: 288, pixelArt: true, maxW: 700, maxH: 800 },
 };
 
-// Vertical space the page keeps for itself while a game is on screen: the fixed nav (68),
-// the cabinet's padding and bezel (about 80), and a little air.
-const PAGE_CHROME = 170;
+// Air kept around the stage (12 under the nav, where the page scrolls it to, and 12 below), and
+// the shortest screen a short window will shrink the game to. The rest of the vertical budget
+// is measured (see pageChrome in createScreen).
+const AIR = 24;
+const MIN_H = 220;
 
 export function createScreen(displayCanvas) {
   const displayCtx = displayCanvas.getContext('2d');
@@ -38,6 +40,25 @@ export function createScreen(displayCanvas) {
   const px = (/** @type {CSSStyleDeclaration} */ s, /** @type {string[]} */ props) =>
     props.reduce((sum, p) => sum + (parseFloat(s.getPropertyValue(p)) || 0), 0);
 
+  // The game bar under the cabinet is part of the stage, so the screen's height budget has to
+  // leave room for it too.
+  const deck = room.closest('.cabinet-stage')?.querySelector('.game-deck') ?? null;
+
+  // Everything in the window that isn't the screen while a game plays: the fixed nav, the
+  // cabinet's padding and the bezel around the screen, the game bar and its gap, and some air.
+  // The page scrolls the stage to sit just under the nav (arcade/main.js), so the whole stage
+  // is in view when the screen takes the rest.
+  function verticalEdge() {
+    return room === bezel ? 0
+      : px(getComputedStyle(room), ['padding-top', 'padding-bottom', 'border-top-width', 'border-bottom-width'])
+        + px(getComputedStyle(bezel), ['padding-top', 'padding-bottom', 'border-top-width', 'border-bottom-width']);
+  }
+  function pageChrome() {
+    const nav = document.getElementById('nav');
+    const bar = deck ? deck.offsetHeight + px(getComputedStyle(deck), ['margin-top']) : 0;
+    return (nav ? nav.offsetHeight : 68) + verticalEdge() + bar + AIR;
+  }
+
   function availableBox() {
     // clientWidth already excludes the room's border; take off its padding, then the
     // bezel's padding and border so the bezel's outer edge fits the room.
@@ -48,14 +69,11 @@ export function createScreen(displayCanvas) {
     const w = Math.max(160, roomInner - bezelEdge);
     if (document.fullscreenElement) {
       // Fill-screen mode: the stage fixes the room's height, so the screen takes all of it.
-      const vEdge = room === bezel ? 0
-        : px(getComputedStyle(room), ['padding-top', 'padding-bottom'])
-          + px(getComputedStyle(bezel), ['padding-top', 'padding-bottom', 'border-top-width', 'border-bottom-width']);
-      return { w, h: Math.max(160, room.clientHeight - vEdge) };
+      return { w, h: Math.max(160, room.clientHeight - verticalEdge()) };
     }
-    // Height budget: leave room for the page header and the cabinet's frame so the whole
-    // screen stays visible without scrolling.
-    const h = Math.max(160, Math.min(window.innerHeight - PAGE_CHROME, mode.maxH));
+    // Height budget: what the window leaves once the nav, the cabinet's frame and the game bar
+    // are in, so the whole stage fits without scrolling.
+    const h = Math.max(MIN_H, Math.min(window.innerHeight - pageChrome(), mode.maxH));
     return { w: Math.min(w, mode.maxW), h };
   }
 
@@ -99,6 +117,7 @@ export function createScreen(displayCanvas) {
 
   const observer = new ResizeObserver(() => resize());
   observer.observe(room);
+  if (deck) observer.observe(deck); // its height is part of the budget (fonts, wrapping)
   window.addEventListener('resize', resize);
 
   setMode('landscape');
