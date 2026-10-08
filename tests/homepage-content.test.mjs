@@ -109,6 +109,32 @@ test('the 404 page uses absolute paths, since it is served at whatever URL was m
   }
 });
 
+test('fonts are self-hosted: no page waits on Google Fonts, and every preload points at a real file', () => {
+  // The Google stylesheet blocked first paint on every page (the 2026-10-07 audit measured
+  // seconds on a cold phone). The faces live in css/site.css and assets/fonts/.
+  const dir = (d) => readdirSync(new URL(`../${d}/`, import.meta.url)).filter((f) => f.endsWith('.html')).map((f) => `${d}/${f}`);
+  const pages = ['index.html', 'arcade.html', 'starship.html', 'skincare.html', '404.html', ...WORK_SAMPLES,
+    'blog/index.html', 'blog/_post.template.html', ...dir('blog/posts'), ...dir('blog/research')];
+  for (const path of pages) {
+    const html = read(path);
+    assert.doesNotMatch(html, /fonts\.(?:googleapis|gstatic)\.com/, `${path} still loads Google Fonts`);
+    // One preload, at low priority: it starts the headline font early without beating the
+    // stylesheet to the network (two high-priority preloads cost ~230 ms of first paint on slow 4G).
+    const preloads = [...html.matchAll(/<link rel="preload" href="([^"]+\.woff2)" as="font" type="font\/woff2" crossorigin fetchpriority="low">/g)].map((m) => m[1]);
+    assert.equal(preloads.length, 1, `${path} should preload the Archivo Latin file, at low priority`);
+    assert.match(preloads[0], /archivo-latin\.woff2$/, `${path} preloads the wrong font`);
+    // The post template's links are written for where its posts land: blog/posts/.
+    const base = new URL(`../${path === 'blog/_post.template.html' ? 'blog/posts/_template.html' : path}`, import.meta.url);
+    for (const href of preloads) {
+      const target = href.startsWith('/portfolio/') ? new URL(`../${href.slice('/portfolio/'.length)}`, import.meta.url) : new URL(href, base);
+      assert.ok(readFileSync(target).length > 1000, `${path}: ${href} is missing`);
+    }
+  }
+  for (const [, url] of read('css/site.css').matchAll(/url\("(\.\.\/assets\/fonts\/[^"]+)"\)/g)) {
+    assert.ok(readFileSync(new URL(`../css/${url}`, import.meta.url)).length > 1000, `site.css: ${url} is missing`);
+  }
+});
+
 test('every in-page link on the homepage points at an element that exists', () => {
   const ids = new Set([...HOME.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
   const targets = [...HOME.matchAll(/\shref="#([^"]+)"/g)].map((m) => m[1]);
