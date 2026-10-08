@@ -1,0 +1,83 @@
+/* Fig. 1 in work/ai-copilot-rollout.html: the architecture as three tiers of
+   plain boxes on the site's tokens, so it reads in both themes, reflows to one
+   column on a phone, and stays real text for screen readers and search. */
+.post-body > .arch { margin: 6px 0 2.2em; }
+.arch-tier { display: grid; gap: 10px; }
+.arch-tier-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.arch-where {
+  margin: 0 0 2px;
+  font: 500 semi-condensed 0.6875rem/1.4 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.arch-tier-3 .arch-where { grid-column: 1 / -1; }
+.arch-box {
+  padding: 14px 16px 15px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.post-body .arch-box p { margin: 0; }
+.post-body .arch-name { font-weight: 700; line-height: 1.3; color: var(--ink); }
+.arch-name span {
+  margin-left: 8px;
+  font: 500 semi-condensed 0.75rem var(--mono);
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+}
+.post-body .arch-box .arch-what { margin-top: 6px; font-size: 0.9rem; line-height: 1.5; color: var(--ink-2); }
+.post-body .arch-parts { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; padding: 0; list-style: none; }
+.post-body .arch-parts li {
+  margin: 0;
+  padding: 3px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font: 500 semi-condensed 0.75rem/1.5 var(--mono);
+  color: var(--ink-2);
+}
+/* the connector: a dashed red-rock line with what crosses it */
+.arch-link {
+  position: relative;
+  margin: 0;
+  padding: 12px 0 12px 26px;
+  font: 500 semi-condensed 0.6875rem/1.4 var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--accent-ink);
+}
+.arch-link::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 0;
+  bottom: 0;
+  border-left: 1.5px dashed var(--accent);
+}
+.arch figcaption { margin-top: 14px; font-size: 0.875rem; line-height: 1.55; color: var(--ink-3); }
+.arch .fig { margin-right: 6px; font: 600 semi-condensed 0.75rem var(--mono); color: var(--ink); }
+
+/* "What broke, and the fix" is prose in cells, not data: on a desktop it keeps
+   blog.css's table, but the cells may wrap, and on a phone each row becomes a
+   small labelled card instead of a table scrolling sideways. */
+.post-body .fix-table td:first-child { white-space: normal; min-width: 12rem; }
+.post-body .fix-table td { min-width: 10rem; }
+
+@media (max-width: 640px) {
+  .arch-tier-3 { grid-template-columns: 1fr; }
+  .post-body > table.fix-table { width: auto; overflow: visible; }
+  .fix-table thead { display: none; }
+  .fix-table tbody, .fix-table tr, .post-body .fix-table td { display: block; }
+  .fix-table tr { padding: 12px 0 14px; border-bottom: 1px solid var(--line); }
+  .fix-table tr:last-child { border-bottom: 0; }
+  .post-body .fix-table td { min-width: 0; padding: 0; border: 0; }
+  .post-body .fix-table td::before {
+    content: attr(data-label);
+    display: block;
+    margin: 10px 0 2px;
+    font: 500 semi-condensed 0.6875rem/1.3 var(--mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .post-body .fix-table td:first-child::before { margin-top: 0; }
+}
