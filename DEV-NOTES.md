@@ -627,6 +627,13 @@ row (PR #12), which is gone.
 - The glass turns to night glass in dark mode and while the Lab is behind it (`.on-night`, set on
   scroll). `.has-dock` pads the footer and lifts the toast above the bar. Hidden in print and while
   a case study is open. `/` focuses it; Esc folds the answers.
+- **It never sits on the hero (2026-10-08).** On laptops (1366x768, 1440x900, 1536x730) and phones
+  it used to land on the hero's buttons, the Claude Code note and the field notes at first paint.
+  `ask.js` ("staying clear of the hero") keeps it tucked (`.is-tucked`: see-through and
+  click-through, still focusable) while it would cover hero content that starts on the first screen,
+  and it slides in once that content scrolls clear. Focus, `/` and the Lab's button bring it back,
+  and once used it stays. `html.has-dock` sets `scroll-padding-bottom` so keyboard focus scrolls
+  clear of it. Check with a headless pass at those sizes before changing the hero.
 
 ## Getting around: the start of the route and the phone menu (2026-10-05)
 
@@ -641,11 +648,30 @@ row (PR #12), which is gone.
   are scoped with `.nav:has(.nav-menu-toggle)`, so pages without the menu keep their header.
 - The bar's top-of-page chips start with "Where should I start?" (`start-here` in desertcache/ask),
   which walks a three-stop route. The Lab card and `work/answer-finder.html` quote the bank's size
-  (59 answers, 465 phrasings); a test keeps the two pages in step, so update both when the bank grows.
+  (its answer and phrasing counts); a test keeps the two pages in step, so update both when the bank
+  grows.
+- **Section order (2026-10-08):** 01 Featured, 02 Selected work, 03 Background, 04 How I build,
+  05 Lab, 06 Toolkit. Background moved up so the work history starts by ~5,300 px on a laptop
+  (it was ~10,800). Every page's nav reads Work, About, Lab, Contact, and the scroll-spy lights About
+  through How I build and Toolkit (`alias` in `js/chrome.js`).
 
 ## Other invariants
 
 - All asset paths RELATIVE (no leading `/`) — site lives at /portfolio/ sub-path, no CNAME.
+  The one exception is `404.html`: Pages serves it at whatever URL was missing, so its paths are
+  absolute (`/portfolio/...`, a test enforces it). A custom domain would mean editing those.
+- **Fonts are self-hosted (2026-10-08).** No page loads Google Fonts: the `@font-face` rules are
+  section 0 of `css/site.css`, the files and their OFL licenses are in `assets/fonts/` (README
+  there), and each page preloads `archivo-latin.woff2` with `fetchpriority="low"` (measured: two
+  high-priority preloads cost first paint on slow 4G). A test checks every page.
+- **One stylesheet version.** Every page links `css/site.css?v=<same date>`; bump them all together
+  (three different strings used to make visitors re-download it between pages).
+- **Link previews.** Every page someone might paste (homepage, play pages, work samples, blog)
+  carries `og:*` + `twitter:card` tags with an absolute `og:image`; a test enforces it.
+- **Offscreen sections pause their CSS animations** (`js/quiet.js` + `.is-offscreen` in site.css).
+  The hero map (`topo.js`) and the critters (`trails.js`) pause themselves.
+- `sitemap.xml` lists the public pages (not the two noindex work samples, not skincare). Submit
+  it in Search Console: robots.txt only counts at the host root, which this project site isn't.
 - `.nojekyll` must stay (serves `arcade/` module folder verbatim).
 - `mockups/` is untracked on purpose — never `git add -A`.
 - Every play page loads `css/site.css` for the chrome (since 2026-09-27):
