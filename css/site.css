@@ -24,6 +24,67 @@
    component below should ever need its own dark-mode rule.
    ========================================================================== */
 
+/* ---------- 0. Fonts ----------
+   Self-hosted (assets/fonts, SIL OFL 1.1; see its README): Google's Latin and
+   Latin Extended subsets with Google's unicode ranges, so a page only fetches
+   the files its text needs. Every page preloads archivo-latin.woff2 at low
+   priority: it starts early but lets the stylesheet win on a slow phone (two
+   high-priority preloads cost ~230 ms of first paint on emulated slow 4G). */
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url("../assets/fonts/archivo-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url("../assets/fonts/archivo-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Archivo";
+  font-style: italic;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url("../assets/fonts/archivo-italic-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Archivo";
+  font-style: italic;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url("../assets/fonts/archivo-italic-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Martian Mono";
+  font-style: normal;
+  font-weight: 100 800;
+  font-stretch: 75% 112.5%;
+  font-display: swap;
+  src: url("../assets/fonts/martian-mono-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Martian Mono";
+  font-style: normal;
+  font-weight: 100 800;
+  font-stretch: 75% 112.5%;
+  font-display: swap;
+  src: url("../assets/fonts/martian-mono-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 /* ---------- 1. Tokens ---------- */
 :root {
   color-scheme: light;
@@ -199,6 +260,8 @@ html {
   scroll-padding-top: calc(var(--nav-h) + 12px);
   background: var(--bg);
 }
+/* Keyboard focus scrolls clear of the ask bar instead of landing under it. */
+html.has-dock { scroll-padding-bottom: 104px; }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 
 body {
@@ -901,6 +964,9 @@ kbd {
 .mini-stats dd { margin-top: 6px; font: 800 semi-expanded clamp(1.2rem, 1.7vw, 1.45rem)/1.1 var(--display); letter-spacing: -0.03em; }
 .mini-stats small { display: block; margin-top: 4px; font: 400 0.875rem/1.35 var(--sans); letter-spacing: 0; color: var(--ink-3); }
 .step-more { margin-top: 24px; }
+/* "DoorDash's numbers stay internal": says why the results above are words, not figures. */
+.step .step-aside { margin-top: 24px; font-size: 0.875rem; line-height: 1.5; color: var(--ink-3); }
+.step-aside + .step-more { margin-top: 10px; }
 
 @media (max-width: 900px) {
   .mig { grid-template-columns: 1fr; }
@@ -2068,6 +2134,8 @@ html.has-modal { overflow: hidden; }
 /* The first screen animates in with CSS alone, so it never waits on JS. */
 .rise { animation: rise 1s var(--ease-out) both; animation-delay: var(--delay, 0s); }
 @keyframes rise { from { opacity: 0; transform: translateY(18px); } }
+/* A section out of view pauses its looping animations (js/quiet.js). */
+.is-offscreen *, .is-offscreen *::before, .is-offscreen *::after { animation-play-state: paused !important; }
 
 /* Hidden only when JS is running (html.js, set in <head>) so the page still
    reads top to bottom with scripts off. js/motion.js adds .in on scroll. */
@@ -2145,6 +2213,10 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
   transition: opacity 0.5s var(--ease-out), transform 0.6s var(--ease-out);
 }
 .dock.is-in { opacity: 1; transform: translate(-50%, 0); }
+/* Until the hero's first screen has scrolled clear of it, the bar waits out of
+   sight (js/ask.js): see-through and click-through, still reachable by keyboard. */
+.dock:not(.is-in), .dock.is-tucked { pointer-events: none; }
+.dock.is-in.is-tucked { opacity: 0; transform: translate(-50%, 18px); transition-duration: 0.3s, 0.35s; }
 .dock[hidden] { display: none; }
 /* the sheen: light pooling across the top-left of the pane */
 .dock::before {

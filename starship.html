@@ -6,6 +6,16 @@
   <title>Starship Explorer · Samuel Bates</title>
   <meta name="description" content="Board the STREL-7: a first-person walkable starship in Three.js. Zero asset files: every texture and planet is procedural. Built end to end by an AI agent fleet under direction.">
   <link rel="canonical" href="https://desertcache.github.io/portfolio/starship.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Samuel Bates">
+  <meta property="og:title" content="Starship Explorer · Samuel Bates">
+  <meta property="og:description" content="Board the STREL-7: a first-person walkable starship in Three.js. Zero asset files: every texture and planet is procedural. Built end to end by an AI agent fleet under direction.">
+  <meta property="og:url" content="https://desertcache.github.io/portfolio/starship.html">
+  <meta property="og:image" content="https://desertcache.github.io/portfolio/assets/starship-poster.jpg">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="720">
+  <meta property="og:image:alt" content="The STREL-7 corridor in Starship Explorer: burnt-orange door frames and teal floor strips, all generated at runtime.">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#f3ebe6">
 
   <script>
@@ -25,13 +35,11 @@
     })();
   </script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Martian+Mono:wdth,wght@75..112.5,100..800&display=swap">
 
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="css/site.css?v=2026-09-27b">
+  <link rel="preload" href="assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
+  <link rel="stylesheet" href="css/site.css?v=2026-10-08">
   <link rel="stylesheet" href="css/play.css?v=2026-09-27">
   <script type="module" src="js/page.js"></script>
 </head>
@@ -50,8 +58,8 @@
       </a>
       <nav class="nav-links" aria-label="Sections">
         <a href="index.html#work">Work</a>
-        <a href="index.html#lab" aria-current="true">Lab</a>
         <a href="index.html#about">About</a>
+        <a href="index.html#lab" aria-current="true">Lab</a>
         <a href="index.html#contact">Contact</a>
       </nav>
       <div class="nav-actions">
@@ -111,7 +119,7 @@
       <div class="play-notes">
         <p class="label">How it was built</p>
         <div>
-          <p>Built by a fleet of Claude agents working in parallel: one room per agent, an orchestrator enforcing a 300-line file limit and a typed room contract, and a headless Playwright pass screenshotting every named camera before any phase could merge. Ten functional tests (doors, quests, portals, save and load) gate every release, and the frame budget is measured on real hardware, not taken on faith.</p>
+          <p>Built by a fleet of Claude agents working in parallel: one room per agent, an orchestrator enforcing a 300-line file limit and a typed room contract, and a headless Playwright pass screenshotting every named camera before any phase could merge. Sixteen functional tests (doors, quests, portals, save and load among them) gate every release, and the frame budget is measured on real hardware.</p>
           <p>There are no asset files in the repo: every wall panel and floor streak is painted onto a CanvasTexture at runtime, and every planet outside the windows is procedurally seeded. The constitution the agents worked under is public: read <a href="https://github.com/desertcache/starship/blob/main/CLAUDE.md" target="_blank" rel="noreferrer">CLAUDE.md</a> and <a href="https://github.com/desertcache/starship/blob/main/KICKOFF.md" target="_blank" rel="noreferrer">KICKOFF.md</a> in the repo.</p>
         </div>
       </div>
@@ -126,7 +134,6 @@
         <a href="starship.html" aria-current="page">Starship</a>
         <a href="arcade.html">Arcade</a>
         <a href="blog/index.html">Hill Money Watch</a>
-        <a href="skincare.html">A skincare regimen, run like an ops program</a>
       </nav>
     </div>
   </footer>

@@ -6,6 +6,16 @@
   <title>Arcade · Samuel Bates</title>
   <meta name="description" content="The arcade: twelve games in vanilla JS on raw HTML5 Canvas, including a dot-for-dot Pac-Man rebuild with authentic ghost AI, a pinball table with real physics, and four games that show an AI thinking or learning. No engine, no framework, no dependencies.">
   <link rel="canonical" href="https://desertcache.github.io/portfolio/arcade.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Samuel Bates">
+  <meta property="og:title" content="Arcade · Samuel Bates">
+  <meta property="og:description" content="The arcade: twelve games in vanilla JS on raw HTML5 Canvas, including a dot-for-dot Pac-Man rebuild with authentic ghost AI, a pinball table with real physics, and four games that show an AI thinking or learning. No engine, no framework, no dependencies.">
+  <meta property="og:url" content="https://desertcache.github.io/portfolio/arcade.html">
+  <meta property="og:image" content="https://desertcache.github.io/portfolio/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Samuel Bates, AI Solutions Manager: Most AI dies in the demo. I build the kind that ships.">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#f3ebe6">
 
   <script>
@@ -25,13 +35,11 @@
     })();
   </script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Martian+Mono:wdth,wght@75..112.5,100..800&display=swap">
 
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="css/site.css?v=2026-09-27b">
+  <link rel="preload" href="assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
+  <link rel="stylesheet" href="css/site.css?v=2026-10-08">
   <link rel="stylesheet" href="css/play.css?v=2026-10-05b">
   <script type="module" src="js/page.js"></script>
 </head>
@@ -50,8 +58,8 @@
       </a>
       <nav class="nav-links" aria-label="Sections">
         <a href="index.html#work">Work</a>
-        <a href="index.html#lab" aria-current="true">Lab</a>
         <a href="index.html#about">About</a>
+        <a href="index.html#lab" aria-current="true">Lab</a>
         <a href="index.html#contact">Contact</a>
       </nav>
       <div class="nav-actions">
@@ -223,7 +231,7 @@
       </div>
 
       <nav class="room game-deck" id="game-deck" aria-label="Games">
-        <button class="deck-side deck-prev" id="deck-prev" type="button" aria-label="Previous game">
+        <button class="deck-side deck-prev" id="deck-prev" type="button">
           <span class="deck-arrow" aria-hidden="true">‹</span>
           <span class="deck-side-text"><small>Previous</small><span id="deck-prev-name">–</span></span>
         </button>
@@ -234,7 +242,7 @@
             <span class="deck-now-name" id="deck-now-name">Pick a game</span>
           </span>
         </div>
-        <button class="deck-side deck-next" id="deck-next" type="button" aria-label="Next game">
+        <button class="deck-side deck-next" id="deck-next" type="button">
           <span class="deck-side-text"><small>Next</small><span id="deck-next-name">–</span></span>
           <span class="deck-arrow" aria-hidden="true">›</span>
         </button>
@@ -266,7 +274,6 @@
         <a href="starship.html">Starship</a>
         <a href="arcade.html" aria-current="page">Arcade</a>
         <a href="blog/index.html">Hill Money Watch</a>
-        <a href="skincare.html">A skincare regimen, run like an ops program</a>
       </nav>
     </div>
   </footer>

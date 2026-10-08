@@ -81,6 +81,60 @@ test('the blog pages and the posts index show no em dash anywhere a reader looks
   }
 });
 
+test('the side pages and the 404 page show no em dash anywhere a reader looks', () => {
+  for (const path of ['arcade.html', 'starship.html', 'skincare.html', '404.html']) {
+    const text = readerText(read(path));
+    const i = text.indexOf('—');
+    assert.equal(i, -1, `${path}: em dash in "${text.slice(Math.max(0, i - 40), i + 40).replace(/\s+/g, ' ')}"`);
+  }
+});
+
+test('every page a link can be pasted from shows a link preview', () => {
+  // Applications and hiring-manager notes link the work samples directly; a pasted
+  // link with no card looks broken in Slack, LinkedIn and iMessage.
+  const dir = (d) => readdirSync(new URL(`../${d}/`, import.meta.url)).filter((f) => f.endsWith('.html')).map((f) => `${d}/${f}`);
+  for (const path of ['index.html', 'arcade.html', 'starship.html', 'skincare.html', ...WORK_SAMPLES, 'blog/index.html', ...dir('blog/posts'), ...dir('blog/research')]) {
+    const html = read(path);
+    for (const tag of ['og:title', 'og:description', 'og:image', 'og:url']) {
+      assert.match(html, new RegExp(`<meta\\s+property="${tag}"\\s+content="[^"]+"`), `${path} has no ${tag}`);
+    }
+    assert.match(html, /<meta\s+property="og:image"\s+content="https:\/\//, `${path}: og:image must be an absolute URL`);
+  }
+});
+
+test('the 404 page uses absolute paths, since it is served at whatever URL was missing', () => {
+  const html = read('404.html');
+  for (const [, attr] of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
+    assert.ok(/^(?:\/portfolio\/|https?:|mailto:|#)/.test(attr), `404.html: relative path "${attr}"`);
+  }
+});
+
+test('fonts are self-hosted: no page waits on Google Fonts, and every preload points at a real file', () => {
+  // The Google stylesheet blocked first paint on every page (the 2026-10-07 audit measured
+  // seconds on a cold phone). The faces live in css/site.css and assets/fonts/.
+  const dir = (d) => readdirSync(new URL(`../${d}/`, import.meta.url)).filter((f) => f.endsWith('.html')).map((f) => `${d}/${f}`);
+  const pages = ['index.html', 'arcade.html', 'starship.html', 'skincare.html', '404.html', ...WORK_SAMPLES,
+    'blog/index.html', 'blog/_post.template.html', ...dir('blog/posts'), ...dir('blog/research')];
+  for (const path of pages) {
+    const html = read(path);
+    assert.doesNotMatch(html, /fonts\.(?:googleapis|gstatic)\.com/, `${path} still loads Google Fonts`);
+    // One preload, at low priority: it starts the headline font early without beating the
+    // stylesheet to the network (two high-priority preloads cost ~230 ms of first paint on slow 4G).
+    const preloads = [...html.matchAll(/<link rel="preload" href="([^"]+\.woff2)" as="font" type="font\/woff2" crossorigin fetchpriority="low">/g)].map((m) => m[1]);
+    assert.equal(preloads.length, 1, `${path} should preload the Archivo Latin file, at low priority`);
+    assert.match(preloads[0], /archivo-latin\.woff2$/, `${path} preloads the wrong font`);
+    // The post template's links are written for where its posts land: blog/posts/.
+    const base = new URL(`../${path === 'blog/_post.template.html' ? 'blog/posts/_template.html' : path}`, import.meta.url);
+    for (const href of preloads) {
+      const target = href.startsWith('/portfolio/') ? new URL(`../${href.slice('/portfolio/'.length)}`, import.meta.url) : new URL(href, base);
+      assert.ok(readFileSync(target).length > 1000, `${path}: ${href} is missing`);
+    }
+  }
+  for (const [, url] of read('css/site.css').matchAll(/url\("(\.\.\/assets\/fonts\/[^"]+)"\)/g)) {
+    assert.ok(readFileSync(new URL(`../css/${url}`, import.meta.url)).length > 1000, `site.css: ${url} is missing`);
+  }
+});
+
 test('every in-page link on the homepage points at an element that exists', () => {
   const ids = new Set([...HOME.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
   const targets = [...HOME.matchAll(/\shref="#([^"]+)"/g)].map((m) => m[1]);

@@ -71,7 +71,7 @@ function latestCard(post, number, base) {
   kicker.append(el('span', 'latest-no', `No. ${number}`));
   const title = el('h2', 'latest-title', editionTitle(post.title));
   title.id = 'latest-title';
-  card.setAttribute('aria-labelledby', title.id);
+  // No aria-labelledby: the card's name comes from everything it shows (WCAG 2.5.3, label in name).
   const cta = el('span', 'latest-cta', 'Read the edition');
   cta.append(arrow('→'));
   card.append(kicker, title);
@@ -92,7 +92,6 @@ function archiveRow(post, number, base) {
   row.href = new URL(post.href, base).href;
   const title = el('h3', 'archive-title', editionTitle(post.title));
   title.id = `edition-${number}`;
-  row.setAttribute('aria-labelledby', title.id);
   const main = el('span', 'archive-main');
   main.append(title);
   if (post.summary) main.append(el('p', 'archive-summary', post.summary));
@@ -170,11 +169,39 @@ function initReadTime() {
   out.hidden = false;
 }
 
+/**
+ * A table wider than its lane scrolls sideways inside itself (blog.css). Keyboard
+ * users can only scroll what they can focus, so a table that overflows becomes a
+ * tab stop, named by the heading above it. Re-checked when the window resizes.
+ */
+function initScrollableTables() {
+  const tables = /** @type {HTMLTableElement[]} */ ([...document.querySelectorAll('.post-body > table')]);
+  if (!tables.length) return;
+  const mark = () => {
+    for (const table of tables) {
+      const scrolls = table.scrollWidth > table.clientWidth + 1;
+      if (scrolls && !table.hasAttribute('tabindex')) {
+        table.tabIndex = 0;
+        let prev = table.previousElementSibling;
+        while (prev && !/^H[2-4]$/.test(prev.tagName)) prev = prev.previousElementSibling;
+        table.setAttribute('aria-label', `${prev?.textContent?.trim() || 'Table'} (scrolls sideways)`);
+      } else if (!scrolls && table.getAttribute('tabindex') === '0') {
+        table.removeAttribute('tabindex');
+        table.removeAttribute('aria-label');
+      }
+    }
+  };
+  mark();
+  let timer = 0;
+  window.addEventListener('resize', () => { clearTimeout(timer); timer = window.setTimeout(mark, 150); }, { passive: true });
+}
+
 /** @type {Array<[string, () => unknown]>} */
 const features = [
   ['theme', initTheme],
   ['nav', initNav],
   ['read time', initReadTime],
+  ['scrollable tables', initScrollableTables],
   ['archive', initArchive],
   ['edition nav', initEditionNav],
 ];

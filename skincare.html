@@ -6,6 +6,16 @@
     <title>Skincare Protocol · Samuel Bates</title>
     <meta name="description" content="A personal skincare regimen run as an operational system: two campaigns and a deload, load rules, a red-team changelog, and a PubMed evidence base.">
     <link rel="canonical" href="https://desertcache.github.io/portfolio/skincare.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Samuel Bates">
+    <meta property="og:title" content="Skincare Protocol · Samuel Bates">
+    <meta property="og:description" content="A personal skincare regimen run as an operational system: two campaigns and a deload, load rules, a red-team changelog, and a PubMed evidence base.">
+    <meta property="og:url" content="https://desertcache.github.io/portfolio/skincare.html">
+    <meta property="og:image" content="https://desertcache.github.io/portfolio/assets/og.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Samuel Bates, AI Solutions Manager: Most AI dies in the demo. I build the kind that ships.">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#f3ebe6">
 
     <script>
@@ -25,16 +35,14 @@
       })();
     </script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Martian+Mono:wdth,wght@75..112.5,100..800&display=swap">
 
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
     <!-- The site's stylesheet for the chrome (nav, footer, tokens), then this
          page's own: compiled from skincare.src.css + tailwind.skincare.config.js
          (npm run build:skincare). See DEV-NOTES.md. -->
-    <link rel="stylesheet" href="css/site.css?v=2026-09-27b">
+    <link rel="preload" href="assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
+    <link rel="stylesheet" href="css/site.css?v=2026-10-08">
     <link rel="stylesheet" href="skincare.css?v=2026-09-27">
     <script type="module" src="js/page.js"></script>
 </head>
@@ -54,8 +62,8 @@
         </a>
         <nav class="nav-links" aria-label="Sections">
           <a href="index.html#work">Work</a>
-          <a href="index.html#lab">Lab</a>
           <a href="index.html#about">About</a>
+          <a href="index.html#lab">Lab</a>
           <a href="index.html#contact">Contact</a>
         </nav>
         <div class="nav-actions">
@@ -71,7 +79,7 @@
     </header>
 
     <!-- Document Header & Metadata Banner -->
-    <header class="doc-head border-b border-hairline bg-paper lg:sticky z-40 backdrop-blur-md bg-opacity-90">
+    <section class="doc-head border-b border-hairline bg-paper lg:sticky z-40 backdrop-blur-md bg-opacity-90" aria-label="Protocol overview">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
             <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
                 <div>
@@ -85,10 +93,10 @@
                         <span class="text-ink-primary font-medium">Purge Closes ~Aug 23</span>
                     </div>
                     <h1 class="text-3xl sm:text-4xl font-serif font-medium tracking-tight text-ink-primary">
-                        Skincare — Mechanisms & System Logic
+                        Skincare: Mechanisms & System Logic
                     </h1>
                     <p class="text-sm text-ink-secondary mt-1 font-sans">
-                        Operational protocol adapted for the <strong class="font-medium text-ink-primary">Sonoran Desert</strong> — sub-15% RH, extreme UV, active outdoor & sauna exposure.
+                        Operational protocol adapted for the <strong class="font-medium text-ink-primary">Sonoran Desert</strong>: sub-15% RH, extreme UV, active outdoor & sauna exposure.
                     </p>
                 </div>
 
@@ -107,7 +115,7 @@
         </div>
 
         <!-- Navigation Tabs -->
-        <nav class="border-t border-hairline bg-paper/50 backdrop-blur">
+        <nav class="border-t border-hairline bg-paper/50 backdrop-blur" aria-label="On this page">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-8 overflow-x-auto text-xs font-mono uppercase tracking-wider no-scrollbar py-3">
                 <button onclick="switchTab('overview')" id="tab-overview" class="tab-btn active text-ink-primary pb-1 whitespace-nowrap">01. Overview & Changelog</button>
                 <button onclick="switchTab('grid')" id="tab-grid" class="tab-btn text-ink-secondary hover:text-ink-primary pb-1 whitespace-nowrap">02. Weekly Grid & Lanes</button>
@@ -117,7 +125,7 @@
                 <button onclick="switchTab('evidence')" id="tab-evidence" class="tab-btn text-ink-secondary hover:text-ink-primary pb-1 whitespace-nowrap">06. PubMed Evidence Base</button>
             </div>
         </nav>
-    </header>
+    </section>
 
     <!-- Main Content Container -->
     <main id="main" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
@@ -188,7 +196,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-sans text-ink-secondary">
                     <div class="p-4 bg-surface rounded border border-hairline space-y-1">
                         <span class="font-mono text-ink-primary font-semibold block text-[11px] uppercase tracking-wider">1. The 4-1-2 Grid is Final</span>
-                        <p class="leading-relaxed">The old fully-ramped grid ran six consecutive active nights with one deload. Wednesday BHA (attempted ~Aug 12, mid-purge) failed exactly where load math predicted — inside the longest active streak with no adjacent recovery. <strong>Rule: max 3 consecutive active nights; BHA always borders a recovery day.</strong> Do not re-attempt Wed BHA.</p>
+                        <p class="leading-relaxed">The old fully-ramped grid ran six consecutive active nights with one deload. Wednesday BHA (attempted ~Aug 12, mid-purge) failed exactly where load math predicted: inside the longest active streak with no adjacent recovery. <strong>Rule: max 3 consecutive active nights; BHA always borders a recovery day.</strong> Do not re-attempt Wed BHA.</p>
                     </div>
 
                     <div class="p-4 bg-surface rounded border border-hairline space-y-1">
@@ -203,7 +211,7 @@
 
                     <div class="p-4 bg-surface rounded border border-hairline space-y-1">
                         <span class="font-mono text-ink-primary font-semibold block text-[11px] uppercase tracking-wider">4. Photosensitivity Rationale Corrected</span>
-                        <p class="leading-relaxed">FDA controlled study found 2% salicylic acid does NOT increase UV-induced erythema, DNA damage, or sunburn cells (glycolic acid does). Adapalene is photochemically stable. <strong>SPF stands on desert UV alone — needs no help from actives.</strong></p>
+                        <p class="leading-relaxed">FDA controlled study found 2% salicylic acid does NOT increase UV-induced erythema, DNA damage, or sunburn cells (glycolic acid does). Adapalene is photochemically stable. <strong>SPF stands on desert UV alone. Needs no help from actives.</strong></p>
                     </div>
 
                     <div class="p-4 bg-surface rounded border border-hairline space-y-1">
@@ -213,7 +221,7 @@
 
                     <div class="p-4 bg-surface rounded border border-hairline space-y-1">
                         <span class="font-mono text-ink-primary font-semibold block text-[11px] uppercase tracking-wider">6. Depth-Over-Breadth Path Named</span>
-                        <p class="leading-relaxed">Adapalene photoaging RCT evidence lives at <strong>0.3%</strong>, not 0.1%. When more anti-aging is desired, the proven lever is concentration (adapalene 0.3% or Rx tretinoin) — not adding product classes.</p>
+                        <p class="leading-relaxed">Adapalene photoaging RCT evidence lives at <strong>0.3%</strong>, not 0.1%. When more anti-aging is desired, the proven lever is concentration (adapalene 0.3% or Rx tretinoin), not adding product classes.</p>
                     </div>
 
                     <div class="p-4 bg-surface rounded border border-hairline space-y-1">
@@ -345,7 +353,7 @@
                     <div class="p-4 bg-surface rounded border border-hairline space-y-2">
                         <h3 class="font-mono text-ink-primary font-semibold uppercase tracking-wider text-[11px]">Evidence-Based Frequency Note</h3>
                         <p class="leading-relaxed">
-                            4×/week is inside evidenced territory, not a diluted compromise — an RCT found alternate-day application of a retinoid matched once-daily adapalene head-to-head, and adapalene 0.1% monotherapy holds long-term maintenance against vehicle. Nightly would be the trialed standard but is optional, not owed. If skin stays quiet for months and you want more, the upgrade is concentration (see October gate), not frequency.
+                            4×/week is inside evidenced territory, not a diluted compromise: an RCT found alternate-day application of a retinoid matched once-daily adapalene head-to-head, and adapalene 0.1% monotherapy holds long-term maintenance against vehicle. Nightly would be the trialed standard but is optional, not owed. If skin stays quiet for months and you want more, the upgrade is concentration (see October gate), not frequency.
                         </p>
                     </div>
                 </div>
@@ -383,7 +391,7 @@
                             <tr class="hover:bg-paper/50">
                                 <td class="p-3 font-mono font-semibold text-ochre">Soothe</td>
                                 <td class="p-3 text-ink-secondary">Anti-inflammatory cascade control</td>
-                                <td class="p-3 font-medium">No permanent face resident — Torriden madecassoside covers baseline; Cicaplast B5+ is escalation on retainer (unpurchased)</td>
+                                <td class="p-3 font-medium">No permanent face resident: Torriden madecassoside covers baseline; Cicaplast B5+ is escalation on retainer (unpurchased)</td>
                             </tr>
                             <tr class="hover:bg-paper/50">
                                 <td class="p-3 font-mono font-semibold text-ochre">Occlude</td>
@@ -395,7 +403,7 @@
                 </div>
 
                 <p class="text-xs text-ink-secondary italic p-3 bg-surface rounded border border-hairline">
-                    <strong>Alternation Logic:</strong> Alternation is a load-management tool for actives — it caps irritation. Non-actives carry no load, so rotating moisturizers stacks nothing; each slot runs one product, upgraded rather than parallelized.
+                    <strong>Alternation Logic:</strong> Alternation is a load-management tool for actives; it caps irritation. Non-actives carry no load, so rotating moisturizers stacks nothing; each slot runs one product, upgraded rather than parallelized.
                 </p>
             </div>
         </section>
@@ -408,7 +416,7 @@
             <!-- AM Routine & SPF Fleet -->
             <div class="space-y-6">
                 <div class="border-b border-hairline pb-4">
-                    <h2 class="text-2xl font-serif font-medium text-ink-primary">AM Routine — Defense Campaign</h2>
+                    <h2 class="text-2xl font-serif font-medium text-ink-primary">AM Routine: Defense Campaign</h2>
                     <p class="text-xs font-mono text-ink-secondary mt-1">Identical every day regardless of evening schedule</p>
                 </div>
 
@@ -419,7 +427,7 @@
                         <ol class="space-y-3 text-xs text-ink-primary list-decimal list-inside font-sans">
                             <li class="pl-1"><strong>Cleanse:</strong> Equate Hydrating (Kroger Foaming on SPF-heavy / sweaty days).</li>
                             <li class="pl-1"><strong>Vitamin C:</strong> Timeless 20%. Pat dry, give it 2–3 min after cleansing. Fridge stored; small bottles; discard at amber.</li>
-                            <li class="pl-1"><strong>Azelaic:</strong> SKIN1004 10% Ampoule <em>(Phase 5; unpurchased — see October gate)</em>. Wait ~1 min.</li>
+                            <li class="pl-1"><strong>Azelaic:</strong> SKIN1004 10% Ampoule <em>(Phase 5; unpurchased; see October gate)</em>. Wait ~1 min.</li>
                             <li class="pl-1"><strong>Torriden DIVE IN:</strong> Press in, let absorb (humectant layer).</li>
                             <li class="pl-1"><strong>NMF + HA:</strong> The Ordinary. Thin layer; emollient cap. Let settle 2–3 min.</li>
                             <li class="pl-1"><strong>SPF:</strong> ¼ tsp, no skimping. Fleet assignments on right.</li>
@@ -428,7 +436,7 @@
 
                         <div class="border-t border-hairline pt-3 text-[11px] text-ink-secondary space-y-1 font-mono">
                             <p><strong>Rushed:</strong> Vit C → Torriden → NMF → SPF (skip azelaic + waits). Never skip SPF.</p>
-                            <p><strong>Missed Vit C:</strong> Costs nothing — skin reservoir saturates in ~3 applications (~4-day half-life). Don't double up.</p>
+                            <p><strong>Missed Vit C:</strong> Costs nothing; skin reservoir saturates in ~3 applications (~4-day half-life). Don't double up.</p>
                         </div>
                     </div>
 
@@ -444,17 +452,17 @@
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-hairline">
-                                    <tr><td class="p-2.5 font-medium">BoJ Relief Sun Aqua-fresh</td><td class="p-2.5 text-ink-secondary">Daily driver — normal / indoor-leaning days</td></tr>
-                                    <tr><td class="p-2.5 font-medium">Bioré UV Aqua Rich Watery Gel</td><td class="p-2.5 text-ink-secondary">Going-out days — errands, town, daily outdoor</td></tr>
+                                    <tr><td class="p-2.5 font-medium">BoJ Relief Sun Aqua-fresh</td><td class="p-2.5 text-ink-secondary">Daily driver: normal / indoor-leaning days</td></tr>
+                                    <tr><td class="p-2.5 font-medium">Bioré UV Aqua Rich Watery Gel</td><td class="p-2.5 text-ink-secondary">Going-out days: errands, town, daily outdoor</td></tr>
                                     <tr><td class="p-2.5 font-medium">CeraVe Invisible Mineral 50</td><td class="p-2.5 text-ink-secondary">Heavy sweat/water days (climb/hike) + orbital rim daily</td></tr>
-                                    <tr><td class="p-2.5 font-medium">SPF balm (stick)</td><td class="p-2.5 text-ink-secondary"><strong>Field reapplication — lives in pack</strong></td></tr>
+                                    <tr><td class="p-2.5 font-medium">SPF balm (stick)</td><td class="p-2.5 text-ink-secondary"><strong>Field reapplication: lives in pack</strong></td></tr>
                                     <tr><td class="p-2.5 font-medium">Banana Boat 19% zinc</td><td class="p-2.5 text-ink-secondary">Body, outdoor days</td></tr>
                                 </tbody>
                             </table>
                         </div>
 
                         <div class="p-4 bg-surface rounded border border-hairline text-xs text-ink-secondary space-y-2">
-                            <p><strong>Reapplication Protocol:</strong> First reapply ~20–30 min <em>into</em> sun exposure — Diffey's modeling shows early reapplication beats the folk 2-hour rule because first coats under-apply — then again after soak-through sweat, water, or toweling. Stick balm is face field mechanism; body gets Banana Boat. Import tubes carry no US water-resistance testing — anything sweaty stays on zinc.</p>
+                            <p><strong>Reapplication Protocol:</strong> First reapply ~20–30 min <em>into</em> sun exposure (Diffey's modeling shows early reapplication beats the folk 2-hour rule because first coats under-apply), then again after soak-through sweat, water, or toweling. Stick balm is face field mechanism; body gets Banana Boat. Import tubes carry no US water-resistance testing: anything sweaty stays on zinc.</p>
                             <p><strong>Hardware:</strong> UV400 sunglasses + brimmed hat. The hat is the highest-ROI, zero-irritation photoprotection device in the system.</p>
                         </div>
                     </div>
@@ -464,7 +472,7 @@
             <!-- PM Routines Grid -->
             <div class="border-t border-hairline pt-8 space-y-6">
                 <div class="border-b border-hairline pb-4">
-                    <h2 class="text-2xl font-serif font-medium text-ink-primary">PM Routines — Renovation & Recovery</h2>
+                    <h2 class="text-2xl font-serif font-medium text-ink-primary">PM Routines: Renovation & Recovery</h2>
                     <p class="text-xs font-mono text-ink-secondary mt-1">Differentiated by day type in the weekly grid</p>
                 </div>
 
@@ -522,7 +530,7 @@
                                 <li><strong>Cleanse:</strong> Equate Hydrating.</li>
                                 <li><strong>Torriden DIVE IN:</strong> On <em>damp</em> skin (max grab).</li>
                                 <li><strong>Seal:</strong> <strong>Atobarrier 365</strong> (permanent on recovery).</li>
-                                <li><strong>Slug:</strong> Aquaphor, thin layer — <strong>Sunday only</strong> (Wed un-occluded).</li>
+                                <li><strong>Slug:</strong> Aquaphor, thin layer; <strong>Sunday only</strong> (Wed un-occluded).</li>
                             </ol>
                         </div>
                         <div class="text-[11px] text-ink-secondary border-t border-hairline pt-3 font-mono">
@@ -542,16 +550,16 @@
                         <span class="font-mono text-ink-primary font-semibold uppercase text-[10px] block">October Gate Sequence (Staggered)</span>
                         <ol class="list-decimal list-inside space-y-1">
                             <li><strong>Baseline first:</strong> 2 quiet weeks post-purge (~Aug 23) before anything new.</li>
-                            <li><strong>Azelaic enters AM:</strong> (Early Oct) — alone. Run 3–4 clean weeks.</li>
-                            <li><strong>BoJ Revive Eye Serum (retinal):</strong> Enters last — PM, orbital rim only, after Torriden before seal, lowest cadence. Buy late Sept.</li>
+                            <li><strong>Azelaic enters AM:</strong> (Early Oct), alone. Run 3–4 clean weeks.</li>
+                            <li><strong>BoJ Revive Eye Serum (retinal):</strong> Enters last. PM, orbital rim only, after Torriden before seal, lowest cadence. Buy late Sept.</li>
                             <li><strong>One-Variable Rule:</strong> Never two new actives in the same window. Unattributable flares violate system design.</li>
                         </ol>
                         <p class="text-[11px] italic pt-1">Azelaic expectation: 10% cosmetic is a modest adjunct. If PIH is priority, Rx 15% via telehealth is better supported.</p>
                     </div>
 
                     <div class="p-4 bg-surface rounded border border-hairline text-xs text-ink-secondary space-y-2">
-                        <span class="font-mono text-ink-primary font-semibold uppercase text-[10px] block">Future Escalation — Depth Over Breadth</span>
-                        <p>Adapalene photoaging RCT evidence lives at <strong>0.3%</strong>. When more anti-aging is wanted, the proven move is concentration (adapalene 0.3% or Rx tretinoin) slotted into the 4-night engine — not a 3rd exfoliant or new product classes.</p>
+                        <span class="font-mono text-ink-primary font-semibold uppercase text-[10px] block">Future Escalation: Depth Over Breadth</span>
+                        <p>Adapalene photoaging RCT evidence lives at <strong>0.3%</strong>. When more anti-aging is wanted, the proven move is concentration (adapalene 0.3% or Rx tretinoin) slotted into the 4-night engine, not a 3rd exfoliant or new product classes.</p>
                     </div>
 
                     <div class="p-4 bg-surface rounded border border-hairline text-xs text-ink-secondary space-y-2">
@@ -569,10 +577,10 @@
                             Irritation past normal, <em>any</em> night: pause actives 2–3 nights → run Recovery routine nightly (oil + cleanse → Torriden → <strong>Atobarrier</strong> → Aquaphor) → resume one frequency step lower. One skipped night costs nothing; forcing a reaction costs a week.
                         </p>
                         <div class="border-t border-ochre-border/60 pt-3 text-ink-secondary">
-                            <strong>Worked Example:</strong> Wed BHA, Aug 2026 — flare → recovery → slot permanently retired. Protocol executed exactly as designed.
+                            <strong>Worked Example:</strong> Wed BHA, Aug 2026. Flare → recovery → slot permanently retired. Protocol executed exactly as designed.
                         </div>
                         <div class="border-t border-ochre-border/60 pt-3 text-ink-secondary">
-                            <strong>Escalation:</strong> If 2–3 rescue nights don't settle it — Cicaplast Baume B5+ (5% panthenol + madecassoside + occlusion). At every CVS; buy only when triggered.
+                            <strong>Escalation:</strong> If 2–3 rescue nights don't settle it, Cicaplast Baume B5+ (5% panthenol + madecassoside + occlusion). At every CVS; buy only when triggered.
                         </div>
                     </div>
                 </div>
@@ -591,49 +599,49 @@
 
             <!-- AM Mechanics -->
             <div class="space-y-4">
-                <h3 class="font-serif font-medium text-xl text-ochre">AM — Defense in Depth</h3>
+                <h3 class="font-serif font-medium text-xl text-ochre">AM: Defense in Depth</h3>
                 <div class="prose prose-stone text-xs leading-relaxed text-ink-secondary space-y-3 font-sans">
                     <p>
                         <strong class="text-ink-primary">Equate Hydrating Cleanse.</strong> Establishes a clean canvas without stripping. Its entire job is to <em>not</em> be the problem.
                     </p>
                     <p>
-                        <strong class="text-ink-primary">Timeless Vit C (20% L-ascorbic + E + ferulic).</strong> The daytime antioxidant. UV that slips past sunscreen generates free radicals that oxidize collagen; L-AA is a sacrificial electron donor and a required cofactor for collagen crosslinking. Vitamin E covers the lipid phase; ferulic stabilizes the formula and <strong>doubles photoprotection (~4-fold → ~8-fold)</strong> — that claim is measured, not marketing. Needs pH &lt;3.5 on bare skin; 20% is the top of the percutaneous absorption curve. Ops: fridge, small bottles, discard at amber. Reservoir logic: saturates in ~3 daily applications, ~4-day half-life — consistency wins, individual mornings don't matter.
+                        <strong class="text-ink-primary">Timeless Vit C (20% L-ascorbic + E + ferulic).</strong> The daytime antioxidant. UV that slips past sunscreen generates free radicals that oxidize collagen; L-AA is a sacrificial electron donor and a required cofactor for collagen crosslinking. Vitamin E covers the lipid phase; ferulic stabilizes the formula and <strong>doubles photoprotection (~4-fold → ~8-fold)</strong>. That claim is measured, not marketing. Needs pH &lt;3.5 on bare skin; 20% is the top of the percutaneous absorption curve. Ops: fridge, small bottles, discard at amber. Reservoir logic: saturates in ~3 daily applications, ~4-day half-life; consistency wins, individual mornings don't matter.
                     </p>
                     <p>
-                        <strong class="text-ink-primary">SKIN1004 Azelaic 10% (Phase 5).</strong> The cleanup crew for PIH — selective tyrosinase inhibition in hyperactive melanocytes, anti-inflammatory, antimicrobial. Calibration: guideline recommendation is <em>conditional</em> and the trial base is at 15–20% Rx strength; at 10% cosmetic, expect help, not magic. Marks targeted are PIH, not true scarring.
+                        <strong class="text-ink-primary">SKIN1004 Azelaic 10% (Phase 5).</strong> The cleanup crew for PIH: selective tyrosinase inhibition in hyperactive melanocytes, anti-inflammatory, antimicrobial. Calibration: guideline recommendation is <em>conditional</em> and the trial base is at 15–20% Rx strength; at 10% cosmetic, expect help, not magic. Marks targeted are PIH, not true scarring.
                     </p>
                     <p>
-                        <strong class="text-ink-primary">Torriden DIVE IN.</strong> The humectant layer. <strong>Desert caveat that governs placement:</strong> a naked humectant in ~10% RH pulls water <em>out</em> — never the last layer. AM it's double-capped: NMF cream, then SPF.
+                        <strong class="text-ink-primary">Torriden DIVE IN.</strong> The humectant layer. <strong>Desert caveat that governs placement:</strong> a naked humectant in ~10% RH pulls water <em>out</em>. Never the last layer. AM it's double-capped: NMF cream, then SPF.
                     </p>
                     <p>
-                        <strong class="text-ink-primary">The Ordinary NMF + HA.</strong> The emollient cap. Urea, amino acids, and PCA are the stratum corneum's own water-binders — restocks the reservoir rather than filming over it. Locks Torriden down; smooths the canvas for the SPF coat.
+                        <strong class="text-ink-primary">The Ordinary NMF + HA.</strong> The emollient cap. Urea, amino acids, and PCA are the stratum corneum's own water-binders. Restocks the reservoir rather than filming over it. Locks Torriden down; smooths the canvas for the SPF coat.
                     </p>
                     <p>
-                        <strong class="text-ink-primary">SPF — The Load-Bearing Step.</strong> UV drives the overwhelming majority of visible aging. <strong>The justification is the desert, full stop</strong> — it does not need the actives' help, and the old claim that it did was wrong on the science: in the FDA's controlled study, 2% salicylic acid produced no increase in UV-induced erythema, DNA damage, or sunburn-cell formation (glycolic acid did — and glycolic isn't in this system). Adapalene is photochemically stable; its label language is precautionary, and the practical concern is that <em>irritated</em> skin tolerates sun poorly — one more reason the load rules exist. ¼ tsp hits labeled SPF; the reapplication protocol above is what makes the label number survive an Arizona afternoon.
+                        <strong class="text-ink-primary">SPF: The Load-Bearing Step.</strong> UV drives the overwhelming majority of visible aging. <strong>The justification is the desert, full stop</strong>. It does not need the actives' help, and the old claim that it did was wrong on the science: in the FDA's controlled study, 2% salicylic acid produced no increase in UV-induced erythema, DNA damage, or sunburn-cell formation (glycolic acid did, and glycolic isn't in this system). Adapalene is photochemically stable; its label language is precautionary, and the practical concern is that <em>irritated</em> skin tolerates sun poorly, one more reason the load rules exist. ¼ tsp hits labeled SPF; the reapplication protocol above is what makes the label number survive an Arizona afternoon.
                     </p>
                     <p>
-                        <strong class="text-ink-primary">Eyes.</strong> Periorbital skin is the thinnest on the face and ages from UV plus squinting. Four levers now: CeraVe zinc to the orbital rim daily (mineral doesn't migrate and sting in sweat), UV400 sunglasses, the brimmed hat, and the nightly seal to the orbital bone. Retinal enters at the October gate — last in the sequence. Dedicated eye creams remain the seal's chemistry at ~6× the price — skip.
+                        <strong class="text-ink-primary">Eyes.</strong> Periorbital skin is the thinnest on the face and ages from UV plus squinting. Four levers now: CeraVe zinc to the orbital rim daily (mineral doesn't migrate and sting in sweat), UV400 sunglasses, the brimmed hat, and the nightly seal to the orbital bone. Retinal enters at the October gate, last in the sequence. Dedicated eye creams remain the seal's chemistry at ~6× the price; skip.
                     </p>
                 </div>
             </div>
 
             <!-- PM Mechanics -->
             <div class="space-y-4 border-t border-hairline pt-6">
-                <h3 class="font-serif font-medium text-xl text-slate">PM — Controlled Demolition + Rebuild</h3>
+                <h3 class="font-serif font-medium text-xl text-slate">PM: Controlled Demolition + Rebuild</h3>
                 <div class="prose prose-stone text-xs leading-relaxed text-ink-secondary space-y-3 font-sans">
                     <p>
-                        <strong class="text-ink-primary">SKIN1004 Oil Cleanse (every night, step zero).</strong> Engineered for water-resistant zinc that gentle surfactant can't lift; still earns its slot on outdoor-day zinc, the daily rim zinc, and sebum. Net irritation load is <em>negative</em> — it ends the scrubbing residue otherwise demands. PM only.
+                        <strong class="text-ink-primary">SKIN1004 Oil Cleanse (every night, step zero).</strong> Engineered for water-resistant zinc that gentle surfactant can't lift; still earns its slot on outdoor-day zinc, the daily rim zinc, and sebum. Net irritation load is <em>negative</em>: it ends the scrubbing residue otherwise demands. PM only.
                     </p>
                     <p>
-                        <strong class="text-ink-primary">Adapalene 0.1% (4 nights).</strong> The engine. Third-gen retinoid, direct RAR-β/γ binding, no conversion step. Normalizes keratinocyte maturation inside the follicle — prevents the microcomedone that precedes every pimple. Prevention at the source; maintenance RCTs show monotherapy holds the line long-term. <strong>The purge is this mechanism working, not failing.</strong> Anti-aging framing, honestly stated: the collagen/AP-1 story is established for the retinoid class and the photoaging RCT data for adapalene is at 0.3% — the 0.1% anti-aging benefit is a reasonable extrapolation plus SPF discipline, and the named upgrade path exists when wanted. Applied on <em>fully dry</em> skin only — hydration is a penetration multiplier, and on retinoid nights that buys irritation, not efficacy.
+                        <strong class="text-ink-primary">Adapalene 0.1% (4 nights).</strong> The engine. Third-gen retinoid, direct RAR-β/γ binding, no conversion step. Normalizes keratinocyte maturation inside the follicle; prevents the microcomedone that precedes every pimple. Prevention at the source; maintenance RCTs show monotherapy holds the line long-term. <strong>The purge is this mechanism working, not failing.</strong> Anti-aging framing, honestly stated: the collagen/AP-1 story is established for the retinoid class and the photoaging RCT data for adapalene is at 0.3%; the 0.1% anti-aging benefit is a reasonable extrapolation plus SPF discipline, and the named upgrade path exists when wanted. Applied on <em>fully dry</em> skin only: hydration is a penetration multiplier, and on retinoid nights that buys irritation, not efficacy.
                     </p>
                     <p>
-                        <strong class="text-ink-primary">Naturium 2% BHA (Sat).</strong> Salicylic acid — oil-soluble, the only exfoliant that works <em>inside</em> the pore, dissolving the corneodesmosome glue on the dead cells lining the follicle. Adapalene prevents new clogs; BHA clears existing ones. One night a week covers that job. <strong>Never the same night as adapalene.</strong>
+                        <strong class="text-ink-primary">Naturium 2% BHA (Sat).</strong> Salicylic acid: oil-soluble, the only exfoliant that works <em>inside</em> the pore, dissolving the corneodesmosome glue on the dead cells lining the follicle. Adapalene prevents new clogs; BHA clears existing ones. One night a week covers that job. <strong>Never the same night as adapalene.</strong>
                     </p>
                     <p>
-                        <strong class="text-ink-primary">The Seal — Two Tiers, One Lane.</strong> The barrier is brick (corneocytes) and mortar (ceramides/cholesterol/fatty acids); actives strip mortar, the seal restocks it. The approach is directly validated: a double-blind RCT of ceramide skincare alongside an adapalene/BPO regimen showed lower TEWL, less dryness and erythema, and <em>fewer inflammatory lesions</em> than basic cleanser. And the trio matters — ceramides, cholesterol, and fatty acids are each independently required for barrier recovery, which is exactly Atobarrier's formula.
+                        <strong class="text-ink-primary">The Seal: Two Tiers, One Lane.</strong> The barrier is brick (corneocytes) and mortar (ceramides/cholesterol/fatty acids); actives strip mortar, the seal restocks it. The approach is directly validated: a double-blind RCT of ceramide skincare alongside an adapalene/BPO regimen showed lower TEWL, less dryness and erythema, and <em>fewer inflammatory lesions</em> than basic cleanser. And the trio matters: ceramides, cholesterol, and fatty acids are each independently required for barrier recovery, which is exactly Atobarrier's formula.
                         <br>• <em>Kroger Nighttime (volume tier):</em> Post-ramp weeknight workhorse at ~$0.10/mL.
-                        <br>• <em>Aestura Atobarrier 365 (premium tier):</em> Nightly through stable post-purge baseline (~Sept) — tier delta is modest on intact skin, meaningful on a barrier running 4 retinoid nights in 10% RH.
+                        <br>• <em>Aestura Atobarrier 365 (premium tier):</em> Nightly through stable post-purge baseline (~Sept); tier delta is modest on intact skin, meaningful on a barrier running 4 retinoid nights in 10% RH.
                     </p>
                 </div>
             </div>
@@ -643,7 +651,7 @@
                 <h3 class="font-serif font-medium text-xl text-sage">Recovery Nights & System Rules</h3>
                 <div class="prose prose-stone text-xs leading-relaxed text-ink-secondary space-y-3 font-sans">
                     <p>
-                        <strong class="text-ink-primary">Recovery Nights — Deload.</strong> No actives. Wednesday and Sunday. Torriden on damp skin (max humectant grab), Atobarrier seal. <strong>Sunday adds the slug:</strong> thin Aquaphor, final step. Occlusion measurably multiplies percutaneous penetration — several-fold in controlled studies — so petrolatum over an active is a penetration amplifier pointed at the wrong target. On Sunday there's nothing underneath to amplify; it's pure water-loss blockade. Wednesday recovers un-occluded so mid-week variables stay clean.
+                        <strong class="text-ink-primary">Recovery Nights: Deload.</strong> No actives. Wednesday and Sunday. Torriden on damp skin (max humectant grab), Atobarrier seal. <strong>Sunday adds the slug:</strong> thin Aquaphor, final step. Occlusion measurably multiplies percutaneous penetration (several-fold in controlled studies), so petrolatum over an active is a penetration amplifier pointed at the wrong target. On Sunday there's nothing underneath to amplify; it's pure water-loss blockade. Wednesday recovers un-occluded so mid-week variables stay clean.
                     </p>
                     
                     <div class="p-4 bg-surface rounded border border-hairline space-y-2 mt-4">
@@ -697,21 +705,21 @@
                             <tr class="fleet-row"><td class="p-3 font-semibold">SKIN1004 Azelaic 10% Ampoule</td><td class="p-3 font-mono text-ink-secondary">AM (Oct gate)</td><td class="p-3">Fade post-acne marks, calm</td><td class="p-3 text-ink-secondary">Azelaic acid + derivatives; panthenol-centella base</td></tr>
                             <tr class="fleet-row"><td class="p-3 font-semibold">Torriden DIVE IN</td><td class="p-3 font-mono text-ink-secondary">AM + PM</td><td class="p-3">Humectant layer</td><td class="p-3 text-ink-secondary">Multi-weight HA + panthenol + madecassoside</td></tr>
                             <tr class="fleet-row"><td class="p-3 font-semibold">The Ordinary NMF + HA</td><td class="p-3 font-mono text-ink-secondary">AM (pre-SPF)</td><td class="p-3">Emollient cap</td><td class="p-3 text-ink-secondary">NMF complex (urea, amino acids, PCA) + HA</td></tr>
-                            <tr class="fleet-row"><td class="p-3 font-semibold">BoJ Relief Sun Aqua-fresh</td><td class="p-3 font-mono text-ink-secondary">AM — daily driver</td><td class="p-3">UV shield, indoor-leaning days</td><td class="p-3 text-ink-secondary">Uvinul T150, Mexoryl XL+SX, Uvinul A Plus, Tinosorb S</td></tr>
-                            <tr class="fleet-row"><td class="p-3 font-semibold">Bioré UV Aqua Rich Watery Gel</td><td class="p-3 font-mono text-ink-secondary">AM — going-out</td><td class="p-3">UV shield, daily outdoor wear</td><td class="p-3 text-ink-secondary">New-gen filters, watery finish; JP import</td></tr>
+                            <tr class="fleet-row"><td class="p-3 font-semibold">BoJ Relief Sun Aqua-fresh</td><td class="p-3 font-mono text-ink-secondary">AM (daily driver)</td><td class="p-3">UV shield, indoor-leaning days</td><td class="p-3 text-ink-secondary">Uvinul T150, Mexoryl XL+SX, Uvinul A Plus, Tinosorb S</td></tr>
+                            <tr class="fleet-row"><td class="p-3 font-semibold">Bioré UV Aqua Rich Watery Gel</td><td class="p-3 font-mono text-ink-secondary">AM (going-out)</td><td class="p-3">UV shield, daily outdoor wear</td><td class="p-3 text-ink-secondary">New-gen filters, watery finish; JP import</td></tr>
                             <tr class="fleet-row"><td class="p-3 font-semibold">CeraVe Invisible Mineral SPF 50</td><td class="p-3 font-mono text-ink-secondary">Sweat / eye rim</td><td class="p-3">UV shield, water-resistant</td><td class="p-3 text-ink-secondary">15% zinc oxide</td></tr>
                             <tr class="fleet-row"><td class="p-3 font-semibold">SPF balm (stick)</td><td class="p-3 font-mono text-ink-secondary">Pack</td><td class="p-3">Mid-exposure face re-coat</td><td class="p-3 text-ink-secondary">Survives sweaty face; no hands needed</td></tr>
-                            <tr class="fleet-row"><td class="p-3 font-semibold">Equate Adapalene 0.1%</td><td class="p-3 font-mono text-ink-secondary">PM ×4</td><td class="p-3">The engine — prevention</td><td class="p-3 text-ink-secondary">3rd-gen retinoid, direct RAR-β/γ binding, photostable</td></tr>
-                            <tr class="fleet-row"><td class="p-3 font-semibold">Naturium 2% BHA</td><td class="p-3 font-mono text-ink-secondary">PM ×1 (Sat)</td><td class="p-3">Clears existing pore clogs</td><td class="p-3 text-ink-secondary">Salicylic acid — oil-soluble keratolytic</td></tr>
-                            <tr class="fleet-row"><td class="p-3 font-semibold">Kroger Nighttime</td><td class="p-3 font-mono text-ink-secondary">PM seal — volume</td><td class="p-3">Barrier rebuild workhorse</td><td class="p-3 text-ink-secondary">Ceramides + niacinamide (~$0.10/mL)</td></tr>
-                            <tr class="fleet-row"><td class="p-3 font-semibold">Aestura Atobarrier 365</td><td class="p-3 font-mono text-ink-secondary">PM seal — premium</td><td class="p-3">Barrier rebuild, heavy artillery</td><td class="p-3 text-ink-secondary">Ceramide NP + cholesterol + fatty acids + niacinamide</td></tr>
+                            <tr class="fleet-row"><td class="p-3 font-semibold">Equate Adapalene 0.1%</td><td class="p-3 font-mono text-ink-secondary">PM ×4</td><td class="p-3">The engine: prevention</td><td class="p-3 text-ink-secondary">3rd-gen retinoid, direct RAR-β/γ binding, photostable</td></tr>
+                            <tr class="fleet-row"><td class="p-3 font-semibold">Naturium 2% BHA</td><td class="p-3 font-mono text-ink-secondary">PM ×1 (Sat)</td><td class="p-3">Clears existing pore clogs</td><td class="p-3 text-ink-secondary">Salicylic acid; oil-soluble keratolytic</td></tr>
+                            <tr class="fleet-row"><td class="p-3 font-semibold">Kroger Nighttime</td><td class="p-3 font-mono text-ink-secondary">PM seal (volume)</td><td class="p-3">Barrier rebuild workhorse</td><td class="p-3 text-ink-secondary">Ceramides + niacinamide (~$0.10/mL)</td></tr>
+                            <tr class="fleet-row"><td class="p-3 font-semibold">Aestura Atobarrier 365</td><td class="p-3 font-mono text-ink-secondary">PM seal (premium)</td><td class="p-3">Barrier rebuild, heavy artillery</td><td class="p-3 text-ink-secondary">Ceramide NP + cholesterol + fatty acids + niacinamide</td></tr>
                             <tr class="fleet-row"><td class="p-3 font-semibold">BoJ Revive Eye Serum</td><td class="p-3 font-mono text-ink-secondary">PM, orbital rim</td><td class="p-3">Rim coverage adapalene skips</td><td class="p-3 text-ink-secondary">Retinal + niacinamide</td></tr>
                             <tr class="fleet-row"><td class="p-3 font-semibold">Aquaphor</td><td class="p-3 font-mono text-ink-secondary">Sun slug only</td><td class="p-3">Occlusive water-loss block</td><td class="p-3 text-ink-secondary">Petrolatum</td></tr>
                         </tbody>
                     </table>
                 </div>
                 <p class="text-[11px] font-mono text-ink-secondary">
-                    <strong>Bench (named, not stocked):</strong> Vanicream Daily Facial — AM-cap fallback <em>if urea ever stings</em> on purge-week skin. Zero lead time at Walgreens.
+                    <strong>Bench (named, not stocked):</strong> Vanicream Daily Facial, AM-cap fallback <em>if urea ever stings</em> on purge-week skin. Zero lead time at Walgreens.
                 </p>
             </div>
 
@@ -882,10 +890,10 @@
     </main>
 
     <!-- Footer -->
-    <div class="border-t border-hairline bg-paper pt-8 pb-28 px-4 text-center text-xs font-mono text-ink-secondary">
-        <p>Canonical execution lives in Reminders app ("AM Skincare", "PM — Adapalene night", "PM — BHA night", "PM — Recovery night").</p>
+    <aside class="border-t border-hairline bg-paper pt-8 pb-28 px-4 text-center text-xs font-mono text-ink-secondary" aria-label="Protocol notes">
+        <p>Canonical execution lives in Reminders app ("AM Skincare", "PM: Adapalene night", "PM: BHA night", "PM: Recovery night").</p>
         <p class="text-[10px] text-ink-muted mt-1">v3 supersedes v2 (2026-07-26) · Sonoran Desert Architectural Protocol</p>
-    </div>
+    </aside>
 
     <footer class="footer">
       <div class="wrap footer-inner">
