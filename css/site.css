@@ -2145,6 +2145,10 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
   transition: opacity 0.5s var(--ease-out), transform 0.6s var(--ease-out);
 }
 .dock.is-in { opacity: 1; transform: translate(-50%, 0); }
+/* Until the hero's first screen has scrolled clear of it, the bar waits out of
+   sight (js/ask.js): see-through and click-through, still reachable by keyboard. */
+.dock:not(.is-in), .dock.is-tucked { pointer-events: none; }
+.dock.is-in.is-tucked { opacity: 0; transform: translate(-50%, 18px); transition-duration: 0.3s, 0.35s; }
 .dock[hidden] { display: none; }
 /* the sheen: light pooling across the top-left of the pane */
 .dock::before {

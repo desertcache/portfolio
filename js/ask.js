@@ -337,7 +337,7 @@ export function initAsk() {
 
   dock.hidden = false;
   root.classList.add('has-dock');
-  requestAnimationFrame(() => dock.classList.add('is-in'));
+  // It arrives (`.is-in`) once it won't sit on the hero: see "staying clear of the hero".
 
   // ---------- the orb ----------
   /** @type {HTMLIFrameElement | null} */
@@ -459,17 +459,67 @@ export function initAsk() {
     input.focus();
   });
 
+  // ---------- staying clear of the hero ----------
+  // On laptops and phones the bar would land on the hero's buttons and notes at
+  // first paint. Until the first-screen text and buttons have scrolled clear of
+  // it, the bar waits out of sight (tucked: see-through and click-through, but
+  // still reachable by keyboard and screen reader, and focusing it brings it
+  // straight back). Once someone has used it, it stays put.
+  const hero = document.getElementById('top');
+  let used = false;
+  /** @type {Element[]} */
+  let guarded = [];
+  const pickGuarded = () => {
+    // Only what starts on the first screen, so later hero content scrolling
+    // under the bar can't make it flicker.
+    guarded = hero
+      ? [...hero.querySelectorAll('.hero-lede, .hero-cta, .hero-note, .proof')]
+        .filter((n) => n.getBoundingClientRect().top + window.scrollY < window.innerHeight)
+      : [];
+  };
+  const coversHero = () => {
+    if (!hero || window.scrollY > hero.offsetHeight) return false;
+    const h = dock.offsetHeight;
+    const w = dock.offsetWidth;
+    const top = window.innerHeight - (parseFloat(getComputedStyle(dock).bottom) || 16) - h;
+    const left = (window.innerWidth - w) / 2;
+    return guarded.some((n) => {
+      const r = n.getBoundingClientRect();
+      return r.bottom > top - 12 && r.top < top + h && r.right > left && r.left < left + w;
+    });
+  };
+  const place = () => {
+    const keep = used || dock.classList.contains('is-open') || dock.contains(document.activeElement);
+    const tuck = !keep && coversHero();
+    if (!dock.classList.contains('is-in')) {
+      if (!tuck) dock.classList.add('is-in');
+      return;
+    }
+    dock.classList.toggle('is-tucked', tuck);
+  };
+  dock.addEventListener('focusin', () => {
+    used = true;
+    dock.classList.add('is-in');
+    dock.classList.remove('is-tucked');
+  });
+  pickGuarded();
+  requestAnimationFrame(place);
+  // The hero's lines rise into place over its first second; look again once they have.
+  if (document.readyState === 'complete') setTimeout(place, 900);
+  else window.addEventListener('load', () => setTimeout(place, 900), { once: true });
+  window.addEventListener('resize', () => { pickGuarded(); place(); }, { passive: true });
+
   // Over the Lab (always a night room) the glass turns dark too.
   const lab = document.getElementById('lab');
   let ticking = false;
   const tone = () => {
-    ticking = false;
     if (!lab) return;
     const r = lab.getBoundingClientRect();
     const d = dock.getBoundingClientRect();
     dock.classList.toggle('on-night', r.top < d.bottom - 20 && r.bottom > d.top + 20);
   };
-  window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(tone); } }, { passive: true });
+  const onFrame = () => { ticking = false; tone(); place(); };
+  window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onFrame); } }, { passive: true });
   tone();
 
   // ---------- asking ----------
