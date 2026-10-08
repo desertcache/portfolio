@@ -2073,6 +2073,8 @@ html.has-modal { overflow: hidden; }
 /* The first screen animates in with CSS alone, so it never waits on JS. */
 .rise { animation: rise 1s var(--ease-out) both; animation-delay: var(--delay, 0s); }
 @keyframes rise { from { opacity: 0; transform: translateY(18px); } }
+/* A section out of view pauses its looping animations (js/quiet.js). */
+.is-offscreen *, .is-offscreen *::before, .is-offscreen *::after { animation-play-state: paused !important; }
 
 /* Hidden only when JS is running (html.js, set in <head>) so the page still
    reads top to bottom with scripts off. js/motion.js adds .in on scroll. */

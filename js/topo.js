@@ -182,7 +182,8 @@ function buildProgram(gl) {
 async function loadHeightmap(url) {
   if ('createImageBitmap' in window) {
     try {
-      const res = await fetch(url);
+      // Low priority: on a slow phone the stylesheet and fonts should win the race; the map fades in after.
+      const res = await fetch(url, /** @type {RequestInit} */ ({ priority: 'low' }));
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return await createImageBitmap(await res.blob(), { colorSpaceConversion: 'none', premultiplyAlpha: 'none' });
     } catch (err) {
