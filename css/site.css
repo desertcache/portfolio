@@ -901,6 +901,9 @@ kbd {
 .mini-stats dd { margin-top: 6px; font: 800 semi-expanded clamp(1.2rem, 1.7vw, 1.45rem)/1.1 var(--display); letter-spacing: -0.03em; }
 .mini-stats small { display: block; margin-top: 4px; font: 400 0.875rem/1.35 var(--sans); letter-spacing: 0; color: var(--ink-3); }
 .step-more { margin-top: 24px; }
+/* "DoorDash's numbers stay internal": says why the results above are words, not figures. */
+.step .step-aside { margin-top: 24px; font-size: 0.875rem; line-height: 1.5; color: var(--ink-3); }
+.step-aside + .step-more { margin-top: 10px; }
 
 @media (max-width: 900px) {
   .mig { grid-template-columns: 1fr; }
