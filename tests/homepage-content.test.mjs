@@ -81,6 +81,34 @@ test('the blog pages and the posts index show no em dash anywhere a reader looks
   }
 });
 
+test('the side pages and the 404 page show no em dash anywhere a reader looks', () => {
+  for (const path of ['arcade.html', 'starship.html', 'skincare.html', '404.html']) {
+    const text = readerText(read(path));
+    const i = text.indexOf('—');
+    assert.equal(i, -1, `${path}: em dash in "${text.slice(Math.max(0, i - 40), i + 40).replace(/\s+/g, ' ')}"`);
+  }
+});
+
+test('every page a link can be pasted from shows a link preview', () => {
+  // Applications and hiring-manager notes link the work samples directly; a pasted
+  // link with no card looks broken in Slack, LinkedIn and iMessage.
+  const dir = (d) => readdirSync(new URL(`../${d}/`, import.meta.url)).filter((f) => f.endsWith('.html')).map((f) => `${d}/${f}`);
+  for (const path of ['index.html', 'arcade.html', 'starship.html', 'skincare.html', ...WORK_SAMPLES, 'blog/index.html', ...dir('blog/posts'), ...dir('blog/research')]) {
+    const html = read(path);
+    for (const tag of ['og:title', 'og:description', 'og:image', 'og:url']) {
+      assert.match(html, new RegExp(`<meta\\s+property="${tag}"\\s+content="[^"]+"`), `${path} has no ${tag}`);
+    }
+    assert.match(html, /<meta\s+property="og:image"\s+content="https:\/\//, `${path}: og:image must be an absolute URL`);
+  }
+});
+
+test('the 404 page uses absolute paths, since it is served at whatever URL was missing', () => {
+  const html = read('404.html');
+  for (const [, attr] of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
+    assert.ok(/^(?:\/portfolio\/|https?:|mailto:|#)/.test(attr), `404.html: relative path "${attr}"`);
+  }
+});
+
 test('every in-page link on the homepage points at an element that exists', () => {
   const ids = new Set([...HOME.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
   const targets = [...HOME.matchAll(/\shref="#([^"]+)"/g)].map((m) => m[1]);

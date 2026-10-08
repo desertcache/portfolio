@@ -199,6 +199,8 @@ html {
   scroll-padding-top: calc(var(--nav-h) + 12px);
   background: var(--bg);
 }
+/* Keyboard focus scrolls clear of the ask bar instead of landing under it. */
+html.has-dock { scroll-padding-bottom: 104px; }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 
 body {
