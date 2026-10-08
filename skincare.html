@@ -79,7 +79,7 @@
     </header>
 
     <!-- Document Header & Metadata Banner -->
-    <header class="doc-head border-b border-hairline bg-paper lg:sticky z-40 backdrop-blur-md bg-opacity-90">
+    <section class="doc-head border-b border-hairline bg-paper lg:sticky z-40 backdrop-blur-md bg-opacity-90" aria-label="Protocol overview">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
             <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
                 <div>
@@ -115,7 +115,7 @@
         </div>
 
         <!-- Navigation Tabs -->
-        <nav class="border-t border-hairline bg-paper/50 backdrop-blur">
+        <nav class="border-t border-hairline bg-paper/50 backdrop-blur" aria-label="On this page">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-8 overflow-x-auto text-xs font-mono uppercase tracking-wider no-scrollbar py-3">
                 <button onclick="switchTab('overview')" id="tab-overview" class="tab-btn active text-ink-primary pb-1 whitespace-nowrap">01. Overview & Changelog</button>
                 <button onclick="switchTab('grid')" id="tab-grid" class="tab-btn text-ink-secondary hover:text-ink-primary pb-1 whitespace-nowrap">02. Weekly Grid & Lanes</button>
@@ -125,7 +125,7 @@
                 <button onclick="switchTab('evidence')" id="tab-evidence" class="tab-btn text-ink-secondary hover:text-ink-primary pb-1 whitespace-nowrap">06. PubMed Evidence Base</button>
             </div>
         </nav>
-    </header>
+    </section>
 
     <!-- Main Content Container -->
     <main id="main" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
@@ -890,10 +890,10 @@
     </main>
 
     <!-- Footer -->
-    <div class="border-t border-hairline bg-paper pt-8 pb-28 px-4 text-center text-xs font-mono text-ink-secondary">
+    <aside class="border-t border-hairline bg-paper pt-8 pb-28 px-4 text-center text-xs font-mono text-ink-secondary" aria-label="Protocol notes">
         <p>Canonical execution lives in Reminders app ("AM Skincare", "PM: Adapalene night", "PM: BHA night", "PM: Recovery night").</p>
         <p class="text-[10px] text-ink-muted mt-1">v3 supersedes v2 (2026-07-26) · Sonoran Desert Architectural Protocol</p>
-    </div>
+    </aside>
 
     <footer class="footer">
       <div class="wrap footer-inner">

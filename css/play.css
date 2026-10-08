@@ -240,12 +240,12 @@ canvas.pixel-art { image-rendering: pixelated; }
 .tile-main:hover .cart-icon, .tile-main:focus-visible .cart-icon { transform: scale(1.1); }
 .menu-buttons .tile-main .title { grid-area: title; font-size: 0.75rem; line-height: 1.2; letter-spacing: 0.04em; }
 .menu-buttons .tile-main .num { grid-area: num; align-self: end; margin: 0; font-size: 0.625rem; text-align: center; }
-.tile-tag { grid-area: tag; font-size: 0.5625rem; line-height: 1.3; letter-spacing: 0.02em; text-transform: none; color: var(--lab-ink-2); }
+.tile-tag { grid-area: tag; font-size: 0.625rem; line-height: 1.3; letter-spacing: 0.02em; text-transform: none; color: var(--lab-ink-2); }
 .menu-buttons .tile-main .hi { grid-area: hi; align-self: end; }
 /* the AI titles: amber, with a lamp in the corner so they read as a different kind of game */
 .tile-main.ai { border-color: rgba(255, 201, 77, 0.4); }
 .tile-main.ai .num { color: #ffc94d; }
-.tile-main.ai::after { content: "AI"; position: absolute; right: 10px; bottom: 9px; font-size: 0.5rem; letter-spacing: 0.14em; color: #ffc94d; }
+.tile-main.ai::after { content: "AI"; position: absolute; right: 10px; bottom: 9px; font-size: 0.625rem; letter-spacing: 0.14em; color: #ffc94d; }
 /* a tile with an AI twin: the strip hangs off the tile's foot */
 .menu-buttons .tile-ai {
   display: flex;
@@ -268,7 +268,7 @@ canvas.pixel-art { image-rendering: pixelated; }
   .menu-buttons .tile-main { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto 1fr; grid-template-areas: "icon" "title" "hi"; min-height: 96px; padding: 9px 8px 8px; }
   .tile-tag, .menu-buttons .tile-main .num { display: none; }
   .menu-buttons .tile-main .title { font-size: 0.6875rem; line-height: 1.25; }
-  .menu-buttons .tile-ai { padding: 6px 8px; font-size: 0.5625rem; letter-spacing: 0.03em; white-space: nowrap; }
+  .menu-buttons .tile-ai { min-height: 28px; padding: 6px 8px; font-size: 0.625rem; line-height: 1.2; letter-spacing: 0.02em; white-space: normal; }
 }
 .arcade-btn, .game-btn {
   border: 1px solid var(--lab-line-strong);
@@ -365,13 +365,13 @@ canvas.pixel-art { image-rendering: pixelated; }
 .deck-side:hover, .deck-side:focus-visible { border-color: #ffc94d; background: rgba(255, 201, 77, 0.07); color: var(--lab-ink); outline: none; }
 .deck-arrow { flex: none; font: 500 1.5rem/1 var(--mono); }
 .deck-side-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; font: 500 semi-condensed 0.75rem/1.2 var(--mono); letter-spacing: 0.04em; text-transform: uppercase; }
-.deck-side-text small { font-size: 0.5rem; letter-spacing: 0.16em; color: var(--lab-ink-3); }
+.deck-side-text small { font-size: 0.625rem; letter-spacing: 0.16em; color: var(--lab-ink-3); }
 .deck-side-text > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .deck-now { display: flex; align-items: center; justify-content: center; gap: 12px; min-width: 0; }
 .deck-now-icon { display: block; flex: none; width: 36px; height: 36px; }
 .deck-now-icon .cart-icon { width: 36px; height: 36px; image-rendering: pixelated; }
 .deck-now-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; text-align: left; }
-.deck-now-meta { font: 500 semi-condensed 0.5625rem/1.2 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: #ffc94d; }
+.deck-now-meta { font: 500 semi-condensed 0.625rem/1.2 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: #ffc94d; }
 .deck-now-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 semi-expanded 1rem/1.15 var(--display); letter-spacing: -0.02em; color: var(--lab-ink); }
 .deck-actions { display: flex; gap: 8px; }
 .deck-btn {
@@ -390,7 +390,7 @@ canvas.pixel-art { image-rendering: pixelated; }
 .deck-btn:hover, .deck-btn:focus-visible { border-color: var(--lab-accent); color: var(--lab-accent); outline: none; }
 .deck-btn-ai { border-color: rgba(255, 201, 77, 0.45); color: #ffc94d; }
 .deck-btn-ai:hover, .deck-btn-ai:focus-visible { border-color: #ffc94d; color: #ffe08a; background: rgba(255, 201, 77, 0.12); }
-.deck-keys { grid-column: 1 / -1; margin: 0; font: 500 semi-condensed 0.5625rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; text-align: center; color: var(--lab-ink-3); }
+.deck-keys { grid-column: 1 / -1; margin: 0; font: 500 semi-condensed 0.625rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; text-align: center; color: var(--lab-ink-3); }
 .deck-keys kbd { padding: 1px 5px; border: 1px solid rgba(245, 238, 242, 0.2); border-radius: 3px; font: inherit; color: var(--lab-ink-2); }
 @media (max-width: 900px) {
   .game-deck { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
@@ -404,7 +404,9 @@ canvas.pixel-art { image-rendering: pixelated; }
   .deck-now { order: 0; grid-column: auto; }
   .deck-side { justify-content: center; padding: 10px 0; }
   .deck-arrow { font-size: 1.75rem; }
-  .deck-side-text, .deck-keys { display: none; }
+  .deck-keys { display: none; }
+  /* hidden from sight on a phone but still the buttons' names ("Previous Pac-Man") */
+  .deck-side-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .deck-now-name { font-size: 0.9375rem; }
   /* the menu needs the tall cabinet; a landscape game doesn't, so the bar stays close */
   .arcade-cabinet.is-playing { min-height: 0; }
@@ -468,7 +470,7 @@ canvas.pixel-art { image-rendering: pixelated; }
   transform: translate(-50%, calc(-50% - 1px));
   outline: none;
 }
-.dock-start .sub { font-size: 0.5625rem; letter-spacing: 0.16em; color: var(--lab-ink-3); }
+.dock-start .sub { font-size: 0.625rem; letter-spacing: 0.16em; color: var(--lab-ink-3); }
 .dock-frame { display: block; width: 100%; height: 100%; border: 0; border-radius: 8px; background: #0a0714; }
 .dock-mobile-note {
   position: absolute;
