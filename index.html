@@ -78,8 +78,8 @@
       </a>
       <nav class="nav-links" aria-label="Sections">
         <a href="#featured">Work</a>
-        <a href="#lab">Lab</a>
         <a href="#about">About</a>
+        <a href="#lab">Lab</a>
         <a href="#contact">Contact</a>
       </nav>
       <div class="nav-actions">
@@ -99,9 +99,9 @@
       <ol class="nav-menu-list">
         <li><a href="#featured"><span class="nav-menu-num">01</span>Featured program</a></li>
         <li><a href="#work"><span class="nav-menu-num">02</span>Selected work</a></li>
-        <li><a href="#build"><span class="nav-menu-num">03</span>How I build</a></li>
-        <li><a href="#lab"><span class="nav-menu-num">04</span>Lab</a></li>
-        <li><a href="#about"><span class="nav-menu-num">05</span>Background</a></li>
+        <li><a href="#about"><span class="nav-menu-num">03</span>Background</a></li>
+        <li><a href="#build"><span class="nav-menu-num">04</span>How I build</a></li>
+        <li><a href="#lab"><span class="nav-menu-num">05</span>Lab</a></li>
         <li><a href="#stack"><span class="nav-menu-num">06</span>Toolkit</a></li>
         <li><a href="#contact"><span class="nav-menu-num" aria-hidden="true"></span>Contact</a></li>
       </ol>
@@ -390,196 +390,11 @@
       <div class="bed bed-right reveal" aria-hidden="true"><svg class="flora flip" viewBox="0 0 64 62" style="--h:32px" focusable="false"><use href="assets/bloom.svg#threeawn"/></svg><svg class="flora" viewBox="0 0 100 82" style="--h:46px" focusable="false"><use href="assets/bloom.svg#brittlebush-b"/></svg><svg class="plant" viewBox="0 0 100 76" style="--h:48px" focusable="false"><use href="assets/bloom.svg#claret-cup"/></svg><svg class="flora" viewBox="0 0 70 136" style="--h:92px" focusable="false"><use href="assets/desert.svg#penstemon"/></svg></div>
     </section>
 
-    <!-- =========================== HOW I BUILD =========================== -->
-    <section class="section" id="build" aria-labelledby="build-title">
-      <div class="wrap">
-        <header class="section-head reveal">
-          <p class="eyebrow"><span class="eyebrow-num">03</span> How I build</p>
-          <h2 class="section-title" id="build-title">I build in Claude Code every day, and I run it <em>like a team.</em></h2>
-          <p class="section-lede">I give it what I'd give any team: a playbook, shared memory, the right tools, and a review before anything ships. Most of it is public, so you can check the work.</p>
-          <div class="head-illo" aria-hidden="true"><svg class="illo illo-agave" viewBox="0 0 200 306" focusable="false"><use href="assets/desert.svg#agave"/></svg></div>
-        </header>
-
-        <div class="build">
-          <div class="build-side">
-            <figure class="portrait portrait-wide reveal">
-              <picture>
-                <source srcset="assets/claude-code-card.webp" type="image/webp">
-                <img src="assets/claude-code-card.jpg" alt="The Claude Code power-user package on a wooden desk: a card from Anthropic's Claude Code team, an orange Claude Code plush wearing a brown hat, an enamel pin, a sticker pack and a black cap with the Claude Code mascot." width="1200" height="900" loading="lazy" decoding="async">
-              </picture>
-              <figcaption><span class="fig">Fig. 1</span> What Anthropic's Claude Code team sent: a card, a plush, a pin, stickers and a cap. Phoenix, 2026.</figcaption>
-            </figure>
-            <figure class="pull reveal">
-              <blockquote>
-                <p class="pull-lead">We're making it official: you're a Claude Code power user.</p>
-                <p>You're one of Claude Code's top users, and we wouldn't be here without you. Thank you for building with us.</p>
-              </blockquote>
-              <figcaption>The Claude Code team at Anthropic</figcaption>
-            </figure>
-          </div>
-
-          <div class="build-main">
-            <ol class="steps">
-              <li class="step reveal">
-                <span class="step-n">Fleet</span>
-                <p>Big builds run as a fleet of Claude agents in Claude Code. On <a href="starship.html">Starship Explorer</a>, an orchestrator wrote the design contracts, Sonnet and Opus agents built in parallel lanes on separate files, and nothing merged until a reviewer signed off on types, functional tests, real-GPU screenshots and a frame-time budget. <a href="https://github.com/desertcache/starship" target="_blank" rel="noopener">The contracts and gates are in the repo.</a></p>
-              </li>
-              <li class="step reveal">
-                <span class="step-n">Skills</span>
-                <p>Work I repeat becomes a skill: a written procedure with its own checks, so every run goes the same way. Mine brief a session, run a retro, red-team a plan, and publish this site's <a href="blog/index.html">Hill Money Watch</a> digest through a script that rejects any draft that breaks the contract.</p>
-              </li>
-              <li class="step reveal">
-                <span class="step-n">Hooks</span>
-                <p>Hooks do what shouldn't depend on anyone remembering: each session opens with the project's state already loaded, and every commit is logged for the retro.</p>
-              </li>
-              <li class="step reveal">
-                <span class="step-n">Memory</span>
-                <p>Decisions, error patterns and fixes carry over between sessions, and a mistake that shows up three times becomes a written rule. I open-sourced the core of it as <a href="https://github.com/desertcache/agent-os" target="_blank" rel="noopener">agent-os</a>: hooks, skills, memory and a session lifecycle for Claude Code.</p>
-              </li>
-              <li class="step reveal">
-                <span class="step-n">MCP</span>
-                <p>MCP servers give agents real tools instead of guesses: a browser to test in, current library docs, the data a task needs. When nothing fits, I build the server.</p>
-              </li>
-              <li class="step reveal">
-                <span class="step-n">Evals</span>
-                <p>Model changes pass a test before they ship. On the copilot, a retrieval change had to rescue questions that used to come back empty without pushing a right answer down. The answer bar on this page is scored on questions written before any model saw them: right first 81% of the time, in the top three 93%, and a test fails if an edit lowers either. <a href="work/answer-finder.html">How it was evaluated.</a></p>
-              </li>
-            </ol>
-            <p class="build-more"><a class="link-arrow" href="https://github.com/desertcache/agent-os" target="_blank" rel="noopener">agent-os, my Claude Code setup <span aria-hidden="true">↗</span></a><a class="link-arrow" href="https://github.com/desertcache" target="_blank" rel="noopener">All my public repos <span aria-hidden="true">↗</span></a></p>
-          </div>
-        </div>
-      </div>
-      <div class="bed bed-left reveal" aria-hidden="true"><svg class="flora flip" viewBox="0 0 110 76" style="--h:38px" focusable="false"><use href="assets/desert.svg#poppies"/></svg><svg class="flora flip" viewBox="0 0 70 136" style="--h:84px" focusable="false"><use href="assets/desert.svg#penstemon"/></svg><svg class="plant" viewBox="0 0 140 162" style="--h:44px" focusable="false"><use href="assets/desert.svg#barrel"/></svg></div>
-    </section>
-
-    <!-- =============================== LAB =============================== -->
-    <section class="section lab" id="lab" aria-labelledby="lab-title">
-      <div class="wrap">
-        <header class="section-head reveal">
-          <p class="eyebrow"><span class="eyebrow-num">04</span> Lab</p>
-          <h2 class="section-title" id="lab-title">Demos you can <em>walk around in.</em></h2>
-          <p class="section-lede">Everything here runs in your browser: a procedural starship you can board, a small model in the bar at the bottom of the screen that answers questions about my work, a GPU orb, and an arcade of twelve games, four of which let you watch an AI think. I build them after hours with a fleet of AI coding agents. I design the system and the verification gates, and nothing ships until it passes them.</p>
-        </header>
-
-        <article class="lab-feature reveal">
-          <a class="lab-poster" href="starship.html" aria-label="Starship Explorer: walk the ship">
-            <span class="lab-bar" aria-hidden="true"><span>STREL-7 · Remote dock</span><span>Desktop · WebGL</span></span>
-            <picture>
-              <source srcset="assets/starship-poster.webp" type="image/webp">
-              <img src="assets/starship-poster.jpg" alt="Corridor of the STREL-7: cream panels, burnt-orange door frames, teal floor strips" width="1280" height="720" loading="lazy" decoding="async">
-            </picture>
-            <span class="lab-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg>Walk the ship</span>
-          </a>
-          <div class="lab-copy">
-            <p class="eyebrow">Flagship · Playable build</p>
-            <h3 class="lab-title">Starship Explorer</h3>
-            <p>A first-person walkable starship in Three.js with zero asset files. Every panel, texture, and planet outside the windows is generated procedurally at runtime. Built with a fleet of Claude Code agents I directed, gated by an automated screenshot-verify pipeline.</p>
-            <ul class="tags"><li>Three.js</li><li>TypeScript</li><li>100% procedural</li><li>131 fps</li></ul>
-            <div class="lab-links">
-              <a class="link-arrow" href="starship.html">Walk the ship <span aria-hidden="true">→</span></a>
-              <a class="link-arrow" href="work/starship-agent-fleet.html">How it was built <span aria-hidden="true">→</span></a>
-              <a class="link-arrow" href="https://github.com/desertcache/starship" target="_blank" rel="noopener">Source <span aria-hidden="true">↗</span></a>
-            </div>
-          </div>
-        </article>
-
-        <div class="lab-grid">
-          <article class="lab-card reveal">
-            <div class="orb-slot" id="orb-slot" data-src="https://desertcache.github.io/samantha-ui/?embed=1&amp;control=1">
-              <div class="orb-poster" aria-hidden="true"><span class="orb-core"></span></div>
-              <button class="orb-wake" type="button">Wake the orb</button>
-              <span class="lab-live" aria-hidden="true">Live · WebGL</span>
-            </div>
-            <div class="lab-card-body">
-              <h3 class="lab-card-title"><a class="lab-card-link" href="https://desertcache.github.io/samantha-ui/" target="_blank" rel="noopener">Samantha UI<span class="lab-card-go" aria-hidden="true">↗</span></a></h3>
-              <p>A <i>Her</i>-inspired soul orb: one GPU-displaced sphere, custom GLSL shaders, audio-reactive at 60fps. It's the real app, idling in its listening state.</p>
-              <p class="lab-how"><span class="lab-how-label">How it works</span>Simplex noise in a vertex shader pushes the sphere's surface in and out. Listening, thinking and speaking each set their own depth and speed of motion, the orb eases between them, and the speaking voice's volume drives the ripples.</p>
-              <ul class="tags"><li>React 19</li><li>Three.js</li><li>GLSL</li></ul>
-              <div class="lab-links">
-                <a class="link-arrow" href="https://github.com/desertcache/samantha-ui" target="_blank" rel="noopener">Source <span aria-hidden="true">↗</span></a>
-              </div>
-            </div>
-          </article>
-
-          <article class="lab-card reveal">
-            <div class="arcade-stage" aria-hidden="true">
-              <span class="pac"></span>
-              <span class="pellets"></span>
-              <span class="arcade-coin">Insert coin</span>
-            </div>
-            <div class="lab-card-body">
-              <h3 class="lab-card-title"><a class="lab-card-link" href="arcade.html">The Arcade<span class="lab-card-go" aria-hidden="true">→</span></a></h3>
-              <p>Twelve games in vanilla JS on raw canvas: a dot-for-dot Pac-Man rebuild with the original ghost AI, a pinball table with real physics, and four titles where you can watch an AI think.</p>
-              <p class="lab-how"><span class="lab-how-label">How it works</span>Every game is a module on one small engine: a fixed 60-step loop, a fixed screen scaled to yours, and sound synthesized live. No libraries, no sound files, no build step.</p>
-              <ul class="lab-chips" aria-label="Jump straight into a game">
-                <li><a href="arcade.html?game=pacman">Pac-Man</a></li>
-                <li><a href="arcade.html?game=pacmanai">Watch the AI play</a></li>
-                <li><a href="arcade.html?game=four">Four in a Row</a></li>
-                <li><a href="arcade.html?game=evolve">UFO Evolution</a></li>
-                <li><a href="arcade.html?game=pinball">Pinball</a></li>
-                <li><a href="arcade.html?game=mesaai">Watch a lander learn</a></li>
-              </ul>
-            </div>
-          </article>
-
-          <article class="lab-card reveal">
-            <div class="ask-stage" aria-hidden="true">
-              <span class="ask-mini"><span class="ask-mini-orb"></span><span class="ask-mini-q">What has Sam shipped with AI?</span><span class="ask-mini-send"><svg viewBox="0 0 12 12" focusable="false"><path d="M6 10.5V1.5M2.2 5.2 6 1.5l3.8 3.7"/></svg></span></span>
-              <span class="ask-steps">
-                <span>Split into word pieces</span>
-                <span>Turned into a vector</span>
-                <span>Compared with 60 answers</span>
-                <span>Closest one answers</span>
-              </span>
-            </div>
-            <div class="lab-card-body">
-              <h3 class="lab-card-title"><a class="lab-card-link" href="work/answer-finder.html">Answer Finder<span class="lab-card-go" aria-hidden="true">→</span></a></h3>
-              <p>The bar at the bottom of this page. A 4 MB model on your own device matches your question to one of 60 answers I approved. Nothing is generated, so it can't make things up.</p>
-              <p class="lab-how"><span class="lab-how-label">How it works</span>A small embedding model turns your question into a vector, and the closest of 471 sample phrasings picks the answer. When nothing is close enough, it says so instead of guessing.</p>
-              <ul class="tags"><li>On-device</li><li>4 MB</li><li>No generation</li></ul>
-              <div class="lab-links">
-                <button class="link-arrow lab-try" type="button" data-ask-focus>Ask it something <span aria-hidden="true">↓</span></button>
-                <a class="link-arrow" href="https://github.com/desertcache/ask" target="_blank" rel="noopener">Source <span aria-hidden="true">↗</span></a>
-              </div>
-            </div>
-          </article>
-
-          <article class="lab-card reveal">
-            <div class="dispatch-stage" aria-hidden="true">
-              <span class="ticker"><span class="ticker-track"><span>PTR</span><span>Purchase</span><span>$1K–15K</span><span>Sale</span><span>$15K–50K</span><span>Filed late</span><span>$100K–250K</span><span>Exchange</span><span>PTR</span><span>Purchase</span><span>$1K–15K</span><span>Sale</span><span>$15K–50K</span><span>Filed late</span><span>$100K–250K</span><span>Exchange</span></span></span>
-              <span class="dispatch-latest">
-                <span class="dispatch-kicker">Latest dispatch</span>
-                <span class="dispatch-title" id="dispatch-title">Hill Money Watch: October 3, 2026</span>
-                <time class="dispatch-date" id="dispatch-date" datetime="2026-10-03">October 3, 2026</time>
-              </span>
-            </div>
-            <div class="lab-card-body">
-              <h3 class="lab-card-title"><a class="lab-card-link" href="blog/index.html">Hill Money Watch<span class="lab-card-go" aria-hidden="true">→</span></a></h3>
-              <p>A running digest of congressional stock-trade disclosures. One editorial rule is built in: it reports the gap between trade and filing dates, and never says in its own voice that anyone broke the law.</p>
-              <p class="lab-how"><span class="lab-how-label">How it works</span>A Claude Code skill sweeps the new filings and writes each edition, and a validation step rejects anything that breaks the publishing contract before it goes live.</p>
-              <ul class="tags"><li>Claude Code skill</li><li>Python</li><li>Contract tests</li></ul>
-              <div class="lab-links">
-                <a class="link-arrow" id="dispatch-link" href="blog/index.html">Read the latest <span aria-hidden="true">→</span></a>
-              </div>
-            </div>
-          </article>
-        </div>
-      </div>
-      <div class="lab-horizon" aria-hidden="true">
-        <span class="lab-sun"></span>
-        <div class="flock"><span class="flier" style="--y: 30%; --x: 40%; --t: 58s; --d: -14s; --w: 34px; --f: 2.1s; --fd: -.3s"><svg class="bird" viewBox="0 0 44 16" focusable="false"><use href="assets/fauna.svg#bird"/></svg></span><span class="flier" style="--y: 36%; --x: 37%; --t: 58s; --d: -15.6s; --w: 29px; --f: 1.9s; --fd: -1.1s"><svg class="bird" viewBox="0 0 44 16" focusable="false"><use href="assets/fauna.svg#bird"/></svg></span><span class="flier west" style="--y: 16%; --x: 72%; --t: 76s; --d: -52s; --w: 21px; --f: 2.4s; --fd: -.7s"><svg class="bird" viewBox="0 0 44 16" focusable="false"><use href="assets/fauna.svg#bird"/></svg></span><span class="flier west" style="--y: 44%; --x: 18%; --t: 64s; --d: -3s; --w: 31px; --f: 2s; --fd: -1.6s"><svg class="bird" viewBox="0 0 44 16" focusable="false"><use href="assets/fauna.svg#bird"/></svg></span></div>
-        <span class="lab-range"></span>
-        <span class="lab-ground"></span>
-        <div class="trail lab-trail"><svg class="runner" viewBox="0 0 176 115" focusable="false"><use href="assets/fauna.svg#roadrunner"/></svg></div>
-        <svg class="sil sil-pear" viewBox="0 0 360 300" focusable="false"><use href="assets/desert.svg#prickly-pear"/></svg><svg class="sil sil-saguaro" viewBox="0 0 232 534" focusable="false"><use href="assets/desert.svg#saguaro"/></svg><svg class="sil sil-ocotillo" viewBox="0 0 300 342" focusable="false"><use href="assets/desert.svg#ocotillo"/></svg><svg class="sil sil-barrel" viewBox="0 0 140 162" focusable="false"><use href="assets/desert.svg#barrel"/></svg><svg class="sil sil-palo" viewBox="0 0 400 342" focusable="false"><use href="assets/desert.svg#palo-verde"/></svg><svg class="sil sil-young" viewBox="0 0 160 344" focusable="false"><use href="assets/desert.svg#saguaro-young"/></svg><svg class="sil sil-saguaro2" viewBox="0 0 232 534" focusable="false"><use href="assets/desert.svg#saguaro"/></svg><svg class="sil sil-agave" viewBox="0 0 200 306" focusable="false"><use href="assets/desert.svg#agave"/></svg><svg class="sil sil-lupine" viewBox="0 0 80 116" focusable="false"><use href="assets/desert.svg#lupine"/></svg><svg class="sil sil-poppies" viewBox="0 0 110 76" focusable="false"><use href="assets/desert.svg#poppies"/></svg><svg class="sil sil-grass" viewBox="0 0 60 48" focusable="false"><use href="assets/desert.svg#grass"/></svg>
-      </div>
-    </section>
-
     <!-- ============================== ABOUT ============================== -->
     <section class="section" id="about" aria-labelledby="about-title">
       <div class="wrap">
         <header class="section-head reveal">
-          <p class="eyebrow"><span class="eyebrow-num">05</span> Background</p>
+          <p class="eyebrow"><span class="eyebrow-num">03</span> Background</p>
           <h2 class="section-title" id="about-title">From the ER to production code <em>in eleven years.</em></h2>
           <p class="section-lede">Most engineers don't have this path. The pattern: every role ran the operations the next one automated.</p>
           <div class="head-illo" aria-hidden="true"><svg class="illo illo-palo" viewBox="0 0 400 342" focusable="false"><use href="assets/desert.svg#palo-verde"/></svg></div>
@@ -697,6 +512,191 @@
       </div>
       <div class="trail trail-toad" aria-hidden="true"><svg class="walker" data-animal="toad" viewBox="0 0 85 46" focusable="false"><use href="assets/critters.svg#toad"/></svg></div>
       <div class="bed bed-left reveal" aria-hidden="true"><svg class="plant" viewBox="0 0 92 124" style="--h:80px" focusable="false"><use href="assets/bloom.svg#cholla"/></svg><svg class="flora flip" viewBox="0 0 76 78" style="--h:38px" focusable="false"><use href="assets/bloom.svg#owls-clover"/></svg><svg class="flora flip" viewBox="0 0 132 62" style="--h:30px" focusable="false"><use href="assets/bloom.svg#poppies-c"/></svg><svg class="flora" viewBox="0 0 80 116" style="--h:64px" focusable="false"><use href="assets/desert.svg#lupine"/></svg></div>
+    </section>
+
+    <!-- =========================== HOW I BUILD =========================== -->
+    <section class="section section-tint" id="build" aria-labelledby="build-title">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <p class="eyebrow"><span class="eyebrow-num">04</span> How I build</p>
+          <h2 class="section-title" id="build-title">I build in Claude Code every day, and I run it <em>like a team.</em></h2>
+          <p class="section-lede">I give it what I'd give any team: a playbook, shared memory, the right tools, and a review before anything ships. Most of it is public, so you can check the work.</p>
+          <div class="head-illo" aria-hidden="true"><svg class="illo illo-agave" viewBox="0 0 200 306" focusable="false"><use href="assets/desert.svg#agave"/></svg></div>
+        </header>
+
+        <div class="build">
+          <div class="build-side">
+            <figure class="portrait portrait-wide reveal">
+              <picture>
+                <source srcset="assets/claude-code-card.webp" type="image/webp">
+                <img src="assets/claude-code-card.jpg" alt="The Claude Code power-user package on a wooden desk: a card from Anthropic's Claude Code team, an orange Claude Code plush wearing a brown hat, an enamel pin, a sticker pack and a black cap with the Claude Code mascot." width="1200" height="900" loading="lazy" decoding="async">
+              </picture>
+              <figcaption><span class="fig">Fig. 1</span> What Anthropic's Claude Code team sent: a card, a plush, a pin, stickers and a cap. Phoenix, 2026.</figcaption>
+            </figure>
+            <figure class="pull reveal">
+              <blockquote>
+                <p class="pull-lead">We're making it official: you're a Claude Code power user.</p>
+                <p>You're one of Claude Code's top users, and we wouldn't be here without you. Thank you for building with us.</p>
+              </blockquote>
+              <figcaption>The Claude Code team at Anthropic</figcaption>
+            </figure>
+          </div>
+
+          <div class="build-main">
+            <ol class="steps">
+              <li class="step reveal">
+                <span class="step-n">Fleet</span>
+                <p>Big builds run as a fleet of Claude agents in Claude Code. On <a href="starship.html">Starship Explorer</a>, an orchestrator wrote the design contracts, Sonnet and Opus agents built in parallel lanes on separate files, and nothing merged until a reviewer signed off on types, functional tests, real-GPU screenshots and a frame-time budget. <a href="https://github.com/desertcache/starship" target="_blank" rel="noopener">The contracts and gates are in the repo.</a></p>
+              </li>
+              <li class="step reveal">
+                <span class="step-n">Skills</span>
+                <p>Work I repeat becomes a skill: a written procedure with its own checks, so every run goes the same way. Mine brief a session, run a retro, red-team a plan, and publish this site's <a href="blog/index.html">Hill Money Watch</a> digest through a script that rejects any draft that breaks the contract.</p>
+              </li>
+              <li class="step reveal">
+                <span class="step-n">Hooks</span>
+                <p>Hooks do what shouldn't depend on anyone remembering: each session opens with the project's state already loaded, and every commit is logged for the retro.</p>
+              </li>
+              <li class="step reveal">
+                <span class="step-n">Memory</span>
+                <p>Decisions, error patterns and fixes carry over between sessions, and a mistake that shows up three times becomes a written rule. I open-sourced the core of it as <a href="https://github.com/desertcache/agent-os" target="_blank" rel="noopener">agent-os</a>: hooks, skills, memory and a session lifecycle for Claude Code.</p>
+              </li>
+              <li class="step reveal">
+                <span class="step-n">MCP</span>
+                <p>MCP servers give agents real tools instead of guesses: a browser to test in, current library docs, the data a task needs. When nothing fits, I build the server.</p>
+              </li>
+              <li class="step reveal">
+                <span class="step-n">Evals</span>
+                <p>Model changes pass a test before they ship. On the copilot, a retrieval change had to rescue questions that used to come back empty without pushing a right answer down. The answer bar on this page is scored on questions written before any model saw them: right first 81% of the time, in the top three 93%, and a test fails if an edit lowers either. <a href="work/answer-finder.html">How it was evaluated.</a></p>
+              </li>
+            </ol>
+            <p class="build-more"><a class="link-arrow" href="https://github.com/desertcache/agent-os" target="_blank" rel="noopener">agent-os, my Claude Code setup <span aria-hidden="true">↗</span></a><a class="link-arrow" href="https://github.com/desertcache" target="_blank" rel="noopener">All my public repos <span aria-hidden="true">↗</span></a></p>
+          </div>
+        </div>
+      </div>
+      <div class="bed bed-left reveal" aria-hidden="true"><svg class="flora flip" viewBox="0 0 110 76" style="--h:38px" focusable="false"><use href="assets/desert.svg#poppies"/></svg><svg class="flora flip" viewBox="0 0 70 136" style="--h:84px" focusable="false"><use href="assets/desert.svg#penstemon"/></svg><svg class="plant" viewBox="0 0 140 162" style="--h:44px" focusable="false"><use href="assets/desert.svg#barrel"/></svg></div>
+    </section>
+
+    <!-- =============================== LAB =============================== -->
+    <section class="section lab" id="lab" aria-labelledby="lab-title">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <p class="eyebrow"><span class="eyebrow-num">05</span> Lab</p>
+          <h2 class="section-title" id="lab-title">Demos you can <em>walk around in.</em></h2>
+          <p class="section-lede">Everything here runs in your browser: a procedural starship you can board, a small model in the bar at the bottom of the screen that answers questions about my work, a GPU orb, and an arcade of twelve games, four of which let you watch an AI think. I build them after hours with a fleet of AI coding agents. I design the system and the verification gates, and nothing ships until it passes them.</p>
+        </header>
+
+        <article class="lab-feature reveal">
+          <a class="lab-poster" href="starship.html" aria-label="Starship Explorer: walk the ship">
+            <span class="lab-bar" aria-hidden="true"><span>STREL-7 · Remote dock</span><span>Desktop · WebGL</span></span>
+            <picture>
+              <source srcset="assets/starship-poster.webp" type="image/webp">
+              <img src="assets/starship-poster.jpg" alt="Corridor of the STREL-7: cream panels, burnt-orange door frames, teal floor strips" width="1280" height="720" loading="lazy" decoding="async">
+            </picture>
+            <span class="lab-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg>Walk the ship</span>
+          </a>
+          <div class="lab-copy">
+            <p class="eyebrow">Flagship · Playable build</p>
+            <h3 class="lab-title">Starship Explorer</h3>
+            <p>A first-person walkable starship in Three.js with zero asset files. Every panel, texture, and planet outside the windows is generated procedurally at runtime. Built with a fleet of Claude Code agents I directed, gated by an automated screenshot-verify pipeline.</p>
+            <ul class="tags"><li>Three.js</li><li>TypeScript</li><li>100% procedural</li><li>131 fps</li></ul>
+            <div class="lab-links">
+              <a class="link-arrow" href="starship.html">Walk the ship <span aria-hidden="true">→</span></a>
+              <a class="link-arrow" href="work/starship-agent-fleet.html">How it was built <span aria-hidden="true">→</span></a>
+              <a class="link-arrow" href="https://github.com/desertcache/starship" target="_blank" rel="noopener">Source <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </article>
+
+        <div class="lab-grid">
+          <article class="lab-card reveal">
+            <div class="orb-slot" id="orb-slot" data-src="https://desertcache.github.io/samantha-ui/?embed=1&amp;control=1">
+              <div class="orb-poster" aria-hidden="true"><span class="orb-core"></span></div>
+              <button class="orb-wake" type="button">Wake the orb</button>
+              <span class="lab-live" aria-hidden="true">Live · WebGL</span>
+            </div>
+            <div class="lab-card-body">
+              <h3 class="lab-card-title"><a class="lab-card-link" href="https://desertcache.github.io/samantha-ui/" target="_blank" rel="noopener">Samantha UI<span class="lab-card-go" aria-hidden="true">↗</span></a></h3>
+              <p>A <i>Her</i>-inspired soul orb: one GPU-displaced sphere, custom GLSL shaders, audio-reactive at 60fps. It's the real app, idling in its listening state.</p>
+              <p class="lab-how"><span class="lab-how-label">How it works</span>Simplex noise in a vertex shader pushes the sphere's surface in and out. Listening, thinking and speaking each set their own depth and speed of motion, the orb eases between them, and the speaking voice's volume drives the ripples.</p>
+              <ul class="tags"><li>React 19</li><li>Three.js</li><li>GLSL</li></ul>
+              <div class="lab-links">
+                <a class="link-arrow" href="https://github.com/desertcache/samantha-ui" target="_blank" rel="noopener">Source <span aria-hidden="true">↗</span></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="lab-card reveal">
+            <div class="arcade-stage" aria-hidden="true">
+              <span class="pac"></span>
+              <span class="pellets"></span>
+              <span class="arcade-coin">Insert coin</span>
+            </div>
+            <div class="lab-card-body">
+              <h3 class="lab-card-title"><a class="lab-card-link" href="arcade.html">The Arcade<span class="lab-card-go" aria-hidden="true">→</span></a></h3>
+              <p>Twelve games in vanilla JS on raw canvas: a dot-for-dot Pac-Man rebuild with the original ghost AI, a pinball table with real physics, and four titles where you can watch an AI think.</p>
+              <p class="lab-how"><span class="lab-how-label">How it works</span>Every game is a module on one small engine: a fixed 60-step loop, a fixed screen scaled to yours, and sound synthesized live. No libraries, no sound files, no build step.</p>
+              <ul class="lab-chips" aria-label="Jump straight into a game">
+                <li><a href="arcade.html?game=pacman">Pac-Man</a></li>
+                <li><a href="arcade.html?game=pacmanai">Watch the AI play</a></li>
+                <li><a href="arcade.html?game=four">Four in a Row</a></li>
+                <li><a href="arcade.html?game=evolve">UFO Evolution</a></li>
+                <li><a href="arcade.html?game=pinball">Pinball</a></li>
+                <li><a href="arcade.html?game=mesaai">Watch a lander learn</a></li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="lab-card reveal">
+            <div class="ask-stage" aria-hidden="true">
+              <span class="ask-mini"><span class="ask-mini-orb"></span><span class="ask-mini-q">What has Sam shipped with AI?</span><span class="ask-mini-send"><svg viewBox="0 0 12 12" focusable="false"><path d="M6 10.5V1.5M2.2 5.2 6 1.5l3.8 3.7"/></svg></span></span>
+              <span class="ask-steps">
+                <span>Split into word pieces</span>
+                <span>Turned into a vector</span>
+                <span>Compared with 60 answers</span>
+                <span>Closest one answers</span>
+              </span>
+            </div>
+            <div class="lab-card-body">
+              <h3 class="lab-card-title"><a class="lab-card-link" href="work/answer-finder.html">Answer Finder<span class="lab-card-go" aria-hidden="true">→</span></a></h3>
+              <p>The bar at the bottom of this page. A 4 MB model on your own device matches your question to one of 60 answers I approved. Nothing is generated, so it can't make things up.</p>
+              <p class="lab-how"><span class="lab-how-label">How it works</span>A small embedding model turns your question into a vector, and the closest of 471 sample phrasings picks the answer. When nothing is close enough, it says so instead of guessing.</p>
+              <ul class="tags"><li>On-device</li><li>4 MB</li><li>No generation</li></ul>
+              <div class="lab-links">
+                <button class="link-arrow lab-try" type="button" data-ask-focus>Ask it something <span aria-hidden="true">↓</span></button>
+                <a class="link-arrow" href="https://github.com/desertcache/ask" target="_blank" rel="noopener">Source <span aria-hidden="true">↗</span></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="lab-card reveal">
+            <div class="dispatch-stage" aria-hidden="true">
+              <span class="ticker"><span class="ticker-track"><span>PTR</span><span>Purchase</span><span>$1K–15K</span><span>Sale</span><span>$15K–50K</span><span>Filed late</span><span>$100K–250K</span><span>Exchange</span><span>PTR</span><span>Purchase</span><span>$1K–15K</span><span>Sale</span><span>$15K–50K</span><span>Filed late</span><span>$100K–250K</span><span>Exchange</span></span></span>
+              <span class="dispatch-latest">
+                <span class="dispatch-kicker">Latest dispatch</span>
+                <span class="dispatch-title" id="dispatch-title">Hill Money Watch: October 3, 2026</span>
+                <time class="dispatch-date" id="dispatch-date" datetime="2026-10-03">October 3, 2026</time>
+              </span>
+            </div>
+            <div class="lab-card-body">
+              <h3 class="lab-card-title"><a class="lab-card-link" href="blog/index.html">Hill Money Watch<span class="lab-card-go" aria-hidden="true">→</span></a></h3>
+              <p>A running digest of congressional stock-trade disclosures. One editorial rule is built in: it reports the gap between trade and filing dates, and never says in its own voice that anyone broke the law.</p>
+              <p class="lab-how"><span class="lab-how-label">How it works</span>A Claude Code skill sweeps the new filings and writes each edition, and a validation step rejects anything that breaks the publishing contract before it goes live.</p>
+              <ul class="tags"><li>Claude Code skill</li><li>Python</li><li>Contract tests</li></ul>
+              <div class="lab-links">
+                <a class="link-arrow" id="dispatch-link" href="blog/index.html">Read the latest <span aria-hidden="true">→</span></a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+      <div class="lab-horizon" aria-hidden="true">
+        <span class="lab-sun"></span>
+        <div class="flock"><span class="flier" style="--y: 30%; --x: 40%; --t: 58s; --d: -14s; --w: 34px; --f: 2.1s; --fd: -.3s"><svg class="bird" viewBox="0 0 44 16" focusable="false"><use href="assets/fauna.svg#bird"/></svg></span><span class="flier" style="--y: 36%; --x: 37%; --t: 58s; --d: -15.6s; --w: 29px; --f: 1.9s; --fd: -1.1s"><svg class="bird" viewBox="0 0 44 16" focusable="false"><use href="assets/fauna.svg#bird"/></svg></span><span class="flier west" style="--y: 16%; --x: 72%; --t: 76s; --d: -52s; --w: 21px; --f: 2.4s; --fd: -.7s"><svg class="bird" viewBox="0 0 44 16" focusable="false"><use href="assets/fauna.svg#bird"/></svg></span><span class="flier west" style="--y: 44%; --x: 18%; --t: 64s; --d: -3s; --w: 31px; --f: 2s; --fd: -1.6s"><svg class="bird" viewBox="0 0 44 16" focusable="false"><use href="assets/fauna.svg#bird"/></svg></span></div>
+        <span class="lab-range"></span>
+        <span class="lab-ground"></span>
+        <div class="trail lab-trail"><svg class="runner" viewBox="0 0 176 115" focusable="false"><use href="assets/fauna.svg#roadrunner"/></svg></div>
+        <svg class="sil sil-pear" viewBox="0 0 360 300" focusable="false"><use href="assets/desert.svg#prickly-pear"/></svg><svg class="sil sil-saguaro" viewBox="0 0 232 534" focusable="false"><use href="assets/desert.svg#saguaro"/></svg><svg class="sil sil-ocotillo" viewBox="0 0 300 342" focusable="false"><use href="assets/desert.svg#ocotillo"/></svg><svg class="sil sil-barrel" viewBox="0 0 140 162" focusable="false"><use href="assets/desert.svg#barrel"/></svg><svg class="sil sil-palo" viewBox="0 0 400 342" focusable="false"><use href="assets/desert.svg#palo-verde"/></svg><svg class="sil sil-young" viewBox="0 0 160 344" focusable="false"><use href="assets/desert.svg#saguaro-young"/></svg><svg class="sil sil-saguaro2" viewBox="0 0 232 534" focusable="false"><use href="assets/desert.svg#saguaro"/></svg><svg class="sil sil-agave" viewBox="0 0 200 306" focusable="false"><use href="assets/desert.svg#agave"/></svg><svg class="sil sil-lupine" viewBox="0 0 80 116" focusable="false"><use href="assets/desert.svg#lupine"/></svg><svg class="sil sil-poppies" viewBox="0 0 110 76" focusable="false"><use href="assets/desert.svg#poppies"/></svg><svg class="sil sil-grass" viewBox="0 0 60 48" focusable="false"><use href="assets/desert.svg#grass"/></svg>
+      </div>
     </section>
 
     <!-- ============================== TOOLKIT ============================== -->

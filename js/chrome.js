@@ -48,7 +48,8 @@ export function initScrollSpy() {
   const menuLinks = /** @type {HTMLAnchorElement[]} */ ([...document.querySelectorAll('.nav-menu a[href^="#"]')]);
   if (!(links.length || menuLinks.length) || !('IntersectionObserver' in window)) return;
   /** @type {Record<string, string>} */
-  const alias = { work: 'featured', stack: 'about' };
+  // Background (about) comes right after the work, so How I build reads as part of it.
+  const alias = { work: 'featured', build: 'about', stack: 'about' };
   const byId = new Map(links.map((a) => [a.hash.slice(1), a]));
   const menuById = new Map(menuLinks.map((a) => [a.hash.slice(1), a]));
   /** @param {HTMLAnchorElement[]} group @param {HTMLAnchorElement | undefined} active */
