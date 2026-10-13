@@ -171,3 +171,12 @@
   .post-body .rs-facts td:first-child { white-space: normal; }
   .post-body .rs-facts td:last-child { min-width: 0; }
 }
+
+/* A quiet pointer under the end nav: findable, not featured. */
+.rs-aside {
+  margin-top: 20px;
+  font: 500 semi-condensed 0.75rem/1.4 var(--mono);
+  color: var(--ink-3);
+}
+.rs-aside a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.rs-aside a:hover { color: var(--ink); }
