@@ -793,6 +793,11 @@ don't morph.
   0.2 s, off under reduced motion). Nothing is named, since the nav and footer
   are the same pixels on both pages. Same-document transitions (the case-study
   morph) share the root crossfade's timing.
+- **Hovering a link prerenders its page** (Speculation Rules in the homepage's `<head>`, moderate
+  eagerness): same-site pages only, never the homepage itself (a second copy would boot another
+  WebGL map), the PDF or new-tab links. DevTools and automation disable prerendering, so a
+  headless check reports `PrerenderingDisabledByDevTools` instead; inspect the attempts with the
+  protocol's `Preload` domain (`ruleSetUpdated`, `prerenderStatusUpdated`).
 - **`README.md`** is the repo's front door: what the site is, how it's built,
   and the bar it's held to, with the audit numbers above. Update its numbers
   when you rerun the audits.
