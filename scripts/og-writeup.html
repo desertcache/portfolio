@@ -1,0 +1,98 @@
+<!doctype html>
+<!--
+  Source for the write-ups' 1200×630 link previews: assets/og-<slug>.png for
+  work/<slug>.html. It reads the write-up itself, its eyebrow, headline,
+  stylesheets and Fig. 1, so a card can't drift from its page: regenerate the
+  card whenever the write-up's headline or figure changes.
+
+  To regenerate: serve the repo root (e.g. `npx http-server -c-1`), open
+  /scripts/og-writeup.html?page=<slug> in a 1200×630 viewport, wait until
+  <html> has data-ready, and screenshot the viewport to assets/og-<slug>.png.
+  (The fleet write-up keeps the starship poster as its card.)
+-->
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <title>OG card · write-up</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="stylesheet" href="../css/site.css?v=2026-10-23">
+  <link rel="stylesheet" href="../blog/blog.css?v=2026-10-23">
+  <style>
+    html, body { width: 1200px; height: 630px; margin: 0; overflow: hidden; background: var(--bg); }
+    .og {
+      display: grid;
+      grid-template-columns: 372px minmax(0, 1fr);
+      gap: 44px;
+      align-items: center;
+      width: 1200px;
+      height: 630px;
+      padding: 52px 52px 48px 64px;
+      box-sizing: border-box;
+    }
+    .og-k { font: 500 semi-condensed 13px/1.3 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-ink); }
+    .og-t { margin-top: 18px; font: 800 semi-expanded 40px/1.04 var(--display); letter-spacing: -0.04em; color: var(--ink); text-wrap: balance; }
+    .og-s { margin-top: 20px; font: 400 18px/1.45 var(--sans); color: var(--ink-2); text-wrap: pretty; }
+    .og-by { margin-top: 26px; font: 500 semi-condensed 13px/1.5 var(--mono); letter-spacing: 0.06em; color: var(--ink-3); }
+    /* the page's own figure, at the width it was drawn for, scaled down to fit if it must */
+    .og-fig { display: flex; align-items: center; justify-content: center; height: 530px; overflow: hidden; }
+    .og-fig-inner { display: block; width: 680px; flex: none; } /* blog.css makes .post-body display: contents */
+    .og-fig figure { margin: 0 !important; }
+    .og-fig figcaption { display: none; }
+  </style>
+</head>
+<body>
+  <div class="og">
+    <div>
+      <p class="og-k" id="og-k"></p>
+      <h1 class="og-t" id="og-t"></h1>
+      <p class="og-s" id="og-s"></p>
+      <p class="og-by">Samuel Bates · AI Solutions Manager<br>desertcache.github.io/portfolio</p>
+    </div>
+    <div class="og-fig"><div class="og-fig-inner post-body" id="og-fig"></div></div>
+  </div>
+  <script type="module">
+    // One line under the headline. The lede's first sentence, unless it only works
+    // inside the article; then a line from the page's own description.
+    const SUBTITLE = {
+      'answer-finder': 'A 3.9 MB embedding model that runs on your device and matches questions to answers I approved.',
+    };
+    const slug = new URLSearchParams(location.search).get('page') ?? '';
+    if (!/^[a-z0-9-]+$/.test(slug)) throw new Error(`?page= must name a write-up, got "${slug}"`);
+    const pageUrl = new URL(`../work/${slug}.html`, location.href);
+    const res = await fetch(pageUrl);
+    if (!res.ok) throw new Error(`${pageUrl}: HTTP ${res.status}`);
+    const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
+
+    // the page's own stylesheets beyond the two this card already loads (its figure's styles)
+    const loads = [];
+    for (const link of doc.querySelectorAll('link[rel="stylesheet"]')) {
+      const href = new URL(link.getAttribute('href'), pageUrl);
+      if (/\/(?:site|blog)\.css$/.test(href.pathname)) continue;
+      const el = Object.assign(document.createElement('link'), { rel: 'stylesheet', href: href.href });
+      loads.push(new Promise((ok, fail) => { el.onload = ok; el.onerror = () => fail(new Error(`${href}: failed to load`)); }));
+      document.head.append(el);
+    }
+
+    const eyebrow = doc.querySelector('.post-head .eyebrow');
+    const parts = [...(eyebrow?.childNodes ?? [])].map((n) => n.textContent.trim()).filter(Boolean);
+    document.getElementById('og-k').textContent = parts.join(' · ');
+    document.getElementById('og-t').textContent = doc.querySelector('h1.post-title')?.textContent.trim() ?? '';
+    const lede = doc.querySelector('.post-lede')?.textContent.trim() ?? '';
+    document.getElementById('og-s').textContent = SUBTITLE[slug] ?? (lede.match(/^.+?[.!?](?=\s|$)/)?.[0] ?? lede);
+
+    const figure = doc.querySelector('.post-body figure');
+    if (!figure) throw new Error(`${slug} has no figure`);
+    const slot = document.getElementById('og-fig');
+    slot.append(document.importNode(figure, true));
+
+    await Promise.all(loads);
+    await document.fonts.ready;
+    const box = slot.parentElement.getBoundingClientRect();
+    const fig = slot.getBoundingClientRect();
+    const scale = Math.min(1, box.height / fig.height, box.width / fig.width);
+    if (scale < 1) slot.style.zoom = String(scale);
+    document.documentElement.dataset.ready = '';
+  </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 // Run: npm test   (Node's built-in runner, no dependencies)
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const HOME = read('index.html');
@@ -99,6 +99,8 @@ test('every page a link can be pasted from shows a link preview', () => {
       assert.match(html, new RegExp(`<meta\\s+property="${tag}"\\s+content="[^"]+"`), `${path} has no ${tag}`);
     }
     assert.match(html, /<meta\s+property="og:image"\s+content="https:\/\//, `${path}: og:image must be an absolute URL`);
+    const image = html.match(/<meta\s+property="og:image"\s+content="https:\/\/desertcache\.github\.io\/portfolio\/([^"]+)"/)?.[1];
+    if (image) assert.ok(existsSync(new URL(`../${image}`, import.meta.url)), `${path}: og:image ${image} is not in the repo`);
   }
 });
 
