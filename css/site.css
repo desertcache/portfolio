@@ -2299,12 +2299,40 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
 }
 
 @media print {
-  .nav, .topo, .hero-fade, .lab-grid, .dock, .toast, .footer-hint, .orb-slot, .footer::before, .thermal, .trail, .flock { display: none !important; }
+  /* Paper is white and browsers drop backgrounds by default, so print always uses
+     the day palette on white, whatever the theme: a dusk page printed its words in
+     light grey on white and its drawings' fills in solid violet. */
+  :root, :root[data-theme="dark"] {
+    color-scheme: light;
+    --bg: #fff; --bg-tint: #fff; --surface: #fff;
+    --ink: #1c1624; --ink-2: #463d52; --ink-3: #625a6c;
+    --line: rgba(28, 22, 36, 0.13); --line-2: rgba(28, 22, 36, 0.06); --line-strong: rgba(28, 22, 36, 0.25);
+    --accent: #a8401d; --accent-ink: #923616; --accent-soft: rgba(168, 64, 29, 0.1); --on-accent: #fff;
+    --support: #4f7a2a; --support-ink: #3f6420; --bloom: #b8246a; --ok: #2f8a4e; --neg: #a3122b;
+    --g-soft: rgba(28, 22, 36, 0.1); --g-soft2: rgba(28, 22, 36, 0.24);
+    --illo-line: rgba(28, 22, 36, 0.26); --fauna-line: rgba(28, 22, 36, 0.58);
+  }
+  .nav, .topo, .hero-fade, .lab-grid, .dock, .toast, .footer-hint, .orb-slot, .footer::before, .thermal, .trail, .flock,
+  .lab-horizon, .bed, .lab-bar, .lab-play { display: none !important; }
   .js .reveal { opacity: 1 !important; transform: none !important; }
   .hero { min-height: 0; padding-top: 24px; }
   .section, .contact { padding-block: 32px; }
   .lab { --bg: #fff; --ink: #000; --ink-2: #222; --ink-3: #444; --surface: #fff; }
   .mig-viz, .about-side, .build-side { position: static; }
+  /* The words that catch the sunset are a gradient clipped to the letters, which
+     is a background, so on paper they printed as gaps ("I build the kind that").
+     A solid button's fill is a background too. */
+  .hero-statement em, .section-title em, .contact-title em {
+    background: none !important;
+    color: var(--accent) !important;
+    -webkit-text-fill-color: currentColor;
+  }
+  .btn-solid { background: none !important; color: var(--ink) !important; border-color: var(--ink) !important; }
+  /* headings stay with what they introduce; cards, steps and figures stay whole
+     (a section's eyebrow is inline-flex, which break-after ignores, so its whole
+     header holds together instead) */
+  .section-head, h2, h3 { break-after: avoid; }
+  .section-head, .card, .step, .tl, .legend, figure { break-inside: avoid; }
 }
 
 /* ---------- 7. Ask about my work: the glass bar (js/ask.js) ----------
