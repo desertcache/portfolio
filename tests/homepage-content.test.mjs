@@ -195,6 +195,23 @@ test('the featured diagram ships whole, and its parts and ticker follow the step
   for (let n = 1; n <= steps.length; n++) assert.ok(css.includes(`[data-step="${n}"]`), `site.css never styles step ${n}`);
 });
 
+test('every Toolkit link opens real proof, and says where it goes', () => {
+  // The underline is the claim: a tool links only to the place on this site that shows it in use.
+  const toolkit = HOME.match(/<div class="toolkit[^"]*">[\s\S]*?<\/div>\n {6}<\/div>/)?.[0] ?? '';
+  const links = [...toolkit.matchAll(/<a class="tk-link" href="([^"]+)"( data-cs="([^"]+)")?>([^<]+)<span class="visually-hidden">: ([^<]+)<\/span><\/a>/g)];
+  assert.ok(links.length >= 10, 'the Toolkit links its tools to their proof');
+  assert.equal(links.length, (toolkit.match(/class="tk-link"/g) ?? []).length, 'every Toolkit link names its destination for screen readers');
+  const ids = new Set([...HOME.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
+  for (const [, href, , cs, tool] of links) {
+    if (href.startsWith('#')) {
+      assert.ok(ids.has(href.slice(1)), `${tool}: ${href} has no target`);
+      if (href.startsWith('#cs-')) assert.equal(cs, href.slice(4), `${tool}: a case-study link opens its dialog (data-cs)`);
+    } else {
+      assert.ok(readFileSync(new URL(`../${href}`, import.meta.url)).length > 1000, `${tool}: ${href} is missing`);
+    }
+  }
+});
+
 test('"See the work" and the nav\'s Work link start at the featured program, not past it', () => {
   assert.match(HOME, /<a class="btn btn-solid" href="#featured">See the work/, 'the hero button');
   assert.match(HOME, /<nav class="nav-links"[^>]*>\s*<a href="#featured">Work<\/a>/, 'the nav link');

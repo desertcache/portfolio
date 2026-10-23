@@ -1779,6 +1779,20 @@ html.has-modal { overflow: hidden; }
 .tk h3 { font: 500 semi-condensed 0.75rem var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-ink); }
 .tk ul { list-style: none; margin-top: 14px; }
 .tk li { padding: 5px 0; font-size: 1rem; color: var(--ink-2); }
+/* A tool with proof on this site links to it: ink, with the dotted rule the
+   footer's side quests use; red rock on hover. Tools with no proof here stay
+   plain grey, so the underlines are the claim. */
+.tk-link {
+  color: var(--ink);
+  text-decoration: underline dotted var(--line-strong);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+  transition: color 0.2s, text-decoration-color 0.2s;
+}
+.tk-link:hover { color: var(--accent-ink); text-decoration-style: solid; text-decoration-color: currentColor; }
+/* the Toolkit's "Go" lands on a timeline entry that is still 22px low from its
+   reveal when the browser aims, so give it the room back */
+.tl[id] { scroll-margin-top: 24px; }   /* on top of html's scroll-padding-top */
 @media (max-width: 800px) {
   .toolkit { grid-template-columns: 1fr 1fr; }
   .tk:not(:nth-child(3n + 1)) { padding-left: 0; border-left: 0; }
