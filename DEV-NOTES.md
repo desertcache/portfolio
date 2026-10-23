@@ -290,8 +290,8 @@ python -m pytest scripts   # the Python scripts: digest ingest and archive, terr
 **Audits (2026-10-23).** Not in `npm test`, since they need a browser: axe-core
 (tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`)
 injected into each page with Playwright passes on all 17 pages, light and dark;
-Lighthouse 12 (simulated throttling, served with gzip) gives the homepage 90
-mobile and 100 desktop and every other page 92 to 98 and 99 to 100, with 100
+Lighthouse 12 (simulated throttling, served with gzip) gives the homepage 90 or
+better on mobile and 99 to 100 on desktop (runs vary by a point or two) and every other page 92 to 98 and 99 to 100, with 100
 for accessibility and best practices throughout (the two noindex work samples
 score 63 for SEO, on purpose). Rerun both after a change to the first screen,
 the hero map, or anything that loads before it. axe's label-in-name rule glues

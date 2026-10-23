@@ -57,7 +57,8 @@ and the JavaScript only adds motion and the interactive parts.
   page, in light and dark. Reduced motion is respected everywhere, and every
   page reads with JavaScript off (the games and demos need it to run).
 - **Speed.** Last measured October 2026 with Lighthouse 12: the homepage scores
-  90 on mobile and 100 on desktop, every other page 92 to 98 on mobile and 99
+  90 or better on mobile and 99 to 100 on desktop (runs vary by a point or
+  two), every other page 92 to 98 on mobile and 99
   to 100 on desktop, and accessibility and best practices score 100 throughout.
   Fonts are self-hosted, offscreen animation pauses, and the WebGL map holds
   still on machines that would draw it on the CPU.
