@@ -665,6 +665,11 @@ row (PR #12), which is gone.
   and it slides in once that content scrolls clear. Focus, `/` and the Lab's button bring it back,
   and once used it stays. `html.has-dock` sets `scroll-padding-bottom` so keyboard focus scrolls
   clear of it. Check with a headless pass at those sizes before changing the hero.
+- **Folded, the panel is inert (2026-10-23).** It collapses to 0px with `overflow: hidden`, so its
+  "Hide the answers" button and "How it works" link used to take keyboard focus invisibly.
+  `setOpen` sets `inert` on `#dock-panel` while it's closed (in JS only: an `inert` attribute in the
+  HTML would strand a cached older `ask.js` with a panel that never wakes). The log is a live region
+  and an inert one announces nothing, so anything that writes to it opens the panel first.
 
 ## The featured diagram builds itself (2026-10-23)
 
