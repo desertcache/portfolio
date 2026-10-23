@@ -2263,6 +2263,12 @@ html.has-modal { overflow: hidden; }
 /* The first screen animates in with CSS alone, so it never waits on JS. */
 .rise { animation: rise 1s var(--ease-out) both; animation-delay: var(--delay, 0s); }
 @keyframes rise { from { opacity: 0; transform: translateY(18px); } }
+/* The headline is the page's largest paint, and a browser only counts it once it
+   is visible: faded in from transparent, it held Largest Contentful Paint until
+   the fade ended (1.2 s on a fast machine, 4.7 s on Lighthouse's phone). It
+   glides in already drawn instead. */
+.hero-title.rise { animation-name: glide; }
+@keyframes glide { from { transform: translateY(14px); } }
 /* A section out of view pauses its looping animations (js/quiet.js). */
 .is-offscreen *, .is-offscreen *::before, .is-offscreen *::after { animation-play-state: paused !important; }
 
