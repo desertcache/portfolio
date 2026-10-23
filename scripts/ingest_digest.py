@@ -400,6 +400,156 @@ def rebuild_index() -> list[Post]:
 
 
 # --------------------------------------------------------------------------
+# Archive page
+# --------------------------------------------------------------------------
+
+ARCHIVE_PAGE = BLOG_DIR / "index.html"
+ARCHIVE_START = "<!-- archive:start -->"
+ARCHIVE_END = "<!-- archive:end -->"
+SERIES_PREFIX_RE = re.compile(r"^\s*Hill Money Watch\s*[:—–-]\s*")
+ARROW = "<span class=\"arrow\" aria-hidden=\"true\">→</span>"
+
+
+def edition_title(title: str) -> str:
+    """A title without the series name, as the archive lists it ("October 12, 2026").
+
+    Mirrors editionTitle in js/editions.js, which builds the same list in the browser
+    for a page from before the archive was rendered here.
+    """
+    short = SERIES_PREFIX_RE.sub("", title).strip()
+    return short or title
+
+
+def render_archive(posts: Sequence[Post]) -> str:
+    """The archive's latest-edition card and earlier-editions list, as static HTML.
+
+    The markup js/blog.js used to build from posts.json after the page loaded, rendered
+    at publish time instead: the archive now reads without JavaScript, and nothing below
+    it jumps when the list appears (it did: a layout shift of 0.30 on a phone). Posts
+    come newest first and are numbered oldest = 1. Everything from the digest is escaped,
+    since its title and summary are upstream-authored. Returns the markers too, so the
+    caller replaces marker to marker.
+    """
+    esc = partial(html.escape, quote=True)
+    total = len(posts)
+    if not posts:
+        latest = '<p class="archive-status">No editions published yet.</p>'
+    else:
+        newest = posts[0]
+        summary = f'<p class="latest-summary">{esc(newest.summary)}</p>' if newest.summary else ""
+        latest = (
+            f'<a class="lab latest" href="{esc(newest.href)}">'
+            f'<span class="latest-kicker">Latest edition<span class="latest-no">No. {total}</span></span>'
+            f'<h2 class="latest-title" id="latest-title">{esc(edition_title(newest.title))}</h2>'
+            f'{summary}<span class="latest-cta">Read the edition{ARROW}</span></a>'
+        )
+    rows = []
+    for i, post in enumerate(posts[1:]):
+        number = total - 1 - i
+        summary = f'<p class="archive-summary">{esc(post.summary)}</p>' if post.summary else ""
+        rows.append(
+            f'        <li><a class="archive-row" href="{esc(post.href)}">'
+            f'<span class="archive-no">No. {number}</span><span class="archive-main">'
+            f'<h3 class="archive-title" id="edition-{number}">{esc(edition_title(post.title))}</h3>'
+            f'{summary}</span>{ARROW}</a></li>'
+        )
+    hidden = "" if rows else " hidden"
+    return "\n".join([
+        ARCHIVE_START,
+        '    <section class="wrap archive-feature" aria-label="Latest edition">',
+        f'      <div id="latest">{latest}</div>',
+        "    </section>",
+        "",
+        f'    <section class="wrap archive-earlier" id="earlier" aria-labelledby="earlier-title"{hidden}>',
+        '      <h2 class="archive-heading" id="earlier-title">Earlier editions</h2>',
+        '      <ol class="archive-list" id="archive-list">',
+        *rows,
+        "      </ol>",
+        "    </section>",
+        f"    {ARCHIVE_END}",
+    ])
+
+
+def write_archive(posts: Sequence[Post]) -> bool:
+    """Render the archive into blog/index.html between its markers. True if it changed."""
+    page = ARCHIVE_PAGE.read_text(encoding="utf-8")
+    start, end = page.find(ARCHIVE_START), page.find(ARCHIVE_END)
+    if start == -1 or end < start:
+        raise RuntimeError(
+            f"{_display_path(ARCHIVE_PAGE)} has lost its {ARCHIVE_START} ... {ARCHIVE_END} markers; "
+            "put them back around the latest-edition and earlier-editions sections"
+        )
+    updated = page[:start] + render_archive(posts) + page[end + len(ARCHIVE_END):]
+    if updated == page:
+        return False
+    ARCHIVE_PAGE.write_text(updated, encoding="utf-8")
+    return True
+
+
+# --------------------------------------------------------------------------
+# Atom feed
+# --------------------------------------------------------------------------
+
+BLOG_URL = "https://desertcache.github.io/portfolio/blog/"
+FEED_PATH = BLOG_DIR / "feed.xml"
+FEED_SUBTITLE = "Congressional and executive-branch stock-trade disclosures, read closely."
+# XML 1.0 has no way to write these, escaped or not; one in a summary would break the feed.
+XML_ILLEGAL_RE = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\ufffe\uffff]")
+
+
+def _xml_text(text: str) -> str:
+    return html.escape(XML_ILLEGAL_RE.sub("", text), quote=True)
+
+
+def render_feed(posts: Sequence[Post]) -> str:
+    """blog/feed.xml: the editions as an Atom 1.0 feed, newest first.
+
+    Two jobs. Feed readers follow the blog through it, and it is the sitemap for the
+    editions: Search Console takes an Atom feed as a sitemap, and this one is rewritten
+    on every publish under blog/, where the skill's `git add blog/` stages it. (The
+    hand-kept sitemap.xml at the root lists the pages that don't change on a publish.)
+    A post only has a date, so its timestamps are midnight UTC that day. The output is
+    deterministic, so a run with nothing new leaves the file byte-for-byte unchanged.
+    """
+    updated = f"{posts[0].date}T00:00:00Z" if posts else "1970-01-01T00:00:00Z"
+    lines = [
+        '<?xml version="1.0" encoding="utf-8"?>',
+        '<feed xmlns="http://www.w3.org/2005/Atom">',
+        "  <title>Hill Money Watch</title>",
+        f"  <subtitle>{_xml_text(FEED_SUBTITLE)}</subtitle>",
+        f'  <link rel="self" type="application/atom+xml" href="{BLOG_URL}feed.xml"/>',
+        f'  <link rel="alternate" type="text/html" href="{BLOG_URL}"/>',
+        f"  <id>{BLOG_URL}</id>",
+        f"  <updated>{updated}</updated>",
+        "  <author><name>Samuel Bates</name></author>",
+    ]
+    for post in posts:
+        url = _xml_text(urllib.parse.urljoin(BLOG_URL, post.href))
+        stamp = f"{post.date}T00:00:00Z"
+        lines += [
+            "  <entry>",
+            f"    <title>{_xml_text(post.title)}</title>",
+            f'    <link rel="alternate" type="text/html" href="{url}"/>',
+            f"    <id>{url}</id>",
+            f"    <published>{stamp}</published>",
+            f"    <updated>{stamp}</updated>",
+            *([f"    <summary>{_xml_text(post.summary)}</summary>"] if post.summary else []),
+            "  </entry>",
+        ]
+    lines.append("</feed>")
+    return "\n".join(lines) + "\n"
+
+
+def write_feed(posts: Sequence[Post]) -> bool:
+    """Write blog/feed.xml. True if it changed."""
+    feed = render_feed(posts)
+    if FEED_PATH.exists() and FEED_PATH.read_text(encoding="utf-8") == feed:
+        return False
+    FEED_PATH.write_text(feed, encoding="utf-8")
+    return True
+
+
+# --------------------------------------------------------------------------
 # Entry point
 # --------------------------------------------------------------------------
 
@@ -509,7 +659,15 @@ def publish(pending: Sequence[PendingDigest], *, force: bool = False) -> int:
         published.append(slug)
         print(f"  write {_display_path(target)}")
 
-    rebuild_index()
+    posts = rebuild_index()
+    try:
+        if write_archive(posts):
+            print(f"  write {_display_path(ARCHIVE_PAGE)}")
+    except RuntimeError as exc:
+        failures.append(str(exc))
+        print(f"::error::{exc}")
+    if write_feed(posts):
+        print(f"  write {_display_path(FEED_PATH)}")
 
     summary_line = (
         f"published {len(published)} digest(s): {', '.join(published)}"

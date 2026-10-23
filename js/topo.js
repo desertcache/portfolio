@@ -2,6 +2,7 @@
 import { hexToRgb } from './lib.js';
 import { viewFor, pointAt, shaderUV, decodeHeightmap, readout, scaleBar } from './arizona.js';
 import { TERRAIN } from './terrain-data.js';
+import { isSoftwareRenderer } from './gpu.js';
 
 /**
  * The hero's topographic map: real contour lines around Camelback Mountain.
@@ -23,6 +24,8 @@ import { TERRAIN } from './terrain-data.js';
  *  - ~20fps while idle (the drift is slow), full rate only while the hill moves
  *  - stops entirely when the hero is off screen or the tab is hidden
  *  - reduced motion: one still frame; the readout still works, the hill doesn't
+ *  - a software rasterizer (remote desktops, VMs, blocklisted GPUs): the same
+ *    still frame, since there the shader runs on the CPU (js/gpu.js)
  *  - no WebGL, or no heightmap: the canvas stays invisible and paper shows
  */
 
@@ -284,11 +287,20 @@ export async function initTopo(canvas) {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-  const gl = canvas.getContext('webgl', {
+  /** @type {WebGLContextAttributes} */
+  const attrs = {
     alpha: true, premultipliedAlpha: true, antialias: false,
     depth: false, stencil: false, powerPreference: 'low-power',
-  });
+  };
+  // Ask for a context with no major performance caveat first. A browser that can only
+  // offer a software one says no, and so does a software renderer by name, since not
+  // every browser honours the flag (headless Chrome on SwiftShader doesn't).
+  const fast = canvas.getContext('webgl', { ...attrs, failIfMajorPerformanceCaveat: true });
+  const gl = fast ?? canvas.getContext('webgl', attrs);
   if (!gl || !gl.getExtension('OES_standard_derivatives')) return; // paper background it is
+  const debug = gl.getExtension('WEBGL_debug_renderer_info');
+  const software = !fast || isSoftwareRenderer(gl.getParameter(debug ? debug.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+  const still = reduced || software;               // one frame, no loop, no hill
 
   let uniforms = buildProgram(gl);
   if (!uniforms) return;
@@ -421,7 +433,7 @@ export async function initTopo(canvas) {
   }
 
   function start() {
-    if (reduced || s.raf || !s.visible || document.hidden || s.lost) return;
+    if (still || s.raf || !s.visible || document.hidden || s.lost) return;
     s.last = 0;
     s.raf = requestAnimationFrame(frame);
   }
@@ -459,7 +471,7 @@ export async function initTopo(canvas) {
         s.lastRead = now;
         readPointer();
       }
-      if (reduced) return;                        // the readout is information; the hill is motion
+      if (still) return;                          // the readout is information; the hill is motion
       s.targetAmt = 1;
       s.lastMove = now;
       start();

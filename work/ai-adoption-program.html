@@ -12,10 +12,10 @@
   <meta property="og:title" content="Running an AI adoption program people actually use · Samuel Bates">
   <meta property="og:description" content="How I run AI enablement as a product: a framework leaders reuse, a series that ends each session with something people keep using, a redesign around the real blocker, and counting adoption instead of attendance.">
   <meta property="og:url" content="https://desertcache.github.io/portfolio/work/ai-adoption-program.html">
-  <meta property="og:image" content="https://desertcache.github.io/portfolio/assets/og.png">
+  <meta property="og:image" content="https://desertcache.github.io/portfolio/assets/og-ai-adoption-program.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Samuel Bates, AI Solutions Manager: Most AI dies in the demo. I build the kind that ships.">
+  <meta property="og:image:alt" content="Running an AI adoption program people actually use: one planned session split into four parts, each counting one yes-or-no outcome.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#f3ebe6">
 
@@ -40,8 +40,9 @@
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
   <link rel="preload" href="../assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
-  <link rel="stylesheet" href="../css/site.css?v=2026-10-08">
-  <link rel="stylesheet" href="../blog/blog.css?v=2026-09-26">
+  <link rel="stylesheet" href="../css/site.css?v=2026-10-23">
+  <link rel="stylesheet" href="../blog/blog.css?v=2026-10-23">
+  <link rel="stylesheet" href="ai-adoption-program.css?v=2026-10-23">
   <script type="module" src="../js/blog.js"></script>
 </head>
 <body>
@@ -89,16 +90,29 @@
         <p>The first workshop was for senior leaders at an internal leadership summit. I built it around a simple four-step framework, so the takeaway was a way of working rather than a list of prompts. It has since reached 800+ people across the consumer and merchant organizations, and it generated follow-on AI projects in several of the teams that attended.</p>
 
         <h2>Every session ends with something people keep using</h2>
-        <p>The org-wide series for an operations organization runs sessions of roughly 70 to 100+ practitioners. Each one ships a reusable artifact, such as a skill, a template or a shared team setup, that people keep using after the call ends. Session four was a builder showcase: people from the business demoed production work they had shipped themselves, and I checked each merge record before describing their work to their executives. It is the same check I run as primary PR approver for 5 builders, a role I have held since September 2025.</p>
+        <p>The org-wide series for an operations organization runs sessions of roughly 70 to 100+ practitioners. Each one ships a reusable artifact, such as a skill, a template or a shared team setup, that people keep using after the call ends. Session four was a builder showcase: people from the business demoed production work they had shipped themselves, and I checked each merge record before describing their work to their executives. It is the same check I run as primary PR approver for 5 builders, a role I have held since February 2026.</p>
 
         <h2>Redesign around the real blocker</h2>
         <p>Midway through, a domain owner who had onboarded a group of non-engineers showed me that access and hands-on work in the same session deliver neither. One planned session became four parts:</p>
-        <ul>
-          <li><strong>Part 1:</strong> get access, and learn five words: repository, branch, commit, pull request, merge.</li>
-          <li><strong>Part 2:</strong> work inside a team repository.</li>
-          <li><strong>Part 3:</strong> read an existing repository.</li>
-          <li><strong>Part 4:</strong> contribute code, opt-in and with a sponsor.</li>
-        </ul>
+        <figure class="ladder" aria-labelledby="ladder-cap">
+          <ol class="ladder-steps">
+            <li class="ladder-step is-done">
+              <span class="ladder-k">Part 1 · done</span>
+              <p class="ladder-name">Get access, and learn five words</p>
+              <p class="ladder-words"><span>repository</span><span>branch</span><span>commit</span><span>pull request</span><span>merge</span></p>
+              <p class="ladder-count"><b>Counts</b>who reached the last access step</p>
+            </li>
+            <li class="ladder-later">
+              <ol class="ladder-steps-later" start="2">
+                <li class="ladder-step"><span class="ladder-k">Part 2</span><p class="ladder-name">Work inside a team repository</p></li>
+                <li class="ladder-step"><span class="ladder-k">Part 3</span><p class="ladder-name">Read an existing repository</p></li>
+                <li class="ladder-step"><span class="ladder-k">Part 4</span><p class="ladder-name">Contribute code, opt-in and with a sponsor</p></li>
+              </ol>
+              <p class="ladder-count"><b>Still ahead · will count</b>a first pull request, then a merged change</p>
+            </li>
+          </ol>
+          <figcaption id="ladder-cap"><span class="fig">Fig. 1</span>One planned session became four parts. Each part counts one yes-or-no outcome, never attendance.</figcaption>
+        </figure>
         <p>The line that unlocks a non-technical room turned out to be reversibility, not sophistication: everything here can be undone, and you are not an admin.</p>
 
         <h2>Recover in front of the room</h2>
@@ -114,6 +128,7 @@
 
       <nav class="cs-nav edition-nav" aria-label="More work">
         <a href="../index.html#work"><span class="cs-nav-k">Work</span><span class="cs-nav-t">All selected work</span></a>
+        <a class="cs-next" href="answer-finder.html"><span class="cs-nav-k">Read next</span><span class="cs-nav-t">A 4 MB model that can't make things up</span></a>
       </nav>
     </article>
   </main>

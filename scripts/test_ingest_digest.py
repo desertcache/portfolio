@@ -19,8 +19,13 @@ from ingest_digest import (
     local_inbox,
     main,
     parse_digest,
+    edition_title,
     rebuild_index,
+    render_archive,
+    render_feed,
     render_post,
+    write_archive,
+    write_feed,
 )
 
 GOOD = """<!doctype html><html><head>
@@ -156,6 +161,13 @@ def test_render_escapes_quotes_so_meta_attributes_survive():
 # rebuild_index — disk is the source of truth
 # --------------------------------------------------------------------------
 
+ARCHIVE_SHELL = (
+    "<main>\n    <header>Hill Money Watch</header>\n\n"
+    "    <!-- archive:start -->\n    <p>Loading</p>\n    <!-- archive:end -->\n\n"
+    "    <section>Research</section>\n</main>\n"
+)
+
+
 @pytest.fixture
 def blog(tmp_path, monkeypatch):
     """Redirect the module's path constants at a throwaway blog/ tree."""
@@ -163,6 +175,10 @@ def blog(tmp_path, monkeypatch):
     posts_dir.mkdir()
     monkeypatch.setattr(ingest_digest, "POSTS_DIR", posts_dir)
     monkeypatch.setattr(ingest_digest, "POSTS_INDEX", tmp_path / "posts.json")
+    archive = tmp_path / "index.html"
+    archive.write_text(ARCHIVE_SHELL, encoding="utf-8")
+    monkeypatch.setattr(ingest_digest, "ARCHIVE_PAGE", archive)
+    monkeypatch.setattr(ingest_digest, "FEED_PATH", tmp_path / "feed.xml")
     return tmp_path
 
 
@@ -239,6 +255,131 @@ def test_index_rewrites_a_corrupt_json_file(blog):
 # --------------------------------------------------------------------------
 # local_inbox — filename is the date, with an escape hatch
 # --------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------
+# render_archive / write_archive — the archive arrives finished
+# --------------------------------------------------------------------------
+
+def _posts(*dates):
+    return [Post(slug=f"{d}-hill-money-watch", date=d, title=f"Hill Money Watch: {d}", summary=f"About {d}.") for d in dates]
+
+
+def test_archive_puts_the_newest_edition_in_the_card_and_numbers_the_rest_down():
+    out = render_archive(_posts("2026-10-12", "2026-10-03", "2026-09-23"))
+    assert out.startswith("<!-- archive:start -->") and out.endswith("<!-- archive:end -->")
+    card, rest = out.split('id="earlier"')
+    assert 'href="posts/2026-10-12-hill-money-watch.html"' in card
+    assert '<span class="latest-no">No. 3</span>' in card
+    assert '<h2 class="latest-title" id="latest-title">2026-10-12</h2>' in card, "the series name is dropped"
+    assert rest.index('id="edition-2"') < rest.index('id="edition-1"'), "earlier editions count down"
+    assert " hidden" not in rest.split(">")[0]
+
+
+def test_archive_titles_drop_the_series_name_either_way_it_was_written():
+    assert edition_title("Hill Money Watch: October 12, 2026") == "October 12, 2026"
+    assert edition_title("Hill Money Watch \u2014 August 15, 2026") == "August 15, 2026"
+    assert edition_title("A one-off title") == "A one-off title"
+    assert edition_title("Hill Money Watch: ") == "Hill Money Watch: "
+
+
+def test_archive_escapes_everything_the_digest_wrote():
+    """Titles and summaries are upstream-authored: they must not be able to inject markup."""
+    post = Post(slug="2026-10-12-hill-money-watch", date="2026-10-12",
+                title='Hill Money Watch: <img src=x onerror=alert(1)>', summary='"Quoted" & <b>bold</b>')
+    out = render_archive([post])
+    assert "<img" not in out and "<b>" not in out
+    assert "&lt;img src=x onerror=alert(1)&gt;" in out
+    assert "&quot;Quoted&quot; &amp; &lt;b&gt;bold&lt;/b&gt;" in out
+
+
+def test_archive_with_one_edition_hides_the_empty_earlier_list():
+    out = render_archive(_posts("2026-10-12"))
+    assert 'id="earlier" aria-labelledby="earlier-title" hidden>' in out
+    assert "archive-row" not in out
+
+
+def test_archive_with_no_editions_says_so():
+    assert "No editions published yet." in render_archive([])
+
+
+def test_write_archive_replaces_marker_to_marker_and_keeps_the_rest(blog):
+    page = blog / "index.html"
+    assert write_archive(_posts("2026-10-12", "2026-10-03")) is True
+    text = page.read_text(encoding="utf-8")
+    assert "Loading" not in text
+    assert text.startswith("<main>\n    <header>Hill Money Watch</header>")
+    assert text.endswith("    <section>Research</section>\n</main>\n")
+    assert text.count("<!-- archive:start -->") == 1 and text.count("<!-- archive:end -->") == 1
+    assert write_archive(_posts("2026-10-12", "2026-10-03")) is False, "a second run changes nothing"
+
+
+def test_write_archive_refuses_a_page_that_lost_its_markers(blog):
+    (blog / "index.html").write_text("<main></main>", encoding="utf-8")
+    with pytest.raises(RuntimeError, match="markers"):
+        write_archive(_posts("2026-10-12"))
+
+
+def test_publishing_renders_the_new_edition_into_the_archive(publishable, tmp_path):
+    assert main(["--file", str(_digest_file(tmp_path))]) == 0
+    archive = (publishable / "index.html").read_text(encoding="utf-8")
+    assert 'href="posts/2026-08-17-hill-money-watch.html"' in archive
+    assert '<h2 class="latest-title" id="latest-title">August 11, 2026</h2>' in archive, "the digest's own title"
+
+
+# --------------------------------------------------------------------------
+# Atom feed
+# --------------------------------------------------------------------------
+
+ATOM = "{http://www.w3.org/2005/Atom}"
+
+
+def test_feed_is_valid_atom_with_one_entry_per_edition_newest_first():
+    import xml.etree.ElementTree as ET
+    root = ET.fromstring(render_feed(_posts("2026-10-12", "2026-10-03")))
+    assert root.tag == f"{ATOM}feed"
+    assert root.findtext(f"{ATOM}updated") == "2026-10-12T00:00:00Z", "the feed is as new as its newest edition"
+    for required in ("id", "title", "author"):
+        assert root.find(f"{ATOM}{required}") is not None, required
+    entries = root.findall(f"{ATOM}entry")
+    assert [e.findtext(f"{ATOM}published") for e in entries] == ["2026-10-12T00:00:00Z", "2026-10-03T00:00:00Z"]
+    first = entries[0]
+    url = "https://desertcache.github.io/portfolio/blog/posts/2026-10-12-hill-money-watch.html"
+    assert first.find(f"{ATOM}link").get("href") == url, "links are absolute: a feed reader has no page to resolve them against"
+    assert first.findtext(f"{ATOM}id") == url
+    assert first.findtext(f"{ATOM}title") == "Hill Money Watch: 2026-10-12"
+    assert first.findtext(f"{ATOM}summary") == "About 2026-10-12."
+
+
+def test_feed_escapes_what_the_digest_wrote_and_drops_what_xml_cannot_hold():
+    import xml.etree.ElementTree as ET
+    post = Post(slug="2026-10-12-hill-money-watch", date="2026-10-12",
+                title="Hill Money Watch: <b>bold</b>", summary='"Quoted" & <script>x</script>\x0b')
+    root = ET.fromstring(render_feed([post]))  # raises if the escaping left it malformed
+    entry = root.find(f"{ATOM}entry")
+    assert entry.findtext(f"{ATOM}title") == "Hill Money Watch: <b>bold</b>", "markup arrives as text, not tags"
+    assert entry.findtext(f"{ATOM}summary") == '"Quoted" & <script>x</script>'
+
+
+def test_feed_with_no_editions_is_still_a_valid_feed():
+    import xml.etree.ElementTree as ET
+    root = ET.fromstring(render_feed([]))
+    assert root.findall(f"{ATOM}entry") == []
+    assert root.findtext(f"{ATOM}updated"), "Atom requires <updated> even on an empty feed"
+
+
+def test_write_feed_rewrites_only_when_the_editions_change(blog):
+    assert write_feed(_posts("2026-10-03")) is True
+    assert write_feed(_posts("2026-10-03")) is False, "a run with nothing new leaves the file alone"
+    assert write_feed(_posts("2026-10-12", "2026-10-03")) is True
+    assert "2026-10-12-hill-money-watch.html" in (blog / "feed.xml").read_text(encoding="utf-8")
+
+
+def test_publishing_adds_the_new_edition_to_the_feed(publishable, tmp_path):
+    assert main(["--file", str(_digest_file(tmp_path))]) == 0
+    feed = (publishable / "feed.xml").read_text(encoding="utf-8")
+    assert "<title>Hill Money Watch: August 11, 2026</title>" in feed
+    assert "posts/2026-08-17-hill-money-watch.html" in feed
+
 
 def test_local_inbox_reads_the_date_out_of_the_filename(tmp_path):
     path = tmp_path / "hill-money-watch-2026-08-17.html"

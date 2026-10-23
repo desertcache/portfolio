@@ -331,6 +331,7 @@ export function initAsk() {
   const input = /** @type {HTMLInputElement | null} */ (document.getElementById('dock-q'));
   const log = document.getElementById('dock-log');
   const collapse = document.getElementById('dock-collapse');
+  const panel = document.getElementById('dock-panel');
   const orbSlot = document.getElementById('dock-orb');
   if (!dock || !form || !input || !log || !collapse || !orbSlot) return;
   const root = document.documentElement;
@@ -396,8 +397,18 @@ export function initAsk() {
   const setOpen = (open) => {
     dock.classList.toggle('is-open', open);
     collapse.setAttribute('aria-expanded', String(open));
+    // Folded away, the panel is 0px tall but its button and link could still take focus,
+    // invisibly. Inert keeps them out of the tab order (and the answers out of the
+    // accessibility tree) until it opens. Set here, never in the HTML, so a cached older
+    // ask.js can't leave it inert for good.
+    if (panel) panel.inert = !open;
   };
-  collapse.addEventListener('click', () => setOpen(false));
+  setOpen(false);
+  collapse.addEventListener('click', () => {
+    setOpen(false);
+    // the button just folded itself away; keep focus in the bar, on Ask
+    /** @type {HTMLButtonElement | null} */ (form.querySelector('.dock-send'))?.focus({ preventScroll: true });
+  });
   // Clicking or tapping anywhere off the bar folds the answers away (they come back on focus).
   document.addEventListener('pointerdown', (e) => {
     if (dock.classList.contains('is-open') && e.target instanceof Node && !dock.contains(e.target)) setOpen(false);
@@ -425,8 +436,8 @@ export function initAsk() {
     if (suggest || log.childElementCount) return;
     suggest = el('div', 'dock-msg dock-bot dock-suggest');
     suggest.append(el('p', 'dock-answer', "Ask me anything about Sam's work, or start with this part of the page:"));
+    setOpen(true); // open first: the log is a live region, and an inert one announces nothing
     log.append(suggest);
-    setOpen(true);
     renderSuggestions();
   };
   if ('IntersectionObserver' in window) {

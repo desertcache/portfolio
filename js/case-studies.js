@@ -11,6 +11,8 @@ import { caseStudyFromHash } from './lib.js';
  *  - opening pushes a history entry, so Back (or the phone's back gesture)
  *    closes the modal instead of leaving the site
  *  - prev/next swaps dialogs in place (replaceState, no history pile-up)
+ *  - where View Transitions exist, the card grows into its case study as it
+ *    opens, its schematic flying to its place, and folds back as it closes
  */
 export function initCaseStudies() {
   /** @type {Map<string, HTMLDialogElement>} */
@@ -33,6 +35,66 @@ export function initCaseStudies() {
 
   /** @param {string} id */
   const hashFor = (id) => `#cs-${id}`;
+
+  // ---------- the morph ----------
+  // A card opens into its case study: the card grows into the sheet while its schematic
+  // flies to its place, and it all folds back on close. Only where View Transitions
+  // exist, on screens wide enough for the centred sheet (phones keep the bottom sheet sliding
+  // up), never with reduced motion, and only when the card is on screen to fly from or to.
+  // A name sits on one element at a time: the leaving parts carry it for the "before"
+  // picture, the arriving parts for the "after". The card itself must carry `cs-sheet`:
+  // groups paint in the order their names were first captured, and a name that only exists
+  // in the "after" picture is painted last, over the art in flight. (The title stays out:
+  // it sits under the art on a card and over it on the sheet, so it would fly through it.)
+  const wideSheet = matchMedia('(min-width: 641px)');
+  let morphing = false;
+  /** @param {Element | null | undefined} el */
+  const onScreen = (el) => {
+    const r = el?.getBoundingClientRect();
+    return !!r && r.bottom > 0 && r.top < window.innerHeight && r.right > 0 && r.left < window.innerWidth;
+  };
+  /** @param {string} id */
+  const canMorph = (id) => typeof document.startViewTransition === 'function'
+    && wideSheet.matches && !reduced.matches && !morphing
+    && onScreen(document.querySelector(`#card-${id} .card-art`));
+  /** @param {string} id @returns {Array<[Element | null | undefined, string]>} */
+  const cardParts = (id) => {
+    const card = document.getElementById(`card-${id}`);
+    return [[card, 'cs-sheet'], [card?.querySelector('.card-art'), 'cs-art']];
+  };
+  /** @param {string} id @returns {Array<[Element | null | undefined, string]>} */
+  const sheetParts = (id) => {
+    const d = dialogs.get(id);
+    return [[d?.querySelector('.cs-sheet'), 'cs-sheet'], [d?.querySelector('.cs-art'), 'cs-art']];
+  };
+  /** @param {Array<[Element | null | undefined, string]>} parts @param {boolean} on */
+  const tag = (parts, on) => {
+    for (const [el, name] of parts) {
+      if (!(el instanceof HTMLElement)) continue;
+      if (on) el.style.setProperty('view-transition-name', name);
+      else el.style.removeProperty('view-transition-name');
+    }
+  };
+  /**
+   * @param {Array<[Element | null | undefined, string]>} from
+   * @param {Array<[Element | null | undefined, string]>} to
+   * @param {() => void} change the DOM update, run between the two pictures
+   */
+  function morph(from, to, change) {
+    morphing = true;
+    tag(from, true);
+    const vt = document.startViewTransition(() => {
+      tag(from, false);
+      tag(to, true);
+      change();
+    });
+    // finished rejects if the update throws; settle either way, and never leave it unhandled
+    const done = () => {
+      tag(to, false);
+      morphing = false;
+    };
+    vt.finished.then(done, done);
+  }
 
   /**
    * @param {string} id
@@ -67,9 +129,13 @@ export function initCaseStudies() {
   /** Animate out, then close. The `close` event below does the bookkeeping. */
   function requestClose() {
     const d = current ? dialogs.get(current) : null;
-    if (!d || d.classList.contains('is-closing')) return;
+    if (!d || d.classList.contains('is-closing') || morphing) return;
     if (reduced.matches) {
       d.close();
+      return;
+    }
+    if (current && canMorph(current)) {
+      morph(sheetParts(current), cardParts(current), () => d.close());
       return;
     }
     d.classList.add('is-closing');
@@ -80,7 +146,7 @@ export function initCaseStudies() {
     // Single cleanup path for every way a dialog can close: button, Esc,
     // backdrop click, Back button, or the browser force-closing it.
     d.addEventListener('close', () => {
-      d.classList.remove('is-closing');
+      d.classList.remove('is-closing', 'is-morphed');
       if (swapping || current !== id) return;
       current = null;
       root.classList.remove('has-modal');
@@ -115,7 +181,14 @@ export function initCaseStudies() {
     const id = link.getAttribute('data-cs');
     if (!id || !dialogs.has(id)) return;
     e.preventDefault();
-    open(id, current ? 'replace' : 'push', link);
+    if (current) open(id, 'replace', link);
+    else if (canMorph(id)) {
+      // The dialog's own entrance steps aside (.is-morphed) while the morph brings it in.
+      morph(cardParts(id), sheetParts(id), () => {
+        dialogs.get(id)?.classList.add('is-morphed');
+        open(id, 'push', link);
+      });
+    } else open(id, 'push', link);
   });
 
   window.addEventListener('popstate', () => {

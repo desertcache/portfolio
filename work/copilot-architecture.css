@@ -81,3 +81,71 @@
   }
   .post-body .fix-table td:first-child::before { margin-top: 0; }
 }
+
+/* Fig. 2: the rollout's access hunt. One generic error on top; under it the four
+   layers in the order they were proved, marking the one where the hunt ended, each
+   ticked for the check it has now. Same boxes and tokens as Fig. 1. */
+.post-body > .layers { margin: 6px 0 2.2em; }
+.post-body .layers p { margin: 0; }
+.post-body .layers-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin-bottom: 10px;
+  padding: 10px 14px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 12px;
+  font-size: 0.9rem;
+  color: var(--ink-2);
+}
+.layers-k {
+  font: 500 semi-condensed 0.6875rem/1.4 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.post-body .layers-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.post-body .layers-list > li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 12px 14px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--surface);
+}
+/* the arrow from each layer to the next */
+.post-body .layers-list > li + li::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: 21px;
+  width: 7px;
+  height: 7px;
+  border-top: 1.5px solid var(--ink-3);
+  border-right: 1.5px solid var(--ink-3);
+  transform: translateX(-1px) rotate(45deg);
+}
+.post-body .layers-list > li.is-found { border: 1.5px solid var(--accent); }
+.layers-n { font: 600 semi-condensed 0.75rem/1 var(--mono); color: var(--ink-3); }
+.is-found .layers-n { color: var(--accent-ink); }
+.layers-name { font-weight: 700; line-height: 1.3; color: var(--ink); }
+.layers-note { font: 500 semi-condensed 0.75rem/1.4 var(--mono); color: var(--accent-ink); }
+/* the check each layer has now */
+.layers-tick { position: absolute; top: 11px; right: 11px; width: 15px; height: 15px; }
+.layers-tick circle { fill: var(--support); }
+.layers-tick path { fill: none; stroke: var(--surface); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.layers figcaption { margin-top: 14px; font-size: 0.875rem; line-height: 1.55; color: var(--ink-3); }
+.layers .fig { margin-right: 6px; font: 600 semi-condensed 0.75rem var(--mono); color: var(--ink); }
+
+@media (max-width: 640px) {
+  .post-body .layers-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .post-body .layers-list > li:nth-child(3)::before { display: none; }
+}
+@media (max-width: 400px) {
+  .post-body .layers-list { grid-template-columns: 1fr; }
+  .post-body .layers-list > li + li::before { display: none; }
+}

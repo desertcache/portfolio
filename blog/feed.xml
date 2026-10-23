@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Hill Money Watch</title>
+  <subtitle>Congressional and executive-branch stock-trade disclosures, read closely.</subtitle>
+  <link rel="self" type="application/atom+xml" href="https://desertcache.github.io/portfolio/blog/feed.xml"/>
+  <link rel="alternate" type="text/html" href="https://desertcache.github.io/portfolio/blog/"/>
+  <id>https://desertcache.github.io/portfolio/blog/</id>
+  <updated>2026-10-12T00:00:00Z</updated>
+  <author><name>Samuel Bates</name></author>
+  <entry>
+    <title>Hill Money Watch: October 12, 2026</title>
+    <link rel="alternate" type="text/html" href="https://desertcache.github.io/portfolio/blog/posts/2026-10-12-hill-money-watch.html"/>
+    <id>https://desertcache.github.io/portfolio/blog/posts/2026-10-12-hill-money-watch.html</id>
+    <published>2026-10-12T00:00:00Z</published>
+    <updated>2026-10-12T00:00:00Z</updated>
+    <summary>A quiet week for the active roster: no new filings from Pelosi, Fields, Evans or Rick Scott, and Trump&#x27;s August-trades report is not posted yet. The big number is a catch-up the last edition missed: Sen. Jim Justice disclosed a partial sale of the Greenbrier in the over-$50M band. Also: Ro Khanna&#x27;s 400-line September filing and Rep. Diana Harshbarger&#x27;s $1.85M–6.75M into KKR and Coatue private-markets funds.</summary>
+  </entry>
+  <entry>
+    <title>Hill Money Watch: October 3, 2026</title>
+    <link rel="alternate" type="text/html" href="https://desertcache.github.io/portfolio/blog/posts/2026-10-03-hill-money-watch.html"/>
+    <id>https://desertcache.github.io/portfolio/blog/posts/2026-10-03-hill-money-watch.html</id>
+    <published>2026-10-03T00:00:00Z</published>
+    <updated>2026-10-03T00:00:00Z</updated>
+    <summary>Cleo Fields filed five new tech buys on October 1, Trump&#x27;s accounts disclosed 1,156 July trades including $5M–25M sales of Microsoft and Amazon, and the Senate killed the House stock-trading ban 53–47 on September 30.</summary>
+  </entry>
+  <entry>
+    <title>Hill Money Watch: September 23, 2026</title>
+    <link rel="alternate" type="text/html" href="https://desertcache.github.io/portfolio/blog/posts/2026-09-23-hill-money-watch.html"/>
+    <id>https://desertcache.github.io/portfolio/blog/posts/2026-09-23-hill-money-watch.html</id>
+    <published>2026-09-23T00:00:00Z</published>
+    <updated>2026-09-23T00:00:00Z</updated>
+    <summary>Nancy Pelosi&#x27;s household opened a $3M–12M position in Bloom Energy and added to Intel, the first move on either side of the open Intel divergence since June. Cleo Fields&#x27;s missing August buy turned up after all, April McClain Delaney sold 23 positions of $100K or more in one day, and the chair of the House Ethics Committee disclosed three trades about eight months after they were made.</summary>
+  </entry>
+  <entry>
+    <title>Hill Money Watch: August 16, 2026</title>
+    <link rel="alternate" type="text/html" href="https://desertcache.github.io/portfolio/blog/posts/2026-08-16-hill-money-watch.html"/>
+    <id>https://desertcache.github.io/portfolio/blog/posts/2026-08-16-hill-money-watch.html</id>
+    <published>2026-08-16T00:00:00Z</published>
+    <updated>2026-08-16T00:00:00Z</updated>
+    <summary>Three House members disclosed late trades on the same day, led by a $100K–250K Apple sale Shri Thanedar sat on for seven months. The Tier-1 roster is quiet across the board, Cleo Fields is now five weeks past his own buying cadence, and Ro Khanna&#x27;s TD filing date has picked up a third conflicting value.</summary>
+  </entry>
+  <entry>
+    <title>Hill Money Watch: August 15, 2026</title>
+    <link rel="alternate" type="text/html" href="https://desertcache.github.io/portfolio/blog/posts/2026-08-15-hill-money-watch.html"/>
+    <id>https://desertcache.github.io/portfolio/blog/posts/2026-08-15-hill-money-watch.html</id>
+    <published>2026-08-15T00:00:00Z</published>
+    <updated>2026-08-15T00:00:00Z</updated>
+    <summary>A catch-up edition covering recent disclosures rather than a single trading day. Lisa McClain breaks a six-month silence with a private defense buy filed one day before a $3.2B state announcement; the Tier-1 roster is quiet; two members disclose large batches of late trades.</summary>
+  </entry>
+</feed>

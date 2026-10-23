@@ -549,14 +549,21 @@
         b.type = 'button';
         b.dataset.id = s.id;
         b.setAttribute('aria-pressed', String(s.id === sel));
-        b.setAttribute('aria-label', s.name + ': IPO ' + fmtIso(s.ipoDate) + ' at ' + fmtPrice(s, s.ipoPrice) + '; ' + (s.done ? 'final' : 'last') + ' close ' + fmtPrice(s, st.last) + ' on ' + fmtIso(st.lastDate) + ', ' + fmtPct(st.ret) + ' against the IPO price. Show its chart.');
+        const listed = s.ticker + ' ' + DOT + ' ' + s.exchange;
+        const opened = (s.route === 'SPAC' ? 'SPAC ' : 'IPO ') + fmtIso(s.ipoDate);
+        const closed = (s.done ? 'Final ' : 'Last ') + fmtIso(st.lastDate);
+        // The button is named by its own words (WCAG 2.5.3: speech users say what they see).
+        // The spaces between parts are for readers of the name; the grid and flex rows don't
+        // render them. One hidden line adds what the eye gets from the colour and the chart.
         const top = el('span', 'led-mini-top');
-        top.append(el('span', 'led-mini-name', s.name), tagEl(s));
+        top.append(el('span', 'led-mini-name', s.name), ' ', tagEl(s));
         const r1 = el('span', 'led-mini-row r1');
-        r1.append(el('span', null, (s.route === 'SPAC' ? 'SPAC ' : 'IPO ') + fmtIso(s.ipoDate)), el('span', 'led-mini-v', fmtPrice(s, s.ipoPrice)));
+        r1.append(el('span', null, opened), ' ', el('span', 'led-mini-v', fmtPrice(s, s.ipoPrice)));
         const r2 = el('span', 'led-mini-row r2');
-        r2.append(el('span', null, (s.done ? 'Final ' : 'Last ') + fmtIso(st.lastDate)), el('span', 'led-mini-v', fmtPrice(s, st.last)));
-        b.append(top, el('span', 'led-mini-sub', s.ticker + ' ' + DOT + ' ' + s.exchange), miniSvg(s), r1, r2, el('span', 'led-mini-ret ' + (st.ret >= 0 ? 'led-up' : 'led-dn'), fmtPct(st.ret)));
+        r2.append(el('span', null, closed), ' ', el('span', 'led-mini-v', fmtPrice(s, st.last)));
+        b.append(top, ' ', el('span', 'led-mini-sub', listed), miniSvg(s), ' ', r1, ' ', r2, ' ',
+          el('span', 'led-mini-ret ' + (st.ret >= 0 ? 'led-up' : 'led-dn'), fmtPct(st.ret)),
+          el('span', 'visually-hidden', ' against the IPO price. Show its chart.'));
         b.addEventListener('click', () => select(s.id, true));
         G.append(b);
       });

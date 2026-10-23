@@ -39,8 +39,8 @@
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
   <link rel="preload" href="../assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
-  <link rel="stylesheet" href="../css/site.css?v=2026-10-08">
-  <link rel="stylesheet" href="../blog/blog.css?v=2026-09-26">
+  <link rel="stylesheet" href="../css/site.css?v=2026-10-23">
+  <link rel="stylesheet" href="../blog/blog.css?v=2026-10-23">
   <script type="module" src="../js/blog.js"></script>
 </head>
 <body>
@@ -107,6 +107,34 @@
           <li><strong>A reviewer before any merge.</strong> On the big builds, an orchestrator wrote the design contracts, Sonnet and Opus agents built in parallel lanes on separate files, and nothing merged until a reviewer signed off on types, functional tests, real-GPU screenshots and the frame budget.</li>
         </ul>
 
+        <figure class="fleet in" aria-labelledby="fleet-cap">
+          <svg class="fleet-svg" viewBox="0 0 440 206" role="img" aria-labelledby="fleet-title" aria-describedby="fleet-desc" focusable="false">
+            <title id="fleet-title">How the Starship fleet merged</title>
+            <desc id="fleet-desc">An orchestrator writes typed contracts. Sonnet and Opus agents build in parallel lanes, one file each. Nothing merges until a gate passes: types, 16 functional tests, screenshots on a real GPU, and a 95th-percentile frame time of 8.2 ms against an 18 ms budget.</desc>
+            <path class="fl-wire" pathLength="1" d="M96 98 C111 98 111 30 126 30"/>
+            <path class="fl-wire" pathLength="1" d="M96 98 H126"/>
+            <path class="fl-wire" pathLength="1" d="M96 98 C111 98 111 166 126 166"/>
+            <path class="fl-wire fl-in" pathLength="1" d="M286 30 C301 30 301 98 316 98"/>
+            <path class="fl-wire fl-in" pathLength="1" d="M286 98 H316"/>
+            <path class="fl-wire fl-in" pathLength="1" d="M286 166 C301 166 301 98 316 98"/>
+            <rect class="fx-frame" x="0.75" y="72" width="95" height="52" rx="9"/>
+            <text class="fx-t" x="48" y="96" text-anchor="middle">Orchestrator</text>
+            <text class="fx-s" x="48" y="111" text-anchor="middle">contracts</text>
+            <g class="fl-lane" style="--d:.5s;--t:1.1s"><rect class="fx-frame" x="126" y="13" width="160" height="34" rx="7"/><text class="fx-s" x="136" y="33.5">Opus</text><rect class="fl-track" x="184" y="27" width="92" height="6" rx="3"/><rect class="fl-fill" x="184" y="27" width="92" height="6" rx="3"/></g>
+            <g class="fl-lane" style="--d:.6s;--t:1.4s"><rect class="fx-frame" x="126" y="81" width="160" height="34" rx="7"/><text class="fx-s" x="136" y="101.5">Sonnet</text><rect class="fl-track" x="184" y="95" width="92" height="6" rx="3"/><rect class="fl-fill" x="184" y="95" width="92" height="6" rx="3"/></g>
+            <g class="fl-lane" style="--d:.55s;--t:.9s"><rect class="fx-frame" x="126" y="149" width="160" height="34" rx="7"/><text class="fx-s" x="136" y="169.5">Sonnet</text><rect class="fl-track" x="184" y="163" width="92" height="6" rx="3"/><rect class="fl-fill" x="184" y="163" width="92" height="6" rx="3"/></g>
+            <text class="fx-s" x="206" y="201" text-anchor="middle">parallel lanes, one file each</text>
+            <rect class="fx-frame" x="316.75" y="24" width="122.5" height="148" rx="9"/>
+            <text class="fx-t" x="328" y="46">Gate</text>
+            <g class="fl-check" style="--d:2.1s"><rect class="fx-box" x="328" y="57" width="9" height="9" rx="2"/><path class="fx-tick" pathLength="1" d="M330 61.6 l2 2 l3.6 -4"/><text class="fx-s" x="343" y="65">types</text></g>
+            <g class="fl-check" style="--d:2.35s"><rect class="fx-box" x="328" y="79" width="9" height="9" rx="2"/><path class="fx-tick" pathLength="1" d="M330 83.6 l2 2 l3.6 -4"/><text class="fx-s" x="343" y="87">16 tests</text></g>
+            <g class="fl-check" style="--d:2.6s"><rect class="fx-box" x="328" y="101" width="9" height="9" rx="2"/><path class="fx-tick" pathLength="1" d="M330 105.6 l2 2 l3.6 -4"/><text class="fx-s" x="343" y="109">GPU screenshots</text></g>
+            <g class="fl-check" style="--d:2.85s"><rect class="fx-box" x="328" y="123" width="9" height="9" rx="2"/><path class="fx-tick" pathLength="1" d="M330 127.6 l2 2 l3.6 -4"/><text class="fx-s" x="343" y="131">p95 8.2 / 18 ms</text></g>
+            <g class="fl-merge" style="--d:3.2s"><rect class="fl-pill" x="328" y="145" width="99" height="17" rx="8.5"/><text class="fl-pill-t" x="377.5" y="157" text-anchor="middle">merged</text></g>
+          </svg>
+          <figcaption id="fleet-cap"><span class="fig">Fig. 1</span>How a big build merged. The orchestrator writes the contracts, agents build in parallel lanes on separate files, and nothing merges until the gate passes.</figcaption>
+        </figure>
+
         <h2>The expensive lesson</h2>
         <p>The headless browser in the test harness quietly falls back to software rendering, and software lighting looks different from a real GPU. For about 20 days, art was graded on the wrong renderer: changes that looked right in the harness looked wrong on a real screen. The fix became a rule in the constitution. Headless runs prove behavior; only headed runs on a real GPU are allowed to judge how anything looks, and only they produce frame-rate numbers that count.</p>
         <p>A second lesson came from the last hardening pass. A test that calls a game's update function directly can pass while the real game loop never runs that code. So the door tests now have to watch a door actually move in rendered frames before anything is fast-forwarded.</p>
@@ -131,6 +159,7 @@
 
       <nav class="cs-nav edition-nav" aria-label="More work">
         <a href="../index.html#lab"><span class="cs-nav-k">Lab</span><span class="cs-nav-t">Demos you can walk around in</span></a>
+        <a class="cs-next" href="ai-copilot-rollout.html"><span class="cs-nav-k">Read next</span><span class="cs-nav-t">Putting an AI copilot into a live support operation</span></a>
       </nav>
     </article>
   </main>

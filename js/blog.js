@@ -100,20 +100,30 @@ function archiveRow(post, number, base) {
   return li;
 }
 
-/** Archive page: the latest edition as a feature, the rest as a list. */
+/**
+ * Archive page: the latest edition as a feature, the rest as a list. The page
+ * arrives with both already written in (scripts/ingest_digest.py renders them
+ * at publish time, so nothing jumps as the list appears). This rebuilds them
+ * from posts.json only when the page is behind it: a cached page from before
+ * the archive was rendered there, or a publish that left blog/index.html out
+ * of its commit.
+ */
 async function initArchive() {
   const slot = document.getElementById('latest');
   const list = document.getElementById('archive-list');
   const url = postsIndexUrl();
   if (!slot || !list || !url) return;
   const status = document.getElementById('archive-status');
+  const written = slot.querySelector('a.latest');
   let editions;
   try {
     editions = await fetchEditions(url);
   } catch (err) {
+    if (written) return; // the written-in archive stands on its own
     if (status) status.textContent = 'The edition list didn’t load. Refresh the page to try again.';
     throw err;
   }
+  if (written instanceof HTMLAnchorElement && editions[0] && written.href === new URL(editions[0].href, url).href) return;
   if (!editions.length) {
     if (status) status.textContent = 'No editions published yet.';
     return;

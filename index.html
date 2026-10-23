@@ -6,6 +6,7 @@
   <title>Samuel Bates · AI Solutions Manager</title>
   <meta name="description" content="Samuel Bates, AI Solutions Manager at DoorDash. I build production AI for operations teams, lead the people who run it, and teach organizations to adopt it. Former EMT.">
   <link rel="canonical" href="https://desertcache.github.io/portfolio/">
+  <link rel="alternate" type="application/atom+xml" title="Hill Money Watch" href="blog/feed.xml">
   <meta name="theme-color" content="#f3ebe6">
 
   <!-- Link previews (LinkedIn, Slack, iMessage). og:image must be an absolute URL. -->
@@ -45,8 +46,27 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preload" href="assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
-  <link rel="stylesheet" href="css/site.css?v=2026-10-08">
+  <link rel="stylesheet" href="css/site.css?v=2026-10-23">
   <script type="module" src="js/main.js"></script>
+  <!-- Hover a link to another page of the site and Chrome prerenders it, so the click lands at
+       once (and the page-to-page crossfade carries you in). Same-site pages only: not this page
+       (a second copy would boot another WebGL map), not the PDF. Browsers without Speculation
+       Rules ignore this; DevTools and automation turn prerendering off, so a headless check
+       shows "PrerenderingDisabledByDevTools" rather than a prerender. -->
+  <script type="speculationrules">
+  {
+    "prerender": [{
+      "where": { "and": [
+        { "href_matches": "/portfolio/*" },
+        { "not": { "href_matches": "/portfolio/" } },
+        { "not": { "href_matches": "/portfolio/index.html" } },
+        { "not": { "href_matches": "/portfolio/*.pdf" } },
+        { "not": { "selector_matches": "[target=_blank]" } }
+      ] },
+      "eagerness": "moderate"
+    }]
+  }
+  </script>
 
   <script type="application/ld+json">
   {
@@ -196,12 +216,167 @@
         </header>
 
         <div class="mig">
-          <figure class="mig-viz reveal" aria-labelledby="units-cap">
+          <figure class="mig-viz flow reveal" id="flow" data-step="5" aria-labelledby="flow-cap">
             <div class="mig-headline">
               <span class="mig-big" data-count>4</span>
               <span class="mig-big-label">weeks from first prototype to an internal pilot</span>
             </div>
-            <figcaption class="units-cap" id="units-cap"><span class="units-note">Build it, prove it, roll it out, measure it.</span></figcaption>
+            <!-- The copilot as built, drawn whole (data-step="5"). On wide screens js/flagship.js
+                 steps it with the reader: 1 the hunt across tools, 2 the bet on the playbook,
+                 3 the build, 4 the rollout's access checks, 5 the result. See css 5c. -->
+            <svg class="flow-svg" viewBox="0 -14 420 458" preserveAspectRatio="xMinYMin meet" role="img" aria-labelledby="flow-title" aria-describedby="flow-desc" focusable="false">
+              <title id="flow-title">The copilot, as built</title>
+              <desc id="flow-desc">An outsourced team reaches the support workspace through three access checks: identity, device trust and app permissions. The workspace, in React and TypeScript, holds the case context, the copilot and other teams' agents. Every call goes through one Node backend-for-frontend, which reaches playbook retrieval, the company AI gateway and internal data: store status, menu sync, integration health, account history and past cases. A fourth access check sits on the internal call. The copilot's answers cite the playbook sections that retrieval returned.</desc>
+
+              <!-- 3+: the system: tiers, wires, frames -->
+              <g class="fx-from-3">
+                <text class="fx-tier" x="0" y="51">in the browser</text>
+                <text class="fx-tier" x="0" y="200">on the server</text>
+                <path class="fx-wire" d="M205 173 V205"/>
+                <path class="fx-wire" d="M66 247 V281"/>
+                <path class="fx-wire" d="M210 247 V281"/>
+                <path class="fx-wire" d="M354 247 V281"/>
+                <text class="fx-s" x="212" y="193">every call goes through the backend</text>
+                <rect class="fx-frame" x="0.75" y="56" width="418.5" height="116" rx="10"/>
+                <path class="fx-hair" d="M1.5 84.5 H418.5"/>
+                <circle class="fx-dot" cx="13" cy="70" r="2.6"/><circle class="fx-dot" cx="22" cy="70" r="2.6"/><circle class="fx-dot" cx="31" cy="70" r="2.6"/>
+                <text class="fx-t" x="42" y="74">Support workspace</text>
+                <text class="fx-s" x="164" y="74">React + TypeScript</text>
+                <rect class="fx-panel" x="10" y="94" width="118" height="68" rx="6"/>
+                <text class="fx-s" x="20" y="109">case context</text>
+                <rect class="fx-bar" x="20" y="118" width="72" height="5" rx="2.5"/>
+                <rect class="fx-bar" x="20" y="128" width="88" height="5" rx="2.5"/>
+                <rect class="fx-bar" x="20" y="138" width="60" height="5" rx="2.5"/>
+                <rect class="fx-panel" x="282" y="94" width="128" height="68" rx="6"/>
+                <text class="fx-s" x="292" y="109">other teams' agents</text>
+                <rect class="fx-frame" x="0.75" y="206" width="418.5" height="40" rx="10"/>
+                <text class="fx-t" x="16" y="230">Backend-for-frontend</text>
+                <text class="fx-s" x="156" y="230">Node</text>
+                <rect class="fx-frame" x="0.75" y="282" width="130" height="160" rx="10"/>
+                <text class="fx-t" x="12" y="302">Retrieval</text>
+                <rect class="fx-frame" x="144.75" y="282" width="130.5" height="160" rx="10"/>
+                <text class="fx-t" x="156" y="302">AI gateway</text>
+                <circle class="fx-model" cx="210" cy="338" r="17"/>
+                <path class="fx-spark-mark" d="M210 328.5 l2.4 7.1 7.1 2.4 -7.1 2.4 -2.4 7.1 -2.4 -7.1 -7.1 -2.4 7.1 -2.4z"/>
+                <text class="fx-s" x="210" y="369" text-anchor="middle">model</text>
+                <rect class="fx-frame" x="289.25" y="282" width="130" height="160" rx="10"/>
+                <text class="fx-t" x="301" y="302">Internal data</text>
+              </g>
+              <!-- other teams' agents slide in as panels -->
+              <g class="fx-from-3 fx-slide" style="--d:.35s">
+                <rect class="fx-agent" x="292" y="116" width="108" height="18" rx="4"/>
+                <circle class="fx-dot" cx="301.5" cy="125" r="3.5"/>
+                <rect class="fx-bar" x="310" y="122.5" width="58" height="5" rx="2.5"/>
+              </g>
+              <g class="fx-from-3 fx-slide" style="--d:.55s">
+                <rect class="fx-agent" x="292" y="138" width="108" height="18" rx="4"/>
+                <circle class="fx-dot" cx="301.5" cy="147" r="3.5"/>
+                <rect class="fx-bar" x="310" y="144.5" width="44" height="5" rx="2.5"/>
+              </g>
+              <!-- model changes go through the gateway: a control, the new setting, a request that should fail -->
+              <g class="fx-from-3 fx-check" style="--d:.7s"><rect class="fx-box" x="158" y="383" width="9" height="9" rx="2"/><path class="fx-tick" pathLength="1" d="M160 387.6 l2 2 l3.6 -4"/><text class="fx-s" x="174" y="391">control</text></g>
+              <g class="fx-from-3 fx-check" style="--d:.9s"><rect class="fx-box" x="158" y="399" width="9" height="9" rx="2"/><path class="fx-tick" pathLength="1" d="M160 403.6 l2 2 l3.6 -4"/><text class="fx-s" x="174" y="407">new setting</text></g>
+              <g class="fx-from-3 fx-check" style="--d:1.1s"><rect class="fx-box" x="158" y="415" width="9" height="9" rx="2"/><path class="fx-tick" pathLength="1" d="M160 419.6 l2 2 l3.6 -4"/><text class="fx-s" x="174" y="423">should fail</text></g>
+
+              <!-- 2+: the copilot's answer, citing the playbook -->
+              <g class="fx-from-2">
+                <rect class="fx-panel fx-copilot" x="138" y="94" width="134" height="68" rx="6"/>
+                <text class="fx-s" x="148" y="109">copilot</text>
+                <rect class="fx-bar" x="148" y="118" width="104" height="5" rx="2.5"/>
+                <rect class="fx-bar" x="148" y="128" width="92" height="5" rx="2.5"/>
+                <rect class="fx-bar" x="148" y="138" width="76" height="5" rx="2.5"/>
+                <rect class="fx-cite" x="256" y="116.5" width="9" height="8" rx="2"/>
+                <rect class="fx-cite" x="228" y="136.5" width="9" height="8" rx="2"/>
+              </g>
+
+              <!-- 1: the hunt, under the tools it hops between (--hop is when it reaches each one) -->
+              <g class="fx-only-1">
+                <path class="fx-trail" pathLength="1" d="M69.5 114.6 C95.4 103.7 179.6 53.8 225 49 C270.4 44.2 328.3 64.7 342 86 C355.7 107.3 347.8 154.2 307 177 C266.2 199.8 106 207.3 97 223 C88 238.7 221 250.7 253 271 C285 291.3 313.6 324.4 289 345 C264.4 365.6 136.1 386.1 105.5 394.4"/>
+                <g class="fx-hop" style="--d:2.7s"><circle class="fx-q" cx="92" cy="398" r="12.5"/><text class="fx-q-t" x="92" y="403" text-anchor="middle">?</text></g>
+              </g>
+              <!-- always: the playbook (scattered in step 1) -->
+              <g class="fx-move fx-playbook" style="--sx:284px;--sy:-284px;--r:5deg;--hop:.96s">
+                <rect class="fx-page-back" x="22" y="312" width="84" height="104" rx="3"/>
+                <rect class="fx-page" x="16" y="318" width="84" height="104" rx="3"/>
+                <rect class="fx-hl fx-from-2" x="20" y="345" width="76" height="10" rx="2"/>
+                <rect class="fx-hl fx-from-2" x="20" y="385" width="76" height="10" rx="2"/>
+                <rect class="fx-bar" x="24" y="328" width="62" height="4" rx="2"/>
+                <rect class="fx-bar" x="24" y="338" width="54" height="4" rx="2"/>
+                <rect class="fx-bar" x="24" y="348" width="66" height="4" rx="2"/>
+                <rect class="fx-bar" x="24" y="358" width="48" height="4" rx="2"/>
+                <rect class="fx-bar" x="24" y="368" width="60" height="4" rx="2"/>
+                <rect class="fx-bar" x="24" y="378" width="56" height="4" rx="2"/>
+                <rect class="fx-bar" x="24" y="388" width="64" height="4" rx="2"/>
+                <rect class="fx-bar" x="24" y="398" width="44" height="4" rx="2"/>
+                <rect class="fx-bar" x="24" y="408" width="58" height="4" rx="2"/>
+                <text class="fx-s" x="16" y="436">playbook</text>
+              </g>
+              <!-- always: half a dozen internal tools (scattered in steps 1 and 2, filed in 3+) -->
+              <g class="fx-move fx-tool" style="--sx:-129px;--sy:-272px;--r:-4deg;--d:0s;--hop:.68s"><rect class="fx-chip" x="297" y="312" width="114" height="18" rx="4"/><rect class="fx-chip-ico" x="300" y="317" width="2" height="8" rx="1"/><text class="fx-s fx-chip-t" x="306" y="324.5">store status</text></g>
+              <g class="fx-move fx-tool" style="--sx:-47px;--sy:-169px;--r:3deg;--d:.08s;--hop:1.2s"><rect class="fx-chip" x="297" y="337" width="114" height="18" rx="4"/><rect class="fx-chip-ico" x="300" y="342" width="2" height="8" rx="1"/><text class="fx-s fx-chip-t" x="306" y="349.5">menu sync</text></g>
+              <g class="fx-move fx-tool" style="--sx:-101px;--sy:-100px;--r:-2deg;--d:.16s;--hop:2.06s"><rect class="fx-chip" x="297" y="362" width="114" height="18" rx="4"/><rect class="fx-chip-ico" x="300" y="367" width="2" height="8" rx="1"/><text class="fx-s fx-chip-t" x="306" y="374.5">integration health</text></g>
+              <g class="fx-move fx-tool" style="--sx:-257px;--sy:-173px;--r:4deg;--d:.24s;--hop:1.69s"><rect class="fx-chip" x="297" y="387" width="114" height="18" rx="4"/><rect class="fx-chip-ico" x="300" y="392" width="2" height="8" rx="1"/><text class="fx-s fx-chip-t" x="306" y="399.5">account history</text></g>
+              <g class="fx-move fx-tool" style="--sx:-65px;--sy:-76px;--r:-5deg;--d:.32s;--hop:2.27s"><rect class="fx-chip" x="297" y="412" width="114" height="18" rx="4"/><rect class="fx-chip-ico" x="300" y="417" width="2" height="8" rx="1"/><text class="fx-s fx-chip-t" x="306" y="424.5">past cases</text></g>
+              <!-- 1: one case, every tool, and still "what next?" -->
+              <g class="fx-only-1">
+                <rect class="fx-bubble" x="78" y="80" width="78" height="22" rx="11"/>
+                <path class="fx-bubble" d="M86.5 100.5 L78 110 L95 101.6"/>
+                <text class="fx-s fx-bubble-t" x="117" y="94.5" text-anchor="middle">what next?</text>
+              </g>
+              <!-- 1 and 2: the support agent -->
+              <g class="fx-upto-2">
+                <circle class="fx-node" cx="52" cy="122" r="17"/>
+                <circle class="fx-person" cx="52" cy="116" r="4.5"/>
+                <path class="fx-person" d="M43.5 131.5 a8.5 7.5 0 0 1 17 0"/>
+                <text class="fx-s" x="52" y="155" text-anchor="middle">support agent</text>
+              </g>
+              <!-- 2: the bet. Answer from the playbook, and cite what retrieval returned -->
+              <g class="fx-only-2">
+                <path class="fx-ask" d="M73 122 H131"/>
+                <path class="fx-ask" d="M126 117.5 L131.5 122 L126 126.5"/>
+                <path class="fx-prov" d="M98 350 C158 340 232.5 236 232.5 146"/>
+                <path class="fx-prov" d="M98 390 C178 380 260.5 226 260.5 126"/>
+                <circle class="fx-prov-end" cx="98" cy="350" r="2.4"/>
+                <circle class="fx-prov-end" cx="98" cy="390" r="2.4"/>
+                <text class="fx-s fx-halo fx-hot-t" x="244" y="252">cites the sections it used</text>
+              </g>
+
+              <!-- 4+: the rollout. Access proved one layer at a time -->
+              <g class="fx-from-4">
+                <path class="fx-wire fx-door" d="M132 8 H392 Q404 8 404 20 V53"/>
+                <path class="fx-door-head" d="M399.5 47.5 L404 54 L408.5 47.5"/>
+                <circle class="fx-node fx-team" cx="14" cy="8" r="12.5"/>
+                <circle class="fx-person" cx="17.5" cy="3" r="2.9"/>
+                <path class="fx-person" d="M13.5 14.5 a4.6 4.4 0 0 1 9 0"/>
+                <circle class="fx-person fx-person-front" cx="10.5" cy="5" r="3.2"/>
+                <path class="fx-person fx-person-front" d="M5 16 a5.5 5 0 0 1 11 0"/>
+                <text class="fx-s" x="32" y="11.5">outsourced team</text>
+                <g class="fx-gate" style="--d:.15s"><circle class="fx-gate-c" cx="190" cy="8" r="7"/><path class="fx-gate-tick" pathLength="1" d="M186.6 8.2 l2.3 2.3 l4.4 -4.6"/><text class="fx-s" x="190" y="30" text-anchor="middle">identity</text></g>
+                <g class="fx-gate" style="--d:.5s"><circle class="fx-gate-c" cx="257" cy="8" r="7"/><path class="fx-gate-tick" pathLength="1" d="M253.6 8.2 l2.3 2.3 l4.4 -4.6"/><text class="fx-s" x="257" y="30" text-anchor="middle">device trust</text></g>
+                <g class="fx-gate" style="--d:.85s"><circle class="fx-gate-c" cx="345" cy="8" r="7"/><path class="fx-gate-tick" pathLength="1" d="M341.6 8.2 l2.3 2.3 l4.4 -4.6"/><text class="fx-s" x="345" y="30" text-anchor="middle">app permissions</text></g>
+                <g class="fx-gate" style="--d:1.2s"><circle class="fx-gate-c" cx="354" cy="264" r="7"/><path class="fx-gate-tick" pathLength="1" d="M350.6 264.2 l2.3 2.3 l4.4 -4.6"/><text class="fx-s fx-halo" x="343" y="267.5" text-anchor="end">internal call</text></g>
+              </g>
+
+              <!-- 5: the result. Team live, agents inside, answers cited, usage past the baseline -->
+              <g class="fx-from-5">
+                <circle class="fx-live-ring" cx="22.5" cy="17" r="4"/>
+                <circle class="fx-live" cx="22.5" cy="17" r="4"/>
+                <text class="fx-s fx-live-t" x="32" y="25.5">live</text>
+                <text class="fx-s" x="298" y="74">usage</text>
+                <path class="fx-base" d="M332 77 H406"/>
+                <path class="fx-spark" pathLength="1" d="M332 77 C346 77 352 74.5 362 71 S388 63 406 61.5"/>
+              </g>
+            </svg>
+            <figcaption class="flow-cap" id="flow-cap">
+              <span class="visually-hidden">The copilot as built, in five steps:</span>
+              <ol class="flow-ticker">
+                <li class="is-done">Problem</li>
+                <li class="is-done">Bet</li>
+                <li class="is-done">Build</li>
+                <li class="is-done">Rollout</li>
+                <li class="is-current">Result</li>
+              </ol>
+            </figcaption>
           </figure>
           <ol class="steps">
             <li class="step reveal">
@@ -459,7 +634,7 @@
                   <p>One of a small team handling executive-level escalations, 50+ cases a day. Built the SQL tooling, Salesforce reports, and prevention playbooks.</p>
                 </div>
               </li>
-              <li class="tl reveal" data-phase="builder">
+              <li class="tl reveal" data-phase="builder" id="role-integrations">
                 <span class="tl-year">2025</span>
                 <div class="tl-body">
                   <span class="tl-phase">Builder</span>
@@ -547,6 +722,34 @@
               <li class="step reveal">
                 <span class="step-n">Fleet</span>
                 <p>Big builds run as a fleet of Claude agents in Claude Code. On <a href="starship.html">Starship Explorer</a>, an orchestrator wrote the design contracts, Sonnet and Opus agents built in parallel lanes on separate files, and nothing merged until a reviewer signed off on types, functional tests, real-GPU screenshots and a frame-time budget. <a href="https://github.com/desertcache/starship" target="_blank" rel="noopener">The contracts and gates are in the repo.</a></p>
+                <!-- The fleet as the write-up describes it (work/starship-agent-fleet.html). Drawn whole;
+                     on reveal the lanes fill and the gate ticks in order (css 5n, .fleet). -->
+                <figure class="fleet reveal">
+                  <svg class="fleet-svg" viewBox="0 0 440 206" role="img" aria-labelledby="fleet-title" aria-describedby="fleet-desc" focusable="false">
+                    <title id="fleet-title">How the Starship fleet merged</title>
+                    <desc id="fleet-desc">An orchestrator writes typed contracts. Sonnet and Opus agents build in parallel lanes, one file each. Nothing merges until a gate passes: types, 16 functional tests, screenshots on a real GPU, and a 95th-percentile frame time of 8.2 ms against an 18 ms budget.</desc>
+                    <path class="fl-wire" pathLength="1" d="M96 98 C111 98 111 30 126 30"/>
+                    <path class="fl-wire" pathLength="1" d="M96 98 H126"/>
+                    <path class="fl-wire" pathLength="1" d="M96 98 C111 98 111 166 126 166"/>
+                    <path class="fl-wire fl-in" pathLength="1" d="M286 30 C301 30 301 98 316 98"/>
+                    <path class="fl-wire fl-in" pathLength="1" d="M286 98 H316"/>
+                    <path class="fl-wire fl-in" pathLength="1" d="M286 166 C301 166 301 98 316 98"/>
+                    <rect class="fx-frame" x="0.75" y="72" width="95" height="52" rx="9"/>
+                    <text class="fx-t" x="48" y="96" text-anchor="middle">Orchestrator</text>
+                    <text class="fx-s" x="48" y="111" text-anchor="middle">contracts</text>
+                    <g class="fl-lane" style="--d:.5s;--t:1.1s"><rect class="fx-frame" x="126" y="13" width="160" height="34" rx="7"/><text class="fx-s" x="136" y="33.5">Opus</text><rect class="fl-track" x="184" y="27" width="92" height="6" rx="3"/><rect class="fl-fill" x="184" y="27" width="92" height="6" rx="3"/></g>
+                    <g class="fl-lane" style="--d:.6s;--t:1.4s"><rect class="fx-frame" x="126" y="81" width="160" height="34" rx="7"/><text class="fx-s" x="136" y="101.5">Sonnet</text><rect class="fl-track" x="184" y="95" width="92" height="6" rx="3"/><rect class="fl-fill" x="184" y="95" width="92" height="6" rx="3"/></g>
+                    <g class="fl-lane" style="--d:.55s;--t:.9s"><rect class="fx-frame" x="126" y="149" width="160" height="34" rx="7"/><text class="fx-s" x="136" y="169.5">Sonnet</text><rect class="fl-track" x="184" y="163" width="92" height="6" rx="3"/><rect class="fl-fill" x="184" y="163" width="92" height="6" rx="3"/></g>
+                    <text class="fx-s" x="206" y="201" text-anchor="middle">parallel lanes, one file each</text>
+                    <rect class="fx-frame" x="316.75" y="24" width="122.5" height="148" rx="9"/>
+                    <text class="fx-t" x="328" y="46">Gate</text>
+                    <g class="fl-check" style="--d:2.1s"><rect class="fx-box" x="328" y="57" width="9" height="9" rx="2"/><path class="fx-tick" pathLength="1" d="M330 61.6 l2 2 l3.6 -4"/><text class="fx-s" x="343" y="65">types</text></g>
+                    <g class="fl-check" style="--d:2.35s"><rect class="fx-box" x="328" y="79" width="9" height="9" rx="2"/><path class="fx-tick" pathLength="1" d="M330 83.6 l2 2 l3.6 -4"/><text class="fx-s" x="343" y="87">16 tests</text></g>
+                    <g class="fl-check" style="--d:2.6s"><rect class="fx-box" x="328" y="101" width="9" height="9" rx="2"/><path class="fx-tick" pathLength="1" d="M330 105.6 l2 2 l3.6 -4"/><text class="fx-s" x="343" y="109">GPU screenshots</text></g>
+                    <g class="fl-check" style="--d:2.85s"><rect class="fx-box" x="328" y="123" width="9" height="9" rx="2"/><path class="fx-tick" pathLength="1" d="M330 127.6 l2 2 l3.6 -4"/><text class="fx-s" x="343" y="131">p95 8.2 / 18 ms</text></g>
+                    <g class="fl-merge" style="--d:3.2s"><rect class="fl-pill" x="328" y="145" width="99" height="17" rx="8.5"/><text class="fl-pill-t" x="377.5" y="157" text-anchor="middle">merged</text></g>
+                  </svg>
+                </figure>
               </li>
               <li class="step reveal">
                 <span class="step-n">Skills</span>
@@ -586,13 +789,13 @@
         </header>
 
         <article class="lab-feature reveal">
-          <a class="lab-poster" href="starship.html" aria-label="Starship Explorer: walk the ship">
+          <a class="lab-poster" href="starship.html">
             <span class="lab-bar" aria-hidden="true"><span>STREL-7 · Remote dock</span><span>Desktop · WebGL</span></span>
             <picture>
               <source srcset="assets/starship-poster.webp" type="image/webp">
-              <img src="assets/starship-poster.jpg" alt="Corridor of the STREL-7: cream panels, burnt-orange door frames, teal floor strips" width="1280" height="720" loading="lazy" decoding="async">
+              <img src="assets/starship-poster.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async">
             </picture>
-            <span class="lab-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg>Walk the ship</span>
+            <span class="lab-play"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.5v13l10.5-6.5z"/></svg><span class="visually-hidden">Starship Explorer: </span>Walk the ship</span>
           </a>
           <div class="lab-copy">
             <p class="eyebrow">Flagship · Playable build</p>
@@ -705,15 +908,16 @@
         <header class="section-head reveal">
           <p class="eyebrow"><span class="eyebrow-num">06</span> Toolkit</p>
           <h2 class="section-title" id="stack-title">What I <em>ship with.</em></h2>
+          <p class="section-lede">Each underlined tool opens the work it shipped in.</p>
           <div class="head-illo" aria-hidden="true"><svg class="illo illo-sedona" viewBox="0 0 620 302" focusable="false"><use href="assets/desert.svg#sedona"/></svg></div>
         </header>
         <div class="toolkit reveal">
-          <div class="tk"><h3>Frontend</h3><ul><li>React 18 &amp; 19</li><li>TypeScript</li><li>Zustand · Redux</li><li>React Query</li><li>Recharts</li><li>Vite</li></ul></div>
-          <div class="tk"><h3>Backend</h3><ul><li>Node.js</li><li>Go</li><li>Fastify</li><li>GraphQL · REST</li><li>snowflake-sdk</li><li>Prometheus</li></ul></div>
-          <div class="tk"><h3>Data</h3><ul><li>Snowflake (CTEs, window functions)</li><li>BI dashboards</li><li>Bayesian analysis</li><li>A/B design</li><li>ETL</li></ul></div>
-          <div class="tk"><h3>AI</h3><ul><li>Claude Code: skills, hooks, subagents</li><li>LLM copilots</li><li>Retrieval (RAG) design + evaluation</li><li>AI gateways</li><li>MCP servers + clients</li><li>Agent integration (SSE)</li><li>Claude API · Agent SDK</li><li>Enterprise search agents</li><li>Local models (Ollama, Whisper)</li></ul></div>
+          <div class="tk"><h3>Frontend</h3><ul><li><a class="tk-link" href="#cs-workforce" data-cs="workforce">React 18 &amp; 19<span class="visually-hidden">: the Workforce Operations Platform case study</span></a></li><li><a class="tk-link" href="work/ai-copilot-rollout.html">TypeScript<span class="visually-hidden">: the AI copilot write-up</span></a></li><li><a class="tk-link" href="#cs-workforce" data-cs="workforce">Zustand · Redux<span class="visually-hidden">: the Workforce Operations Platform case study</span></a></li><li>React Query</li><li><a class="tk-link" href="#cs-workforce" data-cs="workforce">Recharts<span class="visually-hidden">: the Workforce Operations Platform case study</span></a></li><li>Vite</li></ul></div>
+          <div class="tk"><h3>Backend</h3><ul><li><a class="tk-link" href="#featured">Node.js<span class="visually-hidden">: the featured copilot program</span></a></li><li><a class="tk-link" href="#role-integrations">Go<span class="visually-hidden">: the 2025 role where I shipped production Go</span></a></li><li><a class="tk-link" href="#cs-mapping" data-cs="mapping">Fastify<span class="visually-hidden">: the Merchant Mapping Engine case study</span></a></li><li><a class="tk-link" href="#cs-mapping" data-cs="mapping">GraphQL · REST<span class="visually-hidden">: the Merchant Mapping Engine case study</span></a></li><li><a class="tk-link" href="#cs-mapping" data-cs="mapping">snowflake-sdk<span class="visually-hidden">: the Merchant Mapping Engine case study</span></a></li><li><a class="tk-link" href="#cs-mapping" data-cs="mapping">Prometheus<span class="visually-hidden">: the Merchant Mapping Engine case study</span></a></li></ul></div>
+          <div class="tk"><h3>Data</h3><ul><li><a class="tk-link" href="#cs-cost" data-cs="cost">Snowflake (CTEs, window functions)<span class="visually-hidden">: the Cost-Per-Task Model case study</span></a></li><li><a class="tk-link" href="#cs-migration" data-cs="migration">BI dashboards<span class="visually-hidden">: the Partner API Migration case study</span></a></li><li>Bayesian analysis</li><li>A/B design</li><li><a class="tk-link" href="#cs-cost" data-cs="cost">ETL<span class="visually-hidden">: the Cost-Per-Task Model case study</span></a></li></ul></div>
+          <div class="tk"><h3>AI</h3><ul><li><a class="tk-link" href="#build">Claude Code: skills, hooks, subagents<span class="visually-hidden">: How I build</span></a></li><li><a class="tk-link" href="#featured">LLM copilots<span class="visually-hidden">: the featured copilot program</span></a></li><li><a class="tk-link" href="work/ai-copilot-rollout.html">Retrieval (RAG) design + evaluation<span class="visually-hidden">: the AI copilot write-up</span></a></li><li><a class="tk-link" href="work/ai-copilot-rollout.html">AI gateways<span class="visually-hidden">: the AI copilot write-up</span></a></li><li><a class="tk-link" href="#build">MCP servers + clients<span class="visually-hidden">: How I build</span></a></li><li><a class="tk-link" href="work/ai-copilot-rollout.html">Agent integration (SSE)<span class="visually-hidden">: the AI copilot write-up</span></a></li><li>Claude API · Agent SDK</li><li>Enterprise search agents</li><li>Local models (Ollama, Whisper)</li></ul></div>
           <div class="tk"><h3>Platform</h3><ul><li>pnpm monorepo</li><li>Buildkite</li><li>GitHub Actions</li><li>Feature flags</li><li>AWS Lambda</li><li>Internal telemetry</li></ul></div>
-          <div class="tk"><h3>Operating</h3><ul><li>Business cases</li><li>Go-live planning</li><li>Access audits</li><li>Training kits + verifiers</li><li>Vendor programs</li><li>Workshop facilitation</li><li>Pilot design (Bayesian)</li></ul></div>
+          <div class="tk"><h3>Operating</h3><ul><li><a class="tk-link" href="#cs-migration" data-cs="migration">Business cases<span class="visually-hidden">: the Partner API Migration case study</span></a></li><li><a class="tk-link" href="work/ai-copilot-rollout.html">Go-live planning<span class="visually-hidden">: the AI copilot write-up</span></a></li><li><a class="tk-link" href="#featured">Access audits<span class="visually-hidden">: the featured copilot program</span></a></li><li><a class="tk-link" href="work/ai-copilot-rollout.html">Training kits + verifiers<span class="visually-hidden">: the AI copilot write-up</span></a></li><li><a class="tk-link" href="#cs-migration" data-cs="migration">Vendor programs<span class="visually-hidden">: the Partner API Migration case study</span></a></li><li><a class="tk-link" href="#cs-enablement" data-cs="enablement">Workshop facilitation<span class="visually-hidden">: the AI Enablement case study</span></a></li><li>Pilot design (Bayesian)</li></ul></div>
         </div>
       </div>
       <div class="bed bed-right reveal" aria-hidden="true"><svg class="flora flip" viewBox="0 0 80 62" style="--h:34px" focusable="false"><use href="assets/bloom.svg#bluebells"/></svg><svg class="flora" viewBox="0 0 90 126" style="--h:70px" focusable="false"><use href="assets/desert.svg#globemallow"/></svg><svg class="flora flip" viewBox="0 0 110 62" style="--h:32px" focusable="false"><use href="assets/bloom.svg#sand-verbena"/></svg><svg class="plant" viewBox="0 0 112 268" style="--h:130px" focusable="false"><use href="assets/bloom.svg#yucca"/></svg></div>

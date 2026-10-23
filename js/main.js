@@ -8,6 +8,7 @@ import { initTheme } from './theme.js';
 import { initReveal, initCountUp } from './motion.js';
 import { initTopo } from './topo.js';
 import { initCaseStudies } from './case-studies.js';
+import { initFlagship } from './flagship.js';
 import { initOrb, initLatestDispatch } from './lab.js';
 import { initAsk } from './ask.js';
 import { initNav, initScrollSpy, initCopyEmail, initWarp, greet } from './chrome.js';
@@ -15,6 +16,7 @@ import { initSectionMenu } from './section-menu.js';
 import { initClock } from './clock.js';
 import { initTrails } from './trails.js';
 import { initQuietOffscreen } from './quiet.js';
+import { initPrint } from './print.js';
 
 // Tells the <head> safety net that JS arrived (it un-hides content otherwise).
 document.documentElement.classList.add('js-ready');
@@ -26,6 +28,7 @@ const features = [
   ['section menu', initSectionMenu],
   ['reveal', initReveal],
   ['count-up', initCountUp],
+  ['flagship diagram', initFlagship],
   ['case studies', initCaseStudies],
   ['topo', () => {
     const canvas = document.getElementById('topo');
@@ -36,6 +39,7 @@ const features = [
   ['phoenix clock', initClock],
   ['wildlife', initTrails],
   ['quiet offscreen', initQuietOffscreen],
+  ['print', initPrint],
   ['orb', initOrb],
   ['ask', initAsk],
   ['latest dispatch', initLatestDispatch],

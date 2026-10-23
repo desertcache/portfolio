@@ -17,7 +17,7 @@
      2. Base          — element defaults, focus, selection
      3. Primitives    — wrap, buttons, eyebrows, tags, links
      4. Chrome        — nav, footer, toast, skip link
-     5. Sections      — hero, migration, work, case studies, how I build,
+     5. Sections      — hero, featured program, work, case studies, how I build,
                         lab, about, toolkit, contact (in page order)
      6. Motion        — reveal-on-scroll, reduced-motion
    Theme switching works by swapping tokens under [data-theme="dark"]; no
@@ -863,7 +863,17 @@ kbd {
   text-wrap: pretty;
 }
 
-/* ---------- 5c. Migration (featured program) ---------- */
+/* ---------- 5c. Featured program: the diagram that builds itself ----------
+   #flow is the copilot as built: the write-up's Fig. 1 plus the rollout's
+   access checks. The HTML ships the finished picture (data-step="5"), which
+   is what no-JS, reduced-motion, phone-width and stale-cache visitors see.
+   On wide screens js/flagship.js adds .is-live and keeps data-step on the
+   step the reader is on: 1 the hunt across tools, 2 the bet on the playbook,
+   3 the build, 4 the rollout's access checks, 5 the result.
+   Two rules keep it calm: parts say when they exist (.fx-from-N from step N
+   on, .fx-only-N in step N, .fx-upto-2 in steps 1 and 2), and the accent goes
+   only to what the current step is about, so one idea is lit at a time.
+   Transitions run only under .is-live, so nothing animates on first paint. */
 .mig {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
@@ -875,7 +885,7 @@ kbd {
   top: calc(var(--nav-h) + 32px);
   margin: 0;
 }
-.mig-headline { display: flex; align-items: flex-end; gap: 18px; margin-bottom: 26px; }
+.mig-headline { display: flex; align-items: flex-end; gap: 18px; margin-bottom: 22px; }
 .mig-big {
   font: 800 semi-expanded clamp(4rem, 7.6vw, 7rem)/0.86 var(--display);
   letter-spacing: -0.05em;
@@ -884,61 +894,155 @@ kbd {
 }
 .mig-big-label { max-width: 17ch; padding-bottom: 6px; font-size: 0.9375rem; line-height: 1.4; color: var(--ink-2); }
 
-.units {
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap: 5px;
-  max-width: 440px;
+/* the drawing: sized to stay inside the window while it's pinned */
+.flow-svg {
+  width: 100%;
+  height: auto;
+  max-height: calc(100vh - var(--nav-h) - 280px);
+  max-height: calc(100svh - var(--nav-h) - 280px);
+  min-height: 300px;
+  overflow: visible;
 }
-.u {
-  aspect-ratio: 1;
-  border-radius: 2px;
-  background: var(--accent);
-  transition: background-color 0.5s var(--ease), transform 0.5s var(--ease);
-  transition-delay: calc(var(--i) * 9ms);
+.fx-t { font: 650 12px var(--sans); letter-spacing: -0.005em; fill: var(--ink); }
+.fx-s { font: 500 condensed 9.5px var(--mono); letter-spacing: 0.02em; fill: var(--ink-3); }
+.fx-chip-t { font-size: 9px; }
+.fx-tier { font: 500 condensed 8.5px var(--mono); letter-spacing: 0.16em; text-transform: uppercase; fill: var(--ink-3); }
+.fx-halo { paint-order: stroke; stroke: var(--bg); stroke-width: 5px; stroke-linejoin: round; }
+.fx-frame { fill: var(--surface); stroke: var(--ink-3); stroke-width: 1.3; }
+.fx-panel { fill: var(--bg); stroke: var(--line-strong); stroke-width: 1; transition: stroke 0.4s; }
+.fx-hair { stroke: var(--line); stroke-width: 1; }
+.fx-dot { fill: var(--g-soft2); }
+.fx-bar { fill: var(--g-soft); }
+.fx-wire {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-dasharray: 6 7;
+  transition: stroke 0.4s;
 }
-.u-lost { background: transparent; box-shadow: inset 0 0 0 1.5px var(--line-strong); }
-.js .mig-viz:not(.in) .u:not(.u-lost) { background: var(--g-soft); transform: scale(0.82); }
+.fx-door-head { fill: none; stroke: var(--ink-3); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.4s; }
+.fx-agent { fill: var(--surface); stroke: var(--line-strong); stroke-width: 1.2; transition: stroke 0.4s; }
+.fx-model { fill: var(--g-soft); stroke: var(--ink-3); stroke-width: 1.3; }
+.fx-spark-mark { fill: var(--ink-3); }
+.fx-box { fill: var(--surface); stroke: var(--ink-3); stroke-width: 1.2; transition: fill 0.35s, stroke 0.35s; }
+.fx-tick, .fx-gate-tick {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.35s var(--ease), stroke 0.35s;
+}
+.fx-cite { fill: var(--g-soft2); transition: fill 0.4s; }
+.fx-page { fill: var(--surface); stroke: var(--ink-3); stroke-width: 1.3; }
+.fx-page-back { fill: var(--g-soft); stroke: var(--line-strong); stroke-width: 1; }
+.fx-hl { fill: var(--accent-soft); }
+.fx-chip { fill: var(--surface); stroke: var(--ink-3); stroke-width: 1.2; }
+.fx-chip-ico { fill: var(--g-soft2); }
+.fx-node { fill: var(--surface); stroke: var(--ink-3); stroke-width: 1.4; transition: stroke 0.4s; }
+.fx-person { fill: none; stroke: var(--ink-2); stroke-width: 1.4; stroke-linecap: round; }
+.fx-person-front { fill: var(--surface); }
+.fx-trail {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+.fx-hop { fill: var(--accent); }
+.fx-q { fill: var(--surface); stroke: var(--accent); stroke-width: 1.4; stroke-dasharray: 3 3; }
+.fx-q-t { font: 800 semi-expanded 14px var(--display); fill: var(--accent); }
+.fx-bubble { fill: var(--surface); stroke: var(--accent); stroke-width: 1.3; stroke-linejoin: round; }
+.fx-bubble-t { fill: var(--accent-ink); }
+.fx-ask { fill: none; stroke: var(--ink-3); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.fx-prov { fill: none; stroke: var(--accent); stroke-width: 1.4; stroke-linecap: round; stroke-dasharray: 3 4; }
+.fx-prov-end { fill: var(--accent); }
+.fx-hot-t { fill: var(--accent-ink); }
+.fx-gate-c { fill: var(--surface); stroke: var(--ink-3); stroke-width: 1.4; transition: fill 0.35s, stroke 0.35s; }
+.fx-live, .fx-live-ring { fill: var(--support); }
+.fx-live-t { fill: var(--support-ink); font-weight: 700; }
+.fx-base { fill: none; stroke: var(--ink-3); stroke-width: 1; stroke-dasharray: 2 3; }
+.fx-spark {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1.2s var(--ease) 0.4s;
+}
+.fx-move { transform-box: fill-box; transform-origin: center; }
 
-.units-cap {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 10px;
-  max-width: 440px;
-  margin-top: 16px;
-  font-size: 0.8125rem;
+/* what exists in which step */
+.flow[data-step="1"] :is(.fx-from-2, .fx-from-3, .fx-from-4, .fx-from-5),
+.flow[data-step="2"] :is(.fx-from-3, .fx-from-4, .fx-from-5),
+.flow[data-step="3"] :is(.fx-from-4, .fx-from-5),
+.flow[data-step="4"] .fx-from-5,
+.flow:not([data-step="1"]) .fx-only-1,
+.flow:not([data-step="2"]) .fx-only-2,
+.flow:not([data-step="1"]):not([data-step="2"]) .fx-upto-2 { opacity: 0; }
+/* the mess: tools scattered until the build files them, the playbook until the bet */
+.flow:is([data-step="1"], [data-step="2"]) .fx-tool,
+.flow[data-step="1"] .fx-playbook { transform: translate(var(--sx), var(--sy)) rotate(var(--r)); }
+.flow[data-step="2"] .fx-tool { opacity: 0.3; }
+.flow:is([data-step="1"], [data-step="2"]) .fx-slide { transform: translateX(26px); }
+.flow:is([data-step="1"], [data-step="2"]) .fx-tick,
+.flow:is([data-step="1"], [data-step="2"], [data-step="3"]) .fx-gate-tick,
+.flow:not([data-step="5"]) .fx-spark { stroke-dashoffset: 1; }
+
+/* the accent follows the story */
+.flow[data-step="2"] .fx-copilot { stroke: var(--accent); }
+.flow:is([data-step="2"], [data-step="5"]) .fx-cite { fill: var(--accent); }
+.flow[data-step="3"] :is(.fx-wire, .fx-box) { stroke: var(--accent); }
+.flow[data-step="3"] .fx-box { fill: var(--accent); }
+.flow[data-step="3"] .fx-tick { stroke: var(--on-accent); }
+.flow[data-step="4"] :is(.fx-door, .fx-door-head, .fx-team) { stroke: var(--accent); }
+.flow[data-step="4"] .fx-gate-c { fill: var(--accent); stroke: var(--accent); }
+.flow[data-step="4"] .fx-gate-tick { stroke: var(--on-accent); }
+.flow[data-step="5"] .fx-agent { stroke: var(--accent); }
+
+/* motion, only once the page is driving it */
+.flow.is-live :is([class*="fx-from-"], [class*="fx-only-"], .fx-upto-2, .fx-tool) {
+  transition: opacity 0.5s var(--ease), transform 0.9s var(--ease);
+}
+.flow.is-live :is(.fx-playbook, .fx-slide) { transition: opacity 0.5s var(--ease), transform 0.9s var(--ease); }
+/* entering a step staggers its parts in; leaving drops them at once */
+.flow.is-live:is([data-step="3"], [data-step="4"], [data-step="5"]) :is(.fx-tool, .fx-slide),
+.flow.is-live[data-step="3"] .fx-check :is(.fx-box, .fx-tick),
+.flow.is-live[data-step="4"] .fx-gate :is(.fx-gate-c, .fx-gate-tick) { transition-delay: var(--d, 0s); }
+.flow.is-live .fx-trail { transition: stroke-dashoffset 2.4s cubic-bezier(0.45, 0, 0.3, 1) 0.3s; }
+.flow.is-live .fx-hop { transition: opacity 0.25s var(--d, 0s); }
+.flow.is-live.is-seen[data-step="1"] :is(.fx-tool .fx-chip, .fx-playbook .fx-page) { animation: visit 1.2s var(--hop, 0s) both; }
+@keyframes visit { 0%, 100% { stroke: var(--ink-3); } 12%, 50% { stroke: var(--accent); } }
+.flow.is-live:not(.is-seen) .fx-trail,
+.flow:not([data-step="1"]) .fx-trail { stroke-dashoffset: 1; }
+.flow.is-live:not(.is-seen) .fx-hop { opacity: 0; transition-delay: 0s; }
+.flow:not([data-step="1"]) .fx-hop { opacity: 0; transition-delay: 0s; }
+/* the wires run only while they're drawn; quiet.js pauses them off screen */
+@media (prefers-reduced-motion: no-preference) {
+  .flow:is([data-step="3"], [data-step="4"], [data-step="5"]) .fx-wire { animation: flow 1.3s linear infinite; }
+  .flow[data-step="5"] .fx-live-ring { transform-box: fill-box; transform-origin: center; animation: ring 2.2s var(--ease-out) infinite; }
+}
+
+/* where the reader is: a ticker under the drawing, and the step's own rule */
+.flow-cap { margin-top: 16px; }
+.flow-ticker { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; list-style: none; }
+.flow-ticker li {
+  padding-top: 8px;
+  border-top: 2px solid var(--line);
+  font: 500 semi-condensed 0.625rem/1.2 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--ink-3);
+  transition: border-color 0.4s, color 0.4s;
 }
-.key { width: 10px; height: 10px; border-radius: 2px; }
-.key-on { background: var(--accent); }
-.key-off { box-shadow: inset 0 0 0 1.5px var(--line-strong); margin-left: 8px; }
-.units-note { flex-basis: 100%; }
-
-.rate { max-width: 440px; margin-top: 34px; padding-top: 22px; border-top: 1px solid var(--line); }
-.rate-title { margin-bottom: 14px; font: 500 semi-condensed 0.75rem var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
-.rate-row {
-  display: grid;
-  grid-template-columns: 9.5rem 1fr 3rem;
-  align-items: center;
-  gap: 14px;
-  padding: 7px 0;
-  font-size: 0.875rem;
-  color: var(--ink-2);
-}
-.rate-track { height: 10px; border-radius: 2px; background: var(--g-soft); overflow: hidden; }
-.rate-bar {
-  display: block;
-  width: var(--w);
-  height: 100%;
-  border-radius: inherit;
-  transform-origin: 0 50%;
-  transition: transform 1.2s var(--ease-out) 0.9s;
-}
-.rate-bar-before { background: var(--ink-3); }
-.rate-bar-after { background: var(--accent); }
-.rate-v { font: 500 semi-condensed 0.875rem var(--mono); text-align: right; color: var(--ink); }
-.js .mig-viz:not(.in) .rate-bar { transform: scaleX(0); }
+.flow-ticker .is-done { border-top-color: var(--line-strong); }
+.flow-ticker .is-current { border-top-color: var(--accent); color: var(--accent-ink); }
 
 .steps { list-style: none; counter-reset: step; }
 .step {
@@ -947,8 +1051,10 @@ kbd {
   gap: 20px;
   padding: 30px 0;
   border-top: 1px solid var(--line);
+  transition: border-color 0.4s;
 }
 .step:first-child { border-top-color: var(--line-strong); }
+.step.is-current { border-top-color: var(--accent); }
 .step-n {
   counter-increment: step;
   padding-top: 4px;
@@ -968,14 +1074,21 @@ kbd {
 .step .step-aside { margin-top: 24px; font-size: 0.875rem; line-height: 1.5; color: var(--ink-3); }
 .step-aside + .step-more { margin-top: 10px; }
 
+/* a short window: a smaller "4" buys the pinned drawing back its height */
+@media (min-width: 901px) and (max-height: 820px) {
+  .mig-big { font-size: clamp(3.5rem, 5.2vw, 5rem); }
+  .mig-headline { margin-bottom: 12px; }
+  .flow-svg { max-height: calc(100vh - var(--nav-h) - 250px); max-height: calc(100svh - var(--nav-h) - 250px); }
+}
+/* one column: the finished drawing heads the steps, and nothing steps */
 @media (max-width: 900px) {
   .mig { grid-template-columns: 1fr; }
   .mig-viz { position: static; }
+  .flow-svg { max-width: 520px; max-height: none; min-height: 0; }
+  .flow-cap { display: none; }
 }
 @media (max-width: 520px) {
   .step { grid-template-columns: 1fr; gap: 10px; padding: 24px 0; }
-  .rate-row { grid-template-columns: 1fr 2.5rem; }
-  .rate-track { grid-column: 1 / -1; grid-row: 2; }
 }
 
 /* ---------- 5d. Work: bento of schematics ---------- */
@@ -1097,6 +1210,22 @@ kbd {
 @keyframes fade-out { to { opacity: 0; } }
 @keyframes sheet-in { from { opacity: 0; transform: translateY(28px) scale(0.985); } }
 @keyframes sheet-out { to { opacity: 0; transform: translateY(16px) scale(0.99); } }
+/* The morph (js/case-studies.js, where View Transitions exist): the card grows into the
+   sheet while its schematic flies to its place, and folds back on close. A morphed dialog
+   skips its own entrance (.is-morphed, cleared on close) so it doesn't play twice. */
+.cs.is-morphed, .cs.is-morphed::backdrop, .cs.is-morphed .cs-sheet { animation: none; }
+::view-transition-group(cs-sheet), ::view-transition-group(cs-art) {
+  animation-duration: 0.5s;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+/* card and sheet hand over quickly, so their words never sit on each other for long */
+::view-transition-old(cs-sheet), ::view-transition-new(cs-sheet) { height: 100%; object-fit: cover; object-position: top; }
+::view-transition-old(cs-sheet) { animation-duration: 0.16s; }
+::view-transition-new(cs-sheet) { animation-delay: 0.06s; animation-duration: 0.3s; }
+/* the schematic is the same drawing at both ends: show the arriving one at its own size
+   while its frame changes shape around it */
+::view-transition-old(cs-art) { display: none; }
+::view-transition-new(cs-art) { animation: none; height: 100%; object-fit: none; }
 
 .cs-sheet {
   max-height: calc(100dvh - 48px);
@@ -1211,6 +1340,35 @@ html.has-modal { overflow: hidden; }
 .build-main .step a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; transition: color 0.2s, text-decoration-color 0.2s; }
 .build-main .step a:hover { color: var(--accent-ink); text-decoration-color: currentColor; }
 .build-more { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 26px; }
+
+/* The Fleet practice's diagram: an orchestrator, three parallel lanes, one gate
+   (work/starship-agent-fleet.html says it in words). It spans the practice's
+   whole row so its labels stay readable. The HTML is the finished picture; on
+   reveal the wires draw, the lanes fill at their own pace, and the gate ticks
+   in order before "merged" lights. Shapes and type reuse the featured
+   diagram's .fx-* rules (5c). */
+.step > .fleet { grid-column: 1 / -1; margin: 6px 0 0; }
+.post-body > .fleet { max-width: 560px; margin: 1.6em 0 2.2em; }   /* the write-up's Fig. 1 */
+.fleet figcaption { margin-top: 14px; font-size: 0.875rem; line-height: 1.55; color: var(--ink-3); }
+.fleet-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.fl-wire { fill: none; stroke: var(--ink-3); stroke-width: 1.3; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+.fl-track { fill: var(--g-soft); }
+.fl-fill { fill: var(--accent); transform-box: fill-box; transform-origin: 0 50%; }
+.fl-check .fx-box { fill: var(--accent); stroke: var(--accent); }
+.fl-check .fx-tick { stroke: var(--on-accent); }
+.fl-pill { fill: var(--accent); stroke: var(--accent); stroke-width: 1.2; transition: fill 0.4s var(--d, 0s), stroke 0.4s var(--d, 0s); }
+.fl-pill-t { font: 600 semi-condensed 9.5px var(--mono); letter-spacing: 0.08em; text-transform: uppercase; fill: var(--on-accent); transition: fill 0.4s var(--d, 0s); }
+.js .fleet:not(.in) .fl-wire { stroke-dashoffset: 1; }
+.js .fleet:not(.in) .fl-fill { transform: scaleX(0); }
+.js .fleet:not(.in) .fl-check .fx-box { fill: var(--surface); stroke: var(--ink-3); }
+.js .fleet:not(.in) .fl-check .fx-tick { stroke-dashoffset: 1; }
+.js .fleet:not(.in) .fl-pill { fill: transparent; stroke: var(--line-strong); }
+.js .fleet:not(.in) .fl-pill-t { fill: var(--ink-3); }
+.fleet.in .fl-wire { transition: stroke-dashoffset 0.5s var(--ease) 0.2s; }
+.fleet.in .fl-in { transition-delay: 2s; }
+.fleet.in .fl-fill { transition: transform var(--t, 1s) cubic-bezier(0.4, 0, 0.3, 1) var(--d, 0s); }
+.fleet.in .fl-check .fx-box { transition: fill 0.3s var(--d, 0s), stroke 0.3s var(--d, 0s); }
+.fleet.in .fl-check .fx-tick { transition: stroke-dashoffset 0.3s var(--ease) var(--d, 0s); }
 
 @media (max-width: 900px) {
   .build { grid-template-columns: 1fr; }
@@ -1650,6 +1808,20 @@ html.has-modal { overflow: hidden; }
 .tk h3 { font: 500 semi-condensed 0.75rem var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-ink); }
 .tk ul { list-style: none; margin-top: 14px; }
 .tk li { padding: 5px 0; font-size: 1rem; color: var(--ink-2); }
+/* A tool with proof on this site links to it: ink, with the dotted rule the
+   footer's side quests use; red rock on hover. Tools with no proof here stay
+   plain grey, so the underlines are the claim. */
+.tk-link {
+  color: var(--ink);
+  text-decoration: underline dotted var(--line-strong);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+  transition: color 0.2s, text-decoration-color 0.2s;
+}
+.tk-link:hover { color: var(--accent-ink); text-decoration-style: solid; text-decoration-color: currentColor; }
+/* the Toolkit's "Go" lands on a timeline entry that is still 22px low from its
+   reveal when the browser aims, so give it the room back */
+.tl[id] { scroll-margin-top: 24px; }   /* on top of html's scroll-padding-top */
 @media (max-width: 800px) {
   .toolkit { grid-template-columns: 1fr 1fr; }
   .tk:not(:nth-child(3n + 1)) { padding-left: 0; border-left: 0; }
@@ -2134,6 +2306,12 @@ html.has-modal { overflow: hidden; }
 /* The first screen animates in with CSS alone, so it never waits on JS. */
 .rise { animation: rise 1s var(--ease-out) both; animation-delay: var(--delay, 0s); }
 @keyframes rise { from { opacity: 0; transform: translateY(18px); } }
+/* The headline is the page's largest paint, and a browser only counts it once it
+   is visible: faded in from transparent, it held Largest Contentful Paint until
+   the fade ended (1.2 s on a fast machine, 4.7 s on Lighthouse's phone). It
+   glides in already drawn instead. */
+.hero-title.rise { animation-name: glide; }
+@keyframes glide { from { transform: translateY(14px); } }
 /* A section out of view pauses its looping animations (js/quiet.js). */
 .is-offscreen *, .is-offscreen *::before, .is-offscreen *::after { animation-play-state: paused !important; }
 
@@ -2146,6 +2324,14 @@ html.has-modal { overflow: hidden; }
   transition-delay: var(--delay, 0s);
 }
 .js .reveal.in { opacity: 1; transform: none; }
+
+/* Page to page, the site crossfades instead of cutting (cross-document View
+   Transitions, where the browser has them). Nothing is named: the nav and the
+   footer are the same pixels on both pages, so they hold still through the fade. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+}
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.2s; }
 
 /* toggled by js/theme.js for one crossfade, then removed */
 html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *::after {
@@ -2164,12 +2350,42 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
 }
 
 @media print {
-  .nav, .topo, .hero-fade, .lab-grid, .dock, .toast, .footer-hint, .orb-slot, .footer::before, .thermal, .trail, .flock { display: none !important; }
+  /* Paper is white and browsers drop backgrounds by default, so print always uses
+     the day palette on white, whatever the theme: a dusk page printed its words in
+     light grey on white and its drawings' fills in solid violet. */
+  :root, :root[data-theme="dark"] {
+    color-scheme: light;
+    --bg: #fff; --bg-tint: #fff; --surface: #fff;
+    --ink: #1c1624; --ink-2: #463d52; --ink-3: #625a6c;
+    --line: rgba(28, 22, 36, 0.13); --line-2: rgba(28, 22, 36, 0.06); --line-strong: rgba(28, 22, 36, 0.25);
+    --accent: #a8401d; --accent-ink: #923616; --accent-soft: rgba(168, 64, 29, 0.1); --on-accent: #fff;
+    --support: #4f7a2a; --support-ink: #3f6420; --bloom: #b8246a; --ok: #2f8a4e; --neg: #a3122b;
+    --g-soft: rgba(28, 22, 36, 0.1); --g-soft2: rgba(28, 22, 36, 0.24);
+    --illo-line: rgba(28, 22, 36, 0.26); --fauna-line: rgba(28, 22, 36, 0.58);
+  }
+  .skip, .nav, .topo, .hero-fade, .lab-grid, .dock, .toast, .footer-hint, .orb-slot, .footer::before, .thermal, .trail, .flock,
+  .lab-horizon, .bed, .lab-bar, .lab-play { display: none !important; }
   .js .reveal { opacity: 1 !important; transform: none !important; }
+  /* paper is a still: whatever js/print.js reveals applies at once, mid-flight motion doesn't print */
+  *, *::before, *::after { transition: none !important; animation: none !important; }
   .hero { min-height: 0; padding-top: 24px; }
   .section, .contact { padding-block: 32px; }
   .lab { --bg: #fff; --ink: #000; --ink-2: #222; --ink-3: #444; --surface: #fff; }
   .mig-viz, .about-side, .build-side { position: static; }
+  /* The words that catch the sunset are a gradient clipped to the letters, which
+     is a background, so on paper they printed as gaps ("I build the kind that").
+     A solid button's fill is a background too. */
+  .hero-statement em, .section-title em, .contact-title em {
+    background: none !important;
+    color: var(--accent) !important;
+    -webkit-text-fill-color: currentColor;
+  }
+  .btn-solid { background: none !important; color: var(--ink) !important; border-color: var(--ink) !important; }
+  /* headings stay with what they introduce; cards, steps and figures stay whole
+     (a section's eyebrow is inline-flex, which break-after ignores, so its whole
+     header holds together instead) */
+  .section-head, h2, h3 { break-after: avoid; }
+  .section-head, .card, .step, .tl, .legend, figure { break-inside: avoid; }
 }
 
 /* ---------- 7. Ask about my work: the glass bar (js/ask.js) ----------
