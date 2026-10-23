@@ -494,7 +494,7 @@ BLOG_URL = "https://desertcache.github.io/portfolio/blog/"
 FEED_PATH = BLOG_DIR / "feed.xml"
 FEED_SUBTITLE = "Congressional and executive-branch stock-trade disclosures, read closely."
 # XML 1.0 has no way to write these, escaped or not; one in a summary would break the feed.
-XML_ILLEGAL_RE = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f￾￿]")
+XML_ILLEGAL_RE = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\ufffe\uffff]")
 
 
 def _xml_text(text: str) -> str:
