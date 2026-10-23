@@ -865,6 +865,11 @@ don't morph.
   samples, not skincare, not the editions: those are in `blog/feed.xml`, rewritten on every
   publish). Submit both in Search Console: robots.txt only counts at the host root, which this
   project site isn't. Update a page's `lastmod` when its content changes.
+- **Every link resolves** (`tests/links.test.mjs`): on every public page, each relative
+  `href`/`src`/`srcset`, SVG sprite `<use>`, and absolute link back into the site must name a
+  file in the repo, and any `#id` must exist in the page it opens. A page whose script reads
+  the hash as state (the IPO ledger's `#DASH`-style company links) is listed in `HASH_ROUTES`
+  with the values it accepts.
 - `.nojekyll` must stay (serves `arcade/` module folder verbatim).
 - `mockups/` is untracked on purpose — never `git add -A`.
 - Every play page loads `css/site.css` for the chrome (since 2026-09-27):
