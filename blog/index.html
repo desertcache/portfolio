@@ -90,19 +90,24 @@
       <div class="ticker-track"><span>PTR</span><span>Purchase</span><span>$1K–15K</span><span>Sale (partial)</span><span>$15K–50K</span><span>Spouse</span><span>Filed late</span><span>$100K–250K</span><span>Call options</span><span>Exchange</span><span>OGE 278-T</span><span>$1M–5M</span><span>PTR</span><span>Purchase</span><span>$1K–15K</span><span>Sale (partial)</span><span>$15K–50K</span><span>Spouse</span><span>Filed late</span><span>$100K–250K</span><span>Call options</span><span>Exchange</span><span>OGE 278-T</span><span>$1M–5M</span></div>
     </div>
 
+    <!-- The latest edition and the earlier ones are written in at publish time by
+         scripts/ingest_digest.py (render_archive), from the same posts as posts.json.
+         Don't edit between the markers by hand; republishing rewrites it. -->
+    <!-- archive:start -->
     <section class="wrap archive-feature" aria-label="Latest edition">
-      <div id="latest">
-        <p class="archive-status" id="archive-status" role="status">Loading the editions…</p>
-        <!-- Shown by CSS whenever JS is off or js/blog.js never arrived (the
-             <head> safety net drops .js after 4s); replaced once the list loads. -->
-        <p class="archive-status archive-fallback">The edition list needs JavaScript. The newest edition is also linked from the <a href="../index.html#lab">Lab section of the homepage</a>.</p>
-      </div>
+      <div id="latest"><a class="lab latest" href="posts/2026-10-12-hill-money-watch.html"><span class="latest-kicker">Latest edition<span class="latest-no">No. 5</span></span><h2 class="latest-title" id="latest-title">October 12, 2026</h2><p class="latest-summary">A quiet week for the active roster: no new filings from Pelosi, Fields, Evans or Rick Scott, and Trump&#x27;s August-trades report is not posted yet. The big number is a catch-up the last edition missed: Sen. Jim Justice disclosed a partial sale of the Greenbrier in the over-$50M band. Also: Ro Khanna&#x27;s 400-line September filing and Rep. Diana Harshbarger&#x27;s $1.85M–6.75M into KKR and Coatue private-markets funds.</p><span class="latest-cta">Read the edition<span class="arrow" aria-hidden="true">→</span></span></a></div>
     </section>
 
-    <section class="wrap archive-earlier" id="earlier" aria-labelledby="earlier-title" hidden>
+    <section class="wrap archive-earlier" id="earlier" aria-labelledby="earlier-title">
       <h2 class="archive-heading" id="earlier-title">Earlier editions</h2>
-      <ol class="archive-list" id="archive-list"></ol>
+      <ol class="archive-list" id="archive-list">
+        <li><a class="archive-row" href="posts/2026-10-03-hill-money-watch.html"><span class="archive-no">No. 4</span><span class="archive-main"><h3 class="archive-title" id="edition-4">October 3, 2026</h3><p class="archive-summary">Cleo Fields filed five new tech buys on October 1, Trump&#x27;s accounts disclosed 1,156 July trades including $5M–25M sales of Microsoft and Amazon, and the Senate killed the House stock-trading ban 53–47 on September 30.</p></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li><a class="archive-row" href="posts/2026-09-23-hill-money-watch.html"><span class="archive-no">No. 3</span><span class="archive-main"><h3 class="archive-title" id="edition-3">September 23, 2026</h3><p class="archive-summary">Nancy Pelosi&#x27;s household opened a $3M–12M position in Bloom Energy and added to Intel, the first move on either side of the open Intel divergence since June. Cleo Fields&#x27;s missing August buy turned up after all, April McClain Delaney sold 23 positions of $100K or more in one day, and the chair of the House Ethics Committee disclosed three trades about eight months after they were made.</p></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li><a class="archive-row" href="posts/2026-08-16-hill-money-watch.html"><span class="archive-no">No. 2</span><span class="archive-main"><h3 class="archive-title" id="edition-2">August 16, 2026</h3><p class="archive-summary">Three House members disclosed late trades on the same day, led by a $100K–250K Apple sale Shri Thanedar sat on for seven months. The Tier-1 roster is quiet across the board, Cleo Fields is now five weeks past his own buying cadence, and Ro Khanna&#x27;s TD filing date has picked up a third conflicting value.</p></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li><a class="archive-row" href="posts/2026-08-15-hill-money-watch.html"><span class="archive-no">No. 1</span><span class="archive-main"><h3 class="archive-title" id="edition-1">August 15, 2026</h3><p class="archive-summary">A catch-up edition covering recent disclosures rather than a single trading day. Lisa McClain breaks a six-month silence with a private defense buy filed one day before a $3.2B state announcement; the Tier-1 roster is quiet; two members disclose large batches of late trades.</p></span><span class="arrow" aria-hidden="true">→</span></a></li>
+      </ol>
     </section>
+    <!-- archive:end -->
 
     <!-- Research pages live in blog/research/ and stay out of posts.json, so
          they never take the Latest-edition slot or the homepage Dispatch card. -->

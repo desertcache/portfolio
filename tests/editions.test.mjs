@@ -68,3 +68,20 @@ test('readingMinutes rounds to whole minutes and never says zero', () => {
   assert.equal(readingMinutes('word\n\t'.repeat(345)), 2); // 1.5 rounds up
   assert.equal(readingMinutes('word '.repeat(600), 200), 3);
 });
+
+test('the archive page arrives pre-rendered, matching posts.json edition for edition', async () => {
+  // scripts/ingest_digest.py writes the archive into blog/index.html whenever it rebuilds
+  // posts.json. If the two disagree, a post was published by hand or the page was edited
+  // between its markers: republish with the script.
+  const { readFileSync } = await import('node:fs');
+  const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
+  const posts = validPosts(JSON.parse(read('blog/posts.json')));
+  const page = read('blog/index.html');
+  const archive = page.match(/<!-- archive:start -->([\s\S]*?)<!-- archive:end -->/)?.[1] ?? '';
+  const decode = (s) => s.replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+  const latest = archive.match(/<a class="lab latest" href="([^"]+)">[\s\S]*?<span class="latest-no">No\. (\d+)<\/span>[\s\S]*?<h2 class="latest-title" id="latest-title">([^<]+)<\/h2>/);
+  assert.ok(latest, 'the latest-edition card is in the page');
+  const rows = [...archive.matchAll(/<a class="archive-row" href="([^"]+)"><span class="archive-no">No\. (\d+)<\/span><span class="archive-main"><h3 class="archive-title" id="edition-\d+">([^<]+)<\/h3>/g)];
+  const shown = [latest, ...rows].map(([, href, no, title]) => ({ href, no: Number(no), title: decode(title) }));
+  assert.deepEqual(shown, posts.map((p, i) => ({ href: p.href, no: posts.length - i, title: editionTitle(p.title) })));
+});

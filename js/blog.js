@@ -100,12 +100,18 @@ function archiveRow(post, number, base) {
   return li;
 }
 
-/** Archive page: the latest edition as a feature, the rest as a list. */
+/**
+ * Archive page: the latest edition as a feature, the rest as a list. The page
+ * arrives with both already written in (scripts/ingest_digest.py renders them
+ * at publish time, so nothing jumps as the list appears); this builds them from
+ * posts.json only for a cached page from before that.
+ */
 async function initArchive() {
   const slot = document.getElementById('latest');
   const list = document.getElementById('archive-list');
   const url = postsIndexUrl();
   if (!slot || !list || !url) return;
+  if (slot.querySelector('.latest')) return;
   const status = document.getElementById('archive-status');
   let editions;
   try {

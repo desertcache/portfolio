@@ -400,6 +400,93 @@ def rebuild_index() -> list[Post]:
 
 
 # --------------------------------------------------------------------------
+# Archive page
+# --------------------------------------------------------------------------
+
+ARCHIVE_PAGE = BLOG_DIR / "index.html"
+ARCHIVE_START = "<!-- archive:start -->"
+ARCHIVE_END = "<!-- archive:end -->"
+SERIES_PREFIX_RE = re.compile(r"^\s*Hill Money Watch\s*[:—–-]\s*")
+ARROW = "<span class=\"arrow\" aria-hidden=\"true\">→</span>"
+
+
+def edition_title(title: str) -> str:
+    """A title without the series name, as the archive lists it ("October 12, 2026").
+
+    Mirrors editionTitle in js/editions.js, which builds the same list in the browser
+    for a page from before the archive was rendered here.
+    """
+    short = SERIES_PREFIX_RE.sub("", title).strip()
+    return short or title
+
+
+def render_archive(posts: Sequence[Post]) -> str:
+    """The archive's latest-edition card and earlier-editions list, as static HTML.
+
+    The markup js/blog.js used to build from posts.json after the page loaded, rendered
+    at publish time instead: the archive now reads without JavaScript, and nothing below
+    it jumps when the list appears (it did: a layout shift of 0.30 on a phone). Posts
+    come newest first and are numbered oldest = 1. Everything from the digest is escaped,
+    since its title and summary are upstream-authored. Returns the markers too, so the
+    caller replaces marker to marker.
+    """
+    esc = partial(html.escape, quote=True)
+    total = len(posts)
+    if not posts:
+        latest = '<p class="archive-status">No editions published yet.</p>'
+    else:
+        newest = posts[0]
+        summary = f'<p class="latest-summary">{esc(newest.summary)}</p>' if newest.summary else ""
+        latest = (
+            f'<a class="lab latest" href="{esc(newest.href)}">'
+            f'<span class="latest-kicker">Latest edition<span class="latest-no">No. {total}</span></span>'
+            f'<h2 class="latest-title" id="latest-title">{esc(edition_title(newest.title))}</h2>'
+            f'{summary}<span class="latest-cta">Read the edition{ARROW}</span></a>'
+        )
+    rows = []
+    for i, post in enumerate(posts[1:]):
+        number = total - 1 - i
+        summary = f'<p class="archive-summary">{esc(post.summary)}</p>' if post.summary else ""
+        rows.append(
+            f'        <li><a class="archive-row" href="{esc(post.href)}">'
+            f'<span class="archive-no">No. {number}</span><span class="archive-main">'
+            f'<h3 class="archive-title" id="edition-{number}">{esc(edition_title(post.title))}</h3>'
+            f'{summary}</span>{ARROW}</a></li>'
+        )
+    hidden = "" if rows else " hidden"
+    return "\n".join([
+        ARCHIVE_START,
+        '    <section class="wrap archive-feature" aria-label="Latest edition">',
+        f'      <div id="latest">{latest}</div>',
+        "    </section>",
+        "",
+        f'    <section class="wrap archive-earlier" id="earlier" aria-labelledby="earlier-title"{hidden}>',
+        '      <h2 class="archive-heading" id="earlier-title">Earlier editions</h2>',
+        '      <ol class="archive-list" id="archive-list">',
+        *rows,
+        "      </ol>",
+        "    </section>",
+        f"    {ARCHIVE_END}",
+    ])
+
+
+def write_archive(posts: Sequence[Post]) -> bool:
+    """Render the archive into blog/index.html between its markers. True if it changed."""
+    page = ARCHIVE_PAGE.read_text(encoding="utf-8")
+    start, end = page.find(ARCHIVE_START), page.find(ARCHIVE_END)
+    if start == -1 or end < start:
+        raise RuntimeError(
+            f"{_display_path(ARCHIVE_PAGE)} has lost its {ARCHIVE_START} ... {ARCHIVE_END} markers; "
+            "put them back around the latest-edition and earlier-editions sections"
+        )
+    updated = page[:start] + render_archive(posts) + page[end + len(ARCHIVE_END):]
+    if updated == page:
+        return False
+    ARCHIVE_PAGE.write_text(updated, encoding="utf-8")
+    return True
+
+
+# --------------------------------------------------------------------------
 # Entry point
 # --------------------------------------------------------------------------
 
@@ -509,7 +596,13 @@ def publish(pending: Sequence[PendingDigest], *, force: bool = False) -> int:
         published.append(slug)
         print(f"  write {_display_path(target)}")
 
-    rebuild_index()
+    posts = rebuild_index()
+    try:
+        if write_archive(posts):
+            print(f"  write {_display_path(ARCHIVE_PAGE)}")
+    except RuntimeError as exc:
+        failures.append(str(exc))
+        print(f"::error::{exc}")
 
     summary_line = (
         f"published {len(published)} digest(s): {', '.join(published)}"
