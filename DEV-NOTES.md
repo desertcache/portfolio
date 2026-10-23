@@ -373,6 +373,15 @@ Things worth knowing before touching the blog:
   the page's newest edition doesn't match it (a cached older page, or a commit
   that left `blog/index.html` out), and a Node test holds the committed archive
   to `posts.json`, edition for edition.
+- **The Atom feed, `blog/feed.xml`, is written at publish time too (2026-10-23).**
+  `render_feed` lists every edition, newest first, with absolute links; the
+  archive, the homepage and every post point feed readers at it from `<head>`,
+  and the archive links it under the caveat. It is also the editions' sitemap:
+  the hand-kept `sitemap.xml` used to list them and missed the October 12
+  edition, so it now lists only pages a publish doesn't change, and Search
+  Console takes the feed as a second sitemap (submit both). The feed sits in
+  `blog/`, so the skill's `git add blog/` ships it with each edition. A Node
+  test holds it to `posts.json`.
 
 ## skincare.html is precompiled too (2026-08-15, reskinned 2026-09-27)
 
@@ -572,9 +581,9 @@ There is **no automation**. Editions are written and published by the
 `hill-money-watch` Claude Code skill, which writes a draft digest to
 `blog/hill-money-watch-YYYY-MM-DD.html` and runs `scripts/ingest_digest.py
 --file` on it; that renders the post into `blog/posts/`, rebuilds
-`blog/posts.json` (which the homepage card reads) and writes the archive into
-`blog/index.html`. The skill's `git add blog/` stages all three. A push to
-`main` is the deploy.
+`blog/posts.json` (which the homepage card reads), writes the archive into
+`blog/index.html` and rewrites the Atom feed, `blog/feed.xml`. The skill's
+`git add blog/` stages all four. A push to `main` is the deploy.
 
 The two GitHub Actions workflows built on the `hill-money-watch-blog` branch
 (`ingest-digest.yml`, `digest-heartbeat.yml`) were deliberately left out of
@@ -817,8 +826,10 @@ don't morph.
   carries `og:*` + `twitter:card` tags with an absolute `og:image`; a test enforces it.
 - **Offscreen sections pause their CSS animations** (`js/quiet.js` + `.is-offscreen` in site.css).
   The hero map (`topo.js`) and the critters (`trails.js`) pause themselves.
-- `sitemap.xml` lists the public pages (not the two noindex work samples, not skincare). Submit
-  it in Search Console: robots.txt only counts at the host root, which this project site isn't.
+- `sitemap.xml` lists the public pages a publish doesn't change (not the two noindex work
+  samples, not skincare, not the editions: those are in `blog/feed.xml`, rewritten on every
+  publish). Submit both in Search Console: robots.txt only counts at the host root, which this
+  project site isn't. Update a page's `lastmod` when its content changes.
 - `.nojekyll` must stay (serves `arcade/` module folder verbatim).
 - `mockups/` is untracked on purpose — never `git add -A`.
 - Every play page loads `css/site.css` for the chrome (since 2026-09-27):

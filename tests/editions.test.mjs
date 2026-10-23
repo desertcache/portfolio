@@ -85,3 +85,21 @@ test('the archive page arrives pre-rendered, matching posts.json edition for edi
   const shown = [latest, ...rows].map(([, href, no, title]) => ({ href, no: Number(no), title: decode(title) }));
   assert.deepEqual(shown, posts.map((p, i) => ({ href: p.href, no: posts.length - i, title: editionTitle(p.title) })));
 });
+
+test('the Atom feed lists every edition in posts.json, newest first, with absolute links', async () => {
+  // blog/feed.xml is rewritten by scripts/ingest_digest.py on every publish, and it is the
+  // sitemap for the editions (sitemap.xml leaves them out). If this fails, republish with
+  // the script rather than editing the feed by hand.
+  const { readFileSync } = await import('node:fs');
+  const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
+  const posts = validPosts(JSON.parse(read('blog/posts.json')));
+  const feed = read('blog/feed.xml');
+  const decode = (s) => s.replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+  const entries = [...feed.matchAll(/<entry>\s*<title>([^<]*)<\/title>\s*<link rel="alternate" type="text\/html" href="([^"]+)"\/>/g)]
+    .map(([, title, href]) => ({ title: decode(title), href }));
+  const blog = 'https://desertcache.github.io/portfolio/blog/';
+  assert.deepEqual(entries, posts.map((p) => ({ title: p.title, href: new URL(p.href, blog).href })));
+  const head = feed.split('<entry>')[0];
+  assert.match(head, new RegExp(`<updated>${posts[0].date}T00:00:00Z</updated>`), 'the feed is as new as its newest edition');
+  assert.equal(feed.indexOf('—'), -1, 'no em dash in the feed either');
+});

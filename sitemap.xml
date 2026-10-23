@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- The public pages. The two work samples marked noindex (ai-copilot-rollout, ai-adoption-program)
-     stay out on purpose. Search engines only read robots.txt at the host root, which this
-     project site doesn't own, so submit this file in Search Console instead. -->
+<!-- The public pages that a publish doesn't change. Hill Money Watch editions are listed
+     in blog/feed.xml instead: scripts/ingest_digest.py rewrites that feed on every publish,
+     so it can't fall behind the way a hand-kept list here did. Submit both files in
+     Search Console (it takes an Atom feed as a sitemap). Search engines only read
+     robots.txt at the host root, which this project site doesn't own.
+     Left out on purpose: the two noindex work samples (ai-copilot-rollout,
+     ai-adoption-program). The archive has no lastmod, since every edition changes it. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://desertcache.github.io/portfolio/</loc><lastmod>2026-10-08</lastmod></url>
-  <url><loc>https://desertcache.github.io/portfolio/work/answer-finder.html</loc><lastmod>2026-10-08</lastmod></url>
-  <url><loc>https://desertcache.github.io/portfolio/work/starship-agent-fleet.html</loc><lastmod>2026-10-08</lastmod></url>
+  <url><loc>https://desertcache.github.io/portfolio/</loc><lastmod>2026-10-23</lastmod></url>
+  <url><loc>https://desertcache.github.io/portfolio/work/answer-finder.html</loc><lastmod>2026-10-23</lastmod></url>
+  <url><loc>https://desertcache.github.io/portfolio/work/starship-agent-fleet.html</loc><lastmod>2026-10-23</lastmod></url>
   <url><loc>https://desertcache.github.io/portfolio/arcade.html</loc><lastmod>2026-10-08</lastmod></url>
   <url><loc>https://desertcache.github.io/portfolio/starship.html</loc><lastmod>2026-10-08</lastmod></url>
-  <url><loc>https://desertcache.github.io/portfolio/blog/</loc><lastmod>2026-10-03</lastmod></url>
-  <url><loc>https://desertcache.github.io/portfolio/blog/posts/2026-10-03-hill-money-watch.html</loc><lastmod>2026-10-03</lastmod></url>
-  <url><loc>https://desertcache.github.io/portfolio/blog/posts/2026-09-23-hill-money-watch.html</loc><lastmod>2026-09-23</lastmod></url>
-  <url><loc>https://desertcache.github.io/portfolio/blog/posts/2026-08-16-hill-money-watch.html</loc><lastmod>2026-08-16</lastmod></url>
-  <url><loc>https://desertcache.github.io/portfolio/blog/posts/2026-08-15-hill-money-watch.html</loc><lastmod>2026-08-15</lastmod></url>
-  <url><loc>https://desertcache.github.io/portfolio/blog/research/delivery-ipo-ledger.html</loc><lastmod>2026-09-25</lastmod></url>
+  <url><loc>https://desertcache.github.io/portfolio/blog/</loc></url>
+  <url><loc>https://desertcache.github.io/portfolio/blog/research/delivery-ipo-ledger.html</loc><lastmod>2026-10-23</lastmod></url>
   <url><loc>https://desertcache.github.io/portfolio/blog/research/pdrn-and-spicules.html</loc><lastmod>2026-09-25</lastmod></url>
 </urlset>

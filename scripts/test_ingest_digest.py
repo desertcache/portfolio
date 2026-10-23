@@ -22,8 +22,10 @@ from ingest_digest import (
     edition_title,
     rebuild_index,
     render_archive,
+    render_feed,
     render_post,
     write_archive,
+    write_feed,
 )
 
 GOOD = """<!doctype html><html><head>
@@ -176,6 +178,7 @@ def blog(tmp_path, monkeypatch):
     archive = tmp_path / "index.html"
     archive.write_text(ARCHIVE_SHELL, encoding="utf-8")
     monkeypatch.setattr(ingest_digest, "ARCHIVE_PAGE", archive)
+    monkeypatch.setattr(ingest_digest, "FEED_PATH", tmp_path / "feed.xml")
     return tmp_path
 
 
@@ -321,6 +324,61 @@ def test_publishing_renders_the_new_edition_into_the_archive(publishable, tmp_pa
     archive = (publishable / "index.html").read_text(encoding="utf-8")
     assert 'href="posts/2026-08-17-hill-money-watch.html"' in archive
     assert '<h2 class="latest-title" id="latest-title">August 11, 2026</h2>' in archive, "the digest's own title"
+
+
+# --------------------------------------------------------------------------
+# Atom feed
+# --------------------------------------------------------------------------
+
+ATOM = "{http://www.w3.org/2005/Atom}"
+
+
+def test_feed_is_valid_atom_with_one_entry_per_edition_newest_first():
+    import xml.etree.ElementTree as ET
+    root = ET.fromstring(render_feed(_posts("2026-10-12", "2026-10-03")))
+    assert root.tag == f"{ATOM}feed"
+    assert root.findtext(f"{ATOM}updated") == "2026-10-12T00:00:00Z", "the feed is as new as its newest edition"
+    for required in ("id", "title", "author"):
+        assert root.find(f"{ATOM}{required}") is not None, required
+    entries = root.findall(f"{ATOM}entry")
+    assert [e.findtext(f"{ATOM}published") for e in entries] == ["2026-10-12T00:00:00Z", "2026-10-03T00:00:00Z"]
+    first = entries[0]
+    url = "https://desertcache.github.io/portfolio/blog/posts/2026-10-12-hill-money-watch.html"
+    assert first.find(f"{ATOM}link").get("href") == url, "links are absolute: a feed reader has no page to resolve them against"
+    assert first.findtext(f"{ATOM}id") == url
+    assert first.findtext(f"{ATOM}title") == "Hill Money Watch: 2026-10-12"
+    assert first.findtext(f"{ATOM}summary") == "About 2026-10-12."
+
+
+def test_feed_escapes_what_the_digest_wrote_and_drops_what_xml_cannot_hold():
+    import xml.etree.ElementTree as ET
+    post = Post(slug="2026-10-12-hill-money-watch", date="2026-10-12",
+                title="Hill Money Watch: <b>bold</b>", summary='"Quoted" & <script>x</script>\x0b')
+    root = ET.fromstring(render_feed([post]))  # raises if the escaping left it malformed
+    entry = root.find(f"{ATOM}entry")
+    assert entry.findtext(f"{ATOM}title") == "Hill Money Watch: <b>bold</b>", "markup arrives as text, not tags"
+    assert entry.findtext(f"{ATOM}summary") == '"Quoted" & <script>x</script>'
+
+
+def test_feed_with_no_editions_is_still_a_valid_feed():
+    import xml.etree.ElementTree as ET
+    root = ET.fromstring(render_feed([]))
+    assert root.findall(f"{ATOM}entry") == []
+    assert root.findtext(f"{ATOM}updated"), "Atom requires <updated> even on an empty feed"
+
+
+def test_write_feed_rewrites_only_when_the_editions_change(blog):
+    assert write_feed(_posts("2026-10-03")) is True
+    assert write_feed(_posts("2026-10-03")) is False, "a run with nothing new leaves the file alone"
+    assert write_feed(_posts("2026-10-12", "2026-10-03")) is True
+    assert "2026-10-12-hill-money-watch.html" in (blog / "feed.xml").read_text(encoding="utf-8")
+
+
+def test_publishing_adds_the_new_edition_to_the_feed(publishable, tmp_path):
+    assert main(["--file", str(_digest_file(tmp_path))]) == 0
+    feed = (publishable / "feed.xml").read_text(encoding="utf-8")
+    assert "<title>Hill Money Watch: August 11, 2026</title>" in feed
+    assert "posts/2026-08-17-hill-money-watch.html" in feed
 
 
 def test_local_inbox_reads_the_date_out_of_the_filename(tmp_path):
