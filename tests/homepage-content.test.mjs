@@ -195,6 +195,20 @@ test('the featured diagram ships whole, and its parts and ticker follow the step
   for (let n = 1; n <= steps.length; n++) assert.ok(css.includes(`[data-step="${n}"]`), `site.css never styles step ${n}`);
 });
 
+test('the fleet diagram quotes its numbers from the write-up, on both pages', () => {
+  // The gate's numbers are claims: they must match what work/starship-agent-fleet.html says in words.
+  const writeup = readerText(read('work/starship-agent-fleet.html')).replace(/\s+/g, ' ');
+  for (const fact of ['all 16 functional tests', '95th-percentile frame time of 8.2 ms', 'against the 18 ms budget', 'Sonnet and Opus agents built in parallel lanes on separate files']) {
+    assert.ok(writeup.includes(fact), `the write-up no longer says "${fact}"`);
+  }
+  for (const path of ['index.html', 'work/starship-agent-fleet.html']) {
+    const fig = read(path).match(/<svg class="fleet-svg"[\s\S]*?<\/svg>/)?.[0] ?? '';
+    assert.ok(fig, `${path} has the fleet diagram`);
+    assert.match(fig, />16 tests</, `${path}: the gate's test count`);
+    assert.match(fig, />p95 8\.2 \/ 18 ms</, `${path}: the gate's frame budget`);
+  }
+});
+
 test('every Toolkit link opens real proof, and says where it goes', () => {
   // The underline is the claim: a tool links only to the place on this site that shows it in use.
   const toolkit = HOME.match(/<div class="toolkit[^"]*">[\s\S]*?<\/div>\n {6}<\/div>/)?.[0] ?? '';

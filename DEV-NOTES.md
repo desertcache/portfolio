@@ -772,6 +772,18 @@ don't morph.
   with no proof here stays plain grey. Each link names its destination in
   visually hidden text, and a test holds every one to a real target. Add a link
   only when the page it opens says the tool was used there.
+- **The Fleet practice has a diagram** (`.fleet`, css 5n): orchestrator, three
+  parallel lanes, one gate, the way `work/starship-agent-fleet.html` tells it,
+  and the same SVG is that write-up's Fig. 1 (shown finished there, since its
+  pages don't run the reveal). It spans the practice's whole row so labels stay
+  readable, reuses the featured diagram's `.fx-*` shapes, and plays once on
+  reveal: wires draw, lanes fill at their own pace (`--d`, `--t`), the gate
+  ticks in order, "merged" lights. A test holds its numbers (16 tests, 8.2 of
+  18 ms) to the write-up's words; change one, change both.
+- **Print reveals everything first.** `js/print.js` marks every `.reveal` as
+  revealed on `beforeprint`, and print turns transitions and animations off, so
+  the work cards' lines and the fleet diagram print drawn rather than frozen at
+  their pre-reveal state.
 - **Page to page, the site crossfades** (`@view-transition { navigation: auto }`,
   0.2 s, off under reduced motion). Nothing is named, since the nav and footer
   are the same pixels on both pages. Same-document transitions (the case-study
