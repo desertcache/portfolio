@@ -24,9 +24,16 @@ and the JavaScript only adds motion and the interactive parts.
   a GLSL orb. And the [Answer Finder](https://github.com/desertcache/ask) in the
   bar at the bottom of the page: a 4 MB embedding model on your own device that
   matches questions to answers I approved, so it can't make anything up.
+- **Four write-ups** in `work/`: [putting an AI copilot into a live support
+  operation](https://desertcache.github.io/portfolio/work/ai-copilot-rollout.html),
+  [an AI adoption program people actually use](https://desertcache.github.io/portfolio/work/ai-adoption-program.html),
+  [a 4 MB model that can't make things up](https://desertcache.github.io/portfolio/work/answer-finder.html)
+  (with a real trace of it answering), and [directing a fleet of AI agents to
+  build a game](https://desertcache.github.io/portfolio/work/starship-agent-fleet.html).
 - **Hill Money Watch.** A digest of congressional stock-trade disclosures,
   written by a Claude Code skill and published through a script that rejects
-  any draft breaking its contract (`scripts/ingest_digest.py`).
+  any draft breaking its contract (`scripts/ingest_digest.py`), then writes the
+  archive and the Atom feed.
 - **Research pages.** Fifteen delivery IPOs from offer price to today (D3), and
   what the evidence says about topical PDRN.
 
