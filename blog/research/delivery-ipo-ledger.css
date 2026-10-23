@@ -299,6 +299,12 @@
 .post-body .led-table td.led-dn { color: var(--led-dn); }
 .post-body .led-table tr.is-sel td { background: var(--led-sel-wash); }
 .post-body .led-table a { font-weight: 600; }
+@media print {
+  /* Nine columns need a little less than blog.css's paper tables: tighter cells, and a
+     name's second line (ticker and exchange) may wrap. */
+  .post-body .led-table th, .post-body .led-table td { padding-right: 8px; }
+  .post-body .led-table td .led-sub { white-space: normal; font-size: 0.92em; }
+}
 
 .post-body .led-deals { margin: 4px 0 30px; padding: 0; list-style: none; border-top: 1px solid var(--line-strong); }
 .post-body .led-deals li {

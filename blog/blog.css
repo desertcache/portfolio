@@ -384,5 +384,19 @@ html:not(.js) .archive-fallback { display: block; }
 
 @media print {
   .edition-nav, .ticker-band { display: none !important; }
+  /* Chrome won't keep a grid item whole across a page break, so on paper the post
+     is plain blocks: figures and tables then stay whole, and headings stay with
+     them (site.css's print rules). The gutters only matter on a wide screen. */
+  .post, .post-body { display: block; }
   .post { padding-top: 24px; }
+  /* On screen a wide table scrolls sideways inside itself; paper can't scroll, so it
+     clipped its last columns. Here it fits the page in smaller type, and its cells
+     may wrap: auto table layout only wraps a table that has to shrink, so one that
+     fits prints as it is. Member names stay whole. The !important outranks the
+     digests' own nowrap rules, which sit in each post's <style>. */
+  .post-body > table { display: table; width: 100%; min-width: 0; max-width: none; overflow: visible; justify-self: start; font-size: 0.6875rem; }
+  .post-body table th, .post-body table td { padding: 6px 10px 6px 0; }
+  .post-body table th, .post-body table td:not(:first-child) { white-space: normal !important; }
+  .post-body table tr { break-inside: avoid; }
+  .post-body table .hmw-lag { font-size: 0.92em; }
 }

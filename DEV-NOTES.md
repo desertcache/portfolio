@@ -810,6 +810,18 @@ don't morph.
   (`work/ai-adoption-program.css`, `.ladder-*`) replaced the list of four
   parts with the same words, and groups Parts 2 to 4 under the one outcome
   the text gives for all three.
+- **Posts and write-ups print as plain blocks.** `.post` is a three-column
+  grid on screen, and Chrome won't keep a grid item whole across a page
+  break, so figures split mid-drawing. On paper (`blog.css`, print), `.post`
+  and `.post-body` are blocks: figures stay whole and headings stay with them.
+  A wide table scrolls sideways on screen, which paper can't do, so it clipped
+  its last columns there. In print it fits the page in smaller type, and its
+  cells may wrap (auto layout only wraps a table that must shrink; member
+  names stay whole). The ledger's nine-column scoreboard is a little tighter
+  still (its own print rule). The skip link no longer prints at the foot of
+  every page. Check with `page.pdf()`, and measure under
+  `emulateMedia({ media: 'print' })`: a table's right edge must not pass its
+  parent's.
 - **Print reveals everything first.** `js/print.js` marks every `.reveal` as
   revealed on `beforeprint`, and print turns transitions and animations off, so
   the work cards' lines and the fleet diagram print drawn rather than frozen at

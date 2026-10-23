@@ -2363,7 +2363,7 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
     --g-soft: rgba(28, 22, 36, 0.1); --g-soft2: rgba(28, 22, 36, 0.24);
     --illo-line: rgba(28, 22, 36, 0.26); --fauna-line: rgba(28, 22, 36, 0.58);
   }
-  .nav, .topo, .hero-fade, .lab-grid, .dock, .toast, .footer-hint, .orb-slot, .footer::before, .thermal, .trail, .flock,
+  .skip, .nav, .topo, .hero-fade, .lab-grid, .dock, .toast, .footer-hint, .orb-slot, .footer::before, .thermal, .trail, .flock,
   .lab-horizon, .bed, .lab-bar, .lab-play { display: none !important; }
   .js .reveal { opacity: 1 !important; transform: none !important; }
   /* paper is a still: whatever js/print.js reveals applies at once, mid-flight motion doesn't print */
