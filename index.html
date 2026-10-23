@@ -47,6 +47,25 @@
   <link rel="preload" href="assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
   <link rel="stylesheet" href="css/site.css?v=2026-10-23">
   <script type="module" src="js/main.js"></script>
+  <!-- Hover a link to another page of the site and Chrome prerenders it, so the click lands at
+       once (and the page-to-page crossfade carries you in). Same-site pages only: not this page
+       (a second copy would boot another WebGL map), not the PDF. Browsers without Speculation
+       Rules ignore this; DevTools and automation turn prerendering off, so a headless check
+       shows "PrerenderingDisabledByDevTools" rather than a prerender. -->
+  <script type="speculationrules">
+  {
+    "prerender": [{
+      "where": { "and": [
+        { "href_matches": "/portfolio/*" },
+        { "not": { "href_matches": "/portfolio/" } },
+        { "not": { "href_matches": "/portfolio/index.html" } },
+        { "not": { "href_matches": "/portfolio/*.pdf" } },
+        { "not": { "selector_matches": "[target=_blank]" } }
+      ] },
+      "eagerness": "moderate"
+    }]
+  }
+  </script>
 
   <script type="application/ld+json">
   {
