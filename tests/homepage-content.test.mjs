@@ -164,6 +164,26 @@ test('each work card opens its own case study, and the case studies link in one 
   });
 });
 
+test('each write-up ends on a "Read next" card, and the cards visit every write-up in one ring', () => {
+  const nextOf = new Map();
+  for (const path of WORK_SAMPLES) {
+    const nav = read(path).match(/<nav class="cs-nav edition-nav" aria-label="More work">([\s\S]*?)<\/nav>/);
+    assert.ok(nav, `${path}: no closing nav`);
+    const card = nav[1].match(/<a class="cs-next" href="([a-z0-9-]+\.html)"><span class="cs-nav-k">Read next<\/span><span class="cs-nav-t">([^<]+)<\/span><\/a>/);
+    assert.ok(card, `${path}: no "Read next" card`);
+    const [, href, title] = card;
+    const target = `work/${href}`;
+    assert.ok(WORK_SAMPLES.includes(target), `${path}: "Read next" points at ${href}, which isn't a write-up`);
+    const h1 = read(target).match(/<h1 class="post-title">([^<]+)<\/h1>/)?.[1];
+    assert.equal(title, h1, `${path}: the card's title matches ${href}'s headline`);
+    nextOf.set(path, target);
+  }
+  assert.equal(new Set(nextOf.values()).size, WORK_SAMPLES.length, 'every write-up is some card\'s "Read next"');
+  const seen = new Set();
+  for (let at = WORK_SAMPLES[0]; !seen.has(at); at = nextOf.get(at)) seen.add(at);
+  assert.equal(seen.size, WORK_SAMPLES.length, 'following "Read next" from any write-up reaches all of them');
+});
+
 test('the homepage and the Answer Finder write-up quote the same answer and phrasing counts', () => {
   // These go stale whenever desertcache/ask's bank grows; the live box reports its own count, so
   // update both pages together (data/bank.json there has the numbers).
