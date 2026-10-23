@@ -247,6 +247,12 @@ Things worth knowing before touching it:
   idle, nothing while the hero is off screen or the tab is hidden. Reduced
   motion gets one still frame (the readout still works; the hill doesn't).
   No WebGL, or no heightmap, means no canvas, just paper.
+- **Software WebGL gets the still frame too (2026-10-23).** On a CPU rasterizer
+  (remote desktops, VMs, blocklisted GPUs, headless Chrome) the shader is
+  ruinous: 16 s of main-thread time in a mobile Lighthouse run. `topo.js` asks
+  for a context with `failIfMajorPerformanceCaveat` and also checks the
+  renderer by name (`js/gpu.js`, tested), because headless Chrome on SwiftShader
+  doesn't honour the flag. Either signal means one frame, no loop, no hill.
 - **Cache safety.** The new helpers went into new files (`arizona.js`,
   `clock.js`, `terrain-data.js`) and `lib.js` kept its exports, including
   the now-unused `coordsFor`, for the same reason `editions.js` exists.
@@ -275,11 +281,23 @@ python3 scripts/build_terrain.py   # needs numpy + Pillow; caches tiles in ~/.ca
 
 ```powershell
 npm install        # once, in this directory
-npm test           # unit tests for js/lib.js, editions.js, arizona.js, wildlife.js, scrolly.js, plus the homepage content
+npm test           # unit tests for js/lib.js, editions.js, arizona.js, wildlife.js, scrolly.js, gpu.js, plus the homepage content
                    # checks (tests/homepage-content.test.mjs) (Node's built-in runner)
 npm run check      # type-checks js/ via JSDoc + TypeScript, no build output
-python -m pytest scripts   # the Python scripts: digest ingest, terrain build, drawings
+python -m pytest scripts   # the Python scripts: digest ingest and archive, terrain build, drawings
 ```
+
+**Audits (2026-10-23).** Not in `npm test`, since they need a browser: axe-core
+(tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`)
+injected into each page with Playwright passes on all 17 pages, light and dark;
+Lighthouse 12 (simulated throttling, served with gzip) gives the homepage 90
+mobile and 100 desktop and every other page 92 to 98 and 99 to 100, with 100
+for accessibility and best practices throughout (the two noindex work samples
+score 63 for SEO, on purpose). Rerun both after a change to the first screen,
+the hero map, or anything that loads before it. axe's label-in-name rule glues
+a control's text nodes together with no spaces and counts `aria-hidden` text as
+visible, so name controls from their visible content (with visually hidden
+words for context) rather than an `aria-label` that rewords what's shown.
 
 `tests/homepage-content.test.mjs` holds the copy rules that apply to every edit: no em dash anywhere a
 reader looks on the homepage or a work sample (text, SVG labels, tab title, link-preview text), every
@@ -345,8 +363,16 @@ Things worth knowing before touching the blog:
   whenever a change needs HTML and CSS to agree, then republish the posts.
   GitHub Pages lets browsers cache for 10 minutes, and new markup against a
   stale stylesheet renders unstyled.
-- **The archive list is rendered by JS** from `blog/posts.json`. With JS off
-  (or if `js/blog.js` never arrives), a fallback line points at the homepage.
+- **The archive is written into `blog/index.html` at publish time (2026-10-23).**
+  `scripts/ingest_digest.py` renders the latest-edition card and the earlier
+  list between `<!-- archive:start -->` and `<!-- archive:end -->` every time it
+  rebuilds `posts.json` (`render_archive`, escaping everything the digest
+  wrote). It used to be built by JS after load, which pushed the Research
+  section down: a layout shift of 0.30 on a phone. Don't edit between the
+  markers; republish. `js/blog.js` rebuilds the list from `posts.json` only when
+  the page's newest edition doesn't match it (a cached older page, or a commit
+  that left `blog/index.html` out), and a Node test holds the committed archive
+  to `posts.json`, edition for edition.
 
 ## skincare.html is precompiled too (2026-08-15, reskinned 2026-09-27)
 
@@ -545,8 +571,9 @@ along its floor. `js/page.js` is their script entry (theme toggle, nav).
 There is **no automation**. Editions are written and published by the
 `hill-money-watch` Claude Code skill, which writes a draft digest to
 `blog/hill-money-watch-YYYY-MM-DD.html` and runs `scripts/ingest_digest.py
---file` on it; that renders the post into `blog/posts/` and rebuilds
-`blog/posts.json`, which the homepage card and the archive read. A push to
+--file` on it; that renders the post into `blog/posts/`, rebuilds
+`blog/posts.json` (which the homepage card reads) and writes the archive into
+`blog/index.html`. The skill's `git add blog/` stages all three. A push to
 `main` is the deploy.
 
 The two GitHub Actions workflows built on the `hill-money-watch-blog` branch
@@ -722,6 +749,36 @@ don't morph.
   05 Lab, 06 Toolkit. Background moved up so the work history starts by ~5,300 px on a laptop
   (it was ~10,800). Every page's nav reads Work, About, Lab, Contact, and the scroll-spy lights About
   through How I build and Toolkit (`alias` in `js/chrome.js`).
+
+## The polish pass of 2026-10-23: speed, print, proof
+
+- **The headline paints at once.** It used to fade in from transparent, and a
+  browser counts a paint only once it's visible, so Largest Contentful Paint
+  waited for the fade (1.2 s on a fast machine, 4.7 s on Lighthouse's phone).
+  `.hero-title.rise` glides in already drawn (`@keyframes glide`, transform
+  only); the rest of the first screen keeps its fade. Don't give the headline
+  an opacity entrance again.
+- **Print.** `@media print` in `site.css` prints the day palette on white
+  whatever the theme (the dusk palette printed light grey on white), turns the
+  sunset words (a gradient clipped to the letters, a background) and solid
+  buttons back into plain ink, drops the Lab's sunset scenery and the flower
+  beds, and keeps section headers whole. `js/print.js` starts every lazy image
+  loading on `beforeprint` (they printed as empty frames) and finishes any
+  count-up; `js/flagship.js` draws the featured diagram whole. Check with
+  Playwright's `page.pdf()` after dispatching `beforeprint`, in both themes.
+- **The Toolkit is proof, not a list.** A tool links to the place on this site
+  that shows it in use (a case study, the copilot write-up, the featured
+  program, How I build, or the timeline entry `#role-integrations`); a tool
+  with no proof here stays plain grey. Each link names its destination in
+  visually hidden text, and a test holds every one to a real target. Add a link
+  only when the page it opens says the tool was used there.
+- **Page to page, the site crossfades** (`@view-transition { navigation: auto }`,
+  0.2 s, off under reduced motion). Nothing is named, since the nav and footer
+  are the same pixels on both pages. Same-document transitions (the case-study
+  morph) share the root crossfade's timing.
+- **`README.md`** is the repo's front door: what the site is, how it's built,
+  and the bar it's held to, with the audit numbers above. Update its numbers
+  when you rerun the audits.
 
 ## Other invariants
 
