@@ -174,6 +174,27 @@ test('the homepage and the Answer Finder write-up quote the same answer and phra
   assert.equal(phrasings.size, 1, `phrasing counts disagree: ${[...phrasings].join(', ')}`);
 });
 
+test('the featured diagram ships whole, and its parts and ticker follow the steps beside it', () => {
+  // No-JS, reduced-motion, phone and stale-cache visitors keep the HTML as written, so it
+  // must be the finished drawing: data-step is the last step. js/flagship.js only moves it.
+  const featured = HOME.match(/<section[^>]*id="featured"[\s\S]*?<\/section>/)?.[0] ?? '';
+  const fig = featured.match(/<figure class="mig-viz flow[^"]*" id="flow" data-step="(\d+)"[\s\S]*?<\/figure>/);
+  assert.ok(fig, '#flow is a figure in #featured');
+  const steps = [...featured.matchAll(/<li class="step[^"]*">\s*<span class="step-n">([^<]+)<\/span>/g)].map((m) => m[1]);
+  assert.equal(steps.length, 5, 'five steps');
+  assert.equal(Number(fig[1]), steps.length, 'the HTML shows the last step: the whole system');
+  const ticker = [...fig[0].matchAll(/<li class="(is-done|is-current)">([^<]+)<\/li>/g)];
+  assert.deepEqual(ticker.map((m) => m[2]), steps, 'one ticker label per step, in order');
+  assert.deepEqual(ticker.map((m) => m[1]), [...steps.slice(1).map(() => 'is-done'), 'is-current'], 'the ticker starts on the last step');
+  assert.match(fig[0], /<svg class="flow-svg"[^>]*role="img"[^>]*aria-labelledby="flow-title"[^>]*aria-describedby="flow-desc"/);
+  assert.match(fig[0], /<title id="flow-title">[^<]+<\/title>\s*<desc id="flow-desc">[^<]{80,}<\/desc>/, 'a title and a real description');
+  for (const [, n] of fig[0].matchAll(/\bfx-(?:from|only|upto)-(\d+)\b/g)) {
+    assert.ok(Number(n) >= 1 && Number(n) <= steps.length, `fx-*-${n} names a step that doesn't exist`);
+  }
+  const css = read('css/site.css');
+  for (let n = 1; n <= steps.length; n++) assert.ok(css.includes(`[data-step="${n}"]`), `site.css never styles step ${n}`);
+});
+
 test('"See the work" and the nav\'s Work link start at the featured program, not past it', () => {
   assert.match(HOME, /<a class="btn btn-solid" href="#featured">See the work/, 'the hero button');
   assert.match(HOME, /<nav class="nav-links"[^>]*>\s*<a href="#featured">Work<\/a>/, 'the nav link');

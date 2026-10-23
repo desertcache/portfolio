@@ -275,7 +275,7 @@ python3 scripts/build_terrain.py   # needs numpy + Pillow; caches tiles in ~/.ca
 
 ```powershell
 npm install        # once, in this directory
-npm test           # unit tests for js/lib.js, editions.js, arizona.js, wildlife.js, plus the homepage content
+npm test           # unit tests for js/lib.js, editions.js, arizona.js, wildlife.js, scrolly.js, plus the homepage content
                    # checks (tests/homepage-content.test.mjs) (Node's built-in runner)
 npm run check      # type-checks js/ via JSDoc + TypeScript, no build output
 python -m pytest scripts   # the Python scripts: digest ingest, terrain build, drawings
@@ -404,7 +404,11 @@ links nest. Every card carries a `.lab-how` "How it works" line. The Arcade
 card's chips deep-link into games (`arcade.html?game=<id>`); the Answer Finder
 card's `[data-ask-focus]` button is wired in `js/ask.js` (no new export, so a
 stale cached module can't break the graph); `initLatestDispatch` fills
-`#dispatch-link` with the newest post. Browser tests that click a card's text
+`#dispatch-link` with the newest post. The Samantha card's frame shows only
+when the orb posts `orb:ready` from its own window (2026-10-23, `js/lab.js`):
+the iframe's `load` event also fires for the browser's error page, and a
+blocked or offline orb used to fade in as a grey error frame under the LIVE
+badge. With no word from the orb, the CSS sunset orb simply stays. Browser tests that click a card's text
 need `force: true`: the link layer is on top by design.
 
 ## The Lab's rooms: arcade.html and starship.html (2026-09-27)
@@ -634,6 +638,70 @@ row (PR #12), which is gone.
   and it slides in once that content scrolls clear. Focus, `/` and the Lab's button bring it back,
   and once used it stays. `html.has-dock` sets `scroll-padding-bottom` so keyboard focus scrolls
   clear of it. Check with a headless pass at those sizes before changing the hero.
+
+## The featured diagram builds itself (2026-10-23)
+
+The Featured program's left column used to be a sticky "4 weeks" and ~1,600 px
+of nothing: it was built to hold the API migration's unit grid (`.units`,
+`.rate`), and when the copilot became the flagship the drawing went and nothing
+replaced it (that CSS is gone now too). It now holds `#flow`, the copilot as
+built: the write-up's Fig. 1 plus the rollout's access checks, one inline SVG
+in `index.html`, styled in section 5c of `site.css`, driven by `js/flagship.js`.
+
+- **It follows the reader.** `data-step` on the figure is the step whose top has
+  crossed the middle of the window (`activeStep` in `js/scrolly.js`, tested in
+  `tests/scrolly.test.mjs`): 1 the hunt (the agent's trail through half a dozen
+  scattered tools, each lighting as the trail reaches it, ending at "?"), 2 the
+  bet (the playbook's highlighted sections cited in the copilot's answer), 3 the
+  build (the stack assembles, the tools file themselves into Internal data, the
+  gateway's three checks tick), 4 the rollout (identity, device trust and app
+  permissions on the way in, then the internal call, lit in that order), 5 the
+  result (team live, other teams' agents and the citations lit, usage over its
+  baseline). The current step's own rule turns red rock (`.step.is-current`) and
+  a ticker under the drawing says where you are.
+- **The HTML is the finished drawing** (`data-step="5"`). That is what no-JS,
+  reduced-motion, print and phone-width visitors see, and what a stale cached
+  `main.js` leaves alone. On one column the drawing sits above the steps, so
+  there is nothing for it to follow. JS opts wide screens in with `.is-live`,
+  which is also the only thing that turns transitions on.
+- **Two classes say when a part exists**: `.fx-from-N` (from step N on),
+  `.fx-only-N`, `.fx-upto-2`. Moving parts carry their offsets inline
+  (`--sx`, `--sy`, `--r` for the scattered spot; `--d` for the stagger in;
+  `--hop` for when the trail reaches a tool). The accent goes only to what the
+  current step is about, so one idea is lit at a time. A test holds the figure
+  to the steps (count, ticker labels, every `fx-*-N` naming a real step).
+- **Labels are Martian Mono condensed (75%), and it is still wide: about
+  0.6 em a character.** Measure before adding text (`getBBox()` on each
+  `<text>` in a headless pass); the gate labels and "integration health" were
+  1 to 2 units from colliding before the respacing.
+- **Fit.** Pinned, the figure has to clear the ask bar: the SVG's `max-height`
+  is the window minus the nav, the headline and the ticker, and a short window
+  (`max-height: 820px`) gets a smaller "4" so the drawing keeps its size. Check
+  1280x720, 1366x768 and 1536x730 when changing the column.
+
+## Case studies open out of their cards (2026-10-23)
+
+Where View Transitions exist, clicking a card grows it into its case study while
+its schematic flies to its place in the sheet, and closing folds it back
+(`js/case-studies.js`, "the morph"; styles at the end of the 5e keyframes).
+Wide screens only (phones keep the bottom sheet), never with reduced motion,
+only when the card is on screen to fly from or to; prev/next and deep links
+don't morph.
+
+- **The card itself carries `cs-sheet`.** View Transition groups paint in the
+  order their names were first captured, and a name that exists only in the
+  "after" picture is painted last: when only the sheet had the name, it
+  covered the art in flight.
+- **The title isn't in the morph**: it sits under the art on a card and over it
+  on the sheet, so it flew through the drawing. It rides the container's
+  quick handover instead (old out in 0.16 s, new in from 0.06 s), which also
+  keeps the two pages' words from ghosting over each other.
+- **The art shows only the arriving copy, unscaled** (`object-fit: none`): it is
+  the same drawing at both ends, so its frame changes shape around it.
+- `.is-morphed` on the dialog turns off its own entrance animation for that
+  opening, and comes off on close. Turning the animation off with a class on
+  `<html>` for the length of the transition doesn't work: removing it restarts
+  the entrance.
 
 ## Getting around: the start of the route and the phone menu (2026-10-05)
 
