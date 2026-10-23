@@ -1,0 +1,141 @@
+/* Fig. 1 in work/answer-finder.html: one real turn of the box, drawn the way the
+   box draws it (the dock's styles in css/site.css, from desertcache/ask's
+   js/app.js), but on the page's own tokens so it reads in both themes. It is
+   static: this page loads none of the Answer Finder's code, so nothing here can
+   drift at runtime. The numbers are pinned by tests/homepage-content.test.mjs. */
+.post-body > .trace { margin: 6px 0 2.2em; }
+.trace-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 18px 20px;
+  border: 1px solid var(--line-strong);
+  border-radius: 18px;
+  background: var(--surface);
+}
+.post-body .trace-card p { margin: 0; }
+
+/* the visitor's question, as a chat bubble on the right */
+.post-body .trace-ask {
+  align-self: flex-end;
+  max-width: 85%;
+  padding: 8px 13px;
+  border-radius: 16px 16px 4px 16px;
+  background: var(--bg-tint);
+  box-shadow: inset 0 0 0 1px var(--line);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+/* the trace: what the model did, one ticked step at a time */
+.post-body .trace-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 12px 14px 14px;
+  border-radius: 12px;
+  background: var(--bg);
+  box-shadow: inset 0 0 0 1px var(--line);
+  list-style: none;
+}
+.post-body .trace-steps > li {
+  display: grid;
+  grid-template-columns: 15px minmax(0, 1fr);
+  column-gap: 9px;
+  row-gap: 6px;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+.trace-steps > li > :nth-child(n + 3) { grid-column: 2; }
+.trace-tick { width: 14px; height: 14px; }
+.trace-tick circle { fill: var(--support); }
+.trace-tick path { fill: none; stroke: var(--surface); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.trace-title { font-size: 0.875rem; font-weight: 600; line-height: 1.35; color: var(--ink); }
+.trace-detail { font: 400 semi-condensed 0.75rem/1.4 var(--mono); color: var(--ink-3); }
+
+/* word pieces; a "##" piece continues the word before it, so it is drawn joined,
+   and a word's pieces stay on one line */
+.trace-pieces { display: flex; flex-wrap: wrap; gap: 4px; }
+.trace-word { display: inline-flex; }
+.post-body .trace-pieces code {
+  padding: 1px 6px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font: 500 0.75rem/1.5 var(--mono);
+}
+.post-body .trace-pieces code.cont {
+  border-left: 1px dashed color-mix(in srgb, var(--accent-ink) 50%, transparent);
+  border-radius: 0 4px 4px 0;
+}
+.post-body .trace-pieces code:has(+ .cont) { border-radius: 4px 0 0 4px; }
+
+/* the question as 128 numbers, one bar each: up for positive, down for negative */
+.trace-vec { display: block; width: 100%; max-width: 420px; height: 28px; }
+.trace-vec .pos { fill: var(--accent); }
+.trace-vec .neg { fill: var(--bloom); opacity: 0.7; }
+
+/* the three closest answers, each by its best phrasing, against the 0.45 bar */
+.post-body .trace-matches { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.post-body .trace-matches li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(64px, 30%) 34px;
+  gap: 10px;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  color: var(--ink-3);
+}
+.post-body .trace-matches li.is-best { color: var(--ink); }
+.trace-m-text { font-size: 0.8125rem; line-height: 1.35; }
+.trace-bar { position: relative; height: 5px; border-radius: 3px; background: var(--line); }
+.trace-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--w);
+  border-radius: 3px;
+  background: var(--ink-3);
+}
+.is-best .trace-bar::after { background: linear-gradient(90deg, var(--sun-2), var(--accent)); }
+/* the bar a best match must clear */
+.trace-bar::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 45%;
+  top: -4px;
+  bottom: -4px;
+  border-left: 1.5px dashed var(--ink-2);
+}
+.trace-m-score { font: 500 0.75rem/1 var(--mono); text-align: right; }
+
+/* the reply: an answer written in advance, and two follow-ups picked for it */
+.post-body .trace-answer { font-size: 0.9688rem; line-height: 1.6; color: var(--ink); text-wrap: pretty; }
+.trace-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.trace-chips span {
+  padding: 5px 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  line-height: 1.3;
+  color: var(--ink-2);
+}
+
+.trace figcaption { margin-top: 14px; font-size: 0.875rem; line-height: 1.55; color: var(--ink-3); }
+.trace .fig { margin-right: 6px; font: 600 semi-condensed 0.75rem var(--mono); color: var(--ink); }
+
+@media (max-width: 640px) {
+  .trace-card { padding: 14px 12px 16px; }
+  .trace-steps { padding: 10px 11px 12px; }
+  .post-body .trace-matches li { grid-template-columns: minmax(0, 1fr) 56px 30px; gap: 8px; }
+}
+
+/* Paper drops backgrounds by default, and the score bars are backgrounds. */
+@media print {
+  .trace-bar, .trace-bar::after { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

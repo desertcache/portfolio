@@ -194,6 +194,50 @@ test('the homepage and the Answer Finder write-up quote the same answer and phra
   assert.equal(phrasings.size, 1, `phrasing counts disagree: ${[...phrasings].join(', ')}`);
 });
 
+test('the Answer Finder trace figure agrees with itself and with the write-up', () => {
+  // Fig. 1 is a snapshot of one real turn (desertcache/ask, October 2026). The page loads none
+  // of the box's code, so nothing checks it at runtime: these are the checks.
+  const page = read('work/answer-finder.html');
+  const fig = page.match(/<figure class="trace"[\s\S]*?<\/figure>/)?.[0];
+  assert.ok(fig, 'the trace figure is on the page');
+  const prose = readerText(page.replace(fig, '')).replace(/\s+/g, ' ');
+  const threshold = prose.match(/threshold of (0\.\d+)/)?.[1];
+  assert.ok(threshold, 'the write-up states the threshold');
+
+  const bars = (fig.match(/<svg class="trace-vec"[\s\S]*?<\/svg>/)?.[0].match(/<rect /g) ?? []).length;
+  const dims = prose.match(/one (\d+)-number vector/)?.[1];
+  assert.equal(String(bars), dims, 'one bar per number in the vector');
+  assert.match(fig, new RegExp(`Turned it into ${dims} numbers`));
+
+  const rows = [...fig.matchAll(/<li( class="is-best")?><span class="trace-m-text">[^<]+<\/span><span class="trace-bar" style="--w:([\d.]+)%" aria-hidden="true"><\/span><span class="trace-m-score">([\d.]+)<\/span><\/li>/g)]
+    .map(([, best, w, shown]) => ({ best: Boolean(best), raw: Number(w) / 100, shown }));
+  assert.equal(rows.length, 3, 'three closest answers, as the box shows');
+  for (const r of rows) {
+    // the box rounds down, so a score just under the bar never shows as the bar
+    assert.equal(r.shown, (Math.floor(r.raw * 100) / 100).toFixed(2), `bar ${r.raw} shows as ${r.shown}`);
+  }
+  assert.deepEqual(rows.map((r) => r.raw), [...rows.map((r) => r.raw)].sort((a, b) => b - a), 'ranked best first');
+  assert.ok(rows[0].best && rows.filter((r) => r.best).length === 1, 'the top row, and only it, is the answer');
+  assert.ok(rows[0].raw >= Number(threshold), 'the answer clears the bar');
+  assert.match(fig, new RegExp(`${rows[0].shown} clears the ${threshold} bar`));
+  assert.match(fig, new RegExp(`the ${threshold} bar the best match must clear`), 'the caption names the same bar');
+  assert.match(readFileSync(new URL('../work/answer-finder.css', import.meta.url), 'utf8'),
+    new RegExp(`left: ${Math.round(Number(threshold) * 100)}%`), 'the dashed line sits at the threshold');
+});
+
+test('the adoption program\'s ladder has as many parts and words as its text says', () => {
+  const page = read('work/ai-adoption-program.html');
+  const fig = page.match(/<figure class="ladder"[\s\S]*?<\/figure>/)?.[0];
+  assert.ok(fig, 'the ladder figure is on the page');
+  const prose = readerText(page.replace(fig, '')).replace(/\s+/g, ' ');
+  const words = { four: 4, five: 5 };
+  assert.match(prose, /One planned session became four parts/);
+  assert.equal((fig.match(/<span class="ladder-k">Part \d/g) ?? []).length, words.four, 'four parts');
+  const learn = readerText(fig).match(/learn (\w+) words/)?.[1];
+  assert.equal((fig.match(/<p class="ladder-words">([\s\S]*?)<\/p>/)?.[1].match(/<span>/g) ?? []).length, words[learn], `"learn ${learn} words"`);
+  assert.equal((fig.match(/ladder-step is-done/g) ?? []).length, 1, 'only Part 1 has happened');
+});
+
 test('the featured diagram ships whole, and its parts and ticker follow the steps beside it', () => {
   // No-JS, reduced-motion, phone and stale-cache visitors keep the HTML as written, so it
   // must be the finished drawing: data-step is the last step. js/flagship.js only moves it.

@@ -1,0 +1,80 @@
+/* Fig. 1 in work/ai-adoption-program.html: the one session that became four
+   parts, and the outcome each one counts. Plain boxes on the site's tokens, like
+   the copilot write-up's figure, so it reads in both themes, reflows on a phone
+   and stays real text. Part 1 is done, so it is drawn solid; Parts 2 to 4 are
+   still ahead, dashed, and grouped under the outcome they will count (the text
+   names those outcomes for the three together, not part by part). */
+.post-body > .ladder { margin: 4px 0 2.2em; }
+.post-body .ladder p { margin: 0; }
+.post-body .ladder ol { margin: 0; padding: 0; list-style: none; }
+.post-body .ladder li { margin: 0; padding: 0; }
+
+.post-body .ladder-steps { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 3fr); gap: 10px; }
+.post-body li.ladder-step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 13px 14px 15px;
+  border: 1.5px dashed var(--line-strong);
+  border-radius: 12px;
+}
+.post-body li.ladder-step.is-done { border: 1.5px solid var(--accent); background: var(--surface); }
+.post-body .ladder-later { display: flex; flex-direction: column; gap: 10px; }
+.post-body .ladder-steps-later { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; flex: 1; }
+
+/* the arrow into each part from the one before */
+.post-body .ladder-later .ladder-step::before {
+  content: "";
+  position: absolute;
+  left: -9px;
+  top: 22px;
+  width: 8px;
+  height: 8px;
+  border-top: 1.5px solid var(--ink-3);
+  border-right: 1.5px solid var(--ink-3);
+  transform: translateX(-1px) rotate(45deg);
+}
+
+.ladder-k {
+  font: 500 semi-condensed 0.6875rem/1.3 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.is-done .ladder-k { color: var(--accent-ink); }
+.post-body .ladder-name { font-size: 0.9375rem; font-weight: 650; line-height: 1.3; color: var(--ink); }
+.post-body .ladder-words { display: flex; flex-wrap: wrap; gap: 4px; }
+.ladder-words span {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  font: 500 semi-condensed 0.6875rem/1.6 var(--mono);
+  color: var(--accent-ink);
+}
+
+/* what a part counts: under Part 1, and once under the three parts still ahead */
+.post-body .ladder-count {
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+.post-body .ladder-later > .ladder-count { margin-top: 0; padding: 8px 2px 0; border-top: 1.5px dashed var(--line-strong); }
+.ladder-count b {
+  display: block;
+  font: 500 semi-condensed 0.6875rem/1.5 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.ladder figcaption { margin-top: 14px; font-size: 0.875rem; line-height: 1.55; color: var(--ink-3); }
+.ladder .fig { margin-right: 6px; font: 600 semi-condensed 0.75rem var(--mono); color: var(--ink); }
+
+@media (max-width: 640px) {
+  .post-body .ladder-steps, .post-body .ladder-steps-later { grid-template-columns: 1fr; }
+  .post-body .ladder-later .ladder-step::before { display: none; }
+}

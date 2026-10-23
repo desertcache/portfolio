@@ -794,6 +794,22 @@ don't morph.
   reveal: wires draw, lanes fill at their own pace (`--d`, `--t`), the gate
   ticks in order, "merged" lights. A test holds its numbers (16 tests, 8.2 of
   18 ms) to the write-up's words; change one, change both.
+- **Every write-up has a figure and a "Read next" card.** The four
+  `work/*.html` pages link in one ring (copilot, adoption program, Answer
+  Finder, fleet); a test follows it and holds each card to its target's
+  headline, so a fifth write-up must join the ring. The Answer Finder's Fig. 1
+  (`work/answer-finder.css`, `.trace-*`) is one real turn of the box for "tell
+  me about the copilot", taken in Node with desertcache/ask's own
+  `createConversation` at its October 2026 commit: the step titles, the word
+  pieces, the 128-number vector (drawn with the box's own scaling) and the
+  scores rounded down to two places, as the box shows them. The page runs none
+  of that code, so a test checks the figure against itself and the prose (bar
+  widths against shown scores, the 0.45 bar in the text, the caption and the
+  CSS). If the bank changes, the figure is a dated snapshot, not live; retake
+  the turn before quoting new numbers. The adoption program's Fig. 1
+  (`work/ai-adoption-program.css`, `.ladder-*`) replaced the list of four
+  parts with the same words, and groups Parts 2 to 4 under the one outcome
+  the text gives for all three.
 - **Print reveals everything first.** `js/print.js` marks every `.reveal` as
   revealed on `beforeprint`, and print turns transitions and animations off, so
   the work cards' lines and the fleet diagram print drawn rather than frozen at
