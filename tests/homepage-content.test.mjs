@@ -239,6 +239,21 @@ test('the Answer Finder trace figure agrees with itself and with the write-up', 
     new RegExp(`left: ${Math.round(Number(threshold) * 100)}%`), 'the dashed line sits at the threshold');
 });
 
+test('the copilot write-up\'s access layers follow the order the text proves them in', () => {
+  const page = read('work/ai-copilot-rollout.html');
+  const fig = page.match(/<figure class="layers"[\s\S]*?<\/figure>/)?.[0];
+  assert.ok(fig, 'Fig. 2 is on the page');
+  const layers = [...fig.matchAll(/<span class="layers-name">([^<]+)<\/span>/g)].map((m) => m[1].toLowerCase());
+  assert.equal(layers.length, 4);
+  const prose = readerText(page.replace(fig, '')).replace(/\s+/g, ' ').toLowerCase();
+  const sentence = prose.match(/i proved access one layer at a time: [^.]+\./)?.[0] ?? '';
+  const at = layers.map((l) => sentence.indexOf(l));
+  assert.ok(at.every((i) => i >= 0), `every layer is named in the sentence: ${layers.join(', ')}`);
+  assert.deepEqual(at, [...at].sort((a, b) => a - b), 'in the same order');
+  assert.equal((fig.match(/class="is-found"/g) ?? []).length, 1, 'one layer marks where the hunt ended');
+  assert.match(fig, /<li class="is-found">[\s\S]*?An internal call/, 'and it is the internal call');
+});
+
 test('the adoption program\'s ladder has as many parts and words as its text says', () => {
   const page = read('work/ai-adoption-program.html');
   const fig = page.match(/<figure class="ladder"[\s\S]*?<\/figure>/)?.[0];

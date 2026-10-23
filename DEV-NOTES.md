@@ -816,7 +816,10 @@ don't morph.
   the turn before quoting new numbers. The adoption program's Fig. 1
   (`work/ai-adoption-program.css`, `.ladder-*`) replaced the list of four
   parts with the same words, and groups Parts 2 to 4 under the one outcome
-  the text gives for all three.
+  the text gives for all three. The copilot write-up's Fig. 2
+  (`copilot-architecture.css`, `.layers-*`) draws the rollout's access hunt:
+  the four layers in the order the text proves them, ending at the blocked
+  internal call; a test holds the order to the sentence.
 - **Posts and write-ups print as plain blocks.** `.post` is a three-column
   grid on screen, and Chrome won't keep a grid item whole across a page
   break, so figures split mid-drawing. On paper (`blog.css`, print), `.post`

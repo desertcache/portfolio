@@ -42,7 +42,7 @@
   <link rel="preload" href="../assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
   <link rel="stylesheet" href="../css/site.css?v=2026-10-23">
   <link rel="stylesheet" href="../blog/blog.css?v=2026-10-23">
-  <link rel="stylesheet" href="copilot-architecture.css?v=2026-10-08">
+  <link rel="stylesheet" href="copilot-architecture.css?v=2026-10-23">
   <script type="module" src="../js/blog.js"></script>
 </head>
 <body>
@@ -140,6 +140,16 @@
 
         <h2>Rolling it out to an outsourced team</h2>
         <p>The first outsourced support team to work inside the tool could not get in, and every failure looked like the same generic error. I proved access one layer at a time: identity, device and network trust, application permissions, and finally an internal call that was blocked and rendered as a network error. Each layer got its own check so the next cohort would not repeat the hunt.</p>
+        <figure class="layers" aria-labelledby="layers-cap">
+          <p class="layers-error"><span class="layers-k">What the team saw</span>the same generic error, whatever had failed</p>
+          <ol class="layers-list">
+            <li><svg class="layers-tick" viewBox="0 0 14 14" aria-hidden="true" focusable="false"><circle cx="7" cy="7" r="7"/><path d="M3.8 7.2l2.2 2.2 4.4-4.6"/></svg><span class="layers-n">1</span><span class="layers-name">Identity</span></li>
+            <li><svg class="layers-tick" viewBox="0 0 14 14" aria-hidden="true" focusable="false"><circle cx="7" cy="7" r="7"/><path d="M3.8 7.2l2.2 2.2 4.4-4.6"/></svg><span class="layers-n">2</span><span class="layers-name">Device and network trust</span></li>
+            <li><svg class="layers-tick" viewBox="0 0 14 14" aria-hidden="true" focusable="false"><circle cx="7" cy="7" r="7"/><path d="M3.8 7.2l2.2 2.2 4.4-4.6"/></svg><span class="layers-n">3</span><span class="layers-name">Application permissions</span></li>
+            <li class="is-found"><svg class="layers-tick" viewBox="0 0 14 14" aria-hidden="true" focusable="false"><circle cx="7" cy="7" r="7"/><path d="M3.8 7.2l2.2 2.2 4.4-4.6"/></svg><span class="layers-n">4</span><span class="layers-name">An internal call</span><span class="layers-note">blocked, and rendered as a network error</span></li>
+          </ol>
+          <figcaption id="layers-cap"><span class="fig">Fig. 2</span>Access, proved one layer at a time in this order, until the hunt ended at an internal call that was blocked and rendered as a network error. Each layer now has its own check (the ticks), so the next cohort won't repeat the hunt.</figcaption>
+        </figure>
         <p>Training came from one content module that generates the slide deck, the guides and the reference docs, plus a verifier that checks every generated copy. One rule came out of it: a fix is done only when every copy has been fetched back from where people actually read it and checked. Now I coach the team's live cases against one success metric: the share of cases resolved within a set time.</p>
         <p>I built and lead that team, the second outsourced support team I have stood up. The first carried a partner API migration.</p>
 
