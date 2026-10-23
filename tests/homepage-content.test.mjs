@@ -60,6 +60,18 @@ test('the card from Anthropic\'s Claude Code team is quoted word for word, and n
   assert.doesNotMatch(text, /top\s+(?:1|one)\s*(?:%|percent)/i, 'the card says "top users", nothing more');
 });
 
+test('every page dates the PR approver role the same way', () => {
+  // The 9/30 accuracy pass: consultative partner to 5 builders since September 2025, their
+  // primary PR approver since February 2026 (GitHub's review record starts then).
+  const dates = new Map();
+  for (const path of ['index.html', ...WORK_SAMPLES]) {
+    const text = readerText(read(path)).replace(/\s+/g, ' ');
+    for (const [, date] of text.matchAll(/approver(?:(?!partner)[^.])*?since ([A-Z][a-z]+ \d{4})/g)) dates.set(`${path}: ${date}`, date);
+  }
+  assert.ok(dates.size >= 2, 'the homepage and the adoption write-up both date it');
+  assert.deepEqual([...new Set(dates.values())], ['February 2026'], [...dates.keys()].join('; '));
+});
+
 test('training is counted in people, never leaders', () => {
   for (const path of ['index.html', ...WORK_SAMPLES]) {
     assert.doesNotMatch(readerText(read(path)), /800\+\s*leaders/i, `${path} says "800+ leaders"`);
