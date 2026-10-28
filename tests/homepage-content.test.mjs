@@ -174,10 +174,12 @@ test('the homepage and the Answer Finder write-up quote the same answer and phra
   assert.equal(phrasings.size, 1, `phrasing counts disagree: ${[...phrasings].join(', ')}`);
 });
 
-test('"See the work" and the nav\'s Work link start at the featured program, not past it', () => {
-  assert.match(HOME, /<a class="btn btn-solid" href="#featured">See the work/, 'the hero button');
+test('"See the work" opens the Lab right after the hero, and the nav\'s Work link starts at the featured program', () => {
+  assert.match(HOME, /<a class="btn btn-solid" href="#lab">See the work/, 'the hero button');
   assert.match(HOME, /<nav class="nav-links"[^>]*>\s*<a href="#featured">Work<\/a>/, 'the nav link');
-  assert.ok(HOME.indexOf('id="featured"') < HOME.indexOf('id="work"'), 'the featured program comes first');
+  assert.ok(HOME.indexOf('id="top"') < HOME.indexOf('id="lab"'), 'the Lab follows the hero');
+  assert.ok(HOME.indexOf('id="lab"') < HOME.indexOf('id="featured"'), 'the Lab comes before the featured program');
+  assert.ok(HOME.indexOf('id="featured"') < HOME.indexOf('id="work"'), 'the featured program comes before the work cards');
 });
 
 test('the phone section menu links every section in page order, numbered like the page', () => {

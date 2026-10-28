@@ -37,7 +37,7 @@ const SECTION_CHIPS = {
   featured: ['copilot', 'rollout', 'rag'],
   work: ['api-migration', 'chatbot', 'measurement'],
   build: ['claude-code', 'power-user', 'mcp'],
-  lab: ['starship', 'this-box', 'ai-quality'],
+  lab: ['starship', 'this-box', 'training-wheels', 'field-guide-evals', 'ai-quality'],
   about: ['career-path', 'emt', 'leadership'],
   stack: ['tech-stack', 'ai-quality', 'data'],
   contact: ['contact', 'resume', 'why-hire'],

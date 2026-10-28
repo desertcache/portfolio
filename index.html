@@ -97,11 +97,11 @@
     <!-- The phone version of the nav: under 900px the links above fold away, so this lists every section. -->
     <nav class="nav-menu" id="nav-menu" aria-label="Sections on this page" hidden>
       <ol class="nav-menu-list">
-        <li><a href="#featured"><span class="nav-menu-num">01</span>Featured program</a></li>
-        <li><a href="#lab"><span class="nav-menu-num">02</span>Lab</a></li>
+        <li><a href="#lab"><span class="nav-menu-num">01</span>Lab</a></li>
+        <li><a href="#featured"><span class="nav-menu-num">02</span>Featured program</a></li>
         <li><a href="#work"><span class="nav-menu-num">03</span>Selected work</a></li>
-        <li><a href="#about"><span class="nav-menu-num">04</span>Background</a></li>
-        <li><a href="#build"><span class="nav-menu-num">05</span>How I build</a></li>
+        <li><a href="#build"><span class="nav-menu-num">04</span>How I build</a></li>
+        <li><a href="#about"><span class="nav-menu-num">05</span>Background</a></li>
         <li><a href="#stack"><span class="nav-menu-num">06</span>Toolkit</a></li>
         <li><a href="#contact"><span class="nav-menu-num" aria-hidden="true"></span>Contact</a></li>
       </ol>
@@ -134,7 +134,7 @@
           <p class="hero-lede rise" style="--delay: .22s">I build production AI for operations teams, lead the people who run it, and teach organizations to adopt it. At DoorDash: an AI support workspace other teams now run their own agents in, an outsourced support team working live cases in it, and 800+ people trained. Before any of this, I led a crisis-response team as an EMT.</p>
 
           <div class="hero-cta rise" style="--delay: .32s">
-            <a class="btn btn-solid" href="#featured">See the work <span class="btn-arrow" aria-hidden="true">↓</span></a>
+            <a class="btn btn-solid" href="#lab">See the work <span class="btn-arrow" aria-hidden="true">↓</span></a>
             <a class="btn btn-ghost" href="Samuel_Bates_CV.pdf" target="_blank" rel="noopener">Résumé <span class="btn-meta">PDF</span></a>
             <button class="btn btn-text copy-email" type="button" data-email="batessambates@gmail.com">
               <span class="copy-label">batessambates@gmail.com</span>
@@ -142,6 +142,13 @@
               <span class="visually-hidden">Copy email address</span>
             </button>
           </div>
+
+          <ul class="hero-stats rise" style="--delay: .36s" aria-label="Selected outcomes">
+            <li><b>200+</b> PRs merged in 2026</li>
+            <li><b>800+</b> people trained</li>
+            <li><b>3</b> promotions in 4 years</li>
+            <li><b>2</b> Excellence Awards</li>
+          </ul>
 
 
           <p class="hero-note rise" style="--delay: .4s"><a href="#build"><span class="hero-note-title">Claude Code power user</span><span class="hero-note-text">Anthropic's Claude Code team: “You're one of Claude Code's top users” <span class="hero-note-arrow" aria-hidden="true">↓</span></span></a></p>
@@ -167,68 +174,13 @@
       </div>
     </section>
 
-    <!-- ============================ FEATURED ============================ -->
-    <section class="section" id="featured" aria-labelledby="featured-title">
-      <div class="wrap">
-        <header class="section-head reveal">
-          <p class="eyebrow"><span class="eyebrow-num">01</span> Featured program</p>
-          <h2 class="section-title" id="featured-title">I built an AI copilot, then took an outsourced support team <em>live</em> on it.</h2>
-          <p class="section-lede">Support agents diagnose point-of-sale integration cases across half a dozen internal systems, graded against a long troubleshooting playbook. The copilot answers from that same playbook, other teams now run their own AI agents inside the workspace, and an outsourced team works live cases in it. This is the whole loop in one program: build it, prove it, roll it out, measure it.</p>
-          <div class="head-illo" aria-hidden="true"><svg class="illo illo-pear" viewBox="0 0 360 300" focusable="false"><use href="assets/desert.svg#prickly-pear"/></svg></div>
-        </header>
-
-        <div class="mig">
-          <figure class="mig-viz reveal" aria-labelledby="units-cap">
-            <div class="mig-headline">
-              <span class="mig-big" data-count>4</span>
-              <span class="mig-big-label">weeks from first prototype to an internal pilot</span>
-            </div>
-            <figcaption class="units-cap" id="units-cap"><span class="units-note">Build it, prove it, roll it out, measure it.</span></figcaption>
-          </figure>
-          <ol class="steps">
-            <li class="step reveal">
-              <span class="step-n">Problem</span>
-              <p>Every case meant hopping across a stack of internal tools, and the answer to “what next?” lived in a long playbook agents are audited against. A generic chatbot can't answer from that.</p>
-            </li>
-            <li class="step reveal">
-              <span class="step-n">Bet</span>
-              <p>Answer from the playbook, not the model. Retrieval runs on the server and returns the sections it used, so every grounded answer cites a real source and the model never gets to invent one.</p>
-            </li>
-            <li class="step reveal">
-              <span class="step-n">Build</span>
-              <p>A React and TypeScript workspace, a Node backend-for-frontend, and retrieval tuned on the real playbook instead of a test fixture, which exposed four defects the fixture had hidden. Model changes are proven through the company's AI gateway before they ship: a control, the new setting, and a request that should fail. Other teams' agents plug in as panels instead of shipping another tab.</p>
-            </li>
-            <li class="step reveal">
-              <span class="step-n">Rollout</span>
-              <p>The first outsourced support team couldn't get in, and every failure looked like the same generic error. I proved their access one layer at a time (identity, device trust, app permissions, then a blocked internal call), generated their training kit from one source with a verifier, and now coach their live cases against a resolution-time target.</p>
-            </li>
-            <li class="step reveal">
-              <span class="step-n">Result</span>
-              <div>
-                <dl class="mini-stats">
-                  <div><dt>Answers</dt><dd>Cited <small>to the playbook agents are graded on</small></dd></div>
-                  <div><dt>Other teams' agents</dt><dd>Running inside it</dd></div>
-                  <div><dt>Outsourced team</dt><dd>Live <small>on real cases</small></dd></div>
-                  <div><dt>Usage</dt><dd>Well past <small>the pre-pilot baseline</small></dd></div>
-                </dl>
-                <p class="step-aside">DoorDash's numbers stay internal. The write-up covers how each result was measured.</p>
-                <p class="step-more"><a class="link-arrow" href="work/ai-copilot-rollout.html">Read the full write-up <span aria-hidden="true">→</span></a></p>
-              </div>
-            </li>
-          </ol>
-        </div>
-      </div>
-      <div class="trail trail-snake" aria-hidden="true"><svg class="walker" data-animal="rattlesnake" viewBox="0 0 182 23" focusable="false"><use href="assets/critters.svg#rattlesnake"/></svg></div>
-      <div class="bed bed-left reveal" aria-hidden="true"><svg class="flora" viewBox="0 0 110 128" style="--h:74px" focusable="false"><use href="assets/bloom.svg#creosote"/></svg><svg class="flora" viewBox="0 0 120 72" style="--h:42px" focusable="false"><use href="assets/bloom.svg#datura"/></svg><svg class="flora" viewBox="0 0 110 76" style="--h:40px" focusable="false"><use href="assets/desert.svg#poppies"/></svg><svg class="flora flip" viewBox="0 0 50 40" style="--h:24px" focusable="false"><use href="assets/bloom.svg#grass-b"/></svg></div>
-    </section>
-
     <!-- =============================== LAB =============================== -->
     <section class="section lab" id="lab" aria-labelledby="lab-title">
       <div class="wrap">
         <header class="section-head reveal">
-          <p class="eyebrow"><span class="eyebrow-num">02</span> Lab</p>
+          <p class="eyebrow"><span class="eyebrow-num">01</span> Lab</p>
           <h2 class="section-title" id="lab-title">Demos you can <em>walk around in.</em></h2>
-          <p class="section-lede">Everything here runs in your browser: a procedural starship you can board, a small model in the bar at the bottom of the screen that answers questions about my work, and four arcade titles that let you watch an AI think. I build them after hours with a fleet of AI coding agents. I design the system and the verification gates, and nothing ships until it passes them.</p>
+          <p class="section-lede">Demos that run in your browser, and two open tools for working with AI agents.</p>
         </header>
 
         <article class="lab-feature reveal">
@@ -279,18 +231,55 @@
               <span class="ask-steps">
                 <span>Split into word pieces</span>
                 <span>Turned into a vector</span>
-                <span>Compared with 60 answers</span>
+                <span>Compared with 62 answers</span>
                 <span>Closest one answers</span>
               </span>
             </div>
             <div class="lab-card-body">
               <h3 class="lab-card-title"><a class="lab-card-link" href="work/answer-finder.html">Answer Finder<span class="lab-card-go" aria-hidden="true">→</span></a></h3>
-              <p>The bar at the bottom of this page. A 4 MB model on your own device matches your question to one of 60 answers I approved. Nothing is generated, so it can't make things up.</p>
-              <p class="lab-how"><span class="lab-how-label">How it works</span>A small embedding model turns your question into a vector, and the closest of 477 sample phrasings picks the answer. When nothing is close enough, it says so instead of guessing.</p>
+              <p>The bar at the bottom of this page. A 4 MB model on your own device matches your question to one of 62 answers I approved. Nothing is generated, so it can't make things up.</p>
+              <p class="lab-how"><span class="lab-how-label">How it works</span>A small embedding model turns your question into a vector, and the closest of 494 sample phrasings picks the answer. When nothing is close enough, it says so instead of guessing.</p>
               <ul class="tags"><li>On-device</li><li>4 MB</li><li>No generation</li></ul>
               <div class="lab-links">
                 <button class="link-arrow lab-try" type="button" data-ask-focus>Ask it something <span aria-hidden="true">↓</span></button>
                 <a class="link-arrow" href="https://github.com/desertcache/ask" target="_blank" rel="noopener">Source <span aria-hidden="true">↗</span></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="lab-card reveal">
+            <div class="guard-stage" aria-hidden="true">
+              <span class="guard-cmd"><span class="guard-who">The agent wants to run</span>git push --force</span>
+              <span class="guard-stop">Stopped: a force push replaces the branch on GitHub, and whatever it replaces is gone for everyone.</span>
+              <span class="guard-instead">Instead: pull first, fix any conflicts, then push normally.</span>
+            </div>
+            <div class="lab-card-body">
+              <h3 class="lab-card-title"><a class="lab-card-link" href="https://github.com/desertcache/training-wheels" target="_blank" rel="noopener">Training wheels<span class="lab-card-go" aria-hidden="true">↗</span></a></h3>
+              <p>A Claude Code plugin for someone's first pull request. A skill walks them through branch, commit, pull request and merge in plain words, and a hook keeps the agent to the git commands a first pull request needs, so nothing it does can't be taken back.</p>
+              <p class="lab-how"><span class="lab-how-label">How it works</span>The hook reads every shell command before the agent runs it. Git runs only from a short list. The classic ways to lose work get a one-line reason and a safer command, and anything the hook can't read exactly is refused too.</p>
+              <ul class="tags"><li>Claude Code plugin</li><li>Hook + skill</li><li>No dependencies</li></ul>
+              <div class="lab-links">
+                <a class="link-arrow" href="https://github.com/desertcache/training-wheels#a-short-demo" target="_blank" rel="noopener">See the demo <span aria-hidden="true">↗</span></a>
+                <a class="link-arrow" href="https://github.com/desertcache/training-wheels" target="_blank" rel="noopener">Source <span aria-hidden="true">↗</span></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="lab-card reveal">
+            <div class="eval-stage" aria-hidden="true">
+              <span class="eval-head">40 held-out questions, run once</span>
+              <span class="eval-row"><span class="eval-name">Baseline v1</span><span class="eval-bar" style="--p: 37.5%"></span><span class="eval-n">15</span></span>
+              <span class="eval-row is-new"><span class="eval-name">Baseline v2</span><span class="eval-bar" style="--p: 65%"></span><span class="eval-n">26</span></span>
+              <span class="eval-foot">Answers that pass all five checks</span>
+            </div>
+            <div class="lab-card-body">
+              <h3 class="lab-card-title"><a class="lab-card-link" href="https://github.com/desertcache/field-guide-evals" target="_blank" rel="noopener">Field guide evals<span class="lab-card-go" aria-hidden="true">↗</span></a></h3>
+              <p>An eval harness with its failures left in: a made-up field guide for trail volunteers, 100 questions with hand-checked labels, and five checks scored by code. The grounded baseline passes 26 of 40 questions it never saw, and the gallery shows the other 14.</p>
+              <p class="lab-how"><span class="lab-how-label">How it works</span>The guide, the rubric and the questions were committed before any code. Each version is tuned on one set and runs once on a set it hasn't seen, and only those scores get quoted. A set studied to find the next fix stops counting as held out, so a new one is written after each freeze.</p>
+              <ul class="tags"><li>Python</li><li>Held-out sets</li><li>Failure gallery</li></ul>
+              <div class="lab-links">
+                <a class="link-arrow" href="https://github.com/desertcache/field-guide-evals/blob/main/GALLERY.md" target="_blank" rel="noopener">The failure gallery <span aria-hidden="true">↗</span></a>
+                <a class="link-arrow" href="https://github.com/desertcache/field-guide-evals" target="_blank" rel="noopener">Source <span aria-hidden="true">↗</span></a>
               </div>
             </div>
           </article>
@@ -306,8 +295,63 @@
       </div>
     </section>
 
+    <!-- ============================ FEATURED ============================ -->
+    <section class="section section-tint" id="featured" aria-labelledby="featured-title">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <p class="eyebrow"><span class="eyebrow-num">02</span> Featured program</p>
+          <h2 class="section-title" id="featured-title">I built an AI copilot, then took an outsourced support team <em>live</em> on it.</h2>
+          <p class="section-lede">Support agents diagnose point-of-sale integration cases across half a dozen internal systems, graded against a long troubleshooting playbook. The copilot answers from that same playbook, other teams now run their own AI agents inside the workspace, and an outsourced team works live cases in it. This is the whole loop in one program: build it, prove it, roll it out, measure it.</p>
+          <div class="head-illo" aria-hidden="true"><svg class="illo illo-pear" viewBox="0 0 360 300" focusable="false"><use href="assets/desert.svg#prickly-pear"/></svg></div>
+        </header>
+
+        <div class="mig">
+          <figure class="mig-viz reveal" aria-labelledby="units-cap">
+            <div class="mig-headline">
+              <span class="mig-big" data-count>4</span>
+              <span class="mig-big-label">weeks from first prototype to an internal pilot</span>
+            </div>
+            <figcaption class="units-cap" id="units-cap"><span class="units-note">Build it, prove it, roll it out, measure it.</span></figcaption>
+          </figure>
+          <ol class="steps">
+            <li class="step reveal">
+              <span class="step-n">Problem</span>
+              <p>Every case meant hopping across a stack of internal tools, and the answer to “what next?” lived in a long playbook agents are audited against. A generic chatbot can't answer from that.</p>
+            </li>
+            <li class="step reveal">
+              <span class="step-n">Bet</span>
+              <p>Answer from the playbook, not the model. Retrieval runs on the server and returns the sections it used, so every grounded answer cites a real source and the model never gets to invent one.</p>
+            </li>
+            <li class="step reveal">
+              <span class="step-n">Build</span>
+              <p>A React and TypeScript workspace, a Node backend-for-frontend, and retrieval tuned on the real playbook instead of a test fixture, which exposed four defects the fixture had hidden. Model changes are proven through the company's AI gateway before they ship: a control, the new setting, and a request that should fail. Other teams' agents plug in as panels instead of shipping another tab.</p>
+            </li>
+            <li class="step reveal">
+              <span class="step-n">Rollout</span>
+              <p>The first outsourced support team couldn't get in, and every failure looked like the same generic error. I proved their access one layer at a time (identity, device trust, app permissions, then a blocked internal call), generated their training kit from one source with a verifier, and now coach their live cases against a resolution-time target.</p>
+            </li>
+            <li class="step reveal">
+              <span class="step-n">Result</span>
+              <div>
+                <dl class="mini-stats">
+                  <div><dt>Answers</dt><dd>Cited <small>to the playbook agents are graded on</small></dd></div>
+                  <div><dt>Other teams' agents</dt><dd>Running inside it</dd></div>
+                  <div><dt>Outsourced team</dt><dd>Live <small>on real cases</small></dd></div>
+                  <div><dt>Usage</dt><dd>Well past <small>the pre-pilot baseline</small></dd></div>
+                </dl>
+                <p class="step-aside">DoorDash's numbers stay internal. The write-up covers how each result was measured.</p>
+                <p class="step-more"><a class="link-arrow" href="work/ai-copilot-rollout.html">Read the full write-up <span aria-hidden="true">→</span></a></p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+      <div class="trail trail-snake" aria-hidden="true"><svg class="walker" data-animal="rattlesnake" viewBox="0 0 182 23" focusable="false"><use href="assets/critters.svg#rattlesnake"/></svg></div>
+      <div class="bed bed-left reveal" aria-hidden="true"><svg class="flora" viewBox="0 0 110 128" style="--h:74px" focusable="false"><use href="assets/bloom.svg#creosote"/></svg><svg class="flora" viewBox="0 0 120 72" style="--h:42px" focusable="false"><use href="assets/bloom.svg#datura"/></svg><svg class="flora" viewBox="0 0 110 76" style="--h:40px" focusable="false"><use href="assets/desert.svg#poppies"/></svg><svg class="flora flip" viewBox="0 0 50 40" style="--h:24px" focusable="false"><use href="assets/bloom.svg#grass-b"/></svg></div>
+    </section>
+
     <!-- ============================== WORK ============================== -->
-    <section class="section section-tint" id="work" aria-labelledby="work-title">
+    <section class="section" id="work" aria-labelledby="work-title">
       <div class="wrap">
         <header class="section-head reveal">
           <p class="eyebrow"><span class="eyebrow-num">03</span> Selected work</p>
@@ -456,58 +500,11 @@
       <div class="bed bed-right reveal" aria-hidden="true"><svg class="flora flip" viewBox="0 0 64 62" style="--h:32px" focusable="false"><use href="assets/bloom.svg#threeawn"/></svg><svg class="flora" viewBox="0 0 100 82" style="--h:46px" focusable="false"><use href="assets/bloom.svg#brittlebush-b"/></svg><svg class="plant" viewBox="0 0 100 76" style="--h:48px" focusable="false"><use href="assets/bloom.svg#claret-cup"/></svg><svg class="flora" viewBox="0 0 70 136" style="--h:92px" focusable="false"><use href="assets/desert.svg#penstemon"/></svg></div>
     </section>
 
-    <!-- ============================== ABOUT ============================== -->
-    <section class="section" id="about" aria-labelledby="about-title">
-      <div class="wrap">
-        <header class="section-head reveal">
-          <p class="eyebrow"><span class="eyebrow-num">04</span> Background</p>
-          <h2 class="section-title" id="about-title">From the ER to production code <em>in eleven years.</em></h2>
-          <p class="section-lede">Most engineers don't have this path. The pattern: every role ran the operations the next one automated.</p>
-          <div class="head-illo" aria-hidden="true"><svg class="illo illo-palo" viewBox="0 0 400 342" focusable="false"><use href="assets/desert.svg#palo-verde"/></svg></div>
-        </header>
-
-        <div class="about">
-          <aside class="about-side reveal">
-            <figure class="portrait">
-              <picture>
-                <source srcset="assets/headshot-600.webp" type="image/webp">
-                <img src="assets/headshot-600.jpg" alt="Samuel Bates in a brown cowboy hat with a sheriff's star, glasses, and a mustache" width="600" height="600" loading="lazy" decoding="async">
-              </picture>
-              <figcaption><span class="fig">Fig. 2</span> Phoenix, 2026. Same hat I wore to win an internal training award. Worked then. Still works.</figcaption>
-            </figure>
-          </aside>
-
-          <div class="about-main">
-            <div class="recognition reveal">
-              <h3 class="recognition-title">Recognition</h3>
-              <ul>
-                <li><span class="award-mark" aria-hidden="true">CC</span><span><b>Claude Code power user</b>, 2026: recognized by Anthropic's Claude Code team as one of Claude Code's top users.</span></li>
-                <li><span class="award-mark" aria-hidden="true">PR</span><span><b>200+ pull requests merged in 2026</b>, every one built with AI coding agents, and 211 reviewed from 33 authors.</span></li>
-              </ul>
-            </div>
-
-            <div class="recognition reveal">
-              <h3 class="recognition-title">How I work</h3>
-              <ul>
-                <li><span class="award-mark" aria-hidden="true">01</span><span><b>Measure on the real thing.</b> A test fixture hid four retrieval bugs; the real playbook exposed them.</span></li>
-                <li><span class="award-mark" aria-hidden="true">02</span><span><b>Two agreeing documents are one source.</b> Load the live page before trusting either.</span></li>
-                <li><span class="award-mark" aria-hidden="true">03</span><span><b>“The code exists” isn't “the user can do it.”</b> Before promising what an AI can resolve, list the actions it can actually reach.</span></li>
-                <li><span class="award-mark" aria-hidden="true">04</span><span><b>Count adoption, not attendance.</b> Every session ends with something people keep using, and I track who gets through each step.</span></li>
-                <li><span class="award-mark" aria-hidden="true">05</span><span><b>A fix is done when every copy is fixed.</b> Fetch it back from wherever people actually read it, then check it.</span></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="trail trail-toad" aria-hidden="true"><svg class="walker" data-animal="toad" viewBox="0 0 85 46" focusable="false"><use href="assets/critters.svg#toad"/></svg></div>
-      <div class="bed bed-left reveal" aria-hidden="true"><svg class="plant" viewBox="0 0 92 124" style="--h:80px" focusable="false"><use href="assets/bloom.svg#cholla"/></svg><svg class="flora flip" viewBox="0 0 76 78" style="--h:38px" focusable="false"><use href="assets/bloom.svg#owls-clover"/></svg><svg class="flora flip" viewBox="0 0 132 62" style="--h:30px" focusable="false"><use href="assets/bloom.svg#poppies-c"/></svg><svg class="flora" viewBox="0 0 80 116" style="--h:64px" focusable="false"><use href="assets/desert.svg#lupine"/></svg></div>
-    </section>
-
     <!-- =========================== HOW I BUILD =========================== -->
     <section class="section section-tint" id="build" aria-labelledby="build-title">
       <div class="wrap">
         <header class="section-head reveal">
-          <p class="eyebrow"><span class="eyebrow-num">05</span> How I build</p>
+          <p class="eyebrow"><span class="eyebrow-num">04</span> How I build</p>
           <h2 class="section-title" id="build-title">I build in Claude Code every day, and I run it <em>like a team.</em></h2>
           <p class="section-lede">I give it what I'd give any team: a playbook, shared memory, the right tools, and a review before anything ships. Most of it is public, so you can check the work.</p>
           <div class="head-illo" aria-hidden="true"><svg class="illo illo-agave" viewBox="0 0 200 306" focusable="false"><use href="assets/desert.svg#agave"/></svg></div>
@@ -563,6 +560,53 @@
         </div>
       </div>
       <div class="bed bed-left reveal" aria-hidden="true"><svg class="flora flip" viewBox="0 0 110 76" style="--h:38px" focusable="false"><use href="assets/desert.svg#poppies"/></svg><svg class="flora flip" viewBox="0 0 70 136" style="--h:84px" focusable="false"><use href="assets/desert.svg#penstemon"/></svg><svg class="plant" viewBox="0 0 140 162" style="--h:44px" focusable="false"><use href="assets/desert.svg#barrel"/></svg></div>
+    </section>
+
+    <!-- ============================== ABOUT ============================== -->
+    <section class="section" id="about" aria-labelledby="about-title">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <p class="eyebrow"><span class="eyebrow-num">05</span> Background</p>
+          <h2 class="section-title" id="about-title">From the ER to production code <em>in eleven years.</em></h2>
+          <p class="section-lede">Most engineers don't have this path: ER scribe lead, then EMT and crisis-team lead, then operations, then production code. The pattern: every role ran the operations the next one automated.</p>
+          <div class="head-illo" aria-hidden="true"><svg class="illo illo-palo" viewBox="0 0 400 342" focusable="false"><use href="assets/desert.svg#palo-verde"/></svg></div>
+        </header>
+
+        <div class="about">
+          <aside class="about-side reveal">
+            <figure class="portrait">
+              <picture>
+                <source srcset="assets/headshot-600.webp" type="image/webp">
+                <img src="assets/headshot-600.jpg" alt="Samuel Bates in a brown cowboy hat with a sheriff's star, glasses, and a mustache" width="600" height="600" loading="lazy" decoding="async">
+              </picture>
+              <figcaption><span class="fig">Fig. 2</span> Phoenix, 2026. Same hat I wore to win an internal training award. Worked then. Still works.</figcaption>
+            </figure>
+          </aside>
+
+          <div class="about-main">
+            <div class="recognition reveal">
+              <h3 class="recognition-title">Recognition</h3>
+              <ul>
+                <li><span class="award-mark" aria-hidden="true">CC</span><span><b>Claude Code power user</b>, 2026: recognized by Anthropic's Claude Code team as one of Claude Code's top users.</span></li>
+                <li><span class="award-mark" aria-hidden="true">PR</span><span><b>200+ pull requests merged in 2026</b>, every one built with AI coding agents, and 211 reviewed from 33 authors.</span></li>
+              </ul>
+            </div>
+
+            <div class="recognition reveal">
+              <h3 class="recognition-title">How I work</h3>
+              <ul>
+                <li><span class="award-mark" aria-hidden="true">01</span><span><b>Measure on the real thing.</b> A test fixture hid four retrieval bugs; the real playbook exposed them.</span></li>
+                <li><span class="award-mark" aria-hidden="true">02</span><span><b>Two agreeing documents are one source.</b> Load the live page before trusting either.</span></li>
+                <li><span class="award-mark" aria-hidden="true">03</span><span><b>“The code exists” isn't “the user can do it.”</b> Before promising what an AI can resolve, list the actions it can actually reach.</span></li>
+                <li><span class="award-mark" aria-hidden="true">04</span><span><b>Count adoption, not attendance.</b> Every session ends with something people keep using, and I track who gets through each step.</span></li>
+                <li><span class="award-mark" aria-hidden="true">05</span><span><b>A fix is done when every copy is fixed.</b> Fetch it back from wherever people actually read it, then check it.</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="trail trail-toad" aria-hidden="true"><svg class="walker" data-animal="toad" viewBox="0 0 85 46" focusable="false"><use href="assets/critters.svg#toad"/></svg></div>
+      <div class="bed bed-left reveal" aria-hidden="true"><svg class="plant" viewBox="0 0 92 124" style="--h:80px" focusable="false"><use href="assets/bloom.svg#cholla"/></svg><svg class="flora flip" viewBox="0 0 76 78" style="--h:38px" focusable="false"><use href="assets/bloom.svg#owls-clover"/></svg><svg class="flora flip" viewBox="0 0 132 62" style="--h:30px" focusable="false"><use href="assets/bloom.svg#poppies-c"/></svg><svg class="flora" viewBox="0 0 80 116" style="--h:64px" focusable="false"><use href="assets/desert.svg#lupine"/></svg></div>
     </section>
 
     <!-- ============================== TOOLKIT ============================== -->

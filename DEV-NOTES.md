@@ -307,7 +307,8 @@ helper doesn't touch the DOM, put it in one of those and test it.
   `work/starship-agent-fleet.html`: the starship's `corridor` camera from one build, shot by
   `npm run verify` (software renderer, 1.9 fps) and `npm run verify:headed` (real GPU, 141 fps) on the
   same machine (2026-10-27). 800x450, WebP with a JPEG fallback. The side-by-side styles are `.duo`
-  at the end of `css/site.css`.
+  at the end of `css/site.css`. The figure's labels say "frames a second", not "fps", so one
+  camera's numbers don't read as the game's headline 131 fps.
 - `assets/og.png` is the link-preview image. Its source is
   `scripts/og-card.html`, which renders the real hero map (Camelback) with
   the drift pinned; the steps to regenerate are in that file's header
@@ -399,10 +400,10 @@ The document header pins under the fixed nav on wide screens only
 keeps `pb-28` so the footer's skyline, which rises into the space above the
 footer, doesn't cover it.
 
-## The homepage Lab grid (2026-10-05, cut back 2026-10-27)
+## The homepage Lab grid (2026-10-05, cut back and refilled 2026-10-27)
 
-Cards in a two-column grid (one column under 720px): The Arcade and Answer
-Finder. Each card is one big link: the title's
+Four cards in a two-column grid (one column under 720px): The Arcade, Answer
+Finder, Training wheels and Field guide evals. Each card is one big link: the title's
 `.lab-card-link` stretches over the card with `::after` (z-index 1), and the
 things that must stay their own (`.lab-chips`, `.lab-links`) sit
 at z-index 2. Keep stages as plain `aria-hidden` divs, never links, or the
@@ -417,6 +418,13 @@ already lives in the ask bar). `initLatestDispatch` and `initOrb` stay in
 `js/lab.js` and find nothing to fill: a cached `main.js` still imports them.
 Their `.dispatch-*`, `.orb-*` and `.lab-live` styles are still in `site.css`,
 unused (`.ticker` there still runs the blog index's band).
+Training wheels and Field guide evals are the two open repos
+(github.com/desertcache/training-wheels and /field-guide-evals); their card links 404 until those
+repos are public, so publish them before this page. Their stages are plain markup too:
+`.guard-stage` is one refused command, the way the hook answers it, and `.eval-stage` is the
+held-out scores as bars, each bar's length set by `--p` in its `style`. The 15 and 26 of 40 are
+held-out runs that never get redone, so they don't drift; if a new answerer is quoted, change the
+bars and the card's sentence together.
 Browser tests that click a card's text need `force: true`: the link layer is
 on top by design.
 
@@ -633,21 +641,23 @@ row (PR #12), which is gone.
   and it slides in once that content scrolls clear. Focus, `/` and the Lab's button bring it back,
   and once used it stays. `html.has-dock` sets `scroll-padding-bottom` so keyboard focus scrolls
   clear of it. Check with a headless pass at those sizes before changing the hero.
-- **The hero's "Try it" card (2026-10-27)** replaced the field-notes stats card (800+ trained is in
-  the lede and the case studies, 200+ PRs in Background, the awards in the case studies; the
-  promotion count left with the 2026-10-27 Background cut). It keeps the map-legend chrome, so
+- **The hero's "Try it" card (2026-10-27)** replaced the field-notes stats card; its four numbers are
+  one line under the calls to action now (`.hero-stats`). It keeps the map-legend chrome, so
   `topo.js` still writes the coordinates, scale and place into it. Its three buttons carry
   `data-ask="<question>"`; `ask.js` wires them at the end of `initAsk`: the bar comes in, stays,
   opens and asks, and the model starts loading on pointer-enter. Each question is an exact phrasing
   in desertcache/ask's bank (`start-here`, `ai-quality`, `claude-code`), so it matches at 1.00;
   keep it that way if you change one. In one column (under 1100px) `.hero-main` is
-  `display: contents` and the card is ordered before the Claude Code note, so a phone shows the top
-  of the card on the first screen. Keep the card about this height: the hawk's thermal sits above it.
+  `display: contents` and the card is ordered before the Claude Code note. Under 640px it moves up
+  under the headline, ahead of the lede, the calls to action and the numbers, so a 390x844 phone
+  shows its first question on the first screen. Keep the card about this height: the hawk's thermal
+  sits above it.
 
 ## Getting around: the start of the route and the phone menu (2026-10-05)
 
-- "See the work" and the nav's Work link go to `#featured` (the copilot program), not `#work`, so
-  nobody skips the flagship. The scroll-spy keeps Work lit through both (`alias` in `js/chrome.js`).
+- "See the work" goes to `#lab`, the section right after the hero, so the first thing it lands on
+  is something to open. The nav's Work link goes to `#featured` (the copilot program), not `#work`,
+  so nobody skips the flagship; the scroll-spy keeps Work lit through both (`alias` in `js/chrome.js`).
 - Under 900px the nav links fold away and a button opens `#nav-menu`: every section, numbered like
   its eyebrow (a test holds the two together), plus the Résumé. The behaviour is in
   `js/section-menu.js`, its own file on purpose: a cached `chrome.js` without a new export would stop
@@ -658,11 +668,16 @@ row (PR #12), which is gone.
 - The bar's top-of-page chips start with "Where should I start?" (`start-here` in desertcache/ask),
   which walks a three-stop route. The Lab card and `work/answer-finder.html` quote the bank's size
   (its answer and phrasing counts); a test keeps the two pages in step, so update both when the bank
-  grows.
-- **Section order (2026-10-27):** 01 Featured, 02 Lab, 03 Selected work, 04 Background, 05 How I
-  build, 06 Toolkit. The Lab moved up so something you can open sits right after the flagship (it
-  started ~10,600 px down on a laptop; now ~2,900). The nav links still read Work, About, Lab,
-  Contact on every page: changing their order would mean republishing every blog post.
+  grows. They say 62 and 494: the bank that ships with this page (desertcache/ask, branch
+  `homepage-cuts`). The Lab's chips include its `training-wheels` and `field-guide-evals` answers;
+  `ask.js` skips an id the live bank doesn't have yet, so the two deploys can land in either order.
+- **Section order (2026-10-27, second pass):** 01 Lab, 02 Featured, 03 Selected work, 04 How I
+  build, 05 Background, 06 Toolkit, the review's order. The Lab sits right after the hero, so the
+  first thing below it is something to open. After the dark Lab the tint alternates: Featured, How I
+  build and Toolkit are tinted, Selected work and Background aren't. The nav links still read Work,
+  About, Lab, Contact on every page: changing their order would mean republishing every blog post.
+- **Section order (2026-10-27, first pass, superseded):** 01 Featured, 02 Lab, 03 Selected work, 04
+  Background, 05 How I build, 06 Toolkit. The Lab moved up from ~10,600 px down on a laptop to ~2,900.
 - **Background and Toolkit, cut back (2026-10-27):** Background keeps its heading, the pattern
   lede, the portrait, two Recognition lines (the Claude Code note and the PR count) and How I
   work; the dated timeline, the facts list and the Leadership box went, since the CV has them.
