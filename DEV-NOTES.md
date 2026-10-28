@@ -113,7 +113,7 @@ green; v5.3 brings the red back as Sedona rock, on purpose, with guardrails.
 - **The Lab is always the sunset room**: a banded sky (`--sun-1…6`), the
   sun going down behind the real Camelback range (the footer's
   `skyline.svg`, reused as a mask), and the drawings in silhouette on the
-  ground line. The orb's stand-in is a setting sun.
+  ground line.
 - **The footer at dusk** gets an afterglow behind the skyline
   (`--afterglow`), so the sun has just gone down behind Camelback.
 
@@ -401,21 +401,22 @@ footer, doesn't cover it.
 
 ## The homepage Lab grid (2026-10-05, cut back 2026-10-27)
 
-Cards in a two-column grid (one column under 720px): Samantha UI, The Arcade
-and Answer Finder. Each card is one big link: the title's
+Cards in a two-column grid (one column under 720px): The Arcade and Answer
+Finder. Each card is one big link: the title's
 `.lab-card-link` stretches over the card with `::after` (z-index 1), and the
-things that must stay their own (`.orb-wake`, `.lab-chips`, `.lab-links`) sit
+things that must stay their own (`.lab-chips`, `.lab-links`) sit
 at z-index 2. Keep stages as plain `aria-hidden` divs, never links, or the
 links nest. Every card carries a `.lab-how` "How it works" line. The Arcade
 card shows only the four titles where you watch an AI think, each chip a deep
 link (`arcade.html?game=<id>`); the classic clones stay on `arcade.html`, off
 the homepage. The Answer Finder card's `[data-ask-focus]` button is wired in
 `js/ask.js` (no new export, so a stale cached module can't break the graph).
-The Hill Money Watch card left the grid on 2026-10-27 (the blog stays, and its
-no-verdict rule is a line on the blog index). `initLatestDispatch` stays in
-`js/lab.js` and finds nothing to fill: a cached `main.js` still imports it.
-Its `.dispatch-*` styles are still in `site.css`, unused (`.ticker` there
-still runs the blog index's band).
+Two cards left the grid on 2026-10-27: Hill Money Watch (the blog stays, and
+its no-verdict rule is a line on the blog index) and Samantha UI (the orb
+already lives in the ask bar). `initLatestDispatch` and `initOrb` stay in
+`js/lab.js` and find nothing to fill: a cached `main.js` still imports them.
+Their `.dispatch-*`, `.orb-*` and `.lab-live` styles are still in `site.css`,
+unused (`.ticker` there still runs the blog index's band).
 Browser tests that click a card's text need `force: true`: the link layer is
 on top by design.
 
