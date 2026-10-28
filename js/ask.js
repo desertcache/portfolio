@@ -37,7 +37,7 @@ const SECTION_CHIPS = {
   featured: ['copilot', 'rollout', 'rag'],
   work: ['api-migration', 'chatbot', 'measurement'],
   build: ['claude-code', 'power-user', 'mcp'],
-  lab: ['starship', 'orb', 'this-box'],
+  lab: ['starship', 'this-box', 'training-wheels', 'field-guide-evals', 'ai-quality'],
   about: ['career-path', 'emt', 'leadership'],
   stack: ['tech-stack', 'ai-quality', 'data'],
   contact: ['contact', 'resume', 'why-hire'],
@@ -473,7 +473,7 @@ export function initAsk() {
     // Only what starts on the first screen, so later hero content scrolling
     // under the bar can't make it flicker.
     guarded = hero
-      ? [...hero.querySelectorAll('.hero-lede, .hero-cta, .hero-note, .proof')]
+      ? [...hero.querySelectorAll('.hero-lede, .hero-cta, .hero-note, .legend')]
         .filter((n) => n.getBoundingClientRect().top + window.scrollY < window.innerHeight)
       : [];
   };
@@ -673,4 +673,19 @@ export function initAsk() {
     e.preventDefault();
     ask(input.value);
   });
+
+  // The hero's "Try it" card: each button asks its question in the bar. The bar comes in and
+  // stays (as if it had been used), and the model starts loading as soon as a pointer is near.
+  for (const b of document.querySelectorAll('[data-ask]')) {
+    if (!(b instanceof HTMLElement)) continue;
+    b.addEventListener('pointerenter', () => { getEngine(); }, { once: true });
+    b.addEventListener('click', () => {
+      const q = b.dataset.ask;
+      if (!q) return;
+      used = true;
+      dock.classList.add('is-in');
+      dock.classList.remove('is-tucked');
+      ask(q);
+    });
+  }
 }

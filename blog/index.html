@@ -43,7 +43,7 @@
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
   <link rel="preload" href="../assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
-  <link rel="stylesheet" href="../css/site.css?v=2026-10-08">
+  <link rel="stylesheet" href="../css/site.css?v=2026-10-27">
   <link rel="stylesheet" href="blog.css?v=2026-09-26">
   <script type="module" src="../js/blog.js"></script>
 </head>
@@ -84,6 +84,7 @@
       <h1 class="archive-name">Hill Money Watch</h1>
       <p class="archive-lede">Congressional and executive-branch stock-trade disclosures, read closely: what the tracked names bought and sold, the six-figure trades from everyone else, and how long each one took to become public.</p>
       <p class="archive-caveat">Disclosure reporting, not investment advice. Filings lag trades by up to 45 days.</p>
+      <p class="archive-caveat">One editorial rule is built in: it reports the gap between trade and filing dates, and never says in its own voice that anyone broke the law.</p>
     </header>
 
     <div class="ticker ticker-band" aria-hidden="true">
@@ -95,7 +96,7 @@
         <p class="archive-status" id="archive-status" role="status">Loading the editions…</p>
         <!-- Shown by CSS whenever JS is off or js/blog.js never arrived (the
              <head> safety net drops .js after 4s); replaced once the list loads. -->
-        <p class="archive-status archive-fallback">The edition list needs JavaScript. The newest edition is also linked from the <a href="../index.html#lab">Lab section of the homepage</a>.</p>
+        <p class="archive-status archive-fallback">The edition list needs JavaScript.</p>
       </div>
     </section>
 
@@ -105,7 +106,7 @@
     </section>
 
     <!-- Research pages live in blog/research/ and stay out of posts.json, so
-         they never take the Latest-edition slot or the homepage Dispatch card. -->
+         they never take the Latest-edition slot. -->
     <section class="wrap archive-earlier archive-research" aria-labelledby="research-title" style="padding-top: clamp(8px, 2vw, 24px)">
       <h2 class="archive-heading" id="research-title">Research</h2>
       <ol class="archive-list">
@@ -115,16 +116,6 @@
             <span class="archive-main">
               <h3 class="archive-title" id="research-pdrn-title">Topical PDRN and spicules: what the evidence actually shows</h3>
               <p class="archive-summary">One small randomized trial tests PDRN on skin. What it found, why some bottles carry a token dose, and what spicules can and can't add, with every study linked.</p>
-            </span>
-            <span class="arrow" aria-hidden="true">→</span>
-          </a>
-        </li>
-        <li>
-          <a class="archive-row" href="research/delivery-ipo-ledger.html">
-            <span class="archive-no">Sep 2026</span>
-            <span class="archive-main">
-              <h3 class="archive-title" id="research-ledger-title">Fifteen delivery IPOs, from offer price to today</h3>
-              <p class="archive-summary">DoorDash, Uber, Grubhub, Deliveroo and eleven more, measured against the price their IPO buyers paid, with every daily close since listing and who bought whom.</p>
             </span>
             <span class="arrow" aria-hidden="true">→</span>
           </a>

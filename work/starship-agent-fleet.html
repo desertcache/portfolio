@@ -39,7 +39,7 @@
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
   <link rel="preload" href="../assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
-  <link rel="stylesheet" href="../css/site.css?v=2026-10-08">
+  <link rel="stylesheet" href="../css/site.css?v=2026-10-27">
   <link rel="stylesheet" href="../blog/blog.css?v=2026-09-26">
   <script type="module" src="../js/blog.js"></script>
 </head>
@@ -109,6 +109,25 @@
 
         <h2>The expensive lesson</h2>
         <p>The headless browser in the test harness quietly falls back to software rendering, and software lighting looks different from a real GPU. For about 20 days, art was graded on the wrong renderer: changes that looked right in the harness looked wrong on a real screen. The fix became a rule in the constitution. Headless runs prove behavior; only headed runs on a real GPU are allowed to judge how anything looks, and only they produce frame-rate numbers that count.</p>
+        <figure class="duo" aria-labelledby="duo-cap">
+          <div class="duo-pair">
+            <div class="duo-item">
+              <picture>
+                <source srcset="../assets/starship-corridor-headless.webp" type="image/webp">
+                <img src="../assets/starship-corridor-headless.jpg" width="800" height="450" loading="lazy" decoding="async" alt="The starship's corridor drawn by the headless test browser's software renderer: the floor is nearly black and the trim is dull.">
+              </picture>
+              <p class="duo-label"><b>Headless</b> software renderer · 1.9 frames a second</p>
+            </div>
+            <div class="duo-item">
+              <picture>
+                <source srcset="../assets/starship-corridor-headed.webp" type="image/webp">
+                <img src="../assets/starship-corridor-headed.jpg" width="800" height="450" loading="lazy" decoding="async" alt="The same corridor from the same camera drawn by a real GPU: the floor's texture and the orange door frames show clearly.">
+              </picture>
+              <p class="duo-label"><b>Headed</b> real GPU · 141 frames a second</p>
+            </div>
+          </div>
+          <figcaption id="duo-cap"><span class="fig">Fig. 1</span> One named camera, one build of the game, one machine, drawn both ways. The rule it produced: headless runs prove behavior; only headed runs on a real GPU judge how anything looks or count frame rates. What it cost to learn: about 20 days of art graded on the wrong renderer.</figcaption>
+        </figure>
         <p>A second lesson came from the last hardening pass. A test that calls a game's update function directly can pass while the real game loop never runs that code. So the door tests now have to watch a door actually move in rendered frames before anything is fast-forwarded.</p>
 
         <h2>Where it landed</h2>

@@ -73,7 +73,7 @@ test('the blog pages and the posts index show no em dash anywhere a reader looks
     const i = text.indexOf('—');
     assert.equal(i, -1, `${path}: em dash in "${text.slice(Math.max(0, i - 40), i + 40).replace(/\s+/g, ' ')}"`);
   }
-  // posts.json feeds the homepage's Lab card and the archive rows.
+  // posts.json feeds the archive rows and each edition's newer/older links.
   for (const post of JSON.parse(read('blog/posts.json')).posts) {
     for (const field of ['title', 'summary']) {
       assert.ok(!String(post[field]).includes('—'), `posts.json ${post.slug}.${field}: ${post[field]}`);
@@ -174,10 +174,12 @@ test('the homepage and the Answer Finder write-up quote the same answer and phra
   assert.equal(phrasings.size, 1, `phrasing counts disagree: ${[...phrasings].join(', ')}`);
 });
 
-test('"See the work" and the nav\'s Work link start at the featured program, not past it', () => {
-  assert.match(HOME, /<a class="btn btn-solid" href="#featured">See the work/, 'the hero button');
+test('"See the work" opens the Lab right after the hero, and the nav\'s Work link starts at the featured program', () => {
+  assert.match(HOME, /<a class="btn btn-solid" href="#lab">See the work/, 'the hero button');
   assert.match(HOME, /<nav class="nav-links"[^>]*>\s*<a href="#featured">Work<\/a>/, 'the nav link');
-  assert.ok(HOME.indexOf('id="featured"') < HOME.indexOf('id="work"'), 'the featured program comes first');
+  assert.ok(HOME.indexOf('id="top"') < HOME.indexOf('id="lab"'), 'the Lab follows the hero');
+  assert.ok(HOME.indexOf('id="lab"') < HOME.indexOf('id="featured"'), 'the Lab comes before the featured program');
+  assert.ok(HOME.indexOf('id="featured"') < HOME.indexOf('id="work"'), 'the featured program comes before the work cards');
 });
 
 test('the phone section menu links every section in page order, numbered like the page', () => {

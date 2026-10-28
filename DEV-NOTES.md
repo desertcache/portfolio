@@ -83,8 +83,8 @@ green; v5.3 brings the red back as Sedona rock, on purpose, with guardrails.
   (`--select`) with ink on top.
 - **Semantic colours are separate from the brand.** Gains use `--ok`,
   losses use `--neg` (a crimson, kept apart from the rock red). With a red
-  brand, a *selection* drawn in the accent would read as "down", so the IPO
-  ledger draws its selected company in ink (`--led-sel`).
+  brand, a *selection* drawn in the accent would read as "down", so a chart
+  draws its selected item in ink.
 - `--serif` is now an alias of `--display`, kept so older digests and pages
   that still name it keep resolving.
 
@@ -113,7 +113,7 @@ green; v5.3 brings the red back as Sedona rock, on purpose, with guardrails.
 - **The Lab is always the sunset room**: a banded sky (`--sun-1…6`), the
   sun going down behind the real Camelback range (the footer's
   `skyline.svg`, reused as a mask), and the drawings in silhouette on the
-  ground line. The orb's stand-in is a setting sun.
+  ground line.
 - **The footer at dusk** gets an afterglow behind the skyline
   (`--afterglow`), so the sun has just gone down behind Camelback.
 
@@ -303,6 +303,12 @@ helper doesn't touch the DOM, put it in one of those and test it.
   converted from Display P3 to sRGB, every metadata tag stripped, 1200×900,
   WebP with a JPEG fallback, lazy-loaded. It is personal recognition: keep
   it away from anything that says which employer's account it came from.
+- `assets/starship-corridor-headless.*` and `starship-corridor-headed.*` are Fig. 1 of
+  `work/starship-agent-fleet.html`: the starship's `corridor` camera from one build, shot by
+  `npm run verify` (software renderer, 1.9 fps) and `npm run verify:headed` (real GPU, 141 fps) on the
+  same machine (2026-10-27). 800x450, WebP with a JPEG fallback. The side-by-side styles are `.duo`
+  at the end of `css/site.css`. The figure's labels say "frames a second", not "fps", so one
+  camera's numbers don't read as the game's headline 131 fps.
 - `assets/og.png` is the link-preview image. Its source is
   `scripts/og-card.html`, which renders the real hero map (Camelback) with
   the drift pinned; the steps to regenerate are in that file's header
@@ -346,7 +352,8 @@ Things worth knowing before touching the blog:
   GitHub Pages lets browsers cache for 10 minutes, and new markup against a
   stale stylesheet renders unstyled.
 - **The archive list is rendered by JS** from `blog/posts.json`. With JS off
-  (or if `js/blog.js` never arrives), a fallback line points at the homepage.
+  (or if `js/blog.js` never arrives), a fallback line says the list needs
+  JavaScript; the Research list below it is static.
 
 ## skincare.html is precompiled too (2026-08-15, reskinned 2026-09-27)
 
@@ -393,19 +400,33 @@ The document header pins under the fixed nav on wide screens only
 keeps `pb-28` so the footer's skyline, which rises into the space above the
 footer, doesn't cover it.
 
-## The homepage Lab grid (2026-10-05)
+## The homepage Lab grid (2026-10-05, cut back and refilled 2026-10-27)
 
-Four cards in a 2x2 grid (one column under 720px): Samantha UI, The Arcade,
-Answer Finder, Hill Money Watch. Each card is one big link: the title's
+Four cards in a two-column grid (one column under 720px): The Arcade, Answer
+Finder, Training wheels and Field guide evals. Each card is one big link: the title's
 `.lab-card-link` stretches over the card with `::after` (z-index 1), and the
-things that must stay their own (`.orb-wake`, `.lab-chips`, `.lab-links`) sit
+things that must stay their own (`.lab-chips`, `.lab-links`) sit
 at z-index 2. Keep stages as plain `aria-hidden` divs, never links, or the
 links nest. Every card carries a `.lab-how` "How it works" line. The Arcade
-card's chips deep-link into games (`arcade.html?game=<id>`); the Answer Finder
-card's `[data-ask-focus]` button is wired in `js/ask.js` (no new export, so a
-stale cached module can't break the graph); `initLatestDispatch` fills
-`#dispatch-link` with the newest post. Browser tests that click a card's text
-need `force: true`: the link layer is on top by design.
+card shows only the four titles where you watch an AI think, each chip a deep
+link (`arcade.html?game=<id>`); the classic clones stay on `arcade.html`, off
+the homepage. The Answer Finder card's `[data-ask-focus]` button is wired in
+`js/ask.js` (no new export, so a stale cached module can't break the graph).
+Two cards left the grid on 2026-10-27: Hill Money Watch (the blog stays, and
+its no-verdict rule is a line on the blog index) and Samantha UI (the orb
+already lives in the ask bar). `initLatestDispatch` and `initOrb` stay in
+`js/lab.js` and find nothing to fill: a cached `main.js` still imports them.
+Their `.dispatch-*`, `.orb-*` and `.lab-live` styles are still in `site.css`,
+unused (`.ticker` there still runs the blog index's band).
+Training wheels and Field guide evals are the two open repos
+(github.com/desertcache/training-wheels and /field-guide-evals); their card links 404 until those
+repos are public, so publish them before this page. Their stages are plain markup too:
+`.guard-stage` is one refused command, the way the hook answers it, and `.eval-stage` is the
+held-out scores as bars, each bar's length set by `--p` in its `style`. The 15 and 26 of 40 are
+held-out runs that never get redone, so they don't drift; if a new answerer is quoted, change the
+bars and the card's sentence together.
+Browser tests that click a card's text need `force: true`: the link layer is
+on top by design.
 
 ## The Lab's rooms: arcade.html and starship.html (2026-09-27)
 
@@ -542,8 +563,8 @@ There is **no automation**. Editions are written and published by the
 `hill-money-watch` Claude Code skill, which writes a draft digest to
 `blog/hill-money-watch-YYYY-MM-DD.html` and runs `scripts/ingest_digest.py
 --file` on it; that renders the post into `blog/posts/` and rebuilds
-`blog/posts.json`, which the homepage card and the archive read. A push to
-`main` is the deploy.
+`blog/posts.json`, which the archive and each edition's newer/older links
+read. A push to `main` is the deploy.
 
 The two GitHub Actions workflows built on the `hill-money-watch-blog` branch
 (`ingest-digest.yml`, `digest-heartbeat.yml`) were deliberately left out of
@@ -556,27 +577,13 @@ Long-form research posts are standalone pages, not Hill Money Watch editions.
 They sit in `blog/research/`, **outside `blog/posts/` and `posts.json` on
 purpose**: `ingest_digest.py` rebuilds `posts.json` from `blog/posts/*.html`,
 and everything that reads it (the archive's Latest-edition card, the edition
-numbering, the homepage Dispatch card) assumes every entry is an edition. The
-archive links research pages from a static "Research" list below the editions.
+numbering) assumes every entry is an edition. The archive links research pages
+from a static "Research" list below the editions. A research page has the same
+chrome as an edition (nav, theme, footer, read time via `js/blog.js`), and its
+`<main>` has no `data-index`, so `blog.js` skips the archive and edition-nav
+features.
 
-The first one is `delivery-ipo-ledger.html` (15 delivery IPOs, offer price to
-latest close):
-
-| File | Role |
-|------|------|
-| `blog/research/delivery-ipo-ledger.html` | The post. Same chrome as an edition (nav, theme, footer, read time via `js/blog.js`). Its `<main>` has no `data-index`, so `blog.js` skips the archive and edition-nav features. |
-| `blog/research/delivery-ipo-ledger.css` | Page-only styles on the site tokens. Classes are `led-*` (layout) and `lx-*` (inside the SVG charts) so nothing collides with `site.css`. |
-| `blog/research/delivery-ipo-ledger.js` | The charts. A plain `defer` script, deliberately outside `js/` so `tsc` never sees the D3 global. Draws only the parts a page has, which is how the OG card reuses it. |
-| `blog/research/delivery-ipo-ledger.json` | Daily closes and per-company facts (~170 KB). |
-| `blog/research/vendor/d3-7.9.0.min.js` | D3, vendored so the page loads no third-party script. Hash `sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i`, checked against both cdnjs and jsDelivr. |
-| `scripts/ledger_scoreboard.py` | Writes the scoreboard table (plain HTML, readable without JS) between the `scoreboard:start/end` comments. Idempotent. |
-| `scripts/og-delivery-ipo-ledger.html` | Source for `assets/og-delivery-ipo-ledger.png` (1200×630 link preview). |
-
-To refresh the prices: rebuild the JSON (same fields), run
-`py scripts/ledger_scoreboard.py`, re-shoot the OG card, and bump the `?v=` on
-the page's CSS and JS links.
-
-The second is `pdrn-and-spicules.html` (topical PDRN and spicules, 2026-09-25):
+The one there now is `pdrn-and-spicules.html` (topical PDRN and spicules, 2026-09-25):
 a static page with no script of its own. Its two figures are plain HTML/CSS in
 `pdrn-and-spicules.css` (`rs-*` classes; positions are CSS custom properties,
 log or linear, computed by hand and noted in the markup), so they reflow on a
@@ -634,11 +641,23 @@ row (PR #12), which is gone.
   and it slides in once that content scrolls clear. Focus, `/` and the Lab's button bring it back,
   and once used it stays. `html.has-dock` sets `scroll-padding-bottom` so keyboard focus scrolls
   clear of it. Check with a headless pass at those sizes before changing the hero.
+- **The hero's "Try it" card (2026-10-27)** replaced the field-notes stats card; its four numbers are
+  one line under the calls to action now (`.hero-stats`). It keeps the map-legend chrome, so
+  `topo.js` still writes the coordinates, scale and place into it. Its three buttons carry
+  `data-ask="<question>"`; `ask.js` wires them at the end of `initAsk`: the bar comes in, stays,
+  opens and asks, and the model starts loading on pointer-enter. Each question is an exact phrasing
+  in desertcache/ask's bank (`start-here`, `ai-quality`, `claude-code`), so it matches at 1.00;
+  keep it that way if you change one. In one column (under 1100px) `.hero-main` is
+  `display: contents` and the card is ordered before the Claude Code note. Under 640px it moves up
+  under the headline, ahead of the lede, the calls to action and the numbers, so a 390x844 phone
+  shows its first question on the first screen. Keep the card about this height: the hawk's thermal
+  sits above it.
 
 ## Getting around: the start of the route and the phone menu (2026-10-05)
 
-- "See the work" and the nav's Work link go to `#featured` (the copilot program), not `#work`, so
-  nobody skips the flagship. The scroll-spy keeps Work lit through both (`alias` in `js/chrome.js`).
+- "See the work" goes to `#lab`, the section right after the hero, so the first thing it lands on
+  is something to open. The nav's Work link goes to `#featured` (the copilot program), not `#work`,
+  so nobody skips the flagship; the scroll-spy keeps Work lit through both (`alias` in `js/chrome.js`).
 - Under 900px the nav links fold away and a button opens `#nav-menu`: every section, numbered like
   its eyebrow (a test holds the two together), plus the Résumé. The behaviour is in
   `js/section-menu.js`, its own file on purpose: a cached `chrome.js` without a new export would stop
@@ -649,8 +668,24 @@ row (PR #12), which is gone.
 - The bar's top-of-page chips start with "Where should I start?" (`start-here` in desertcache/ask),
   which walks a three-stop route. The Lab card and `work/answer-finder.html` quote the bank's size
   (its answer and phrasing counts); a test keeps the two pages in step, so update both when the bank
-  grows.
-- **Section order (2026-10-08):** 01 Featured, 02 Selected work, 03 Background, 04 How I build,
+  grows. They say 62 and 494: the bank that ships with this page (desertcache/ask, branch
+  `homepage-cuts`). The Lab's chips include its `training-wheels` and `field-guide-evals` answers;
+  `ask.js` skips an id the live bank doesn't have yet, so the two deploys can land in either order.
+- **Section order (2026-10-27, second pass):** 01 Lab, 02 Featured, 03 Selected work, 04 How I
+  build, 05 Background, 06 Toolkit, the review's order. The Lab sits right after the hero, so the
+  first thing below it is something to open. After the dark Lab the tint alternates: Featured, How I
+  build and Toolkit are tinted, Selected work and Background aren't. The nav links still read Work,
+  About, Lab, Contact on every page: changing their order would mean republishing every blog post.
+- **Section order (2026-10-27, first pass, superseded):** 01 Featured, 02 Lab, 03 Selected work, 04
+  Background, 05 How I build, 06 Toolkit. The Lab moved up from ~10,600 px down on a laptop to ~2,900.
+- **Background and Toolkit, cut back (2026-10-27):** Background keeps its heading, the pattern
+  lede, the portrait, two Recognition lines (the Claude Code note and the PR count) and How I
+  work; the dated timeline, the facts list and the Leadership box went, since the CV has them.
+  Toolkit is one line. Its section stays: the Sedona buttes, the yucca and the globemallow are
+  drawn only there, `scripts/test_draw_desert.py` wants every drawing on the homepage, and the
+  ask bar's answers link `#stack`. The old `.timeline`/`.tl-*`, `.facts`, `.toolkit` and `.tk`
+  styles are still in `site.css`, unused.
+- **Section order (2026-10-08, superseded):** 01 Featured, 02 Selected work, 03 Background, 04 How I build,
   05 Lab, 06 Toolkit. Background moved up so the work history starts by ~5,300 px on a laptop
   (it was ~10,800). Every page's nav reads Work, About, Lab, Contact, and the scroll-spy lights About
   through How I build and Toolkit (`alias` in `js/chrome.js`).

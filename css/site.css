@@ -747,6 +747,9 @@ kbd {
    pointing down to How I build. It lives in this column, not in the field
    notes card: a taller card would rise into the hawk's thermal. */
 .hero-note { margin-top: clamp(20px, 2.8vh, 30px); }
+/* The four numbers the field-notes card used to hold, in one line under the calls to action. */
+.hero-stats { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 16px; list-style: none; font-size: 0.875rem; line-height: 1.4; color: var(--ink-2); }
+.hero-stats b { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
 .hero-note a { display: inline-flex; flex-direction: column; gap: 5px; padding-top: 14px; border-top: 1px solid var(--line); }
 .hero-note-title { font: 800 semi-expanded clamp(1.02rem, 1.25vw, 1.12rem)/1.2 var(--display); letter-spacing: -0.025em; transition: color 0.25s; }
 .hero-note-text { font-size: 0.9375rem; line-height: 1.45; color: var(--ink-2); text-wrap: pretty; }
@@ -756,7 +759,8 @@ kbd {
 .copy-email .icon-copy { width: 16px; height: 16px; opacity: 0.7; }
 .copy-email.is-copied .icon-copy { opacity: 1; stroke: var(--ok); }
 
-/* the "field notes" card: a map legend holding the four proof numbers */
+/* the "Try it" card: a map legend holding three questions for the ask bar (js/ask.js asks
+   them: [data-ask]) and the way into the starship */
 .hero-inner {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(300px, 356px);
@@ -795,39 +799,46 @@ kbd {
 .scale i + i { border-left: 0; }
 .scale i:nth-child(odd) { background: var(--ink-3); }
 
-.proof { display: grid; grid-template-columns: 1fr 1fr; list-style: none; }
-.proof li:nth-child(even) { border-left: 1px solid var(--line); }
-.proof li:nth-child(n + 3) { border-top: 1px solid var(--line); }
-.proof a { display: block; height: 100%; padding: 16px 12px 14px 0; }
-.proof li:nth-child(even) a { padding-left: 16px; padding-right: 0; }
-.proof-num {
-  display: block;
-  font: 800 semi-expanded clamp(1.6rem, 2.2vw, 2.05rem)/1 var(--display);
-  letter-spacing: -0.04em;
-  font-variant-numeric: tabular-nums;
-  transition: color 0.25s;
+.try-lede { margin-top: 13px; font-size: 0.875rem; line-height: 1.5; color: var(--ink-2); text-wrap: pretty; }
+.try-asks { display: grid; gap: 6px; margin-top: 12px; list-style: none; }
+.try-ask {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+  font: 500 0.875rem/1.35 var(--sans);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
 }
-.proof-label { display: block; margin-top: 7px; font-size: 0.8125rem; line-height: 1.4; color: var(--ink-3); transition: color 0.25s; }
-.proof a:hover .proof-num { color: var(--accent); }
-.proof a:hover .proof-label { color: var(--ink-2); }
+.try-ask-go { flex: none; color: var(--accent-ink); transition: transform 0.25s var(--ease); }
+.try-ask:hover, .try-ask:focus-visible { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
+.try-ask:hover .try-ask-go { transform: translateY(2px); }
+.try-more { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 13px 0 14px; }
+.try-more .link-arrow { font-size: 0.875rem; }
+.try-meta { align-self: center; font: 500 semi-condensed 0.625rem/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
 
 @media (max-width: 1100px) {
-  .hero-inner { grid-template-columns: 1fr; align-items: start; }
-  .legend { max-width: 760px; }
-  .proof { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .proof li:nth-child(n) { border-top: 0; border-left: 1px solid var(--line); }
-  .proof li:first-child { border-left: 0; }
-  .proof li a, .proof li:nth-child(even) a { padding: 16px 12px 12px; }
-  .proof li:first-child a { padding-left: 0; }
+  .hero-inner { grid-template-columns: 1fr; align-items: start; row-gap: 0; }
+  /* One column: the Try it card comes after the calls to action and before the Claude Code note
+     (under 640px it moves up under the headline: see below). */
+  .hero-main { display: contents; }
+  .legend { order: 1; max-width: 560px; margin-top: clamp(28px, 4vh, 40px); }
+  .hero-note { order: 2; }
 }
 @media (max-width: 640px) {
-  .proof { grid-template-columns: 1fr 1fr; }
-  .proof li:nth-child(n) { border-left: 0; }
-  .proof li:nth-child(even) { border-left: 1px solid var(--line); }
-  .proof li:nth-child(n + 3) { border-top: 1px solid var(--line); }
-  .proof li a { padding: 14px 10px 12px 0; }
-  .proof li:nth-child(even) a { padding: 14px 0 12px 14px; }
   .legend-coords { display: none; }
+  /* A phone puts the Try it card straight under the headline, so its first question is on the first
+     screen; the lede, the calls to action, the numbers and the note follow it. */
+  .legend { order: 1; max-width: none; margin-top: 22px; }
+  .hero-lede, .hero-cta, .hero-stats { order: 2; }
+  .hero-note { order: 3; }
 }
 @media (max-width: 520px) {
   .hero { min-height: 0; }
@@ -1349,7 +1360,7 @@ html.has-modal { overflow: hidden; }
 .lab-chips a:hover, .lab-chips a:focus-visible { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
 
 /* stages: the top half of each lab card */
-.orb-slot, .arcade-stage, .dispatch-stage, .ask-stage {
+.orb-slot, .arcade-stage, .dispatch-stage, .ask-stage, .guard-stage, .eval-stage {
   position: relative;
   display: block;
   aspect-ratio: 16 / 9;
@@ -1532,12 +1543,43 @@ html.has-modal { overflow: hidden; }
 .ask-steps span:nth-child(4) { animation-delay: 1.8s; }
 @keyframes ask-step { 0%, 6% { color: var(--ink-3); } 12%, 70% { color: var(--ink); } 80%, 100% { color: var(--ink-3); } }
 
+/* Training wheels' stage: one refused command, the way the hook answers it */
+.guard-stage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 clamp(18px, 6%, 40px);
+  background: radial-gradient(90% 80% at 0% 110%, rgba(169, 196, 108, 0.12), transparent 60%), #0d0918;
+}
+.guard-cmd { display: flex; flex-direction: column; gap: 6px; font: 500 semi-condensed 0.875rem/1.2 var(--mono); color: var(--ink); }
+.guard-who { font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+.guard-stop, .guard-instead { padding-left: 12px; border-left: 2px solid var(--accent-ink); font: 500 semi-condensed 0.75rem/1.45 var(--mono); color: var(--ink-2); }
+.guard-instead { border-left-color: var(--support); color: var(--ink); }
+
+/* Field guide evals' stage: the held-out scores, as bars */
+.eval-stage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  padding: 0 clamp(18px, 6%, 40px);
+  background: radial-gradient(90% 80% at 100% 110%, rgba(255, 181, 71, 0.1), transparent 60%), #0d0918;
+}
+.eval-head, .eval-foot { font: 500 semi-condensed 0.6875rem/1.3 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+.eval-row { display: grid; grid-template-columns: 7.5em minmax(0, 1fr) 2em; align-items: center; gap: 12px; font: 500 semi-condensed 0.8125rem/1 var(--mono); color: var(--ink-2); }
+.eval-bar { position: relative; height: 10px; overflow: hidden; border-radius: 999px; background: rgba(245, 238, 242, 0.08); }
+.eval-bar::before { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--p); border-radius: inherit; background: var(--ink-3); }
+.eval-row.is-new { color: var(--ink); }
+.eval-row.is-new .eval-bar::before { background: var(--accent-ink); }
+.eval-n { text-align: right; color: var(--ink); }
+
 @media (max-width: 1000px) {
   .lab-feature { grid-template-columns: 1fr; }
 }
 @media (max-width: 720px) {
   .lab-grid { grid-template-columns: 1fr; }
-  .orb-slot, .arcade-stage, .dispatch-stage, .ask-stage { aspect-ratio: 16 / 10; }
+  .orb-slot, .arcade-stage, .dispatch-stage, .ask-stage, .guard-stage, .eval-stage { aspect-ratio: 16 / 10; }
 }
 @media (prefers-reduced-motion: reduce) {
   .lab-card { transition: none; }
@@ -2542,3 +2584,14 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
 @media (prefers-reduced-motion: reduce) {
   .dock, .dock * { animation: none !important; transition: none !important; }
 }
+
+/* ---------- A side-by-side figure in a write-up (work/starship-agent-fleet.html) ----------
+   It takes the post's wide lane on a large screen, so each image is about 500px; on a phone the
+   pair stacks. ".post-body > .duo" outranks blog.css's ".post-body > *" column rule. */
+.post-body > .duo { grid-column: 1 / -1; justify-self: center; width: min(100%, 60rem); margin: 0.4em 0 1.8em; }
+.duo-pair { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(10px, 1.6vw, 18px); }
+.duo-item img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: var(--radius-sm); }
+.duo-label { margin-top: 8px; font: 500 semi-condensed 0.75rem/1.45 var(--mono); letter-spacing: 0.06em; color: var(--ink-3); }
+.duo-label b { font-weight: 600; color: var(--ink); }
+.duo figcaption { max-width: 42.5rem; margin: 16px auto 0; font-size: 0.9375rem; line-height: 1.6; color: var(--ink-2); text-wrap: pretty; }
+@media (max-width: 640px) { .duo-pair { grid-template-columns: 1fr; } }
