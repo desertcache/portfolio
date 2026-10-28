@@ -634,6 +634,15 @@ row (PR #12), which is gone.
   and it slides in once that content scrolls clear. Focus, `/` and the Lab's button bring it back,
   and once used it stays. `html.has-dock` sets `scroll-padding-bottom` so keyboard focus scrolls
   clear of it. Check with a headless pass at those sizes before changing the hero.
+- **The hero's "Try it" card (2026-10-27)** replaced the field-notes stats card (the four numbers
+  still live in the lede, the case studies and Background). It keeps the map-legend chrome, so
+  `topo.js` still writes the coordinates, scale and place into it. Its three buttons carry
+  `data-ask="<question>"`; `ask.js` wires them at the end of `initAsk`: the bar comes in, stays,
+  opens and asks, and the model starts loading on pointer-enter. Each question is an exact phrasing
+  in desertcache/ask's bank (`start-here`, `ai-quality`, `claude-code`), so it matches at 1.00;
+  keep it that way if you change one. In one column (under 1100px) `.hero-main` is
+  `display: contents` and the card is ordered before the Claude Code note, so a phone shows the top
+  of the card on the first screen. Keep the card about this height: the hawk's thermal sits above it.
 
 ## Getting around: the start of the route and the phone menu (2026-10-05)
 
@@ -650,7 +659,11 @@ row (PR #12), which is gone.
   which walks a three-stop route. The Lab card and `work/answer-finder.html` quote the bank's size
   (its answer and phrasing counts); a test keeps the two pages in step, so update both when the bank
   grows.
-- **Section order (2026-10-08):** 01 Featured, 02 Selected work, 03 Background, 04 How I build,
+- **Section order (2026-10-27):** 01 Featured, 02 Lab, 03 Selected work, 04 Background, 05 How I
+  build, 06 Toolkit. The Lab moved up so something you can open sits right after the flagship (it
+  started ~10,600 px down on a laptop; now ~2,900). The nav links still read Work, About, Lab,
+  Contact on every page: changing their order would mean republishing every blog post.
+- **Section order (2026-10-08, superseded):** 01 Featured, 02 Selected work, 03 Background, 04 How I build,
   05 Lab, 06 Toolkit. Background moved up so the work history starts by ~5,300 px on a laptop
   (it was ~10,800). Every page's nav reads Work, About, Lab, Contact, and the scroll-spy lights About
   through How I build and Toolkit (`alias` in `js/chrome.js`).

@@ -756,7 +756,8 @@ kbd {
 .copy-email .icon-copy { width: 16px; height: 16px; opacity: 0.7; }
 .copy-email.is-copied .icon-copy { opacity: 1; stroke: var(--ok); }
 
-/* the "field notes" card: a map legend holding the four proof numbers */
+/* the "Try it" card: a map legend holding three questions for the ask bar (js/ask.js asks
+   them: [data-ask]) and the way into the starship */
 .hero-inner {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(300px, 356px);
@@ -795,38 +796,40 @@ kbd {
 .scale i + i { border-left: 0; }
 .scale i:nth-child(odd) { background: var(--ink-3); }
 
-.proof { display: grid; grid-template-columns: 1fr 1fr; list-style: none; }
-.proof li:nth-child(even) { border-left: 1px solid var(--line); }
-.proof li:nth-child(n + 3) { border-top: 1px solid var(--line); }
-.proof a { display: block; height: 100%; padding: 16px 12px 14px 0; }
-.proof li:nth-child(even) a { padding-left: 16px; padding-right: 0; }
-.proof-num {
-  display: block;
-  font: 800 semi-expanded clamp(1.6rem, 2.2vw, 2.05rem)/1 var(--display);
-  letter-spacing: -0.04em;
-  font-variant-numeric: tabular-nums;
-  transition: color 0.25s;
+.try-lede { margin-top: 13px; font-size: 0.875rem; line-height: 1.5; color: var(--ink-2); text-wrap: pretty; }
+.try-asks { display: grid; gap: 6px; margin-top: 12px; list-style: none; }
+.try-ask {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+  font: 500 0.875rem/1.35 var(--sans);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
 }
-.proof-label { display: block; margin-top: 7px; font-size: 0.8125rem; line-height: 1.4; color: var(--ink-3); transition: color 0.25s; }
-.proof a:hover .proof-num { color: var(--accent); }
-.proof a:hover .proof-label { color: var(--ink-2); }
+.try-ask-go { flex: none; color: var(--accent-ink); transition: transform 0.25s var(--ease); }
+.try-ask:hover, .try-ask:focus-visible { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
+.try-ask:hover .try-ask-go { transform: translateY(2px); }
+.try-more { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 13px 0 14px; }
+.try-more .link-arrow { font-size: 0.875rem; }
+.try-meta { align-self: center; font: 500 semi-condensed 0.625rem/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
 
 @media (max-width: 1100px) {
-  .hero-inner { grid-template-columns: 1fr; align-items: start; }
-  .legend { max-width: 760px; }
-  .proof { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .proof li:nth-child(n) { border-top: 0; border-left: 1px solid var(--line); }
-  .proof li:first-child { border-left: 0; }
-  .proof li a, .proof li:nth-child(even) a { padding: 16px 12px 12px; }
-  .proof li:first-child a { padding-left: 0; }
+  .hero-inner { grid-template-columns: 1fr; align-items: start; row-gap: 0; }
+  /* One column: the Try it card comes straight after the calls to action, so a phone shows the
+     start of it on the first screen, and the Claude Code note follows it. */
+  .hero-main { display: contents; }
+  .legend { order: 1; max-width: 560px; margin-top: clamp(28px, 4vh, 40px); }
+  .hero-note { order: 2; }
 }
 @media (max-width: 640px) {
-  .proof { grid-template-columns: 1fr 1fr; }
-  .proof li:nth-child(n) { border-left: 0; }
-  .proof li:nth-child(even) { border-left: 1px solid var(--line); }
-  .proof li:nth-child(n + 3) { border-top: 1px solid var(--line); }
-  .proof li a { padding: 14px 10px 12px 0; }
-  .proof li:nth-child(even) a { padding: 14px 0 12px 14px; }
   .legend-coords { display: none; }
 }
 @media (max-width: 520px) {
