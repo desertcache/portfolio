@@ -309,8 +309,8 @@ def parse_digest(raw_html: str, expected_date: str) -> tuple[str, str, str]:
                 f"move them inside the article"
             )
     # Sam's standing rule: no em dash in anything published under his name (it
-    # reads as machine-written). The title reaches the homepage card and the
-    # archive, the summary the archive rows, the article text the post itself.
+    # reads as machine-written). The title reaches the archive and the edition
+    # links, the summary the archive rows, the article text the post itself.
     # Style and script text is not prose, so it is not counted.
     readable = [title, summary]
     if article is not None:

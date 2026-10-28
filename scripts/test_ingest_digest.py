@@ -43,7 +43,7 @@ def test_accepts_a_well_formed_digest():
 
 def test_rejects_em_dashes_anywhere_a_reader_sees():
     """Sam's standing style rule: no em dash in anything published under his name.
-    The title feeds the homepage card and the archive, the summary the archive rows."""
+    The title feeds the archive and the edition links, the summary the archive rows."""
     raw = (
         GOOD.replace("Hill Money Watch: August 11, 2026", "Hill Money Watch — August 11, 2026")
         .replace("A summary.", "Quiet day &mdash; nothing new.")

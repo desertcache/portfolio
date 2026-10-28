@@ -261,7 +261,7 @@
 }
 .archive-caveat { margin-top: 14px; font: 400 semi-condensed 0.8125rem/1.5 var(--mono); color: var(--ink-3); }
 
-/* The homepage card's ticker, run across the page as a band. */
+/* The ticker (base styles in site.css), run across the page as a band. */
 .ticker.ticker-band { position: relative; top: auto; margin-top: clamp(44px, 6vw, 72px); }
 
 .archive-feature { margin-top: clamp(36px, 5vw, 56px); }

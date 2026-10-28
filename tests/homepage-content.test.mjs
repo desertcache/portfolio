@@ -73,7 +73,7 @@ test('the blog pages and the posts index show no em dash anywhere a reader looks
     const i = text.indexOf('—');
     assert.equal(i, -1, `${path}: em dash in "${text.slice(Math.max(0, i - 40), i + 40).replace(/\s+/g, ' ')}"`);
   }
-  // posts.json feeds the homepage's Lab card and the archive rows.
+  // posts.json feeds the archive rows and each edition's newer/older links.
   for (const post of JSON.parse(read('blog/posts.json')).posts) {
     for (const field of ['title', 'summary']) {
       assert.ok(!String(post[field]).includes('—'), `posts.json ${post.slug}.${field}: ${post[field]}`);
