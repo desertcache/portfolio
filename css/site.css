@@ -2545,3 +2545,14 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
 @media (prefers-reduced-motion: reduce) {
   .dock, .dock * { animation: none !important; transition: none !important; }
 }
+
+/* ---------- A side-by-side figure in a write-up (work/starship-agent-fleet.html) ----------
+   It takes the post's wide lane on a large screen, so each image is about 500px; on a phone the
+   pair stacks. ".post-body > .duo" outranks blog.css's ".post-body > *" column rule. */
+.post-body > .duo { grid-column: 1 / -1; justify-self: center; width: min(100%, 60rem); margin: 0.4em 0 1.8em; }
+.duo-pair { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(10px, 1.6vw, 18px); }
+.duo-item img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: var(--radius-sm); }
+.duo-label { margin-top: 8px; font: 500 semi-condensed 0.75rem/1.45 var(--mono); letter-spacing: 0.06em; color: var(--ink-3); }
+.duo-label b { font-weight: 600; color: var(--ink); }
+.duo figcaption { max-width: 42.5rem; margin: 16px auto 0; font-size: 0.9375rem; line-height: 1.6; color: var(--ink-2); text-wrap: pretty; }
+@media (max-width: 640px) { .duo-pair { grid-template-columns: 1fr; } }

@@ -303,6 +303,11 @@ helper doesn't touch the DOM, put it in one of those and test it.
   converted from Display P3 to sRGB, every metadata tag stripped, 1200×900,
   WebP with a JPEG fallback, lazy-loaded. It is personal recognition: keep
   it away from anything that says which employer's account it came from.
+- `assets/starship-corridor-headless.*` and `starship-corridor-headed.*` are Fig. 1 of
+  `work/starship-agent-fleet.html`: the starship's `corridor` camera from one build, shot by
+  `npm run verify` (software renderer, 1.9 fps) and `npm run verify:headed` (real GPU, 141 fps) on the
+  same machine (2026-10-27). 800x450, WebP with a JPEG fallback. The side-by-side styles are `.duo`
+  at the end of `css/site.css`.
 - `assets/og.png` is the link-preview image. Its source is
   `scripts/og-card.html`, which renders the real hero map (Camelback) with
   the drift pinned; the steps to regenerate are in that file's header
