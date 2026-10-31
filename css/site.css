@@ -2344,21 +2344,81 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
 .dock-orb.is-live iframe { opacity: 1; }
 .dock[data-orb="thinking"] .dock-orb iframe { filter: drop-shadow(0 2px 8px rgba(139, 92, 246, 0.7)); }
 .dock[data-orb="speaking"] .dock-orb iframe { filter: drop-shadow(0 2px 8px rgba(233, 120, 95, 0.65)); }
-/* the still orb: a soft blob in the LISTENING colours, until the real one wakes (and for reduced motion) */
-.dock-orb-still {
+/* The drawn orb: the real orb's three moods in CSS. It's the only orb on touch screens and for
+   reduced motion (js/ask.js mounts the live one for mouse-and-keyboard screens only), and the
+   stand-in on desktop until that one wakes. Everything that moves is a transform or an opacity,
+   so it runs on the compositor and never repaints: no filters, no animated border-radius.
+   Each mood is its own layer, always turning at its own pace, and a change of mood crossfades the
+   layers rather than swapping animations (a new duration mid-turn makes the shape jump). The
+   incoming layer fades in at once and the outgoing one waits until it's covered, so the orb never
+   thins out in between. A layer's glow is its box-shadow, painted once and turned with it. */
+.dock-orb-css {
   position: absolute;
-  inset: 3px;
+  inset: 2px;
+  transition: scale 0.7s var(--ease), opacity 0.9s;
+}
+.dock-orb.is-live .dock-orb-css { opacity: 0; }
+.dock[data-orb="thinking"] .dock-orb-css { scale: 0.9; }
+.dock[data-orb="speaking"] .dock-orb-css { scale: 1.05; }
+.dock-orb-css > i {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.45s var(--ease) 0.35s;
+  animation: dock-orb-turn 16s linear infinite;
+}
+.dock-orb-css > .dock-orb-listen,
+.dock[data-orb="thinking"] .dock-orb-think,
+.dock[data-orb="speaking"] .dock-orb-speak { opacity: 1; transition-delay: 0s; }
+.dock:is([data-orb="thinking"], [data-orb="speaking"]) .dock-orb-listen { opacity: 0; transition-delay: 0.35s; }
+/* a light from the upper left that stays put while the colours turn under it */
+.dock-orb-css::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 34%);
+}
+.dock-orb-css > .dock-orb-listen {
   border-radius: 46% 54% 52% 48% / 52% 46% 54% 48%;
-  background: radial-gradient(circle at 38% 34%, #fbd8bd, #e8a87c 55%, #c9805a);
-  filter: drop-shadow(0 2px 7px rgba(232, 168, 124, 0.6));
-  animation: dock-blob 6s ease-in-out infinite;
-  transition: opacity 0.9s;
+  background: radial-gradient(circle at 30% 36%, #fde2cc, #e8a87c 50%, #c9805a);
+  box-shadow: 0 0 10px rgba(232, 168, 124, 0.55);
+  animation: dock-orb-turn 16s linear infinite, dock-orb-breathe 4.5s var(--ease) infinite alternate;
 }
-.dock-orb.is-live .dock-orb-still { opacity: 0; }
-.dock[data-orb="thinking"] .dock-orb-still { background: radial-gradient(circle at 38% 34%, #c8f3fb, #8b5cf6 55%, #06b6d4); }
-@keyframes dock-blob {
-  50% { border-radius: 53% 47% 46% 54% / 47% 54% 46% 53%; }
+.dock-orb-css > .dock-orb-think {
+  border-radius: 52% 48% 47% 53% / 45% 55% 45% 55%;
+  background:
+    radial-gradient(circle at 30% 32%, #d6f6fc, rgba(214, 246, 252, 0) 46%),
+    radial-gradient(circle at 72% 66%, #06b6d4, rgba(6, 182, 212, 0) 52%),
+    radial-gradient(circle, #a78bfa, #8b5cf6 58%, #6d43e6);
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.6);
+  animation-duration: 2.4s;
 }
+.dock-orb-css > .dock-orb-speak {
+  border-radius: 50% 50% 46% 54% / 54% 48% 52% 46%;
+  background: radial-gradient(circle at 34% 34%, #ffd9cb, #e9785f 52%, #b9543f);
+  box-shadow: 0 0 12px rgba(233, 120, 95, 0.6);
+  animation: dock-orb-turn 7s linear infinite, dock-orb-talk 0.8s var(--ease) infinite alternate;
+}
+/* while it speaks, a ring goes out from it */
+.dock-orb-speak::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1.5px solid rgba(233, 120, 95, 0.6);
+  border-radius: 50%;
+  opacity: 0;
+  animation: dock-orb-ripple 1.4s var(--ease-out) infinite;
+}
+/* out of sight, or handed over to the live orb: stop turning */
+.dock:is(:not(.is-in), .is-tucked) .dock-orb-css i,
+.dock:is(:not(.is-in), .is-tucked) .dock-orb-css i::before,
+.dock-orb.is-live .dock-orb-css i,
+.dock-orb.is-live .dock-orb-css i::before { animation-play-state: paused; }
+@keyframes dock-orb-turn { to { rotate: 1turn; } }
+@keyframes dock-orb-breathe { from { scale: 0.97; } to { scale: 1.02; } }
+@keyframes dock-orb-talk { from { scale: 0.96; } to { scale: 1.04; } }
+@keyframes dock-orb-ripple { from { opacity: 0.8; scale: 1; } to { opacity: 0; scale: 1.5; } }
 .dock-input {
   flex: 1;
   min-width: 0;
@@ -2482,7 +2542,6 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
   overflow-wrap: anywhere;
 }
 .dock-bot { max-width: 100%; }
-.dock-loading { font: 400 0.75rem/1.4 var(--mono); color: var(--g-ink-3); }
 .dock-answer { font-size: 0.9375rem; line-height: 1.6; text-wrap: pretty; }
 .dock-answer + .dock-answer { margin-top: 8px; }
 .dock-suggest .dock-answer { color: var(--g-ink-2); }
@@ -2528,16 +2587,27 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
 .dock-trace-sum::-webkit-details-marker { display: none; }
 .dock-trace-sum::after { content: "▾"; margin-left: auto; color: var(--g-ink-3); transition: transform 0.2s; }
 .dock-trace:not([open]) .dock-trace-sum::after { transform: rotate(-90deg); }
-.dock-spin { flex: none; width: 11px; height: 11px; border: 1.6px solid var(--g-line); border-top-color: #8b5cf6; border-radius: 50%; animation: dock-spin 0.8s linear infinite; }
-.dock-trace.is-done .dock-spin { border-color: var(--support); background: var(--support); animation: none; transform: scale(0.6); }
+/* Thinking, the way Claude Code shows it: a glyph that blooms and closes (js/ask.js steps it) and a
+   verb with light passing over it. The glyph sits in a fixed box, so a wider fallback glyph can't
+   nudge the line, and when the answer comes it becomes the receipt's green dot in the same place. */
+.dock-trace.is-thinking .dock-trace-sum { cursor: default; }
+.dock-trace.is-thinking .dock-trace-sum::after { visibility: hidden; }
+.dock-glyph { flex: none; display: grid; place-items: center; width: 14px; height: 16px; margin-left: -1px; font: 600 0.875rem/1 var(--sans); color: var(--g-accent-ink); }
+.dock-trace.is-done .dock-glyph::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--support); }
+.dock-verb {
+  color: var(--g-accent-ink);
+  background: linear-gradient(90deg, var(--g-accent-ink) 38%, color-mix(in srgb, var(--g-accent-ink) 30%, #fff) 50%, var(--g-accent-ink) 62%) 0 0 / 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: dock-shimmer 1.8s linear infinite;
+}
+.dock-trace-sum .dock-loading { min-width: 0; overflow: hidden; text-overflow: ellipsis; font: inherit; font-weight: 400; color: var(--g-ink-3); }
 .dock-steps { display: flex; flex-direction: column; gap: 9px; padding: 2px 12px 11px; list-style: none; }
 .dock-step { display: grid; grid-template-columns: 15px 1fr; column-gap: 8px; row-gap: 5px; align-items: center; animation: dock-rise 0.3s var(--ease-out); }
 .dock-step > :nth-child(n + 3) { grid-column: 2; }
-.dock-tick { width: 13px; height: 13px; border-radius: 50%; border: 1.6px solid var(--g-line); }
-.dock-step.is-running .dock-tick { border-top-color: #8b5cf6; animation: dock-spin 0.8s linear infinite; }
-.dock-step.is-done .dock-tick { border: 0; background: var(--support) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3.5 7.2l2.3 2.3 4.7-4.9' fill='none' stroke='%23150f24' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 13px no-repeat; }
+.dock-tick { width: 13px; height: 13px; border-radius: 50%; background: var(--support) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3.5 7.2l2.3 2.3 4.7-4.9' fill='none' stroke='%23150f24' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 13px no-repeat; }
 .dock-step-title { font-weight: 500; color: var(--g-ink); }
-.dock-step.is-running .dock-step-title { color: var(--g-ink-2); }
 .dock-detail { font: 400 0.6875rem/1.4 var(--mono); color: var(--g-ink-3); }
 .dock-pieces { display: flex; flex-wrap: wrap; gap: 4px; }
 .dock-pieces code, .dock-more-pieces {
@@ -2571,7 +2641,7 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
 @keyframes dock-pop { from { opacity: 0; transform: scale(0.85); } }
 @keyframes dock-grow { from { transform: scaleY(0); } }
 @keyframes dock-fill { from { width: 0; } }
-@keyframes dock-spin { to { transform: rotate(360deg); } }
+@keyframes dock-shimmer { from { background-position: 100% 0; } }
 
 @media (max-width: 640px) {
   .dock { bottom: max(10px, env(safe-area-inset-bottom)); border-radius: 24px; }

@@ -7,11 +7,13 @@
  *   Nothing is generated. Its engine modules, bank and model are loaded from
  *   there on first use (focus, hover or tap), so the page stays light until then.
  * - The orb is the real Samantha orb (desertcache/samantha-ui) in controlled,
- *   transparent mode (no disc behind it): LISTENING at rest, THINKING while the trace runs, SPEAKING while the
- *   answer's words appear. It loads once the page has, except for visitors who
- *   ask their system for reduced motion, who keep the still orb.
- * - The trace under each question is the real matching work, paced so it can
- *   be read; its summary reports the real compute time.
+ *   transparent mode (no disc behind it): LISTENING at rest, THINKING while it
+ *   thinks, SPEAKING while the answer's words appear. It loads once the page
+ *   has, on mouse-and-keyboard screens only; touch screens and visitors who ask
+ *   for reduced motion keep the drawn orb (css/site.css), in the same moods.
+ * - Thinking is one line, a blooming glyph and a verb, for about a second.
+ *   Under it, folded, is the trace: the real matching work, with the real
+ *   compute time in its summary.
  *
  * The file keeps the name and export of the Lab row it replaced (js/ask.js,
  * initAsk) on purpose: GitHub Pages caches for 10 minutes, and a stale
@@ -21,11 +23,21 @@
 const ASK = 'https://desertcache.github.io/ask/';
 const ORB_ORIGIN = 'https://desertcache.github.io';
 const ORB_SRC = `${ORB_ORIGIN}/samantha-ui/?embed=1&control=1&transparent=1`;
-// The trace takes ~3 s on purpose (Sam: thinking that is too fast doesn't read as thinking); every
-// step it shows is real work, and the summary still reports the real compute time. A turn with
-// more steps (a follow-up, a typo fixed) takes about the same time, so each step is shorter.
-const STEP_MS = 620;
-const TRACE_MS = 3100;
+// Thinking looks the way Claude Code shows it: a glyph that blooms and closes, and a verb picked at
+// random. The match takes under a millisecond, so THINK_MS is only there to let the verb be read:
+// one bloom (Sam: the old ~3 s paced trace was too long and pulled the eye). A first question that
+// is still loading the model shows the line for as long as that takes, and no longer.
+const THINK_MS = 1100;
+const GLYPH_MS = 110;
+// None of these has an emoji form: ✳ does, and phones draw it as a green tile.
+const GLYPHS = ['·', '✢', '∗', '✶', '✻', '✽'];
+const BLOOM = [...GLYPHS, ...GLYPHS.slice(1, -1).reverse()];
+const VERBS = [
+  'Flibbertigibbeting', 'Noodling', 'Pondering', 'Mulling', 'Ruminating', 'Cogitating', 'Percolating',
+  'Puzzling', 'Musing', 'Simmering', 'Tinkering', 'Rummaging', 'Sleuthing', 'Untangling', 'Spelunking',
+  'Moseying', 'Wrangling', 'Sidewinding', 'Prospecting', 'Panning', 'Sifting', 'Roadrunning',
+  'Tumbleweeding', 'Dowsing', 'Stargazing',
+];
 const WORD_MS = 22;
 
 // Suggested questions per section of the page (answer-bank ids; each chip asks the answer's own
@@ -186,7 +198,7 @@ async function loadEngine(progress, bankP) {
     if (done) break;
     parts.push(value);
     got += value.length;
-    progress(total ? `Loading the model… ${Math.min(100, Math.round((got / total) * 100))}%` : `Loading the model… ${(got / 1e6).toFixed(1)} MB`);
+    progress(total ? `loading the model · ${Math.min(100, Math.round((got / total) * 100))}%` : `loading the model · ${(got / 1e6).toFixed(1)} MB`);
   }
   const bytes = new Uint8Array(got);
   let at = 0;
@@ -347,8 +359,11 @@ export function initAsk() {
     dock.dataset.orb = state.toLowerCase();
     orb?.contentWindow?.postMessage({ type: 'orb:state', state }, ORB_ORIGIN);
   };
+  // The live orb is a whole WebGL app in a cross-origin frame, drawn about 42px wide. With a mouse
+  // that's worth it. On phones it stuttered and at times blew out to fill its square frame, so touch
+  // screens keep the drawn orb, which shows the same moods with transforms and opacity only.
   const mountOrb = () => {
-    if (orb || reduced()) return;
+    if (orb || reduced() || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
     orb = document.createElement('iframe');
     orb.src = ORB_SRC;
     orb.title = '';
@@ -379,12 +394,13 @@ export function initAsk() {
   };
   /** @type {Promise<Engine> | null} */
   let engine = null;
-  /** @type {HTMLElement | null} */
+  let engineReady = false;
+  /** @type {HTMLElement | null} the model's download progress, on the thinking line while it loads */
   let loadingLine = null;
   const getEngine = () => {
     if (!engine) {
       engine = loadEngine((text) => { if (loadingLine) loadingLine.textContent = text; }, getBank());
-      engine.catch(() => { engine = null; });
+      engine.then(() => { engineReady = true; }, () => { engine = null; });
     }
     return engine;
   };
@@ -552,6 +568,13 @@ export function initAsk() {
   };
 
   let asking = false;
+  let lastVerb = -1;
+  const pickVerb = () => {
+    let i = Math.floor(Math.random() * VERBS.length);
+    if (i === lastVerb) i = (i + 1) % VERBS.length;
+    lastVerb = i;
+    return VERBS[i];
+  };
   /** @type {Conversation | null} the conversation, started with the first question */
   let convo = null;
   /** The conversation layer from desertcache/ask, or plain matching if it isn't there or fails. @param {Engine} eng */
@@ -573,6 +596,7 @@ export function initAsk() {
     const q = raw.trim();
     if (asking || !q || !log) return;
     asking = true;
+    const started = performance.now();
     dock?.classList.add('is-busy');
     if (input) input.value = '';
     setOpen(true);
@@ -580,14 +604,29 @@ export function initAsk() {
     log.append(el('div', 'dock-msg dock-me', q));
     const bot = el('div', 'dock-msg dock-bot');
     log.append(bot);
-    scrollDown();
     setOrb('THINKING');
 
+    // The thinking line is the summary of the trace, folded; the trace fills in once the match is
+    // done, and the line turns into its receipt (what was searched, and how long it really took).
+    const trace = /** @type {HTMLDetailsElement} */ (el('details', 'dock-trace is-thinking'));
+    const sum = el('summary', 'dock-trace-sum');
+    const glyph = el('span', 'dock-glyph', reduced() ? '✻' : BLOOM[0]);
+    glyph.setAttribute('aria-hidden', 'true');
+    const sumText = el('span', 'dock-verb', `${pickVerb()}…`);
+    const loading = el('span', 'dock-loading', engineReady ? '' : 'loading the model');
+    loadingLine = loading;
+    sum.append(glyph, sumText, loading);
+    // Nothing to unfold until the match is done.
+    sum.addEventListener('click', (e) => { if (trace.classList.contains('is-thinking')) e.preventDefault(); });
+    trace.append(sum);
+    bot.append(trace);
+    scrollDown();
+    let frame = 0;
+    const blooming = reduced() ? 0 : setInterval(() => { glyph.textContent = BLOOM[++frame % BLOOM.length]; }, GLYPH_MS);
+
     try {
-      loadingLine = el('p', 'dock-loading', 'Loading the model…');
-      bot.append(loadingLine);
       const eng = await getEngine();
-      loadingLine.remove();
+      loading.remove();
       loadingLine = null;
 
       // The conversation decides the turn (a plain match, a follow-up, two questions in one, a typo
@@ -603,28 +642,19 @@ export function initAsk() {
         turn = convo.turn(q);
       }
 
-      // The trace: what the model actually did, paced to be read.
-      const trace = /** @type {HTMLDetailsElement} */ (el('details', 'dock-trace'));
-      trace.open = true;
-      const sum = el('summary', 'dock-trace-sum');
-      const sumText = el('span', '', 'Searching…');
-      sum.append(el('span', 'dock-spin'), sumText);
+      // The trace: what the model actually did, there for anyone who opens it.
       const steps = el('ol', 'dock-steps');
-      trace.append(sum, steps);
-      bot.append(trace);
-      const pace = Math.min(STEP_MS, TRACE_MS / Math.max(1, turn.steps.length));
       for (const s of turn.steps) {
-        const li = el('li', 'dock-step is-running');
-        li.append(el('span', 'dock-tick'), el('span', 'dock-step-title', s.title));
+        const li = el('li', 'dock-step');
+        li.append(el('span', 'dock-tick'), el('span', 'dock-step-title', s.title), stepDetail(s, eng));
         steps.append(li);
-        scrollDown();
-        await wait(pace);
-        li.append(stepDetail(s, eng));
-        li.classList.replace('is-running', 'is-done');
       }
-      await wait(STEP_MS * 0.7);
-      trace.open = false;
-      trace.classList.add('is-done');
+      trace.append(steps);
+      await wait(THINK_MS - (performance.now() - started));
+      clearInterval(blooming);
+      glyph.textContent = '';
+      trace.classList.replace('is-thinking', 'is-done');
+      sumText.className = '';
       sumText.textContent = `Searched ${eng.matcher.size} phrasings · ${turn.ms < 1 ? '<1' : turn.ms.toFixed(1)} ms`;
 
       // The answer: one part, or two for a two-part question; a part can be one sentence of an
@@ -655,14 +685,15 @@ export function initAsk() {
       scrollDown();
     } catch (err) {
       console.error('[site] ask failed:', err);
-      loadingLine?.remove();
-      loadingLine = null;
+      trace.remove();
       const p = el('p', 'dock-answer', 'The model could not load just now. You can reach Sam directly: ');
       const a = /** @type {HTMLAnchorElement} */ (el('a', '', 'batessambates@gmail.com'));
       a.href = 'mailto:batessambates@gmail.com';
       p.append(a);
       bot.append(p);
     } finally {
+      clearInterval(blooming);
+      loadingLine = null;
       setOrb('LISTENING');
       dock?.classList.remove('is-busy');
       asking = false;
