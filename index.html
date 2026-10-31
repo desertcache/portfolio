@@ -665,8 +665,9 @@
   </footer>
 
   <!-- Ask about my work: a fixed glass bar. js/ask.js reveals it (no JS, no bar), loads the
-       real Samantha orb (desertcache/samantha-ui, controlled mode) and, on first use, the
-       on-device answer finder from desertcache/ask. Nothing is generated. -->
+       real Samantha orb (desertcache/samantha-ui, controlled mode) on mouse-and-keyboard screens
+       (touch screens keep the drawn orb) and, on first use, the on-device answer finder from
+       desertcache/ask. Nothing is generated. -->
   <aside class="dock" id="dock" aria-label="Ask about my work" hidden>
     <div class="dock-panel" id="dock-panel">
       <div class="dock-panel-inner">
@@ -682,7 +683,7 @@
       </div>
     </div>
     <form class="dock-bar" id="dock-form" autocomplete="off">
-      <span class="dock-orb" id="dock-orb" aria-hidden="true"><span class="dock-orb-still"></span></span>
+      <span class="dock-orb" id="dock-orb" aria-hidden="true"><span class="dock-orb-css"><i class="dock-orb-listen"></i><i class="dock-orb-think"></i><i class="dock-orb-speak"></i></span></span>
       <label class="visually-hidden" for="dock-q">Ask anything about my work</label>
       <input class="dock-input" id="dock-q" type="text" maxlength="200" placeholder="Ask anything about my work" enterkeyhint="send">
       <kbd class="dock-kbd" aria-hidden="true">/</kbd>

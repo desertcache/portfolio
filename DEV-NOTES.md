@@ -613,15 +613,32 @@ row (PR #12), which is gone.
 - **The orb is the real Samantha orb**, `desertcache/samantha-ui` in controlled mode
   (`?embed=1&control=1&transparent=1`: no scene background or post-processing, so it floats on the
   glass with no disc; the glow is a CSS drop-shadow). This page sets its state by `postMessage({ type: 'orb:state', state })`:
-  LISTENING at rest, THINKING while the trace runs, SPEAKING while the answer's words appear. The
+  LISTENING at rest, THINKING while it thinks, SPEAKING while the answer's words appear. The
   orb answers `{ type: 'orb:ready' }` and only accepts messages from desertcache.github.io or
-  localhost. It loads after the page does, for every visitor except reduced motion (still CSS orb).
-- **The trace is the real matching work**, paced (~620 ms a step, ~3 s in all, Sam's call) so it
-  reads as thinking: word pieces, the vector, the comparison, the ranked answers, and the confidence
-  check against the threshold, plus any conversation step (a typo fixed, a split, a follow-up). A
-  turn with more steps keeps the ~3 s total (`TRACE_MS`), so each step is shorter. Scores are shown
-  rounded down, so one just under the bar never reads as the bar. Its summary reports the real
-  compute time. Keep it that way: the bar promises nothing is made up.
+  localhost. It loads after the page does, on `(hover: hover) and (pointer: fine)` screens only.
+- **Touch screens get the drawn orb (2026-10-31).** On phones the live orb stuttered and at times
+  blew out to fill its square frame: a whole WebGL app in a cross-origin frame, under blurred
+  glass, beside the hero's shader, for a 42px picture. `.dock-orb-css` in `css/site.css` draws the
+  same three moods (peach, violet and cyan, coral with a ring going out) as three layers, each
+  always turning, crossfaded by `data-orb`; the incoming layer fades in at once and the outgoing one
+  waits until it's covered, so it never thins out. It moves with transforms and opacity only: a
+  2 s trace of a phone shows 0 paints in every mood, where the old still blob (animated
+  border-radius under a drop-shadow) repainted every frame. Don't give it a `filter` or an
+  animated `border-radius`. Reduced motion gets it still, and desktop shows it until the live orb
+  wakes. The cause inside samantha-ui wasn't found (that repo wasn't reachable from the session
+  that made this change); if it's fixed there, the media query in `mountOrb` is the switch.
+- **Thinking is one line (2026-10-31, replacing the ~3 s paced trace).** Sam found the paced trace
+  too long and distracting. Now the trace's summary is a Claude Code-style thinking line: a glyph
+  that blooms and closes (`BLOOM`, stepped every 110 ms; no glyph with an emoji form, ✳ draws as a
+  green tile on phones) and a verb picked at random (`VERBS`), with light passing over it. It shows
+  for `THINK_MS` (1.1 s) from the question, or for as long as a first question takes to load the
+  model (its progress sits beside the verb), and no longer. Then it turns into the receipt
+  ("Searched 494 phrasings · <1 ms") and the trace sits folded under it: word pieces, the vector,
+  the comparison, the ranked answers, and the confidence check against the threshold, plus any
+  conversation step (a typo fixed, a split, a follow-up). Scores are shown rounded down, so one
+  just under the bar never reads as the bar. The verb is the only playful thing in it; the receipt
+  and the trace stay the real work and the real compute time, because the bar promises nothing
+  is made up.
 - **Answers have a lead, highlights and curated follow-ups** (bank v2: `answer`, `points`, `next`).
   Chips use `next`, falling back to the next-closest matches. The send button is drawn like the page's
   illustrations (paper disc, 1.6px ink line, red-rock arrow; red-rock fill on hover), and it draws
