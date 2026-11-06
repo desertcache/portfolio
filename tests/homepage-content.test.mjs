@@ -99,8 +99,8 @@ test('the side pages and the 404 page show no em dash anywhere a reader looks', 
 });
 
 test('every page a link can be pasted from shows a link preview', () => {
-  // Applications and hiring-manager notes link the work samples directly; a pasted
-  // link with no card looks broken in Slack, LinkedIn and iMessage.
+  // People get sent straight to the work samples; a pasted link with no card looks
+  // broken in Slack, LinkedIn and iMessage.
   const dir = (d) => readdirSync(new URL(`../${d}/`, import.meta.url)).filter((f) => f.endsWith('.html')).map((f) => `${d}/${f}`);
   for (const path of ['index.html', 'arcade.html', 'starship.html', 'skincare.html', ...WORK_SAMPLES, 'blog/index.html', ...dir('blog/posts'), ...dir('blog/research')]) {
     const html = read(path);
