@@ -66,6 +66,15 @@ test('training is counted in people, never leaders', () => {
   }
 });
 
+test('the work samples use the CV\'s wording for the approver dates and the outsourced team', () => {
+  const adoption = readerText(read('work/ai-adoption-program.html')).replace(/\s+/g, ' ');
+  assert.match(adoption, /consultative partner since September 2025/, 'the partner date');
+  assert.match(adoption, /primary PR approver since February 2026/, 'the approver date');
+  const copilot = readerText(read('work/ai-copilot-rollout.html')).replace(/\s+/g, ' ');
+  assert.match(copilot, /I took that team live/, 'took live, as the CV says');
+  assert.doesNotMatch(copilot, /built and lead/i);
+});
+
 test('the blog pages and the posts index show no em dash anywhere a reader looks', () => {
   const dir = (d) => readdirSync(new URL(`../${d}/`, import.meta.url)).filter((f) => f.endsWith('.html')).map((f) => `${d}/${f}`);
   for (const path of ['blog/index.html', ...dir('blog/posts'), ...dir('blog/research')]) {
@@ -90,8 +99,8 @@ test('the side pages and the 404 page show no em dash anywhere a reader looks', 
 });
 
 test('every page a link can be pasted from shows a link preview', () => {
-  // Applications and hiring-manager notes link the work samples directly; a pasted
-  // link with no card looks broken in Slack, LinkedIn and iMessage.
+  // People get sent straight to the work samples; a pasted link with no card looks
+  // broken in Slack, LinkedIn and iMessage.
   const dir = (d) => readdirSync(new URL(`../${d}/`, import.meta.url)).filter((f) => f.endsWith('.html')).map((f) => `${d}/${f}`);
   for (const path of ['index.html', 'arcade.html', 'starship.html', 'skincare.html', ...WORK_SAMPLES, 'blog/index.html', ...dir('blog/posts'), ...dir('blog/research')]) {
     const html = read(path);
@@ -174,12 +183,13 @@ test('the homepage and the Answer Finder write-up quote the same answer and phra
   assert.equal(phrasings.size, 1, `phrasing counts disagree: ${[...phrasings].join(', ')}`);
 });
 
-test('"See the work" opens the Lab right after the hero, and the nav\'s Work link starts at the featured program', () => {
-  assert.match(HOME, /<a class="btn btn-solid" href="#lab">See the work/, 'the hero button');
+test('the hero\'s main button opens the copilot write-up, and the nav\'s Work link starts at the featured program', () => {
+  assert.match(HOME, /<a class="btn btn-solid" href="work\/ai-copilot-rollout\.html">See the AI copilot/, 'the hero button');
+  assert.doesNotMatch(readerText(HOME), /flagship/i, 'the copilot program is the lead, never the game');
   assert.match(HOME, /<nav class="nav-links"[^>]*>\s*<a href="#featured">Work<\/a>/, 'the nav link');
-  assert.ok(HOME.indexOf('id="top"') < HOME.indexOf('id="lab"'), 'the Lab follows the hero');
-  assert.ok(HOME.indexOf('id="lab"') < HOME.indexOf('id="featured"'), 'the Lab comes before the featured program');
-  assert.ok(HOME.indexOf('id="featured"') < HOME.indexOf('id="work"'), 'the featured program comes before the work cards');
+  assert.ok(HOME.indexOf('id="top"') < HOME.indexOf('id="featured"'), 'the featured program follows the hero');
+  assert.ok(HOME.indexOf('id="featured"') < HOME.indexOf('id="lab"'), 'the featured program comes before the Lab');
+  assert.ok(HOME.indexOf('id="lab"') < HOME.indexOf('id="work"'), 'the Lab comes before the work cards');
 });
 
 test('the phone section menu links every section in page order, numbered like the page', () => {

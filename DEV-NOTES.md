@@ -1,4 +1,4 @@
-# Dev notes — desertcache/portfolio
+# Dev notes: desertcache/portfolio
 
 ## The homepage has no build step (v5, 2026-09)
 
@@ -285,9 +285,8 @@ python -m pytest scripts   # the Python scripts: digest ingest, terrain build, d
 reader looks on the homepage or a work sample (text, SVG labels, tab title, link-preview text), every
 `#link` and `data-cs` resolves, and each work card has its dialog, in card order, with prev/next links
 that go round in one loop. It also holds the card from Anthropic's Claude Code team to its exact words
-(quote it, never inflate it) and counts training in people, never leaders. Public copy also has to pass
-the job-search repo's `strategy-2026-09/grep-gate.py` (no DoorDash-internal numbers, codenames or vendor
-names, and no head counts for the outsourced teams).
+(quote it, never inflate it) and counts training in people, never leaders. Public copy also carries no
+employer-internal numbers, codenames or vendor names, and no head counts for the outsourced teams.
 
 Pure logic lives in `js/lib.js` (and its newer siblings, `editions.js`,
 `arizona.js` and `wildlife.js`) precisely so it can be tested without a
@@ -301,8 +300,7 @@ helper doesn't touch the DOM, put it in one of those and test it.
 - `assets/claude-code-card.*` (How I build, Fig. 1) is Sam's photo of the
   package from Anthropic's Claude Code team: a 4:3 crop of the original,
   converted from Display P3 to sRGB, every metadata tag stripped, 1200×900,
-  WebP with a JPEG fallback, lazy-loaded. It is personal recognition: keep
-  it away from anything that says which employer's account it came from.
+  WebP with a JPEG fallback, lazy-loaded.
 - `assets/starship-corridor-headless.*` and `starship-corridor-headed.*` are Fig. 1 of
   `work/starship-agent-fleet.html`: the starship's `corridor` camera from one build, shot by
   `npm run verify` (software renderer, 1.9 fps) and `npm run verify:headed` (real GPU, 141 fps) on the
@@ -369,7 +367,7 @@ npm run build:skincare
 
 Why not the CDN: `cdn.tailwindcss.com` ships ~400KB of JS that JIT-compiles on
 every page load (visible flash of unstyled content), and it serves **no CORS
-header**, so `integrity`/`crossorigin` can't be used — adding SRI there makes
+header**, so `integrity`/`crossorigin` can't be used: adding SRI there makes
 the script fail to load outright. A static sheet costs a build step and removes
 the third-party script entirely.
 
@@ -382,7 +380,7 @@ Two things about that build worth knowing before you touch it:
   correct CSS. Plain `var(--x)` would silently break all of them.
 - Rules in `skincare.src.css` sit **outside** any layer directive on purpose.
   Tailwind content-scans layered CSS and can drop selectors that never appear
-  in the HTML — and `[data-theme="dark"]` / `.theme-fade` only ever exist at
+  in the HTML, and `[data-theme="dark"]` / `.theme-fade` only ever exist at
   runtime. (When grepping the built file: the minifier unquotes attribute
   selectors to `[data-theme=dark]` and collapses `::after` to `:after`.)
 
@@ -665,15 +663,15 @@ row (PR #12), which is gone.
   opens and asks, and the model starts loading on pointer-enter. Each question is an exact phrasing
   in desertcache/ask's bank (`start-here`, `ai-quality`, `claude-code`), so it matches at 1.00;
   keep it that way if you change one. In one column (under 1100px) `.hero-main` is
-  `display: contents` and the card is ordered before the Claude Code note. Under 640px it moves up
-  under the headline, ahead of the lede, the calls to action and the numbers, so a 390x844 phone
-  shows its first question on the first screen. Keep the card about this height: the hawk's thermal
-  sits above it.
+  `display: contents` and the card is ordered before the Claude Code note. Under 640px it sits right
+  under the calls to action, ahead of the lede and the numbers, so a 390x844 phone shows the main
+  button and the card's first question on the first screen. Keep the card about this height: the
+  hawk's thermal sits above it.
 
 ## Getting around: the start of the route and the phone menu (2026-10-05)
 
-- "See the work" goes to `#lab`, the section right after the hero, so the first thing it lands on
-  is something to open. The nav's Work link goes to `#featured` (the copilot program), not `#work`,
+- The hero's main button opens `work/ai-copilot-rollout.html`, so the first click lands on the
+  strongest proof. The nav's Work link goes to `#featured` (the copilot program), not `#work`,
   so nobody skips the flagship; the scroll-spy keeps Work lit through both (`alias` in `js/chrome.js`).
 - Under 900px the nav links fold away and a button opens `#nav-menu`: every section, numbered like
   its eyebrow (a test holds the two together), plus the Résumé. The behaviour is in
@@ -688,11 +686,14 @@ row (PR #12), which is gone.
   grows. They say 62 and 494: the bank that ships with this page (desertcache/ask, branch
   `homepage-cuts`). The Lab's chips include its `training-wheels` and `field-guide-evals` answers;
   `ask.js` skips an id the live bank doesn't have yet, so the two deploys can land in either order.
-- **Section order (2026-10-27, second pass):** 01 Lab, 02 Featured, 03 Selected work, 04 How I
-  build, 05 Background, 06 Toolkit, the review's order. The Lab sits right after the hero, so the
-  first thing below it is something to open. After the dark Lab the tint alternates: Featured, How I
-  build and Toolkit are tinted, Selected work and Background aren't. The nav links still read Work,
-  About, Lab, Contact on every page: changing their order would mean republishing every blog post.
+- **Section order (2026-11-05):** 01 Featured, 02 Lab, 03 Selected work, 04 How I build, 05
+  Background, 06 Toolkit. The copilot program sits right after the hero, so the page leads with
+  production AI, and the hero's Try it card keeps something to open on the first screen. The tint
+  alternates around the dark Lab: Featured, How I build and Toolkit are tinted, Selected work and
+  Background aren't. The nav links still read Work, About, Lab, Contact on every page: changing
+  their order would mean republishing every blog post.
+- **Section order (2026-10-27, second pass, superseded):** 01 Lab, 02 Featured, 03 Selected work, 04
+  How I build, 05 Background, 06 Toolkit, with the main button going to `#lab`.
 - **Section order (2026-10-27, first pass, superseded):** 01 Featured, 02 Lab, 03 Selected work, 04
   Background, 05 How I build, 06 Toolkit. The Lab moved up from ~10,600 px down on a laptop to ~2,900.
 - **Background and Toolkit, cut back (2026-10-27):** Background keeps its heading, the pattern
@@ -709,7 +710,7 @@ row (PR #12), which is gone.
 
 ## Other invariants
 
-- All asset paths RELATIVE (no leading `/`) — site lives at /portfolio/ sub-path, no CNAME.
+- All asset paths RELATIVE (no leading `/`): the site lives at the /portfolio/ sub-path, no CNAME.
   The one exception is `404.html`: Pages serves it at whatever URL was missing, so its paths are
   absolute (`/portfolio/...`, a test enforces it). A custom domain would mean editing those.
 - **Fonts are self-hosted (2026-10-08).** No page loads Google Fonts: the `@font-face` rules are
@@ -725,7 +726,7 @@ row (PR #12), which is gone.
 - `sitemap.xml` lists the public pages (not the two noindex work samples, not skincare). Submit
   it in Search Console: robots.txt only counts at the host root, which this project site isn't.
 - `.nojekyll` must stay (serves `arcade/` module folder verbatim).
-- `mockups/` is untracked on purpose — never `git add -A`.
+- `mockups/` is untracked on purpose: never `git add -A`.
 - Every play page loads `css/site.css` for the chrome (since 2026-09-27):
   arcade.html and starship.html add `css/play.css` (see "The Lab's rooms"),
   and skincare.html adds its own Tailwind build, `skincare.css`.
