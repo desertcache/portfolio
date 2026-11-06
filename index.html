@@ -97,8 +97,8 @@
     <!-- The phone version of the nav: under 900px the links above fold away, so this lists every section. -->
     <nav class="nav-menu" id="nav-menu" aria-label="Sections on this page" hidden>
       <ol class="nav-menu-list">
-        <li><a href="#lab"><span class="nav-menu-num">01</span>Lab</a></li>
-        <li><a href="#featured"><span class="nav-menu-num">02</span>Featured program</a></li>
+        <li><a href="#featured"><span class="nav-menu-num">01</span>Featured program</a></li>
+        <li><a href="#lab"><span class="nav-menu-num">02</span>Lab</a></li>
         <li><a href="#work"><span class="nav-menu-num">03</span>Selected work</a></li>
         <li><a href="#build"><span class="nav-menu-num">04</span>How I build</a></li>
         <li><a href="#about"><span class="nav-menu-num">05</span>Background</a></li>
@@ -174,11 +174,66 @@
       </div>
     </section>
 
+    <!-- ============================ FEATURED ============================ -->
+    <section class="section section-tint" id="featured" aria-labelledby="featured-title">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <p class="eyebrow"><span class="eyebrow-num">01</span> Featured program</p>
+          <h2 class="section-title" id="featured-title">I built an AI copilot, then took an outsourced support team <em>live</em> on it.</h2>
+          <p class="section-lede">Support agents diagnose point-of-sale integration cases across half a dozen internal systems, graded against a long troubleshooting playbook. The copilot answers from that same playbook, other teams now run their own AI agents inside the workspace, and an outsourced team works live cases in it. This is the whole loop in one program: build it, prove it, roll it out, measure it.</p>
+          <div class="head-illo" aria-hidden="true"><svg class="illo illo-pear" viewBox="0 0 360 300" focusable="false"><use href="assets/desert.svg#prickly-pear"/></svg></div>
+        </header>
+
+        <div class="mig">
+          <figure class="mig-viz reveal" aria-labelledby="units-cap">
+            <div class="mig-headline">
+              <span class="mig-big" data-count>4</span>
+              <span class="mig-big-label">weeks from first prototype to an internal pilot</span>
+            </div>
+            <figcaption class="units-cap" id="units-cap"><span class="units-note">Build it, prove it, roll it out, measure it.</span></figcaption>
+          </figure>
+          <ol class="steps">
+            <li class="step reveal">
+              <span class="step-n">Problem</span>
+              <p>Every case meant hopping across a stack of internal tools, and the answer to “what next?” lived in a long playbook agents are audited against. A generic chatbot can't answer from that.</p>
+            </li>
+            <li class="step reveal">
+              <span class="step-n">Bet</span>
+              <p>Answer from the playbook, not the model. Retrieval runs on the server and returns the sections it used, so every grounded answer cites a real source and the model never gets to invent one.</p>
+            </li>
+            <li class="step reveal">
+              <span class="step-n">Build</span>
+              <p>A React and TypeScript workspace, a Node backend-for-frontend, and retrieval tuned on the real playbook instead of a test fixture, which exposed four defects the fixture had hidden. Model changes are proven through the company's AI gateway before they ship: a control, the new setting, and a request that should fail. Other teams' agents plug in as panels instead of shipping another tab.</p>
+            </li>
+            <li class="step reveal">
+              <span class="step-n">Rollout</span>
+              <p>The first outsourced support team couldn't get in, and every failure looked like the same generic error. I proved their access one layer at a time (identity, device trust, app permissions, then a blocked internal call), generated their training kit from one source with a verifier, and now coach their live cases against a resolution-time target.</p>
+            </li>
+            <li class="step reveal">
+              <span class="step-n">Result</span>
+              <div>
+                <dl class="mini-stats">
+                  <div><dt>Answers</dt><dd>Cited <small>to the playbook agents are graded on</small></dd></div>
+                  <div><dt>Other teams' agents</dt><dd>Running inside it</dd></div>
+                  <div><dt>Outsourced team</dt><dd>Live <small>on real cases</small></dd></div>
+                  <div><dt>Usage</dt><dd>Well past <small>the pre-pilot baseline</small></dd></div>
+                </dl>
+                <p class="step-aside">DoorDash's numbers stay internal. The write-up covers how each result was measured.</p>
+                <p class="step-more"><a class="link-arrow" href="work/ai-copilot-rollout.html">Read the full write-up <span aria-hidden="true">→</span></a></p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+      <div class="trail trail-snake" aria-hidden="true"><svg class="walker" data-animal="rattlesnake" viewBox="0 0 182 23" focusable="false"><use href="assets/critters.svg#rattlesnake"/></svg></div>
+      <div class="bed bed-left reveal" aria-hidden="true"><svg class="flora" viewBox="0 0 110 128" style="--h:74px" focusable="false"><use href="assets/bloom.svg#creosote"/></svg><svg class="flora" viewBox="0 0 120 72" style="--h:42px" focusable="false"><use href="assets/bloom.svg#datura"/></svg><svg class="flora" viewBox="0 0 110 76" style="--h:40px" focusable="false"><use href="assets/desert.svg#poppies"/></svg><svg class="flora flip" viewBox="0 0 50 40" style="--h:24px" focusable="false"><use href="assets/bloom.svg#grass-b"/></svg></div>
+    </section>
+
     <!-- =============================== LAB =============================== -->
     <section class="section lab" id="lab" aria-labelledby="lab-title">
       <div class="wrap">
         <header class="section-head reveal">
-          <p class="eyebrow"><span class="eyebrow-num">01</span> Lab</p>
+          <p class="eyebrow"><span class="eyebrow-num">02</span> Lab</p>
           <h2 class="section-title" id="lab-title">Demos you can <em>walk around in.</em></h2>
           <p class="section-lede">Demos that run in your browser, and two open tools for working with AI agents.</p>
         </header>
@@ -293,61 +348,6 @@
         <div class="trail lab-trail"><svg class="runner" viewBox="0 0 176 115" focusable="false"><use href="assets/fauna.svg#roadrunner"/></svg></div>
         <svg class="sil sil-pear" viewBox="0 0 360 300" focusable="false"><use href="assets/desert.svg#prickly-pear"/></svg><svg class="sil sil-saguaro" viewBox="0 0 232 534" focusable="false"><use href="assets/desert.svg#saguaro"/></svg><svg class="sil sil-ocotillo" viewBox="0 0 300 342" focusable="false"><use href="assets/desert.svg#ocotillo"/></svg><svg class="sil sil-barrel" viewBox="0 0 140 162" focusable="false"><use href="assets/desert.svg#barrel"/></svg><svg class="sil sil-palo" viewBox="0 0 400 342" focusable="false"><use href="assets/desert.svg#palo-verde"/></svg><svg class="sil sil-young" viewBox="0 0 160 344" focusable="false"><use href="assets/desert.svg#saguaro-young"/></svg><svg class="sil sil-saguaro2" viewBox="0 0 232 534" focusable="false"><use href="assets/desert.svg#saguaro"/></svg><svg class="sil sil-agave" viewBox="0 0 200 306" focusable="false"><use href="assets/desert.svg#agave"/></svg><svg class="sil sil-lupine" viewBox="0 0 80 116" focusable="false"><use href="assets/desert.svg#lupine"/></svg><svg class="sil sil-poppies" viewBox="0 0 110 76" focusable="false"><use href="assets/desert.svg#poppies"/></svg><svg class="sil sil-grass" viewBox="0 0 60 48" focusable="false"><use href="assets/desert.svg#grass"/></svg>
       </div>
-    </section>
-
-    <!-- ============================ FEATURED ============================ -->
-    <section class="section section-tint" id="featured" aria-labelledby="featured-title">
-      <div class="wrap">
-        <header class="section-head reveal">
-          <p class="eyebrow"><span class="eyebrow-num">02</span> Featured program</p>
-          <h2 class="section-title" id="featured-title">I built an AI copilot, then took an outsourced support team <em>live</em> on it.</h2>
-          <p class="section-lede">Support agents diagnose point-of-sale integration cases across half a dozen internal systems, graded against a long troubleshooting playbook. The copilot answers from that same playbook, other teams now run their own AI agents inside the workspace, and an outsourced team works live cases in it. This is the whole loop in one program: build it, prove it, roll it out, measure it.</p>
-          <div class="head-illo" aria-hidden="true"><svg class="illo illo-pear" viewBox="0 0 360 300" focusable="false"><use href="assets/desert.svg#prickly-pear"/></svg></div>
-        </header>
-
-        <div class="mig">
-          <figure class="mig-viz reveal" aria-labelledby="units-cap">
-            <div class="mig-headline">
-              <span class="mig-big" data-count>4</span>
-              <span class="mig-big-label">weeks from first prototype to an internal pilot</span>
-            </div>
-            <figcaption class="units-cap" id="units-cap"><span class="units-note">Build it, prove it, roll it out, measure it.</span></figcaption>
-          </figure>
-          <ol class="steps">
-            <li class="step reveal">
-              <span class="step-n">Problem</span>
-              <p>Every case meant hopping across a stack of internal tools, and the answer to “what next?” lived in a long playbook agents are audited against. A generic chatbot can't answer from that.</p>
-            </li>
-            <li class="step reveal">
-              <span class="step-n">Bet</span>
-              <p>Answer from the playbook, not the model. Retrieval runs on the server and returns the sections it used, so every grounded answer cites a real source and the model never gets to invent one.</p>
-            </li>
-            <li class="step reveal">
-              <span class="step-n">Build</span>
-              <p>A React and TypeScript workspace, a Node backend-for-frontend, and retrieval tuned on the real playbook instead of a test fixture, which exposed four defects the fixture had hidden. Model changes are proven through the company's AI gateway before they ship: a control, the new setting, and a request that should fail. Other teams' agents plug in as panels instead of shipping another tab.</p>
-            </li>
-            <li class="step reveal">
-              <span class="step-n">Rollout</span>
-              <p>The first outsourced support team couldn't get in, and every failure looked like the same generic error. I proved their access one layer at a time (identity, device trust, app permissions, then a blocked internal call), generated their training kit from one source with a verifier, and now coach their live cases against a resolution-time target.</p>
-            </li>
-            <li class="step reveal">
-              <span class="step-n">Result</span>
-              <div>
-                <dl class="mini-stats">
-                  <div><dt>Answers</dt><dd>Cited <small>to the playbook agents are graded on</small></dd></div>
-                  <div><dt>Other teams' agents</dt><dd>Running inside it</dd></div>
-                  <div><dt>Outsourced team</dt><dd>Live <small>on real cases</small></dd></div>
-                  <div><dt>Usage</dt><dd>Well past <small>the pre-pilot baseline</small></dd></div>
-                </dl>
-                <p class="step-aside">DoorDash's numbers stay internal. The write-up covers how each result was measured.</p>
-                <p class="step-more"><a class="link-arrow" href="work/ai-copilot-rollout.html">Read the full write-up <span aria-hidden="true">→</span></a></p>
-              </div>
-            </li>
-          </ol>
-        </div>
-      </div>
-      <div class="trail trail-snake" aria-hidden="true"><svg class="walker" data-animal="rattlesnake" viewBox="0 0 182 23" focusable="false"><use href="assets/critters.svg#rattlesnake"/></svg></div>
-      <div class="bed bed-left reveal" aria-hidden="true"><svg class="flora" viewBox="0 0 110 128" style="--h:74px" focusable="false"><use href="assets/bloom.svg#creosote"/></svg><svg class="flora" viewBox="0 0 120 72" style="--h:42px" focusable="false"><use href="assets/bloom.svg#datura"/></svg><svg class="flora" viewBox="0 0 110 76" style="--h:40px" focusable="false"><use href="assets/desert.svg#poppies"/></svg><svg class="flora flip" viewBox="0 0 50 40" style="--h:24px" focusable="false"><use href="assets/bloom.svg#grass-b"/></svg></div>
     </section>
 
     <!-- ============================== WORK ============================== -->

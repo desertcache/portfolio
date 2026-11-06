@@ -688,11 +688,14 @@ row (PR #12), which is gone.
   grows. They say 62 and 494: the bank that ships with this page (desertcache/ask, branch
   `homepage-cuts`). The Lab's chips include its `training-wheels` and `field-guide-evals` answers;
   `ask.js` skips an id the live bank doesn't have yet, so the two deploys can land in either order.
-- **Section order (2026-10-27, second pass):** 01 Lab, 02 Featured, 03 Selected work, 04 How I
-  build, 05 Background, 06 Toolkit, the review's order. The Lab sits right after the hero, so the
-  first thing below it is something to open. After the dark Lab the tint alternates: Featured, How I
-  build and Toolkit are tinted, Selected work and Background aren't. The nav links still read Work,
-  About, Lab, Contact on every page: changing their order would mean republishing every blog post.
+- **Section order (2026-11-05):** 01 Featured, 02 Lab, 03 Selected work, 04 How I build, 05
+  Background, 06 Toolkit. The copilot program sits right after the hero, so the page leads with
+  production AI, and the hero's Try it card keeps something to open on the first screen. The tint
+  alternates around the dark Lab: Featured, How I build and Toolkit are tinted, Selected work and
+  Background aren't. The nav links still read Work, About, Lab, Contact on every page: changing
+  their order would mean republishing every blog post.
+- **Section order (2026-10-27, second pass, superseded):** 01 Lab, 02 Featured, 03 Selected work, 04
+  How I build, 05 Background, 06 Toolkit, with the main button going to `#lab`.
 - **Section order (2026-10-27, first pass, superseded):** 01 Featured, 02 Lab, 03 Selected work, 04
   Background, 05 How I build, 06 Toolkit. The Lab moved up from ~10,600 px down on a laptop to ~2,900.
 - **Background and Toolkit, cut back (2026-10-27):** Background keeps its heading, the pattern

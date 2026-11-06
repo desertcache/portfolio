@@ -178,9 +178,9 @@ test('the hero\'s main button opens the copilot write-up, and the nav\'s Work li
   assert.match(HOME, /<a class="btn btn-solid" href="work\/ai-copilot-rollout\.html">See the AI copilot/, 'the hero button');
   assert.doesNotMatch(readerText(HOME), /flagship/i, 'the copilot program is the lead, never the game');
   assert.match(HOME, /<nav class="nav-links"[^>]*>\s*<a href="#featured">Work<\/a>/, 'the nav link');
-  assert.ok(HOME.indexOf('id="top"') < HOME.indexOf('id="lab"'), 'the Lab follows the hero');
-  assert.ok(HOME.indexOf('id="lab"') < HOME.indexOf('id="featured"'), 'the Lab comes before the featured program');
-  assert.ok(HOME.indexOf('id="featured"') < HOME.indexOf('id="work"'), 'the featured program comes before the work cards');
+  assert.ok(HOME.indexOf('id="top"') < HOME.indexOf('id="featured"'), 'the featured program follows the hero');
+  assert.ok(HOME.indexOf('id="featured"') < HOME.indexOf('id="lab"'), 'the featured program comes before the Lab');
+  assert.ok(HOME.indexOf('id="lab"') < HOME.indexOf('id="work"'), 'the Lab comes before the work cards');
 });
 
 test('the phone section menu links every section in page order, numbered like the page', () => {
