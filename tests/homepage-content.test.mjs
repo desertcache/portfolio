@@ -66,6 +66,15 @@ test('training is counted in people, never leaders', () => {
   }
 });
 
+test('the work samples use the CV\'s wording for the approver dates and the outsourced team', () => {
+  const adoption = readerText(read('work/ai-adoption-program.html')).replace(/\s+/g, ' ');
+  assert.match(adoption, /consultative partner since September 2025/, 'the partner date');
+  assert.match(adoption, /primary PR approver since February 2026/, 'the approver date');
+  const copilot = readerText(read('work/ai-copilot-rollout.html')).replace(/\s+/g, ' ');
+  assert.match(copilot, /I took that team live/, 'took live, as the CV says');
+  assert.doesNotMatch(copilot, /built and lead/i);
+});
+
 test('the blog pages and the posts index show no em dash anywhere a reader looks', () => {
   const dir = (d) => readdirSync(new URL(`../${d}/`, import.meta.url)).filter((f) => f.endsWith('.html')).map((f) => `${d}/${f}`);
   for (const path of ['blog/index.html', ...dir('blog/posts'), ...dir('blog/research')]) {
