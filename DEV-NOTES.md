@@ -665,15 +665,15 @@ row (PR #12), which is gone.
   opens and asks, and the model starts loading on pointer-enter. Each question is an exact phrasing
   in desertcache/ask's bank (`start-here`, `ai-quality`, `claude-code`), so it matches at 1.00;
   keep it that way if you change one. In one column (under 1100px) `.hero-main` is
-  `display: contents` and the card is ordered before the Claude Code note. Under 640px it moves up
-  under the headline, ahead of the lede, the calls to action and the numbers, so a 390x844 phone
-  shows its first question on the first screen. Keep the card about this height: the hawk's thermal
-  sits above it.
+  `display: contents` and the card is ordered before the Claude Code note. Under 640px it sits right
+  under the calls to action, ahead of the lede and the numbers, so a 390x844 phone shows the main
+  button and the card's first question on the first screen. Keep the card about this height: the
+  hawk's thermal sits above it.
 
 ## Getting around: the start of the route and the phone menu (2026-10-05)
 
-- "See the work" goes to `#lab`, the section right after the hero, so the first thing it lands on
-  is something to open. The nav's Work link goes to `#featured` (the copilot program), not `#work`,
+- The hero's main button opens `work/ai-copilot-rollout.html`, so the first click lands on the
+  strongest proof. The nav's Work link goes to `#featured` (the copilot program), not `#work`,
   so nobody skips the flagship; the scroll-spy keeps Work lit through both (`alias` in `js/chrome.js`).
 - Under 900px the nav links fold away and a button opens `#nav-menu`: every section, numbered like
   its eyebrow (a test holds the two together), plus the Résumé. The behaviour is in

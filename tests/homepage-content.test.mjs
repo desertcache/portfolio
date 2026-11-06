@@ -174,8 +174,9 @@ test('the homepage and the Answer Finder write-up quote the same answer and phra
   assert.equal(phrasings.size, 1, `phrasing counts disagree: ${[...phrasings].join(', ')}`);
 });
 
-test('"See the work" opens the Lab right after the hero, and the nav\'s Work link starts at the featured program', () => {
-  assert.match(HOME, /<a class="btn btn-solid" href="#lab">See the work/, 'the hero button');
+test('the hero\'s main button opens the copilot write-up, and the nav\'s Work link starts at the featured program', () => {
+  assert.match(HOME, /<a class="btn btn-solid" href="work\/ai-copilot-rollout\.html">See the AI copilot/, 'the hero button');
+  assert.doesNotMatch(readerText(HOME), /flagship/i, 'the copilot program is the lead, never the game');
   assert.match(HOME, /<nav class="nav-links"[^>]*>\s*<a href="#featured">Work<\/a>/, 'the nav link');
   assert.ok(HOME.indexOf('id="top"') < HOME.indexOf('id="lab"'), 'the Lab follows the hero');
   assert.ok(HOME.indexOf('id="lab"') < HOME.indexOf('id="featured"'), 'the Lab comes before the featured program');
