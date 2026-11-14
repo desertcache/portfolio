@@ -45,7 +45,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preload" href="assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
-  <link rel="stylesheet" href="css/site.css?v=2026-11-14">
+  <link rel="stylesheet" href="css/site.css?v=2026-11-14b">
   <script type="module" src="js/main.js"></script>
 
   <script type="application/ld+json">
@@ -348,7 +348,7 @@
             </div>
             <div class="lab-card-body">
               <h3 class="lab-card-title"><a class="lab-card-link" href="work/painted-skyline.html">The painted skyline<span class="lab-card-go" aria-hidden="true">→</span></a></h3>
-              <p>The mountain at the foot of this page is a pastel drawing made by code: more than 100,000 strokes rubbed onto simulated paper, with no image model and no drawing library. Claude wrote the renderer and drew it. Switch the theme and the hour changes.</p>
+              <p>The mountain at the foot of this page is a pastel drawing made by code: more than 100,000 strokes rubbed onto simulated paper, with no image model and no drawing library. Claude wrote the renderer and drew it at five hours of the day. The one you see depends on the theme and on the time in Phoenix.</p>
               <p class="lab-how"><span class="lab-how-label">How it works</span>The paper is a height map. A stroke leaves pigment only where its pressure beats the paper's tooth at that pixel, so a light touch catches the peaks and lets the layer underneath show through. The ridge comes from the same elevation data as the map up top.</p>
               <ul class="tags"><li>Plain JavaScript</li><li>No image model</li><li>No dependencies</li></ul>
               <div class="lab-links">
@@ -578,6 +578,7 @@
           </div>
         </div>
       </div>
+      <div class="trail trail-quail" aria-hidden="true"><svg class="walker" data-animal="quail" viewBox="0 0 80 61" focusable="false"><use href="assets/critters.svg#quail"/></svg><svg class="walker" data-animal="chick" data-gap="0.95" style="--i:1" viewBox="0 0 38 32" focusable="false"><use href="assets/critters.svg#chick"/></svg><svg class="walker" data-animal="chick" data-gap="0.66" style="--i:2" viewBox="0 0 38 32" focusable="false"><use href="assets/critters.svg#chick"/></svg><svg class="walker" data-animal="chick" data-gap="0.66" style="--i:3" viewBox="0 0 38 32" focusable="false"><use href="assets/critters.svg#chick"/></svg></div>
       <div class="bed bed-left reveal" aria-hidden="true"><svg class="flora flip" viewBox="0 0 110 76" style="--h:38px" focusable="false"><use href="assets/desert.svg#poppies"/></svg><svg class="flora flip" viewBox="0 0 70 136" style="--h:84px" focusable="false"><use href="assets/desert.svg#penstemon"/></svg><svg class="plant" viewBox="0 0 140 162" style="--h:44px" focusable="false"><use href="assets/desert.svg#barrel"/></svg></div>
     </section>
 
@@ -644,7 +645,7 @@
     <!-- ============================== CONTACT ============================== -->
     <section class="contact" id="contact" aria-labelledby="contact-title">
       <div class="wrap">
-        <div class="head-illo contact-illo reveal" aria-hidden="true"><svg class="illo illo-ocotillo" viewBox="0 0 300 342" focusable="false"><use href="assets/desert.svg#ocotillo"/></svg><svg class="illo illo-barrel" viewBox="0 0 140 162" focusable="false"><use href="assets/desert.svg#barrel"/></svg></div>
+        <div class="head-illo contact-illo reveal" aria-hidden="true"><svg class="illo illo-ocotillo" viewBox="0 0 300 342" focusable="false"><use href="assets/desert.svg#ocotillo"/></svg><svg class="illo illo-barrel" viewBox="0 0 140 162" focusable="false"><use href="assets/desert.svg#barrel"/></svg><span class="hummer"><svg class="hummer-wings" viewBox="0 0 62 54" focusable="false"><use href="assets/fauna.svg#hummingbird-wing"/></svg><svg viewBox="0 0 62 54" focusable="false"><use href="assets/fauna.svg#hummingbird"/></svg></span></div>
         <h2 class="contact-title reveal" id="contact-title">Let's build the system that fixes <em>the bottleneck.</em></h2>
         <div class="contact-grid reveal">
           <div class="contact-lede">
@@ -668,7 +669,7 @@
     <!-- The painted skyline: the footer's own ridge, drawn in pastel by scripts/paint/ (DEV-NOTES). One picture per
          theme; both are lazy and only the visible one is fetched. Not a <section>: it has no place in the nav. -->
     <figure class="plate" id="painted-skyline">
-      <figcaption class="wrap plate-cap"><span class="plate-day">Camelback at first light.</span><span class="plate-dusk">Camelback at last light.</span> A pastel drawing made by Claude in plain JavaScript, on the same real ridge as the map up top. <a href="work/painted-skyline.html">How it was painted <span aria-hidden="true">→</span></a></figcaption>
+      <figcaption class="wrap plate-cap"><span class="plate-day">Camelback at first light.</span><span class="plate-dusk">Camelback at last light.</span> A pastel drawing made by Claude in plain JavaScript, on the same real ridge as the map up top. <span class="plate-clock" hidden>The hour follows the clock in Phoenix. </span><a href="work/painted-skyline.html">How it was painted <span aria-hidden="true">→</span></a></figcaption>
       <picture class="plate-day">
         <source type="image/webp" srcset="assets/painted/camelback-morning-1200.webp 1200w, assets/painted/camelback-morning-2400.webp 2400w" sizes="100vw">
         <img src="assets/painted/camelback-morning-1200.jpg" srcset="assets/painted/camelback-morning-1200.jpg 1200w, assets/painted/camelback-morning-2400.jpg 2400w" sizes="100vw" width="2400" height="1200" loading="lazy" decoding="async" alt="A pastel drawing of Camelback Mountain at first light: three hot-air balloons over the valley, saguaros, a palo verde in bloom, and a quail leading her chicks.">
@@ -681,7 +682,7 @@
   </main>
 
   <footer class="footer">
-    <div class="trail trail-javelina" aria-hidden="true"><svg class="walker" data-animal="javelina" viewBox="0 0 127 72" focusable="false"><use href="assets/critters.svg#javelina"/></svg></div>
+    <div class="trail trail-javelina" aria-hidden="true"><svg class="walker" data-animal="javelina" viewBox="0 0 118 71" focusable="false"><use href="assets/critters.svg#javelina"/></svg></div>
     <div class="bed footer-bed footer-bed-l reveal" aria-hidden="true"><svg class="flora flip" viewBox="0 0 92 68" style="--h:36px" focusable="false"><use href="assets/bloom.svg#poppies-b"/></svg><svg class="flora flip" viewBox="0 0 70 130" style="--h:64px" focusable="false"><use href="assets/bloom.svg#lupine-b"/></svg><svg class="plant" viewBox="0 0 110 86" style="--h:44px" focusable="false"><use href="assets/desert.svg#hedgehog"/></svg><svg class="flora flip" viewBox="0 0 100 104" style="--h:52px" focusable="false"><use href="assets/bloom.svg#marigold"/></svg><svg class="flora" viewBox="0 0 130 96" style="--h:46px" focusable="false"><use href="assets/desert.svg#brittlebush"/></svg><svg class="flora flip" viewBox="0 0 60 48" style="--h:26px" focusable="false"><use href="assets/desert.svg#grass"/></svg><svg class="flora flip" viewBox="0 0 100 76" style="--h:40px" focusable="false"><use href="assets/bloom.svg#fairy-duster"/></svg></div>
     <div class="bed footer-bed footer-bed-r reveal" aria-hidden="true"><svg class="flora flip" viewBox="0 0 112 86" style="--h:46px" focusable="false"><use href="assets/bloom.svg#chuparosa"/></svg><svg class="flora flip" viewBox="0 0 70 124" style="--h:62px" focusable="false"><use href="assets/bloom.svg#firecracker"/></svg><svg class="plant flip" viewBox="0 0 72 52" style="--h:28px" focusable="false"><use href="assets/bloom.svg#pincushion"/></svg><svg class="flora flip" viewBox="0 0 120 72" style="--h:40px" focusable="false"><use href="assets/bloom.svg#datura"/></svg><svg class="flora flip" viewBox="0 0 110 128" style="--h:66px" focusable="false"><use href="assets/bloom.svg#creosote"/></svg><svg class="flora flip" viewBox="0 0 84 114" style="--h:56px" focusable="false"><use href="assets/bloom.svg#globemallow-b"/></svg></div>
     <div class="wrap footer-inner">

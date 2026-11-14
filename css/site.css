@@ -156,6 +156,10 @@
   --hawk-shade: #1c1624;
   --hawk-shade-a: 0.1;
   --fauna-javelina: #cbbfb4;    /* grizzled grey */
+  --fauna-quail: #d2ccc9;       /* Gambel's quail grey */
+  --fauna-chick: #e8dab9;       /* down */
+  --fauna-hummer: #b9cfb2;      /* a hummingbird's green back */
+  --fauna-gorget: #c2317a;      /* ...and its throat */
   --fauna-snake: #e5d3b3;       /* diamondback tan */
   --fauna-scorpion: #ecdcab;    /* desert hairy scorpion straw */
   --fauna-toad: #cfcca0;        /* Sonoran Desert toad olive */
@@ -240,6 +244,10 @@
   --hawk-shade: #000;
   --hawk-shade-a: 0.45;
   --fauna-javelina: #3b3040;
+  --fauna-quail: #3a3342;
+  --fauna-chick: #403832;
+  --fauna-hummer: #2f4034;
+  --fauna-gorget: #ff5fa2;
   --fauna-snake: #3e3341;
   --fauna-scorpion: rgba(80, 255, 220, 0.14);
   --fauna-toad: #34382b;
@@ -2060,7 +2068,8 @@ body:has(.plate) .footer::before { display: none; }
 /* The rest of the neighbourhood (assets/critters.svg), one to a section and
    each on its own trail in the section's bottom padding, behind its flower
    bed: a rattlesnake that slithers, a scorpion that darts, a toad that hops,
-   and a javelina that trots into the footer (js/trails.js has their gaits). */
+   a quail hurrying her chicks along, and a javelina that trots into the
+   footer (js/trails.js has their gaits). */
 .walker {
   position: absolute;
   bottom: 0;
@@ -2078,6 +2087,15 @@ body:has(.plate) .footer::before { display: none; }
 .walker[data-animal="rattlesnake"] { --illo-paper: var(--fauna-snake); }
 .walker[data-animal="scorpion"] { --illo-paper: var(--fauna-scorpion); }
 .walker[data-animal="toad"] { --illo-paper: var(--fauna-toad); }
+.walker[data-animal="quail"] { --illo-paper: var(--fauna-quail); }
+/* a chick is half the trail's height and, without the script, stands in line behind its mother
+   (--i is its place in the line) */
+.walker[data-animal="chick"] {
+  --illo-paper: var(--fauna-chick);
+  height: 54%;
+  left: calc(var(--rest, var(--run-from)) * 100% - (0.3 + var(--i, 1) * 0.66) * var(--th, 30px));
+}
+.trail.is-live .walker[data-animal="chick"] { left: 0; }
 /* at dusk the scorpion glows, the way scorpions do under ultraviolet light */
 [data-theme="dark"] .walker[data-animal="scorpion"] {
   --illo-line: #8ffbe6;
@@ -2087,10 +2105,12 @@ body:has(.plate) .footer::before { display: none; }
 }
 /* these runs start and end off-screen, in sections that don't clip; clip the
    trail sideways only (a toad in mid-hop rises out of its box) */
-.trail-snake, .trail-scorpion, .trail-toad, .trail-javelina { overflow-x: clip; }
+.trail-snake, .trail-scorpion, .trail-toad, .trail-javelina, .trail-quail { overflow-x: clip; }
 .trail-snake { bottom: 10px; height: clamp(15px, 1.5vw, 21px); --run-from: 1.1; --run-to: -0.1; --rest: 0.64; }
 .trail-scorpion { bottom: 8px; height: clamp(26px, 2.4vw, 34px); --run-from: -0.06; --run-to: 0.74; --rest: 0.4; }
 .trail-toad { bottom: 6px; height: clamp(26px, 2.4vw, 34px); --run-from: 0.84; --run-to: 0.58; --rest: 0.66; }
+/* the quail come out from behind the flower bed, bottom left, the chicks strung out behind */
+.trail-quail { --th: clamp(26px, 2.5vw, 36px); bottom: 6px; height: var(--th); --run-from: 0.04; --run-to: 0.7; --rest: 0.46; }
 /* the javelina stands on the footer's top edge, among its flowers (which
    come later in the page, so they're in front) */
 .trail-javelina { bottom: 100%; z-index: 1; height: clamp(40px, 4.2vw, 60px); --run-from: 1.12; --run-to: 0.56; --rest: 0.56; }
@@ -2101,6 +2121,17 @@ body:has(.plate) .footer::before { display: none; }
 .walker[data-animal="rattlesnake"] { --resting: rattling 7.2s; }
 .walker[data-animal="scorpion"] { --resting: warning 6.8s; }
 .walker[data-animal="toad"] { --resting: blinking 5.6s; }
+.walker[data-animal="quail"] { --resting: pecking 6.2s; }
+.walker[data-animal="chick"] { --resting: pecking 4.6s; }
+/* each chick pecks in its own time */
+.walker[data-animal="chick"][data-state="idle"] { animation-delay: calc(var(--i, 1) * -1.7s); }
+@keyframes pecking {
+  0%, 34% { --frame: 6; }
+  36%, 40% { --frame: 7; }
+  42%, 46% { --frame: 6; }
+  48%, 53% { --frame: 7; }
+  55%, 100% { --frame: 6; }
+}
 @keyframes rooting {
   0%, 38% { --frame: 6; }
   40%, 58% { --frame: 7; }
@@ -2203,10 +2234,46 @@ body:has(.plate) .footer::before { display: none; }
   filter: blur(2px);
 }
 @media (max-width: 1179px) { .thermal { display: none; } }
+
+/* A hummingbird works the ocotillo's flowers beside the contact heading (assets/fauna.svg). It is
+   two drawings stacked, the bird and its wings, so the wings can beat (one compositor-only scale
+   about the shoulder) while the body holds still. It feeds at one flower spike, backs off and
+   darts to the next: three spikes on the plant's left side, by their place in the ocotillo's own
+   drawing (--u is one unit of it; the clamp is .illo-ocotillo's --h). Wide screens only, where
+   the plant is big enough for a bird; with reduced motion it hovers at the first flower. */
+.hummer {
+  position: absolute;
+  z-index: 1;
+  --u: calc(clamp(220px, 21vw, 310px) / 342);
+  left: calc(40.5 * var(--u));
+  top: calc(154 * var(--u));
+  width: calc(52 * var(--u));
+  aspect-ratio: 62 / 54;
+  transform: translate(-94.4%, -25.2%);  /* the bill's tip on that spot (HUM_BILL_TIP in draw_fauna.py) */
+  --illo-line: var(--fauna-line);
+  --illo-paper: var(--fauna-hummer);
+  --illo-fruit: var(--fauna-gorget);
+  --illo-eye: var(--ink);
+  --illo-w: 1.5;
+  animation: hum-visit 18s ease-in-out infinite;
+}
+.hummer svg { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; overflow: visible; }
+.hummer-wings { transform-origin: 48.4% 40.7%; opacity: 0.85; animation: hum-beat 0.075s linear infinite alternate; }  /* HUM_SHOULDER */
+@keyframes hum-beat { from { scale: 1 1; } to { scale: 1 -0.8; } }
+@keyframes hum-visit {
+  0%, 18% { translate: 0 0; }
+  21% { translate: calc(-7 * var(--u)) calc(-4 * var(--u)); }
+  28%, 46% { translate: calc(45 * var(--u)) calc(-24 * var(--u)); }
+  49% { translate: calc(38 * var(--u)) calc(-27 * var(--u)); }
+  56%, 76% { translate: calc(53 * var(--u)) calc(-60 * var(--u)); }
+  79% { translate: calc(45 * var(--u)) calc(-58 * var(--u)); }
+  92%, 100% { translate: 0 0; }
+}
+@media (max-width: 1279px) { .hummer { display: none; } }
 @media (max-width: 1100px) { .hero-trail { height: 46px; } }
 @media (max-width: 640px) { .hero-trail { height: 34px; --run-from: 0.1; } }
 @media (prefers-reduced-motion: reduce) {
-  .flier, .bird, .soar, .hawk { animation: none; }
+  .flier, .bird, .soar, .hawk, .hummer, .hummer-wings { animation: none; }
 }
 
 /* ---------- 6. Motion ---------- */
@@ -2243,7 +2310,7 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
 }
 
 @media print {
-  .nav, .topo, .hero-fade, .lab-grid, .dock, .toast, .footer-hint, .orb-slot, .footer::before, .thermal, .trail, .flock { display: none !important; }
+  .nav, .topo, .hero-fade, .lab-grid, .dock, .toast, .footer-hint, .orb-slot, .footer::before, .thermal, .trail, .flock, .hummer { display: none !important; }
   .js .reveal { opacity: 1 !important; transform: none !important; }
   .hero { min-height: 0; padding-top: 24px; }
   .section, .contact { padding-block: 32px; }
@@ -2704,3 +2771,5 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
 @media (max-width: 640px) { .duo-pair { grid-template-columns: 1fr; } }
 /* one wide image in the same lane (work/painted-skyline.html) */
 .duo-pair.duo-one { grid-template-columns: 1fr; }
+.duo-pair.duo-three { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 640px) { .duo-pair.duo-three { grid-template-columns: 1fr; } }

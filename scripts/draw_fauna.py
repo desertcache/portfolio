@@ -508,6 +508,43 @@ def hawk() -> str:
     return f'<symbol id="hawk" viewBox="0 0 {n(HAWK_W)} {n(HAWK_H)}">{s.svg()}</symbol>'
 
 
+# --- the hummingbird at the ocotillo -------------------------------------------
+# Two symbols on one viewBox, stacked on the page: the bird, hovering head-up
+# with its bill out, and its wings. The page beats the wings by scaling that
+# second drawing through zero about the shoulder (HUM_SHOULDER), which is one
+# compositor-only transform, while the body holds still.
+
+HUM_W, HUM_H = 62.0, 54.0
+HUM_SHOULDER: Pt = (30.0, 22.0)
+HUM_BILL_TIP: Pt = (58.5, 13.6)
+HUM_BODY: list[Pt] = [
+    (40.6, 15), (41.2, 18.6), (39.6, 23), (37.6, 29), (33, 35.4), (27, 40.6), (22.6, 40), (21.4, 35),
+    (24, 28), (28, 21), (31, 15.6), (34.6, 12.4), (38.2, 12.4),
+]
+HUM_TAIL: list[Pt] = [(24.5, 36.5), (13, 46), (16.4, 49), (20.6, 49.4), (27.4, 40.6)]
+HUM_GORGET: list[Pt] = [(41, 18.2), (40.2, 22.6), (37.6, 26.2), (35.8, 22.6), (37.4, 18.8)]
+HUM_EYE: Pt = (37.6, 15.8)
+HUM_WING: list[Pt] = [(31, 22.5), (25, 14.5), (16, 8), (6.5, 4.2), (9.5, 11), (16.5, 18), (25, 24)]
+
+
+def hummingbird() -> str:
+    s = Sprite()
+    s.path(smooth(HUM_TAIL, closed=True, tension=.6), "outline")
+    s.path(f"M{n(18)} {n(42.4)}L{n(15)} {n(47.4)}M{n(21.4)} {n(42)}L{n(19)} {n(48.8)}", "line")   # tail feathers
+    s.path(f"M{n(41)} {n(16.4)}L{n(HUM_BILL_TIP[0])} {n(HUM_BILL_TIP[1])}", "line")
+    s.path(smooth(HUM_BODY, closed=True), "outline")
+    s.path(smooth(HUM_GORGET, closed=True), "fruit")
+    s.path(ellipse_d(*HUM_EYE, 1.1, 1.1, 0), "eye")
+    return f'<symbol id="hummingbird" viewBox="0 0 {n(HUM_W)} {n(HUM_H)}">{s.svg()}</symbol>'
+
+
+def hummingbird_wing() -> str:
+    s = Sprite()
+    s.path(smooth(HUM_WING, closed=True, tension=.8), "outline")
+    s.path(f"M{n(27)} {n(20.5)}L{n(13)} {n(9.5)}M{n(26)} {n(22.5)}L{n(15.5)} {n(14.5)}", "line")
+    return f'<symbol id="hummingbird-wing" viewBox="0 0 {n(HUM_W)} {n(HUM_H)}">{s.svg()}</symbol>'
+
+
 # ---------------------------------------------------------------------------
 # The rest of the neighbourhood (assets/critters.svg): each is a flip-book on
 # the roadrunner's scheme, and each has its own way of getting about. Frames
@@ -554,96 +591,154 @@ def bounds(pts: list[Pt], ground: float, pad: float = 3.0) -> tuple[float, float
 
 
 # --- the javelina (collared peccary), trotting --------------------------------
+# Built like the animal: a wedge of a head a third of its length that ends in
+# a flat disc, no neck to speak of, a mane that stands up over the shoulders,
+# and slim legs on small dark hooves. (The first one had a cone for a head and
+# single lines for legs, and read as a shrew.)
 
 J_GROUND = 100.0
-J_SHOULDER: Pt = (82.0, 73.0)
-J_HIP: Pt = (32.0, 72.0)
-J_UPPER, J_LOWER = 16.0, 16.5
-J_STRIDE, J_STANCE, J_LIFT = 20.0, 0.5, 7.0
+J_SHOULDER: Pt = (85.0, 71.5)
+J_HIP: Pt = (35.0, 70.5)
+J_UPPER, J_LOWER = 15.0, 16.0     # the foreleg: forearm to the knee, then the cannon and hoof
+J_THIGH, J_SHANK = 15.5, 17.0     # the hind leg: thigh to the hock, then down
+J_STRIDE, J_STANCE, J_LIFT = 20.0, 0.5, 6.5
 J_CYCLE = J_STRIDE / J_STANCE
+J_HOOF = 3.8                      # how much of the lower leg is hoof
 
+# From under the snout back along the jaw, chest and belly, up over the rump,
+# forward along the back and down the face to the top of the snout. The path
+# closes straight across, which is the snout's flat end.
 J_BODY: list[Pt] = [
-    (18, 65), (21, 56), (28, 49), (42, 44.5), (58, 41), (71, 38.5), (83, 40.5), (91, 45), (99, 49.5),
-    (109, 54), (120, 59.5), (128.5, 63.5), (132.8, 66.2), (133, 71), (127.5, 72.8), (116, 72.6),
-    (106, 72.2), (97, 74.5), (88, 78.5), (76, 81.5), (58, 82.5), (42, 81.5), (30, 78.5), (22, 73),
+    (127.2, 72.8), (118, 74.8), (108.5, 77.4), (100, 80.6), (91.5, 82.8), (82, 83), (70, 81.2), (56, 80.6),
+    (44, 80), (33, 77.4), (24.5, 72), (21, 64), (23.5, 55.5), (31, 48.6), (44, 44.2), (58, 41.8),
+    (70, 40.4), (80, 40.6), (89, 43), (97, 46.6), (106, 51.2), (115.5, 56), (122, 59.2), (126.6, 60.6),
 ]
-J_COLLAR: list[Pt] = [(80.5, 40), (87.5, 42.5), (92, 56), (99.5, 72.5), (93.5, 76.5), (86, 59)]
-J_EAR: list[Pt] = [(92, 48.5), (89.5, 40), (96.5, 45.5)]
-J_EYE: Pt = (109.5, 58.5)
-J_NOSE: Pt = (132.4, 68.6)
+J_BACK = [p for p in J_BODY[12:20]]                    # rump to poll, for standing the mane on
+J_COLLAR: list[Pt] = [(79.5, 43.6), (84, 44.2), (89.5, 53), (94.5, 64), (98.5, 74.5), (94.2, 71), (89, 62), (84, 52.5)]
+J_EAR: list[Pt] = [(91.4, 46), (89.8, 38), (93.6, 37.4), (96.8, 43.6)]
+J_EYE: Pt = (108.0, 57.4)
+J_NOSE: Pt = (125.6, 66.7)
+J_MOUTH: list[Pt] = [(126.2, 70.4), (118, 71.4)]
+J_GRIZZLE: list[Pt] = [(42, 56), (54, 52), (66, 53.5), (48, 66), (62, 64), (74, 60), (35, 63), (57, 73.5), (43, 73)]
 
 
-def hoof_d(foot: Pt, planted: bool, forward: float = 1.0) -> str:
-    fx, fy = foot
-    if planted:
-        return f"M{n(fx - 1.2)} {n(fy)}L{n(fx + 3.4 * forward)} {n(fy)}L{n(fx + .6)} {n(fy - 3.2)}Z"
-    return f"M{n(fx)} {n(fy)}l{n(-2.6)} {n(2.4)}l{n(2.9)} {n(1)}Z"
+def j_back_y(x: float) -> float:
+    """The height of the back's outline at x (between the rump and the poll)."""
+    for (x0, y0), (x1, y1) in zip(J_BACK, J_BACK[1:]):
+        if x0 <= x <= x1:
+            return y0 + (y1 - y0) * (x - x0) / (x1 - x0)
+    return J_BACK[-1][1]
 
 
-def j_leg(shoulder: Pt, foot: Pt, planted: bool, front: bool) -> str:
-    knee = solve_leg(shoulder, foot, J_UPPER, J_LOWER, prefer=(1.0, 0.0) if front else (-1.0, 0.0))
-    return f"M{n(shoulder[0])} {n(shoulder[1])}L{n(knee[0])} {n(knee[1])}L{n(foot[0])} {n(foot[1])}" + hoof_d(foot, planted)
+def j_limb(top: Pt, mid: Pt, foot: Pt, w_top: float) -> tuple[str, str]:
+    """A leg with some meat on it: wide where it leaves the body, slim below
+    the joint, standing on a hoof. Returns the leg's outline, left open at the
+    top so it runs into the body with no line across, and the hoof."""
+    def unit(a: Pt, b: Pt) -> Pt:
+        L = math.dist(a, b) or 1.0
+        return ((b[0] - a[0]) / L, (b[1] - a[1]) / L)
+    (ux, uy), (vx, vy) = unit(top, mid), unit(mid, foot)
+    n1, n2 = (-uy, ux), (-vy, vx)
+    mL = math.hypot(n1[0] + n2[0], n1[1] + n2[1]) or 1.0
+    nm = ((n1[0] + n2[0]) / mL, (n1[1] + n2[1]) / mL)
+    ankle = (foot[0] - vx * J_HOOF, foot[1] - vy * J_HOOF)
+    start = lerp(top, mid, 0.34)                        # the line begins a little inside the belly
+
+    def side(sign: float) -> list[Pt]:
+        return [(start[0] + n1[0] * w_top * sign, start[1] + n1[1] * w_top * sign),
+                (mid[0] + nm[0] * 2.5 * sign, mid[1] + nm[1] * 2.5 * sign),
+                (ankle[0] + n2[0] * 1.8 * sign, ankle[1] + n2[1] * 1.8 * sign)]
+    a, b = side(1), side(-1)                            # a is the back edge, b the front
+    leg = "M" + "L".join(f"{n(x)} {n(y)}" for x, y in a + b[::-1])
+    hoof = (f"M{n(a[2][0])} {n(a[2][1])}L{n(b[2][0])} {n(b[2][1])}"
+            f"L{n(foot[0] - n2[0] * 2.6)} {n(foot[1] - n2[1] * 2.6)}L{n(foot[0] + n2[0] * 1.9)} {n(foot[1] + n2[1] * 1.9)}Z")
+    return leg, hoof
+
+
+def j_leg(joint: Pt, foot: Pt, front: bool) -> tuple[str, str]:
+    if front:
+        knee = solve_leg(joint, foot, J_UPPER, J_LOWER, prefer=(1.0, 0.0))
+        return j_limb(joint, knee, foot, 4.2)
+    hock = solve_leg(joint, foot, J_THIGH, J_SHANK, prefer=(-1.0, 0.0))
+    return j_limb(joint, hock, foot, 5.6)
+
+
+def j_legs(s: Sprite, legs: list[tuple[Pt, Pt, bool]]) -> None:
+    """Draw some legs: their outlines as one path, their hooves as another."""
+    drawn = [j_leg(joint, foot, front) for joint, foot, front in legs]
+    s.path("".join(leg for leg, _ in drawn), "outline")
+    s.path("".join(hoof for _, hoof in drawn), "eye")
+
+
+J_NECK: Pt = (93.0, 64.0)
 
 
 def j_head_down(pts: list[Pt], deg: float) -> list[Pt]:
-    return bend(pts, (88.0, 58.0), deg, 84, 100)
+    return bend(pts, J_NECK, deg, 86, 103)
+
+
+def j_turned(pts: list[Pt], deg: float) -> list[Pt]:
+    """A small part of the head (the ear) turned as one piece, by the angle the
+    head has where it sits."""
+    cx = sum(p[0] for p in pts) / len(pts)
+    t = min(1.0, max(0.0, (cx - 86) / (103 - 86)))
+    return [rot(p, J_NECK, deg * t * t * (3 - 2 * t)) for p in pts]
 
 
 def draw_javelina(s: Sprite, rooting: bool = False) -> None:
-    deg = 34.0 if rooting else 0.0
-    body = j_head_down(J_BODY, deg)
-    s.path(smooth(body, closed=True), "outline")
+    deg = 50.0 if rooting else 0.0
+    s.path(smooth(j_head_down(J_BODY, deg)) + "Z", "outline")
     s.path(smooth(j_head_down(J_COLLAR, deg), closed=True, tension=.8), "cream")
-    s.path(smooth(j_head_down(J_EAR, deg), closed=True, tension=.7), "outline")
-    # the mane along the back, and a grizzled coat
+    s.path(smooth(j_turned(J_EAR, deg), closed=True, tension=.7), "outline")
+    # the mane: bristles along the back, longest where they stand up over the shoulders
     mane = ""
-    for k in range(13):
-        x = 30 + k * 5
-        y = next(py for px, py in zip([p[0] for p in J_BODY[2:8]], [p[1] for p in J_BODY[2:8]]) if px >= x) if x < 91 else 45
-        top = min((py for px, py in J_BODY[:9] if abs(px - x) < 8), default=y)
-        mane += f"M{n(x)} {n(top + 1)}l{n(-2.2)} {n(-4.2 - (k % 3))}"
+    for k in range(11):
+        x = 43.0 + k * 4.8
+        rise = (2.4 + 4.6 * math.exp(-((x - 79) / 15) ** 2)) * (1.0 if k % 2 else .78)
+        (bx, by), (tx, ty) = j_head_down([(x, j_back_y(x) + .6), (x - rise * .8, j_back_y(x) - rise)], deg)
+        mane += f"M{n(bx)} {n(by)}L{n(tx)} {n(ty)}"
     s.path(mane, "line")
-    grizzle = "".join(f"M{n(x)} {n(y)}l{n(3.4)} {n(1.2)}" for x, y in ((40, 58), (52, 54), (64, 56), (46, 68), (60, 66), (72, 62), (34, 64)))
-    s.path(grizzle, "streak")
+    s.path("".join(f"M{n(x)} {n(y)}l{n(3.4)} {n(1.2)}" for x, y in J_GRIZZLE), "streak")
     eye, nose = j_head_down([J_EYE, J_NOSE], deg)
-    s.path(ellipse_d(*eye, 1.6, 1.6, 0), "eye")
-    s.path(ellipse_d(*nose, 1.7, 2.6, deg * .6), "eye")
-    m0, m1 = j_head_down([(130.5, 71.6), (117, 71.4)], deg)
+    s.path(ellipse_d(*eye, 1.7, 1.7, 0), "eye")
+    s.path(ellipse_d(*nose, 1.3, 3.5, deg), "eye")
+    m0, m1 = j_head_down(J_MOUTH, deg)
     s.path(f"M{n(m0[0])} {n(m0[1])}L{n(m1[0])} {n(m1[1])}", "line")
 
 
 def javelina() -> tuple[str, dict]:
     s = Sprite()
-    far_off = (-3.0, -2.0)
+    far_off = (-3.0, -1.6)
     fs, fh = (J_SHOULDER[0] + far_off[0], J_SHOULDER[1] + far_off[1]), (J_HIP[0] + far_off[0], J_HIP[1] + far_off[1])
+    far = "opacity:var(--illo-far,.5)"                  # the far legs sit a step back in depth
+
+    def step(u: float, joint: Pt, front: bool) -> tuple[Pt, Pt, bool]:
+        foot, _ = gait_foot(u, joint[0], J_GROUND, J_STRIDE, J_STANCE, J_LIFT)
+        return (joint, foot, front)
     s.open(f"opacity:clamp(0,calc({STAND} - var(--frame,{STAND})),1)")
     # a trot: diagonal pairs together (near fore with far hind, far fore with near hind)
     phases = {"nf": 0.0, "fh": 0.0, "ff": 0.5, "nh": 0.5}
+    s.open(far)
     for k in range(RUN_FRAMES):
         u = k / RUN_FRAMES
         s.open(shown_when(k))
-        d = ""
-        for key, hip, front in (("ff", fs, True), ("fh", fh, False)):
-            foot, planted = gait_foot(u + phases[key], hip[0], J_GROUND, J_STRIDE, J_STANCE, J_LIFT)
-            d += j_leg(hip, foot, planted, front)
-        s.path(d, "far")
+        j_legs(s, [step(u + phases["ff"], fs, True), step(u + phases["fh"], fh, False)])
         s.close()
+    s.close()
     draw_javelina(s)
     for k in range(RUN_FRAMES):
         u = k / RUN_FRAMES
         s.open(shown_when(k))
-        d = ""
-        for key, hip, front in (("nf", J_SHOULDER, True), ("nh", J_HIP, False)):
-            foot, planted = gait_foot(u + phases[key], hip[0], J_GROUND, J_STRIDE, J_STANCE, J_LIFT)
-            d += j_leg(hip, foot, planted, front)
-        s.path(d, "line")
+        j_legs(s, [step(u + phases["nf"], J_SHOULDER, True), step(u + phases["nh"], J_HIP, False)])
         s.close()
     s.close()
     for k, rooting in ((STAND, False), (FLICK, True)):
         s.open(shown_when(k))
-        s.path(j_leg(fs, (fs[0] + 2, J_GROUND), True, True) + j_leg(fh, (fh[0] - 1, J_GROUND), True, False), "far")
+        s.open(far)
+        j_legs(s, [(fs, (fs[0] + 2, J_GROUND), True), (fh, (fh[0] - 1, J_GROUND), False)])
+        s.close()
         draw_javelina(s, rooting)
-        s.path(j_leg(J_SHOULDER, (J_SHOULDER[0] + 1, J_GROUND), True, True) + j_leg(J_HIP, (J_HIP[0], J_GROUND), True, False), "line")
+        j_legs(s, [(J_SHOULDER, (J_SHOULDER[0] + 1, J_GROUND), True), (J_HIP, (J_HIP[0], J_GROUND), False)])
         s.close()
     x0, y0, w, h = s.view_box(J_GROUND)
     data = {"viewBox": [x0, y0, w, h], "runFrames": RUN_FRAMES, "stand": STAND, "cycle": round(J_CYCLE, 3),
@@ -920,10 +1015,131 @@ def toad() -> tuple[str, dict]:
     return symbol("toad", (x0, y0, w, h), s.svg()), data
 
 
+# --- the Gambel's quail and her chicks, hurrying -------------------------------
+# One adult leads and the chicks string out behind her (js/trails.js has each
+# follow the one ahead). Both are the same build at two sizes: a plump body
+# carried level, short legs, and for the adult the topknot that makes a quail
+# a quail. At rest they peck: frame 7 is the whole bird tipped onto its toes.
+
+Q_GROUND = 60.0
+Q_HIP: Pt = (36.0, 43.5)
+Q_THIGH, Q_SHIN = 8.6, 9.2
+Q_STRIDE, Q_STANCE, Q_LIFT = 12.0, 0.5, 4.0
+Q_CYCLE = Q_STRIDE / Q_STANCE
+Q_PECK = 38.0
+
+Q_BODY: list[Pt] = [
+    (5.5, 41), (11, 34), (19, 28.5), (29, 24.6), (38.5, 23.4), (44.5, 20.6), (46.6, 15.6), (50.6, 12.2),
+    (54.8, 13.4), (56.6, 17.2), (55.6, 21.6), (56.8, 28), (55.6, 36), (51, 42.6), (42, 46.6), (30, 47.2),
+    (20, 45), (12, 43),
+]
+Q_PLUME: list[Pt] = [(52, 12.6), (52.4, 8.6), (54.8, 4.8), (58.4, 3.6), (60.4, 5.4), (58.6, 7.2), (56.2, 7.4), (54.4, 9.8), (53.8, 12.8)]
+Q_BEAK: list[Pt] = [(56.4, 16.6), (60.2, 18.4), (56.2, 19.8)]
+Q_BIB: list[Pt] = [(54.8, 17.8), (56, 20.4), (55, 23), (52.4, 23.6), (50.4, 21.4), (50.8, 19), (52.6, 18)]
+Q_EYE: Pt = (52.4, 15.8)
+Q_WING: list[Pt] = [(43, 27.5), (36, 33.5), (26, 36.6), (14.5, 37)]
+Q_FLANK: list[Pt] = [(27, 41.2), (34.5, 42.4), (42, 40.8)]
+
+C_GROUND = 60.0
+C_HIP: Pt = (16.5, 52.4)
+C_THIGH, C_SHIN = 4.0, 4.4
+C_STRIDE, C_STANCE, C_LIFT = 6.0, 0.5, 2.2
+C_CYCLE = C_STRIDE / C_STANCE
+C_PECK = 34.0
+
+C_BODY: list[Pt] = [
+    (6, 50), (8.5, 45), (14, 42), (20, 41.6), (23.6, 39.4), (25.4, 36.6), (28.4, 35.6), (31, 37.4),
+    (31.4, 40.6), (30, 43.6), (29.4, 48), (26, 52.4), (20, 54.6), (12.5, 54.2), (8, 52.6),
+]
+C_BEAK: list[Pt] = [(31, 38.4), (33.8, 39.8), (30.8, 41)]
+C_EYE: Pt = (28.6, 38.6)
+C_TUFT: list[Pt] = [(27.6, 35.8), (29, 33.2)]
+C_STRIPES: list[tuple[float, float, float]] = [(10.5, 46.6, 7.5), (17.5, 44.6, 5)]
+
+
+def bird_leg(hip: Pt, foot: Pt, planted: bool, thigh: float, shin: float, toe: float) -> str:
+    """A ground bird's leg: the heel points back, and three toes read as one line."""
+    heel = solve_leg(hip, foot, thigh, shin)
+    d = f"M{n(hip[0])} {n(hip[1])}L{n(heel[0])} {n(heel[1])}L{n(foot[0])} {n(foot[1])}"
+    return d + (f"l{n(toe)} 0M{n(foot[0])} {n(foot[1])}l{n(-toe * .45)} 0" if planted else f"l{n(toe * .75)} {n(toe * .55)}")
+
+
+def draw_quail(s: Sprite, deg: float = 0.0) -> None:
+    def tip(pts: list[Pt]) -> list[Pt]:
+        return [rot(p, Q_HIP, deg) for p in pts]
+    s.path(smooth(tip(Q_BODY[15:] + Q_BODY[:15]), closed=True), "outline")     # the pen starts under the belly
+    s.path(smooth(tip(Q_WING)), "line")
+    flank = ""
+    for p in Q_FLANK:
+        a, b = tip([p, (p[0] + 4.2, p[1] - 1.5)])
+        flank += f"M{n(a[0])} {n(a[1])}L{n(b[0])} {n(b[1])}"
+    s.path(flank, "streak")
+    s.path(smooth(tip(Q_BEAK), closed=True, tension=.5), "outline")
+    s.path(smooth(tip(Q_BIB), closed=True), "eye")
+    s.path(smooth(tip(Q_PLUME), closed=True), "eye")
+    s.path(ellipse_d(*tip([Q_EYE])[0], 1.0, 1.0, 0), "eye")
+
+
+def draw_chick(s: Sprite, deg: float = 0.0) -> None:
+    def tip(pts: list[Pt]) -> list[Pt]:
+        return [rot(p, C_HIP, deg) for p in pts]
+    s.path(smooth(tip(C_BODY[12:] + C_BODY[:12]), closed=True), "outline")
+    stripes = ""
+    for x, y, length in C_STRIPES:
+        a, b = tip([(x, y), (x + length, y - .8)])
+        stripes += f"M{n(a[0])} {n(a[1])}L{n(b[0])} {n(b[1])}"
+    s.path(stripes, "streak")
+    t0, t1 = tip(C_TUFT)
+    s.path(f"M{n(t0[0])} {n(t0[1])}L{n(t1[0])} {n(t1[1])}", "line")
+    s.path(smooth(tip(C_BEAK), closed=True, tension=.5), "outline")
+    s.path(ellipse_d(*tip([C_EYE])[0], .9, .9, 0), "eye")
+
+
+def ground_bird(name: str, draw, ground: float, hip: Pt, thigh: float, shin: float,
+                stride: float, stance: float, lift: float, peck: float, toe: float) -> tuple[str, dict]:
+    """A two-legged flip-book on the usual scheme: 0..5 the run, 6 standing,
+    7 pecking. The legs stay put while the body tips."""
+    s = Sprite()
+    far_hip = (hip[0] - toe * .5, hip[1] - toe * .25)
+
+    def leg(u: float, at: Pt) -> str:
+        foot, planted = gait_foot(u, at[0], ground, stride, stance, lift)
+        return bird_leg(at, foot, planted, thigh, shin, toe)
+    s.open(f"opacity:clamp(0,calc({STAND} - var(--frame,{STAND})),1)")
+    for k in range(RUN_FRAMES):
+        s.open(shown_when(k))
+        s.path(leg(k / RUN_FRAMES + .5, far_hip), "far")
+        s.close()
+    draw(s)
+    for k in range(RUN_FRAMES):
+        s.open(shown_when(k))
+        s.path(leg(k / RUN_FRAMES, hip), "line")
+        s.close()
+    s.close()
+    for k, deg in ((STAND, 0.0), (FLICK, peck)):
+        s.open(shown_when(k))
+        s.path(bird_leg(far_hip, (far_hip[0] + toe * .4, ground), True, thigh, shin, toe), "far")
+        draw(s, deg)
+        s.path(bird_leg(hip, (hip[0] - toe * .2, ground), True, thigh, shin, toe), "line")
+        s.close()
+    x0, y0, w, h = s.view_box(ground)
+    data = {"viewBox": [x0, y0, w, h], "runFrames": RUN_FRAMES, "stand": STAND, "cycle": round(stride / stance, 3),
+            "pivot": round((hip[0] - x0) / w, 4)}
+    return symbol(name, (x0, y0, w, h), s.svg()), data
+
+
+def quail() -> tuple[str, dict]:
+    return ground_bird("quail", draw_quail, Q_GROUND, Q_HIP, Q_THIGH, Q_SHIN, Q_STRIDE, Q_STANCE, Q_LIFT, Q_PECK, 3.2)
+
+
+def chick() -> tuple[str, dict]:
+    return ground_bird("chick", draw_chick, C_GROUND, C_HIP, C_THIGH, C_SHIN, C_STRIDE, C_STANCE, C_LIFT, C_PECK, 1.8)
+
+
 def build_critters() -> tuple[str, str]:
     """assets/critters.svg and js/critter-data.js."""
     parts, data = [], {}
-    for name, make in (("javelina", javelina), ("rattlesnake", snake), ("scorpion", scorpion), ("toad", toad)):
+    for name, make in (("javelina", javelina), ("rattlesnake", snake), ("scorpion", scorpion), ("toad", toad), ("quail", quail), ("chick", chick)):
         svg, d = make()
         parts.append(svg)
         data[name] = {k: (int(v) if isinstance(v, float) and v.is_integer() else v) for k, v in d.items()}
@@ -950,7 +1166,7 @@ def build_critters() -> tuple[str, str]:
 def build() -> tuple[str, str]:
     """The sprite, and the JS data module that goes with it."""
     rr, data = roadrunner()
-    svg = '<svg xmlns="http://www.w3.org/2000/svg">' + rr + bird() + hawk() + "</svg>\n"
+    svg = '<svg xmlns="http://www.w3.org/2000/svg">' + rr + bird() + hawk() + hummingbird() + hummingbird_wing() + "</svg>\n"
     js = (
         "// @ts-check\n"
         "// Generated by scripts/draw_fauna.py from the same numbers that drew\n"
