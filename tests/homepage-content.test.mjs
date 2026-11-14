@@ -183,6 +183,19 @@ test('the homepage and the Answer Finder write-up quote the same answer and phra
   assert.equal(phrasings.size, 1, `phrasing counts disagree: ${[...phrasings].join(', ')}`);
 });
 
+test('the painted skyline has a picture for each theme, and every painted file a page names exists', () => {
+  const plate = HOME.match(/<figure class="plate"[\s\S]*?<\/figure>/)?.[0] ?? '';
+  assert.match(plate, /<picture class="plate-day">/, 'the light theme\'s picture');
+  assert.match(plate, /<picture class="plate-dusk">/, 'the dark theme\'s picture');
+  // Both are lazy and one is hidden by the theme, so a visitor only ever downloads one of them.
+  assert.equal([...plate.matchAll(/<img[^>]*loading="lazy"/g)].length, 2, 'both pictures load lazily');
+  // It is a figure, not a section: the phone menu lists one link per <section>.
+  assert.doesNotMatch(HOME, /<section[^>]*id="painted-skyline"/);
+  const named = new Set([...(HOME + read('work/painted-skyline.html')).matchAll(/assets\/painted\/[a-z0-9-]+\.(?:webp|jpg)/g)].map((m) => m[0]));
+  assert.ok(named.size >= 8, 'the plate and the write-up name their images');
+  for (const file of named) assert.ok(readFileSync(new URL(`../${file}`, import.meta.url)).length > 10_000, `${file} is missing`);
+});
+
 test('the hero\'s main button opens the copilot write-up, and the nav\'s Work link starts at the featured program', () => {
   assert.match(HOME, /<a class="btn btn-solid" href="work\/ai-copilot-rollout\.html">See the AI copilot/, 'the hero button');
   assert.doesNotMatch(readerText(HOME), /flagship/i, 'the copilot program is the lead, never the game');

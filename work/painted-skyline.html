@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>A mountain drawn by code, one stroke at a time · Samuel Bates</title>
+  <meta name="description" content="How the painted skyline on this site was made: a small renderer in plain JavaScript that rubs pigment onto simulated paper, drawn on real elevation data, with who did what and what went wrong.">
+  <link rel="canonical" href="https://desertcache.github.io/portfolio/work/painted-skyline.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Samuel Bates">
+  <meta property="og:title" content="A mountain drawn by code, one stroke at a time · Samuel Bates">
+  <meta property="og:description" content="How the painted skyline on this site was made: a small renderer in plain JavaScript that rubs pigment onto simulated paper, drawn on real elevation data, with who did what and what went wrong.">
+  <meta property="og:url" content="https://desertcache.github.io/portfolio/work/painted-skyline.html">
+  <meta property="og:image" content="https://desertcache.github.io/portfolio/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Samuel Bates, AI Solutions Manager: Most AI dies in the demo. I build the kind that ships.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#f3ebe6">
+
+  <script>
+    // Same as every page: pick the theme before first paint and flag that JS is on.
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      setTimeout(function () { if (!root.classList.contains('js-ready')) root.classList.remove('js'); }, 4000);
+      try {
+        var t = localStorage.getItem('sb-theme');
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', t);
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#150f24' : '#f3ebe6');
+      } catch (e) { /* storage blocked: CSS falls back to the system theme */ }
+    })();
+  </script>
+
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="preload" href="../assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
+  <link rel="stylesheet" href="../css/site.css?v=2026-11-14">
+  <link rel="stylesheet" href="../blog/blog.css?v=2026-09-26">
+  <script type="module" src="../js/blog.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="../index.html" aria-label="Samuel Bates, home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <path d="M6.2 17.8C5.2 11.6 9.4 6.1 15.6 5.6 21.9 5.1 27.2 9.2 26.8 15.2 26.4 20.4 23.6 22.1 20.1 24.6 16.2 27.4 7.3 25.1 6.2 17.8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M11.4 15.9C11.1 12.2 13.9 9.6 17.4 9.5 21 9.4 23.1 11.9 22.6 15 22.1 18.2 19.8 19.2 17.2 20.1 14.2 21.1 11.7 19.2 11.4 15.9Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <circle cx="17.6" cy="14.7" r="2.6" class="brand-dot"/>
+        </svg>
+        <span class="brand-name">Samuel Bates</span>
+      </a>
+      <nav class="nav-links" aria-label="Sections">
+        <a href="../index.html#work">Work</a>
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#lab" aria-current="true">Lab</a>
+        <a href="../index.html#contact">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.2 14.6A8.3 8.3 0 0 1 9.4 3.8a8.3 8.3 0 1 0 10.8 10.8Z"/></svg>
+        </button>
+        <a class="btn btn-ghost btn-sm nav-cv" href="../Samuel_Bates_CV.pdf" target="_blank" rel="noopener">Résumé</a>
+        <a class="btn btn-solid btn-sm" href="mailto:batessambates@gmail.com">Get in touch</a>
+      </div>
+    </div>
+    <div class="nav-progress" aria-hidden="true"></div>
+  </header>
+
+  <main id="main">
+    <article class="post research">
+      <header class="post-head">
+        <a class="eyebrow post-back" href="../index.html#lab"><span class="eyebrow-num">Build note</span>Drawing with code</a>
+        <h1 class="post-title">A mountain drawn by code, one stroke at a time</h1>
+        <p class="post-lede">Scroll to the foot of the homepage and Camelback is there in pastel: at first light in the light theme, at last light in the dark one. No image model made it, and no drawing library was used. Claude wrote a small renderer that rubs pigment onto simulated paper, then used it to draw the picture. This is how it works, who did what, and what went wrong along the way.</p>
+        <p class="post-meta"><time datetime="2026-11-14">November 2026</time><span>Samuel Bates</span><span id="read-time" hidden></span></p>
+      </header>
+
+      <div class="post-body">
+        <figure class="duo" aria-labelledby="pair-cap">
+          <div class="duo-pair">
+            <div class="duo-item">
+              <picture>
+                <source srcset="../assets/painted/camelback-morning-1200.webp" type="image/webp">
+                <img src="../assets/painted/camelback-morning-1200.jpg" width="1200" height="600" decoding="async" alt="Camelback Mountain at first light in pastel: three hot-air balloons, saguaros, a palo verde in bloom, a quail and her chicks.">
+              </picture>
+              <p class="duo-label"><b>First light</b> the light theme · 113,529 strokes</p>
+            </div>
+            <div class="duo-item">
+              <picture>
+                <source srcset="../assets/painted/camelback-dusk-1200.webp" type="image/webp">
+                <img src="../assets/painted/camelback-dusk-1200.jpg" width="1200" height="600" decoding="async" alt="The same view at last light: the valley's lights on, headlamps on the trail, a young moon.">
+              </picture>
+              <p class="duo-label"><b>Last light</b> the dark theme · 104,931 strokes</p>
+            </div>
+          </div>
+          <figcaption id="pair-cap"><span class="fig">Fig. 1</span> One place, drawn twice. The mountain, the saguaros, the palms and every patch of scrub stand in the same spot in both. Only the hour changes, and who is out.</figcaption>
+        </figure>
+
+        <h2>Who did what</h2>
+        <p>I would rather be exact about this than flattering. <strong>Claude did the making.</strong> In one working session in Claude Code, Anthropic's Claude (the Fable 5.2 model) wrote the renderer, chose what to draw, drew every picture on this page, and corrected its own mistakes after looking at the results.</p>
+        <p><strong>My part was the asking, and the setup it ran in.</strong> I asked for a painting like ones I had seen in a post on X, then passed along the prompt behind that post, which asked for dry art tools, a hand-drawn feel and no headless browser. I asked for a pair to match this site's two themes, and I asked for the renderer to be packaged as a skill, so the next painting starts from a working engine instead of from nothing.</p>
+        <p>The session ran inside the setup described under <a href="../index.html#build">How I build</a>: skills, hooks and memory. A hook refused one command pattern that has cost earlier sessions time, a retro wrote two lessons into shared memory, and the engine became a skill with its failures listed beside their fixes.</p>
+
+        <h2>How the paper works</h2>
+        <p>The picture is a grid of numbers. Before any colour goes down, the program builds the paper: a height map of its tooth, every pixel a peak or a valley. Each stroke carries a pressure. Where the pressure beats the tooth, pigment sticks. Where it doesn't, the layer underneath shows through. A light touch catches only the peaks, and a heavy one fills in.</p>
+        <p>That one rule is the whole look. Block in a shape heavily, go back over it lightly in a slightly different colour, and the second colour sits on the grain while the first shows in the valleys. As pigment builds up the tooth fills, so later layers cover more evenly, the way they do on real paper.</p>
+        <figure class="duo" aria-labelledby="detail-cap">
+          <div class="duo-pair duo-one">
+            <div class="duo-item">
+              <picture>
+                <source srcset="../assets/painted/camelback-detail.webp" type="image/webp">
+                <img src="../assets/painted/camelback-detail.jpg" width="1200" height="675" loading="lazy" decoding="async" alt="A close view of the mountain's head and saddle in the morning drawing: broken colour, slanted hatching, short level strokes for rock layers, and thin dark gully lines.">
+              </picture>
+            </div>
+          </div>
+          <figcaption id="detail-cap"><span class="fig">Fig. 2</span> A piece of the morning drawing at full size: the mountain's head and the saddle behind it. The speckle in the sky is the paper showing through a light layer. The level strokes are the head's rock layers, and the thin dark lines are gullies.</figcaption>
+        </figure>
+        <p>There are five tools, and they are the same code with different settings:</p>
+        <table>
+          <thead><tr><th>Tool</th><th>How it behaves</th><th>Used for</th></tr></thead>
+          <tbody>
+            <tr><td>Soft pastel</td><td>Wide, soft-edged, opaque, streaky</td><td>Sky, haze, anything large</td></tr>
+            <tr><td>Pastel pencil</td><td>Opaque, with a firmer edge</td><td>Solid things: rock, cactus, roofs</td></tr>
+            <tr><td>Colour pencil</td><td>A hard point that glazes, so it darkens what is under it</td><td>Shadows, hatching, outlines</td></tr>
+            <tr><td>Chalk</td><td>Opaque and bright</td><td>Stars, lamps, highlights</td></tr>
+            <tr><td>Wax crayon</td><td>Skips the valleys hard</td><td>Not on the mountain. It coloured the rocket in Fig. 4</td></tr>
+          </tbody>
+        </table>
+
+        <h2>Nothing is filled</h2>
+        <p>A shape is never flooded with colour. It is hatched: rows of short strokes that start, stop, overlap, overshoot the edge and drift a little in angle, each picking a slightly different shade. Straight lines are bowed and wander on purpose, and outlines are drawn in several goes with the pencil lifted between them.</p>
+        <p>The code that describes the scene is short. The mountain is one function that shades the spurs running down from its crest. A saguaro is a centre line thickened into a limb. The valley's trees are one function called a few hundred times. The strokes come from loops: 104,931 of them in the dusk drawing and 113,529 in the morning one, each drawing taking about 15 seconds at 4800 by 2400 pixels. It needs only Node to run, with nothing installed, and it writes the PNG file itself.</p>
+
+        <h2>The ridge is real</h2>
+        <p>The first version of this mountain was drawn from memory, as a couple of dozen points, and it looked plausible. It was also wrong, and this site already knew better: the contour map in the hero and the skyline strip in the footer are both built from elevation data. Claude found that while reading the site's notes, threw its own ridge away, and redrew the mountain from the same skyline file the footer uses. The painted ridge is now that ridge, with the Phoenix Mountains to the west where they belong.</p>
+
+        <h2>One place, two hours</h2>
+        <p>The site has a light theme and a dark one, so the drawing has two times of day. Every position is decided once, before any paint, so both versions share one place: the same saguaros, the same palms, the same patches of scrub. Then the light changes sides.</p>
+        <p>In the morning the sun is in the east. Three hot-air balloons are up, a palo verde is in bloom, and a quail leads her chicks across the gravel. At dusk the light comes from the west. The valley's lights are on, headlamps climb the trail to the summit, and a scorpion glows on a rock, the way the one that walks this site does after dark.</p>
+        <p>The top of each picture fades to exactly the page's background colour, so it has no edge. Switch the theme, top right, and the hour changes.</p>
+
+        <h2>What went wrong</h2>
+        <p>The first picture of the session was made a different way, with the browser's canvas. Its sky and its storm cloud worked. Its foreground looked like clip art, because a clean filled shape is exactly what canvas is good at. The renderer above exists because of that failure.</p>
+        <figure class="duo" aria-labelledby="tries-cap">
+          <div class="duo-pair">
+            <div class="duo-item">
+              <picture>
+                <source srcset="../assets/painted/first-attempt-canvas.webp" type="image/webp">
+                <img src="../assets/painted/first-attempt-canvas.jpg" width="800" height="600" loading="lazy" decoding="async" alt="The first attempt's foreground: flat, evenly coloured flowers and a striped cactus, clean as vector art.">
+              </picture>
+              <p class="duo-label"><b>First try</b> browser canvas</p>
+            </div>
+            <div class="duo-item">
+              <picture>
+                <source srcset="../assets/painted/second-attempt-paper.webp" type="image/webp">
+                <img src="../assets/painted/second-attempt-paper.jpg" width="800" height="600" loading="lazy" decoding="async" alt="The second attempt's foreground: sunflowers, washing on a line and grass, every edge broken by the grain of the paper.">
+              </picture>
+              <p class="duo-label"><b>Second try</b> pigment on simulated paper</p>
+            </div>
+          </div>
+          <figcaption id="tries-cap"><span class="fig">Fig. 3</span> Two foregrounds from the same afternoon. On canvas every flower is a flat sticker. On simulated paper the grain breaks every edge, and the picture reads as drawn.</figcaption>
+        </figure>
+        <p>After that, most mistakes were found the same way: render, look at the whole sheet and then at close-ups, and name what the wrong part resembles. The name usually points at the cause.</p>
+        <table>
+          <thead><tr><th>It looked like</th><th>Cause</th><th>Fix</th></tr></thead>
+          <tbody>
+            <tr><td>A gravel beach where the sea should be</td><td>Hundreds of short dark pencil strokes</td><td>Rub the colour in first, then a few long strokes and chalk glints</td></tr>
+            <tr><td>A furry cloud</td><td>Long thin strokes on every billow</td><td>Short fat presses of the stick</td></tr>
+            <tr><td>A pair of eyes on a door curtain</td><td>Two matching circles side by side</td><td>Lines instead</td></tr>
+            <tr><td>A folded-paper pyramid</td><td>The mountain shaded by which side of the summit a point was on</td><td>Shade by the spurs running down from the crest</td></tr>
+            <tr><td>Polka dots</td><td>Round shrubs of one size, spread evenly</td><td>Clump them, and leave bare ground between patches</td></tr>
+            <tr><td>Flags on poles</td><td>Palm fronds fanned over only the top half</td><td>Fan them all the way round and droop the tips</td></tr>
+            <tr><td>A mountain that was not Camelback</td><td>Drawn from memory</td><td>Redrawn from the site's elevation data</td></tr>
+          </tbody>
+        </table>
+
+        <h2>How it was checked</h2>
+        <p>A picture can't be unit-tested for beauty, but the machinery can be held still. Every random choice comes from one seeded generator, so a render repeats down to the byte. When the engine was packaged as a skill, the first paper drawing was rendered again from the packaged copy: 205,179 strokes later, the file's SHA-256 matched the original. The same check ran when the two mountain drawings moved into this site's repository.</p>
+        <figure class="duo" aria-labelledby="liftoff-cap">
+          <div class="duo-pair duo-one">
+            <div class="duo-item">
+              <picture>
+                <source srcset="../assets/painted/liftoff-1600.webp" type="image/webp">
+                <img src="../assets/painted/liftoff-1600.jpg" width="1600" height="900" loading="lazy" decoding="async" alt="A pastel drawing of a cardboard rocket leaving a backyard at dusk: a trail of pink smoke, a lit doorway, a cat on the deck, washing on a line, a town and a bay behind.">
+              </picture>
+            </div>
+          </div>
+          <figcaption id="liftoff-cap"><span class="fig">Fig. 4</span> The first drawing made on the simulated paper, and the one used for that check: a cardboard rocket that actually flew. Soft pastel, pencil, chalk and crayon, 205,179 strokes.</figcaption>
+        </figure>
+
+        <h2>What I'd tell the next person</h2>
+        <ul>
+          <li><strong>Plausible is not the same as real.</strong> The first mountain looked right. A drawing of a real thing deserves the same check against data that a number gets.</li>
+          <li><strong>Ask what the wrong thing looks like.</strong> "It looks off" fixes nothing. "The sea looks like gravel" says which strokes to change.</li>
+          <li><strong>Turn the one-off into a skill while the lessons are fresh.</strong> The list of what went wrong is worth more than the code, and it is now the first thing the next session reads.</li>
+        </ul>
+
+        <h2>Links</h2>
+        <ul>
+          <li><a href="https://github.com/desertcache/portfolio/tree/main/scripts/paint" target="_blank" rel="noopener">The renderer, its helpers and the scene</a> (scripts/paint in this site's repository)</li>
+          <li><a href="../index.html#painted-skyline">The drawing in place</a>, at the foot of the homepage</li>
+          <li><a href="../index.html#build">How I build</a>: the skills, hooks and memory the session ran in</li>
+        </ul>
+      </div>
+
+      <nav class="cs-nav edition-nav" aria-label="More work">
+        <a href="../index.html#lab"><span class="cs-nav-k">Lab</span><span class="cs-nav-t">Demos you can walk around in</span></a>
+      </nav>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p class="footer-copy">© 2026 Samuel Bates. Built in Phoenix with HTML, CSS, and a little JavaScript. No framework.</p>
+    </div>
+  </footer>
+</body>
+</html>

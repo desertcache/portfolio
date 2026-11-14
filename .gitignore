@@ -15,3 +15,7 @@ __pycache__/
 # `git add blog/`, and without this rule that sweeps an unstyled duplicate of
 # every post onto the live site at blog/hill-money-watch-<date>.html.
 blog/hill-money-watch-*.html
+
+# The painted skyline's 4800x2400 masters (about 22 MB each). The site serves the
+# exports in assets/painted/; rebuild the masters with scripts/paint/camelback.js.
+scripts/paint/out/

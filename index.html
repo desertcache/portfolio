@@ -45,7 +45,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preload" href="assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
-  <link rel="stylesheet" href="css/site.css?v=2026-10-27">
+  <link rel="stylesheet" href="css/site.css?v=2026-11-14">
   <script type="module" src="js/main.js"></script>
 
   <script type="application/ld+json">
@@ -338,6 +338,25 @@
               </div>
             </div>
           </article>
+
+          <article class="lab-card lab-card-wide reveal">
+            <div class="paint-stage" aria-hidden="true">
+              <picture>
+                <source srcset="assets/painted/camelback-dusk-1200.webp" type="image/webp">
+                <img src="assets/painted/camelback-dusk-1200.jpg" alt="" width="1200" height="600" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="lab-card-body">
+              <h3 class="lab-card-title"><a class="lab-card-link" href="work/painted-skyline.html">The painted skyline<span class="lab-card-go" aria-hidden="true">→</span></a></h3>
+              <p>The mountain at the foot of this page is a pastel drawing made by code: more than 100,000 strokes rubbed onto simulated paper, with no image model and no drawing library. Claude wrote the renderer and drew it. Switch the theme and the hour changes.</p>
+              <p class="lab-how"><span class="lab-how-label">How it works</span>The paper is a height map. A stroke leaves pigment only where its pressure beats the paper's tooth at that pixel, so a light touch catches the peaks and lets the layer underneath show through. The ridge comes from the same elevation data as the map up top.</p>
+              <ul class="tags"><li>Plain JavaScript</li><li>No image model</li><li>No dependencies</li></ul>
+              <div class="lab-links">
+                <a class="link-arrow" href="#painted-skyline">See it <span aria-hidden="true">↓</span></a>
+                <a class="link-arrow" href="https://github.com/desertcache/portfolio/tree/main/scripts/paint" target="_blank" rel="noopener">Source <span aria-hidden="true">↗</span></a>
+              </div>
+            </div>
+          </article>
         </div>
       </div>
       <div class="lab-horizon" aria-hidden="true">
@@ -536,7 +555,7 @@
               </li>
               <li class="step reveal">
                 <span class="step-n">Skills</span>
-                <p>Work I repeat becomes a skill: a written procedure with its own checks, so every run goes the same way. Mine brief a session, run a retro, red-team a plan, and publish this site's <a href="blog/index.html">Hill Money Watch</a> digest through a script that rejects any draft that breaks the contract.</p>
+                <p>Work I repeat becomes a skill: a written procedure with its own checks, so every run goes the same way. Mine brief a session, run a retro, red-team a plan, <a href="work/painted-skyline.html">paint the mountain at the foot of this page</a>, and publish this site's <a href="blog/index.html">Hill Money Watch</a> digest through a script that rejects any draft that breaks the contract.</p>
               </li>
               <li class="step reveal">
                 <span class="step-n">Hooks</span>
@@ -645,6 +664,20 @@
         </div>
       </div>
     </section>
+
+    <!-- The painted skyline: the footer's own ridge, drawn in pastel by scripts/paint/ (DEV-NOTES). One picture per
+         theme; both are lazy and only the visible one is fetched. Not a <section>: it has no place in the nav. -->
+    <figure class="plate" id="painted-skyline">
+      <figcaption class="wrap plate-cap"><span class="plate-day">Camelback at first light.</span><span class="plate-dusk">Camelback at last light.</span> A pastel drawing made by Claude in plain JavaScript, on the same real ridge as the map up top. <a href="work/painted-skyline.html">How it was painted <span aria-hidden="true">→</span></a></figcaption>
+      <picture class="plate-day">
+        <source type="image/webp" srcset="assets/painted/camelback-morning-1200.webp 1200w, assets/painted/camelback-morning-2400.webp 2400w" sizes="100vw">
+        <img src="assets/painted/camelback-morning-1200.jpg" srcset="assets/painted/camelback-morning-1200.jpg 1200w, assets/painted/camelback-morning-2400.jpg 2400w" sizes="100vw" width="2400" height="1200" loading="lazy" decoding="async" alt="A pastel drawing of Camelback Mountain at first light: three hot-air balloons over the valley, saguaros, a palo verde in bloom, and a quail leading her chicks.">
+      </picture>
+      <picture class="plate-dusk">
+        <source type="image/webp" srcset="assets/painted/camelback-dusk-1200.webp 1200w, assets/painted/camelback-dusk-2400.webp 2400w" sizes="100vw">
+        <img src="assets/painted/camelback-dusk-1200.jpg" srcset="assets/painted/camelback-dusk-1200.jpg 1200w, assets/painted/camelback-dusk-2400.jpg 2400w" sizes="100vw" width="2400" height="1200" loading="lazy" decoding="async" alt="A pastel drawing of Camelback Mountain at last light: the valley's lights coming on, headlamps climbing the trail, a young moon, and saguaros rimmed in orange.">
+      </picture>
+    </figure>
   </main>
 
   <footer class="footer">
@@ -659,7 +692,7 @@
         <a href="arcade.html">Arcade</a>
         <a href="blog/index.html">Hill Money Watch</a>
       </nav>
-      <p class="footer-note">The contour map up top and the mountains above this footer are real: Camelback and the Phoenix Mountains, drawn from USGS elevation data.</p>
+      <p class="footer-note">The contour map up top and the mountains above this footer are real: Camelback and the Phoenix Mountains, drawn from USGS elevation data. The pastel drawing follows the same ridge.</p>
       <p class="footer-hint"><kbd>`</kbd> warps you to the starship.</p>
     </div>
   </footer>
