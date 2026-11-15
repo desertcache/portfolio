@@ -654,6 +654,62 @@ kbd {
 }
 .hero-inner { position: relative; }
 
+/* The hero's painting (homepage): a pastel drawing of Camelback made by scripts/paint/ (DEV-NOTES),
+   one of five hours of the same place. The theme picks the paper and the clock in Phoenix picks the
+   hour: the <head> script sets data-day and data-dusk on <html> before first paint, so only the
+   matching rule's file is fetched. Without that script the page keeps morning. The files' top rows
+   are already the page colour and the mask softens that edge. On a wide screen the drawing fills
+   the hero, and a wash of page colour keeps it out from under the words; on a narrow one it is a
+   banner above the headline (see the 1100px rule below). */
+.hero-art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  --art: url("../assets/painted/camelback-morning-1200.webp");
+  background: var(--art) 64% 100% / cover no-repeat;   /* 64%: Camelback stays in view however the sides are cropped */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 24%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 24%);
+  pointer-events: none;
+}
+:root[data-day="golden"] .hero-art { --art: url("../assets/painted/camelback-golden-1200.webp"); }
+:root[data-theme="dark"] .hero-art { --art: url("../assets/painted/camelback-dusk-1200.webp"); }
+:root[data-theme="dark"][data-dusk="night"] .hero-art { --art: url("../assets/painted/camelback-night-1200.webp"); }
+:root[data-theme="dark"][data-dusk="monsoon"] .hero-art { --art: url("../assets/painted/camelback-monsoon-1200.webp"); }
+@media (min-width: 900px) {   /* the same breakpoint the <head> script preloads by */
+  .hero-art { --art: url("../assets/painted/camelback-morning-2400.webp"); }
+  :root[data-day="golden"] .hero-art { --art: url("../assets/painted/camelback-golden-2400.webp"); }
+  :root[data-theme="dark"] .hero-art { --art: url("../assets/painted/camelback-dusk-2400.webp"); }
+  :root[data-theme="dark"][data-dusk="night"] .hero-art { --art: url("../assets/painted/camelback-night-2400.webp"); }
+  :root[data-theme="dark"][data-dusk="monsoon"] .hero-art { --art: url("../assets/painted/camelback-monsoon-2400.webp"); }
+}
+.hero-painted::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(97deg, var(--bg) 0%, var(--bg) 40%, transparent 74%);
+  background: linear-gradient(97deg, var(--bg) 0%, var(--bg) 38%, color-mix(in srgb, var(--bg) 80%, transparent) 54%, transparent 74%);
+  pointer-events: none;
+}
+/* the painting's label, in the sky at its top right corner */
+.hero-cap {
+  position: absolute;
+  top: calc(var(--nav-h) + 16px);
+  right: calc(max(0px, (100vw - var(--wrap)) / 2) + var(--pad));
+  z-index: 1;
+  max-width: 19rem;
+  font: 500 semi-condensed 0.6875rem/1.6 var(--mono);
+  letter-spacing: 0.04em;
+  text-align: right;
+  color: var(--ink-3);
+  text-wrap: pretty;
+}
+.hero-cap a { color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; white-space: nowrap; transition: color 0.2s, text-decoration-color 0.2s; }
+.hero-cap a:hover { color: var(--accent-ink); text-decoration-color: currentColor; }
+.hero-cap .plate-dusk { display: none; }
+:root[data-theme="dark"] .hero-cap .plate-day { display: none; }
+:root[data-theme="dark"] .hero-cap .plate-dusk { display: inline; }
+
 .status {
   display: inline-flex;
   align-items: center;
@@ -830,9 +886,25 @@ kbd {
 .try-ask:hover .try-ask-go { transform: translateY(2px); }
 .try-more { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 13px 0 14px; }
 .try-more .link-arrow { font-size: 0.875rem; }
+.legend-try .try-more { margin-bottom: 4px; }
 .try-meta { align-self: center; font: 500 semi-condensed 0.625rem/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
 
 @media (max-width: 1100px) {
+  /* One column: the painting would be a sliver behind a tall hero, so it is a banner above the
+     headline, with its label under it. */
+  .hero { flex-direction: column; align-items: stretch; min-height: 0; padding-top: var(--nav-h); }
+  .hero-painted::before { display: none; }
+  .hero-art {
+    position: relative;
+    inset: auto;
+    flex: none;
+    height: clamp(200px, 54vw, 420px);
+    background-position: 64% 78%;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 22%);
+  }
+  .hero-cap { position: static; max-width: none; margin: 8px var(--pad) 0; text-align: left; }
+  .hero-inner { width: 100%; }
   .hero-inner { grid-template-columns: 1fr; align-items: start; row-gap: 0; }
   /* One column: the Try it card comes after the calls to action and before the Claude Code note
      (under 640px the lede and the numbers drop below it: see below). */
@@ -842,6 +914,8 @@ kbd {
 }
 @media (max-width: 640px) {
   .legend-coords { display: none; }
+  .map-legend .legend-coords { display: flex; }
+  .hero-cap .cap-more { display: none; }
   /* A phone puts the calls to action straight under the headline and the Try it card under them, so
      the main button and the card's first question are both on the first screen; the lede, the
      numbers and the note follow. */
@@ -1783,30 +1857,43 @@ html.has-modal { overflow: hidden; }
   .contact-actions .btn { flex: 1 1 auto; }
 }
 
-/* The painted skyline (homepage only): a pastel drawing of the footer's own ridge, made by
-   scripts/paint/ (DEV-NOTES). One picture per theme: first light by day, last light after
-   dark. The file's top rows are already the page colour, and the mask keeps that edge soft
-   where a wide screen crops the sky. With the drawing on the page, the contact section gives
-   up its afterglow and the footer gives up its flat skyline strip: the drawing is both. */
+/* The band above the footer (homepage only): the contour map, the same ground as the painting up
+   top, seen from above (js/topo.js draws it; DEV-NOTES). It stands where the painting first stood,
+   and it stands in for two things: the contact section gives up its afterglow and the footer its
+   flat skyline strip. The map was drawn faint, to sit behind the hero's words; here it is the
+   picture, so its lines are stronger (--topo-alpha, which topo.js reads from the canvas). */
 .plate { position: relative; margin: 0; }
 .plate-cap { margin-bottom: clamp(2px, 0.8vw, 10px); font: 500 semi-condensed 0.75rem/1.55 var(--mono); letter-spacing: 0.04em; color: var(--ink-3); text-wrap: pretty; }
 .plate-cap a { color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; white-space: nowrap; transition: color 0.2s, text-decoration-color 0.2s; }
 .plate-cap a:hover { color: var(--accent-ink); text-decoration-color: currentColor; }
-.plate picture { display: block; }
-.plate img {
-  display: block;
-  width: 100%;
-  /* 50vw is the drawing's own 2:1, so nothing is cropped until the cap */
-  height: clamp(280px, 50vw, 760px);
-  object-fit: cover;
-  object-position: 64% 100%;   /* Camelback stays in view on a phone, as it does in the footer strip */
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 16%);
-  mask-image: linear-gradient(to bottom, transparent, #000 16%);
+.map-stage { position: relative; isolation: isolate; height: clamp(300px, 42vw, 620px); overflow: hidden; }
+.map-stage .topo {
+  z-index: 0;
+  --topo-alpha: 0.34;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 24%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 24%);
 }
-.plate .plate-dusk { display: none; }
-:root[data-theme="dark"] .plate .plate-day { display: none; }
-:root[data-theme="dark"] .plate picture.plate-dusk { display: block; }
-:root[data-theme="dark"] .plate span.plate-dusk { display: inline; }
+:root[data-theme="dark"] .map-stage .topo { --topo-alpha: 0.3; }
+.map-stage .thermal { z-index: 1; }
+/* what is under the pointer: where, how high, and the map's scale */
+.map-legend {
+  position: absolute;
+  left: calc(max(0px, (100vw - var(--wrap)) / 2) + var(--pad));
+  top: 30%;
+  z-index: 2;
+  padding: 12px 14px 11px;
+  font: 500 semi-condensed 0.6875rem/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+.map-legend .legend-foot { margin-top: 10px; padding-top: 10px; }
+.map-legend .legend-place { margin-left: 14px; }
+/* on a phone the peak sits high and near the middle (viewFor), so the legend goes below it, above the javelina's path */
+@media (max-width: 640px) { .map-legend { top: auto; bottom: 64px; } }
+@media (hover: none) { .map-hint { display: none; } }
 .contact:has(+ .plate) { padding-bottom: clamp(28px, 4vw, 56px); background: none; }
 body:has(.plate) .footer::before { display: none; }
 
@@ -2310,7 +2397,7 @@ html.theme-fade, html.theme-fade *, html.theme-fade *::before, html.theme-fade *
 }
 
 @media print {
-  .nav, .topo, .hero-fade, .lab-grid, .dock, .toast, .footer-hint, .orb-slot, .footer::before, .thermal, .trail, .flock, .hummer { display: none !important; }
+  .nav, .topo, .hero-fade, .hero-art, .hero-painted::before, .hero-cap, .map-band, .lab-grid, .dock, .toast, .footer-hint, .orb-slot, .footer::before, .thermal, .trail, .flock, .hummer { display: none !important; }
   .js .reveal { opacity: 1 !important; transform: none !important; }
   .hero { min-height: 0; padding-top: 24px; }
   .section, .contact { padding-block: 32px; }
