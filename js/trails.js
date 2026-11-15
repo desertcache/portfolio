@@ -1,6 +1,6 @@
 // @ts-check
 /**
- * Every animal on a trail. Each `.trail` holds one animal (`svg.runner`, the
+ * Every animal on a trail. Each `.trail` holds an animal (`svg.runner`, the
  * roadrunner, or `svg.walker[data-animal]`) that crosses it as you scroll:
  * its hip goes from `--run-from` to `--run-to` (CSS custom properties on the
  * trail, fractions of its width, so a media query can change them) over the
@@ -14,7 +14,11 @@
  *   hop   whole hops toward the spot, never stopping in mid-air (the toad)
  * Stopped, it rests and does what it does at rest: a CSS animation on
  * `[data-state="idle"]` (tail flick, rooting, tongue and rattle, threat,
- * blink).
+ * blink, pecking).
+ *
+ * A trail can hold more than one. The first is led by the scroll; each one
+ * after it follows the one ahead, `data-gap` trail-heights behind (the quail
+ * and her chicks; js/covey.js has the rule).
  *
  * Cheap by construction: animals move by transform only, their poses are one
  * inherited custom property (`--frame`) picking a drawing in the sprite, and
@@ -26,6 +30,7 @@ import { ROADRUNNER } from './fauna-data.js';
 import { CRITTERS } from './critter-data.js';
 import { runWindow, runProgress, runnerX, follow, stride, strideFrame, facing } from './wildlife.js';
 import { dart, hop } from './gaits.js';
+import { spotBehind, followerLag } from './covey.js';
 
 /**
  * @typedef {object} Gait
@@ -41,6 +46,8 @@ import { dart, hop } from './gaits.js';
 const GAITS = {
   roadrunner: { kind: 'run', lag: 0.12, maxHz: 7 },
   javelina: { kind: 'run', lag: 0.22, maxHz: 3.4 },
+  quail: { kind: 'run', lag: 0.16, maxHz: 6.5 },
+  chick: { kind: 'run', lag: 0.14, maxHz: 11 },
   rattlesnake: { kind: 'run', lag: 0.3, maxHz: 2.4 },
   scorpion: { kind: 'dart', lag: 0.06, maxHz: 9, gap: 34 },
   toad: { kind: 'hop', duration: 340, pause: 120 },
@@ -58,6 +65,9 @@ const SNAP = 0.4;     // px: this close to its spot, it's there
  * @property {number} to
  * @property {import('./wildlife.js').RunWindow} win
  * @property {number} trailW
+ * @property {Animal | null} ahead  the one it follows; null if the scroll leads it
+ * @property {number} gap      px: how far behind the one ahead it keeps
+ * @property {number} lag      s: its gait's lag, a little more for each place back in a line
  * @property {number} pivotPx  its hip, px from the drawing's left edge
  * @property {number} cyclePx  px covered per gait cycle at the drawn size
  * @property {number} hopPx    px per hop (toad)
@@ -78,23 +88,38 @@ export function initTrails() {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   /** @type {Animal[]} */
   const animals = [];
-  for (const trail of document.querySelectorAll('.trail')) {
-    const el = trail.querySelector('svg.runner, svg.walker');
-    if (!(trail instanceof HTMLElement) || !(el instanceof SVGSVGElement)) continue;
+  /** @param {SVGSVGElement} el */
+  const known = (el) => {
     const name = el.dataset.animal || 'roadrunner';
-    const data = name === 'roadrunner' ? ROADRUNNER : CRITTERS[name];
-    const gait = GAITS[name];
-    if (!data || !gait) continue;
-    el.style.transformOrigin = `${data.pivot * 100}% 100%`;
+    return { data: name === 'roadrunner' ? ROADRUNNER : CRITTERS[name], gait: GAITS[name] };
+  };
+  for (const trail of document.querySelectorAll('.trail')) {
+    if (!(trail instanceof HTMLElement)) continue;
+    /** @type {SVGSVGElement[]} */
+    const els = [];
+    for (const el of trail.querySelectorAll('svg.runner, svg.walker')) if (el instanceof SVGSVGElement) els.push(el);
+    // all or nothing: a stale cached data file must not leave half a covey unplaced
+    if (!els.length || !els.every((el) => known(el).data && known(el).gait)) continue;
     trail.classList.add('is-live'); // hands positioning from the CSS resting spot to the transform
-    animals.push({ trail, el, gait, data, from: 0, to: 1, win: { from: 0, to: 1 }, trailW: 0, pivotPx: 0,
-      cyclePx: 0, hopPx: 0, hopH: 0, x: 0, y: 0, phase: 0, face: 1, moved: -Infinity, seen: false, state: '',
-      frame: -1, dest: null, hopState: { x: 0, hop: null, restUntil: 0 } });
+    /** @type {Animal | null} */
+    let ahead = null;
+    els.forEach((el, place) => {
+      const { data, gait } = known(el);
+      el.style.transformOrigin = `${data.pivot * 100}% 100%`;
+      /** @type {Animal} */
+      const a = { trail, el, gait, data, from: 0, to: 1, win: { from: 0, to: 1 }, trailW: 0, ahead, gap: 0,
+        lag: followerLag(gait.lag ?? 0.12, place), pivotPx: 0, cyclePx: 0, hopPx: 0, hopH: 0, x: 0, y: 0, phase: 0,
+        face: 1, moved: -Infinity, seen: false, state: '', frame: -1, dest: null, hopState: { x: 0, hop: null, restUntil: 0 } };
+      animals.push(a);
+      ahead = a;
+    });
   }
   if (!animals.length) return;
 
-  /** @param {Animal} a */
-  const target = (a) => runnerX(runProgress(window.scrollY, a.win), a.from, a.to, a.trailW);
+  /** Where it should be: behind the one it follows, or where the scroll puts a leader. @param {Animal} a */
+  const target = (a) => (a.ahead
+    ? spotBehind(a.ahead.x, a.ahead.face, a.gap)
+    : runnerX(runProgress(window.scrollY, a.win), a.from, a.to, a.trailW));
 
   /** @param {Animal} a @param {string} state */
   const setState = (a, state) => {
@@ -131,6 +156,7 @@ export function initTrails() {
       const r = a.trail.getBoundingClientRect();
       a.win = runWindow(r.top + window.scrollY, window.innerHeight, maxScroll);
       a.trailW = r.width;
+      a.gap = (parseFloat(a.el.dataset.gap ?? '') || 1) * r.height;
       const [, , vbW, vbH] = a.data.viewBox;
       const unit = a.el.getBoundingClientRect().height / vbH; // px per sprite unit
       a.pivotPx = a.data.pivot * vbW * unit;
@@ -180,7 +206,7 @@ export function initTrails() {
         nx = s.x;
         a.dest = s.dest;
       } else {
-        nx = follow(a.x, goal, dt, gait.lag ?? 0.12);
+        nx = follow(a.x, goal, dt, a.lag);
         if (Math.abs(goal - nx) < SNAP) nx = goal;
       }
       const dx = nx - a.x;
@@ -212,12 +238,13 @@ export function initTrails() {
   window.addEventListener('scroll', wake, { passive: true });
   const io = new IntersectionObserver((entries) => {
     for (const entry of entries) {
-      const a = animals.find((animal) => animal.trail === entry.target);
-      if (!a) continue;
-      if (entry.isIntersecting && !a.seen) settle(a); // arriving from elsewhere on the page: be where it belongs
-      a.seen = entry.isIntersecting;
+      for (const a of animals) {
+        if (a.trail !== entry.target) continue;
+        if (entry.isIntersecting && !a.seen) settle(a); // arriving from elsewhere on the page: be where it belongs
+        a.seen = entry.isIntersecting;
+      }
     }
     wake();
   }, { rootMargin: '160px 0px' });
-  for (const a of animals) io.observe(a.trail);
+  for (const trail of new Set(animals.map((a) => a.trail))) io.observe(trail);
 }

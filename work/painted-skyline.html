@@ -39,7 +39,7 @@
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
   <link rel="preload" href="../assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
-  <link rel="stylesheet" href="../css/site.css?v=2026-11-14">
+  <link rel="stylesheet" href="../css/site.css?v=2026-11-14b">
   <link rel="stylesheet" href="../blog/blog.css?v=2026-09-26">
   <script type="module" src="../js/blog.js"></script>
 </head>
@@ -79,7 +79,7 @@
       <header class="post-head">
         <a class="eyebrow post-back" href="../index.html#lab"><span class="eyebrow-num">Build note</span>Drawing with code</a>
         <h1 class="post-title">A mountain drawn by code, one stroke at a time</h1>
-        <p class="post-lede">Scroll to the foot of the homepage and Camelback is there in pastel: at first light in the light theme, at last light in the dark one. No image model made it, and no drawing library was used. Claude wrote a small renderer that rubs pigment onto simulated paper, then used it to draw the picture. This is how it works, who did what, and what went wrong along the way.</p>
+        <p class="post-lede">Scroll to the foot of the homepage and Camelback is there in pastel, at the hour it is in Phoenix: first light or golden hour in the light theme, and last light, the small hours or a monsoon storm in the dark one. No image model made it, and no drawing library was used. Claude wrote a small renderer that rubs pigment onto simulated paper, then used it to draw the picture. This is how it works, who did what, and what went wrong along the way.</p>
         <p class="post-meta"><time datetime="2026-11-14">November 2026</time><span>Samuel Bates</span><span id="read-time" hidden></span></p>
       </header>
 
@@ -131,7 +131,7 @@
             <tr><td>Pastel pencil</td><td>Opaque, with a firmer edge</td><td>Solid things: rock, cactus, roofs</td></tr>
             <tr><td>Colour pencil</td><td>A hard point that glazes, so it darkens what is under it</td><td>Shadows, hatching, outlines</td></tr>
             <tr><td>Chalk</td><td>Opaque and bright</td><td>Stars, lamps, highlights</td></tr>
-            <tr><td>Wax crayon</td><td>Skips the valleys hard</td><td>Not on the mountain. It coloured the rocket in Fig. 4</td></tr>
+            <tr><td>Wax crayon</td><td>Skips the valleys hard</td><td>Not on the mountain. It coloured the rocket in Fig. 5</td></tr>
           </tbody>
         </table>
 
@@ -142,10 +142,38 @@
         <h2>The ridge is real</h2>
         <p>The first version of this mountain was drawn from memory, as a couple of dozen points, and it looked plausible. It was also wrong, and this site already knew better: the contour map in the hero and the skyline strip in the footer are both built from elevation data. Claude found that while reading the site's notes, threw its own ridge away, and redrew the mountain from the same skyline file the footer uses. The painted ridge is now that ridge, with the Phoenix Mountains to the west where they belong.</p>
 
-        <h2>One place, two hours</h2>
-        <p>The site has a light theme and a dark one, so the drawing has two times of day. Every position is decided once, before any paint, so both versions share one place: the same saguaros, the same palms, the same patches of scrub. Then the light changes sides.</p>
+        <h2>One place, five hours</h2>
+        <p>The site has a light theme and a dark one, so the drawing began as two times of day. Every position is decided once, before any paint, so every version shares one place: the same saguaros, the same palms, the same patches of scrub. Then the light changes sides.</p>
         <p>In the morning the sun is in the east. Three hot-air balloons are up, a palo verde is in bloom, and a quail leads her chicks across the gravel. At dusk the light comes from the west. The valley's lights are on, headlamps climb the trail to the summit, and a scorpion glows on a rock, the way the one that walks this site does after dark.</p>
-        <p>The top of each picture fades to exactly the page's background colour, so it has no edge. Switch the theme, top right, and the hour changes.</p>
+        <p>Then three more hours were added, and the picture started keeping time. The theme picks the family, light or dark, and the clock in Phoenix picks the hour within it. On a light afternoon it is golden hour: the sun low over the Phoenix Mountains, and every shadow turned round to fall east. From 10 at night to 5 in the morning the dark theme has no moon, the Milky Way standing up behind the summit, and half the valley's windows gone dark. And on summer evenings, from 15 June to 30 September, it gets what Phoenix gets: a monsoon thunderhead behind the mountain, rain falling out of its eastern half, and lightning.</p>
+        <figure class="duo" aria-labelledby="hours-cap">
+          <div class="duo-pair duo-three">
+            <div class="duo-item">
+              <picture>
+                <source srcset="../assets/painted/camelback-golden-1200.webp" type="image/webp">
+                <img src="../assets/painted/camelback-golden-1200.jpg" width="1200" height="600" loading="lazy" decoding="async" alt="The same view at golden hour: a low sun in the west, two gold clouds, and long shadows falling east.">
+              </picture>
+              <p class="duo-label"><b>Golden hour</b> light, after 1 PM · 120,648 strokes</p>
+            </div>
+            <div class="duo-item">
+              <picture>
+                <source srcset="../assets/painted/camelback-night-1200.webp" type="image/webp">
+                <img src="../assets/painted/camelback-night-1200.jpg" width="1200" height="600" loading="lazy" decoding="async" alt="The same view in the small hours: no moon, the Milky Way behind the summit, a meteor, half the windows dark.">
+              </picture>
+              <p class="duo-label"><b>The small hours</b> dark, 10 PM to 5 AM · 109,738 strokes</p>
+            </div>
+            <div class="duo-item">
+              <picture>
+                <source srcset="../assets/painted/camelback-monsoon-1200.webp" type="image/webp">
+                <img src="../assets/painted/camelback-monsoon-1200.jpg" width="1200" height="600" loading="lazy" decoding="async" alt="The same view under a monsoon storm: a thunderhead behind the ridge, rain to the east, two bolts of lightning.">
+              </picture>
+              <p class="duo-label"><b>Monsoon</b> dark, summer evenings · 185,209 strokes</p>
+            </div>
+          </div>
+          <figcaption id="hours-cap"><span class="fig">Fig. 3</span> The three hours added later. Nothing in the layout moved. The storm is the busiest of the five, and most of its strokes are cloud.</figcaption>
+        </figure>
+        <p>The new hours are less three new drawings than the same drawing told a different time. Every colour in the scene passes through one small function that leans it toward the hour: warmer, with violet in the shadows, for the afternoon; blue and dim for starlight; cold and pale for a sky lit by lightning. Then each hour paints its own sky and decides who is out. At golden hour the quail are still crossing the gravel. After midnight the headlamps are off the trail.</p>
+        <p>The top of each picture fades to exactly the page's background colour, so it has no edge. Switch the theme, top right, and the family changes. To see an hour the clock isn't showing, ask for it by name: <a href="../index.html?hour=monsoon#painted-skyline">the storm</a> and <a href="../index.html?hour=night#painted-skyline">the small hours</a> in the dark theme, <a href="../index.html?hour=golden#painted-skyline">golden hour</a> in the light one.</p>
 
         <h2>What went wrong</h2>
         <p>The first picture of the session was made a different way, with the browser's canvas. Its sky and its storm cloud worked. Its foreground looked like clip art, because a clean filled shape is exactly what canvas is good at. The renderer above exists because of that failure.</p>
@@ -166,7 +194,7 @@
               <p class="duo-label"><b>Second try</b> pigment on simulated paper</p>
             </div>
           </div>
-          <figcaption id="tries-cap"><span class="fig">Fig. 3</span> Two foregrounds from the same afternoon. On canvas every flower is a flat sticker. On simulated paper the grain breaks every edge, and the picture reads as drawn.</figcaption>
+          <figcaption id="tries-cap"><span class="fig">Fig. 4</span> Two foregrounds from the same afternoon. On canvas every flower is a flat sticker. On simulated paper the grain breaks every edge, and the picture reads as drawn.</figcaption>
         </figure>
         <p>After that, most mistakes were found the same way: render, look at the whole sheet and then at close-ups, and name what the wrong part resembles. The name usually points at the cause.</p>
         <table>
@@ -184,6 +212,7 @@
 
         <h2>How it was checked</h2>
         <p>A picture can't be unit-tested for beauty, but the machinery can be held still. Every random choice comes from one seeded generator, so a render repeats down to the byte. When the engine was packaged as a skill, the first paper drawing was rendered again from the packaged copy: 205,179 strokes later, the file's SHA-256 matched the original. The same check ran when the two mountain drawings moved into this site's repository.</p>
+        <p>It earned its keep when the three later hours were added. The scene was reworked to take five modes, and afterwards the morning drawing came out byte for byte the same and the dusk one did not: 104,854 strokes where there had been 104,931. A helper inside the mountain function had the same one-letter name as the new mode variable and hid it, so dusk had quietly lost the ember line under its ridge and the headlamps on the trail. Nobody would have caught that by eye. The stroke count caught it in one run, and a count taken after each stage pointed at the function.</p>
         <figure class="duo" aria-labelledby="liftoff-cap">
           <div class="duo-pair duo-one">
             <div class="duo-item">
@@ -193,7 +222,7 @@
               </picture>
             </div>
           </div>
-          <figcaption id="liftoff-cap"><span class="fig">Fig. 4</span> The first drawing made on the simulated paper, and the one used for that check: a cardboard rocket that actually flew. Soft pastel, pencil, chalk and crayon, 205,179 strokes.</figcaption>
+          <figcaption id="liftoff-cap"><span class="fig">Fig. 5</span> The first drawing made on the simulated paper, and the one used for that check: a cardboard rocket that actually flew. Soft pastel, pencil, chalk and crayon, 205,179 strokes.</figcaption>
         </figure>
 
         <h2>What I'd tell the next person</h2>

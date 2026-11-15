@@ -1,21 +1,42 @@
 'use strict';
-// The painted skyline above the homepage footer: one place at two times of day, one per theme.
-//   MODE=dark  S=2 node scripts/paint/camelback.js   -> scripts/paint/out/camelback-dark.png    last light; the top melts into #150f24
-//   MODE=light S=2 node scripts/paint/camelback.js   -> scripts/paint/out/camelback-light.png   first light; the top melts into #f3ebe6
+// The painted skyline above the homepage footer: one place at five hours. The site shows the one that fits the
+// visitor's theme and the time in Phoenix (js/hours.js).
+//   MODE=light   first light   (light theme, mornings)        MODE=golden   golden hour (light theme, afternoons)
+//   MODE=dark    last light    (dark theme, evenings)         MODE=night    deep night under the Milky Way
+//   MODE=monsoon a summer storm at dusk (dark theme, evenings from 15 June to 30 September)
+//   MODE=<mode> S=2 node scripts/paint/camelback.js   -> scripts/paint/out/camelback-<morning|golden|dusk|night|monsoon>.png
+// The light family melts into #f3ebe6 at the top, the dark family into #150f24.
 // then: python scripts/paint/export_assets.py   (writes the files the site serves into assets/painted/)
 // Seen from the south, the kneeling camel faces west: head on the left, hump and summit (2,706 ft) on the right.
 // Soft pastel, pastel pencil, colour pencil and chalk, drawn in plain JavaScript (engine.js, kit.js). See DEV-NOTES.md.
 const E = require('./engine')({ w: 2400, h: 1200, seed: 2706 });
 const K = require('./kit')(E);
 const { BW, BH, rnd, R, pick, gs, cl, smooth, hx, mix, rampc, r5, jc, vn, fbm, T, stroke, spline, polyIn, discIn, hatch, haze } = E;
-const { rect, fnReg, circ, xf, block, tone, edge, dot, ln, twinkle, mark, field, bush, sign, run } = K;
+const { rect, fnReg, circ, xf, block, tone, edge, dot, ln, twinkle, mark, field, bush, cloud, cloudSpec, sign, run } = K;
 
-const D = (process.env.MODE || 'dark') !== 'light';
-const c = (d, l) => hx(D ? d : l), v = (d, l) => D ? d : l;
-const BG = c('#150f24', '#f3ebe6'), INK = c('#0d0919', '#4a3f56');
+const M = { light: 'light', golden: 'golden', dark: 'dark', night: 'night', monsoon: 'monsoon' }[process.env.MODE || 'dark'] || 'dark';
+const D = M !== 'light' && M !== 'golden';              // the dark family
+const GOLD = M === 'golden', NIGHT = M === 'night', STORM = M === 'monsoon';
+const NAME = { light: 'morning', golden: 'golden', dark: 'dusk', night: 'night', monsoon: 'monsoon' }[M];
+// Every colour is written once per family, then leaned toward the hour: golden hour warms the lights and purples
+// the shadows; deep night cools and dims whatever the sunset had lit; the storm greys the ground and turns the
+// warm rims into the pale violet of lightning.
+function adapt(q) {
+  const k = (q[0] + q[1] + q[2]) / 3, warm = q[0] - q[2] > 0.1;
+  if (GOLD) return mix(mix(q, hx('#ff9440'), 0.16), hx('#7a3f86'), k < 0.45 ? 0.16 : 0);
+  if (NIGHT) return warm ? [k * 0.42, k * 0.5, k * 0.86] : mix(q, hx('#0e1434'), 0.42);
+  if (STORM) return warm ? mix(q, hx('#b8b0e8'), 0.62).map(u => u * 0.85) : mix(q, hx('#252840'), 0.3);
+  return q;
+}
+const toHex = q => '#' + q.map(u => Math.round(cl(u) * 255).toString(16).padStart(2, '0')).join('');
+const c = (d, l) => adapt(hx(D ? d : l)), v = (d, l) => toHex(adapt(hx(D ? d : l)));
+const BG = hx(D ? '#150f24' : '#f3ebe6'), INK = c('#0d0919', '#4a3f56');
 const HZ = 800;                                        // where the mountain meets the valley floor
-const LX = D ? -1 : 1;                                 // light from the west at dusk, from the east in the morning
-const GLOW = D ? [330, HZ] : [2130, HZ], LV = D ? [-0.94, -0.34] : [0.9, -0.44];
+// Where the light comes from: the east in the morning, the west at golden hour and at dusk, and in the storm
+// from its own flashes, which are to the east.
+const LX = M === 'light' || STORM ? 1 : -1;
+const GLOW = { light: [2130, HZ], golden: [300, HZ - 30], dark: [330, HZ], night: [1500, HZ + 60], monsoon: [140, HZ] }[M];
+const LV = LX > 0 ? [0.9, -0.44] : [-0.94, -0.34];
 
 // ---------- the mountain's outline: the portfolio's own skyline, which is real elevation data ----------
 // assets/skyline.svg is the site's footer skyline (scripts/build_terrain.py): the horizon looking north from about
@@ -42,25 +63,72 @@ for (let i = 0; i < 46; i++) L.shrubs.push({ x: R(-10, BW + 10), t: rnd(), r: R(
 for (let i = 0; i < 20; i++) L.brittle.push({ x: R(40, BW - 40), t: rnd(), r: R(18, 30) });
 
 // ---------- sky ----------
-const SKY = (D ? [[0, '#150f24'], [0.25, '#1d1638'], [0.42, '#33215a'], [0.56, '#5c2f74'], [0.68, '#a8477e'], [0.8, '#e86a6a'], [0.9, '#ff8a4d'], [1, '#ffb066']]
-  : [[0, '#f3ebe6'], [0.22, '#f0e8e4'], [0.45, '#e6e4ea'], [0.62, '#f1dfd2'], [0.78, '#f7cbab'], [0.9, '#f5a985'], [1, '#ee9684']]).map(([p, h]) => [p, hx(h)]);
+const SKY = ({
+  light: [[0, '#f3ebe6'], [0.22, '#f0e8e4'], [0.45, '#e6e4ea'], [0.62, '#f1dfd2'], [0.78, '#f7cbab'], [0.9, '#f5a985'], [1, '#ee9684']],
+  golden: [[0, '#f3ebe6'], [0.2, '#f3e6da'], [0.42, '#f1dcc6'], [0.6, '#f6cfa4'], [0.76, '#f9b676'], [0.9, '#f6955c'], [1, '#ea7a58']],
+  dark: [[0, '#150f24'], [0.25, '#1d1638'], [0.42, '#33215a'], [0.56, '#5c2f74'], [0.68, '#a8477e'], [0.8, '#e86a6a'], [0.9, '#ff8a4d'], [1, '#ffb066']],
+  night: [[0, '#150f24'], [0.3, '#15112e'], [0.6, '#191640'], [0.85, '#221d4e'], [1, '#2f2658']],
+  monsoon: [[0, '#150f24'], [0.25, '#191430'], [0.5, '#272042'], [0.7, '#3a2c56'], [0.86, '#583a64'], [1, '#8a4c60']],
+})[M].map(([p, h]) => [p, hx(h)]);
+// the colour and strength of the glow where the light is, and what the sky far from it leans toward
+const GLOWC = { light: ['#fff3d6', 0.72], golden: ['#fff0c4', 0.8], dark: ['#ffd08a', 0.6], night: ['#4a3a6a', 0.35], monsoon: ['#e0703c', 0.5] }[M];
+const FARC = hx({ light: '#dccfe0', golden: '#e6c8d0', dark: '#3a2a66', night: '#141230', monsoon: '#221c3c' }[M]);
 function skyCol(x, y) {
   const t = cl(y / HZ), dx = (x - GLOW[0]) / 900, dy = (y - GLOW[1]) / 380;
-  const col = mix(rampc(SKY, t), c('#ffd08a', '#fff3d6'), Math.exp(-(dx * dx + dy * dy) * 1.8) * (D ? 0.6 : 0.72));
-  return mix(col, c('#3a2a66', '#dccfe0'), cl(Math.abs(x - GLOW[0]) / 1700) * smooth(0.55, 0.95, t) * 0.55);
+  const col = mix(rampc(SKY, t), hx(GLOWC[0]), Math.exp(-(dx * dx + dy * dy) * 1.8) * GLOWC[1]);
+  return mix(col, FARC, cl(Math.abs(x - GLOW[0]) / 1700) * smooth(0.55, 0.95, t) * 0.55);
 }
 function sky() {
   // the strokes thin out toward the top, so the picture dissolves into the bare page-coloured paper
   field([-20, 24, BW + 20, HZ + 40], skyCol, { pencil: c('#2a1a52', '#b9a2b4'), dens: (x, y) => smooth(34, 300, y) });
-  haze(GLOW[0], GLOW[1] - 20, 320, 210, c('#ffb066', '#fff8e6'), D ? 0.28 : 0.5);
+  if (NIGHT) return;                 // no sun to light a cloud from below
+  haze(GLOW[0], GLOW[1] - 20, 320, 210, hx({ light: '#fff8e6', golden: '#fff0c4', dark: '#ffb066', monsoon: '#e0703c' }[M]), D ? 0.28 : 0.5);
   for (let i = 0; i < 14; i++) {      // thin bars of cloud near the light, lit from underneath
     const y = R(600, 770), x = GLOW[0] + gs() * 520, len = R(140, 460), th = R(3.5, 8), ng = Math.exp(-(((x - GLOW[0]) / 500) ** 2));
     for (let k = 0; k < 4; k++) { const yy = y + R(-th * .4, th * .4); ln(x - len / 2 + R(-40, 40), yy, x + len / 2 * R(.5, 1), yy, T.pastel, jc(mix(c('#6a3f86', '#e6c4cc'), c('#b8527e', '#f4d2c4'), rnd()), 0.03), th, R(0.55, 0.85), { tin: 0.3, tout: 0.4, wob: 2 }); }
     for (let k = 0; k < 3; k++) ln(x - len / 2 + R(-30, 30), y + th * .7, x + len / 2 * R(.4, .8), y + th * .7, T.pastel, jc(mix(c('#ff8f5a', '#fff6e4'), c('#ffe0a0', '#ffffff'), ng * rnd()), 0.03), th * 0.45, R(0.6, 0.9), { tin: 0.3, tout: 0.4, wob: 1.5 });
   }
 }
-function night() {
-  const SC = ['#ffffff', '#e6dcff', '#ffe9d0', '#ffd0e6'].map(hx);
+const SC = ['#ffffff', '#e6dcff', '#ffe9d0', '#ffd0e6'].map(hx);
+// golden hour: the sun low over the Phoenix Mountains, and fair-weather cloud catching it
+function afternoon() {
+  haze(300, 548, 300, 250, hx('#fff2c4'), 0.6, 1.6);
+  block(discIn(300, 548, 27, 0.03), hx('#fffaf0'), { tool: T.pastel, w: 3, g: 0.8, p: 1.3, len: [10, 40] });
+  const hi = ['#e2bcb4', '#f2c8aa', '#fad8b4', '#ffe8c8', '#fff8ea'], lo = ['#d4aeb0', '#eabea6', '#f6ceaa', '#fde0be', '#fff4e0'];
+  cloud([[1820, 322, 60], [1904, 296, 72], [1992, 326, 56], [1744, 340, 40]], cloudSpec({ dir: [-0.78, -0.3, 0.55], x0: 1700, x1: 2060, yBase: 372, yTop: 220, hi, lo, seed: 5 }), (x, y) => y < 366 + 10 * (vn(x / 40, 3, 61) - .5));
+  cloud([[1238, 232, 34], [1292, 220, 44], [1350, 236, 34]], cloudSpec({ dir: [-0.78, -0.3, 0.55], x0: 1200, x1: 1390, yBase: 262, yTop: 172, hi, lo, seed: 8 }), (x, y) => y < 258 + 8 * (vn(x / 40, 5, 63) - .5));
+}
+// deep night: no moon, the valley half asleep, and the Milky Way standing up out of the east behind the summit
+function deepNight() {
+  for (let i = 0; i < 1100; i++) { const y = 96 + Math.pow(rnd(), 1.15) * 580; dot(R(BW), y, R(0.3, 1.0), pick(SC), R(0.4, 1) * cl(1.2 - (y - 96) / 640)); }
+  for (let i = 0; i < 30; i++) twinkle(R(BW), 120 + Math.pow(rnd(), 1.2) * 420, R(3.5, 9), pick(SC));
+  const A = [520, 150], B = [2260, 640], dx = B[0] - A[0], dy = B[1] - A[1], len = Math.hypot(dx, dy), nx = -dy / len, ny = dx / len;
+  const P = (t, o) => [A[0] + dx * t + nx * o, A[1] + dy * t + ny * o], up = y => smooth(150, 300, y);
+  for (let i = 0; i < 280; i++) { const [x, y] = P(rnd(), gs() * 64); haze(x, y, R(60, 150), R(34, 80), hx(pick(['#5a4aa8', '#7a4a9a', '#4a5ab0', '#8a5a9a'])), 0.05 * up(y), 1.6); }
+  for (let i = 0; i < 100; i++) { const [x, y] = P(rnd(), gs() * 26 - 8); haze(x, y, R(30, 80), R(18, 40), hx('#d8c8e8'), 0.05 * up(y), 1.5); }     // its bright core
+  for (let i = 0; i < 70; i++) { const [x, y] = P(R(0.05, 0.95), gs() * 20 + 14); haze(x, y, R(30, 90), R(10, 22), hx('#120e26'), 0.1, 1.4); }       // dust lanes
+  for (let i = 0; i < 5600; i++) { const [x, y] = P(rnd(), gs() * 58); if (y < 100) continue; dot(x, y, R(0.25, 0.8), pick(SC), R(0.3, 0.9) * smooth(100, 260, y)); }
+  stroke([[1010, 250], [1064, 282], [1120, 318]], T.chalk, hx('#fffaf0'), 0.8, 0.95, { tin: 0.7, tout: 0.02, lo: 0.02 }); dot(1120, 318, 1.1, hx('#ffffff'), 1);   // one meteor
+}
+// monsoon: a thunderhead standing behind the mountain, lit from inside, with the last ember of the day under its edge
+function storm() {
+  for (let i = 0; i < 160; i++) { const y = 110 + Math.pow(rnd(), 1.3) * 420, x = R(0, 760); dot(x, y, R(0.35, 1.0), pick(SC), R(0.45, 1) * cl(1.15 - (y - 110) / 470) * (1 - smooth(480, 760, x))); }
+  const hi = ['#15112a', '#1d1838', '#292148', '#372b56', '#473864'], lo = ['#1c1730', '#31254a', '#573a5e', '#864a5c', '#c2664c'];
+  const spec = cloudSpec({ dir: [-0.75, 0.32, 0.55], x0: 640, x1: 2400, yBase: 660, yTop: 190, hi, lo, seed: 12 });
+  cloud([[1250, 430, 150], [1500, 380, 190], [1780, 400, 200], [2050, 380, 190], [2310, 420, 180], [1050, 510, 110], [1380, 530, 130], [1650, 550, 140], [1950, 550, 150], [2250, 550, 150], [860, 572, 80]], spec,
+    (x, y) => y < 668 + 30 * (fbm(x / 160, 3, 67, 2) - .5));
+  for (let i = 0; i < 420; i++) {      // rain, falling out of its eastern half
+    const x = R(1640, BW + 60), y = R(560, 700), len = R(90, 220);
+    ln(x, y, x - len * 0.2, y + len, T.pastel, jc(mix(hx('#2c2748'), hx('#4a3c62'), rnd()), 0.02), R(2, 6), R(0.2, 0.42), { tin: 0.2, tout: 0.5, wob: 1.5 });
+  }
+  haze(1120, 400, 330, 210, hx('#b8a8f2'), 0.3, 1.5);      // the flash inside it
+  const bolt = (x, y, ey, w, sway) => { const pts = [[x, y]]; while (y < ey) { y += R(10, 26); x += gs() * sway - 1.5; pts.push([x, y]); }
+    stroke(pts.map(p => [p[0] + 1.2, p[1]]), T.pastel, hx('#a898ee'), w * 3, 0.5, { tin: 0.02, tout: 0.1 }); stroke(pts, T.chalk, hx('#fbf6ff'), w, 1, { tin: 0.02, tout: 0.1 }); return pts; };
+  const main = bolt(1096, 322, 560, 1.5, 10), fork = main[(main.length * 0.4) | 0]; bolt(fork[0], fork[1], fork[1] + 90, 0.8, 13);
+  haze(2300, 500, 260, 210, hx('#a898ee'), 0.26, 1.6); bolt(2338, 478, 792, 1.2, 9);      // a second, out to the east
+  haze(1716, 330, 200, 120, hx('#9a8ae0'), 0.16, 1.6);                                    // and a flicker with no bolt
+}
+function dusk() {
   for (let i = 0; i < 520; i++) { const y = 110 + Math.pow(rnd(), 1.3) * 470; dot(R(BW), y, R(0.35, 1.05), pick(SC), R(0.45, 1) * cl(1.15 - (y - 110) / 470)); }
   for (let i = 0; i < 22; i++) twinkle(R(BW), 130 + Math.pow(rnd(), 1.2) * 360, R(3.5, 8.5), pick(SC));
   const mx = 610, my = 316, mr = 24, arc = []; for (let a = 0.68; a <= 3.48; a += 0.14) arc.push([mx + Math.cos(a) * mr, my + Math.sin(a) * mr]);   // a young moon, lit from where the sun went
@@ -87,12 +155,14 @@ function morning() {
 function farRanges() {      // the rest of the same real horizon: the Phoenix Mountains to the west, a low rise to the east
   const P = [[-10, HZ + 12]]; for (let x = -10; x <= BW + 10; x += 5) P.push([x, HZ - farH(x)]); P.push([BW + 10, HZ + 12]);
   const fs = x => (farH(x + 12) - farH(x - 12)) / 24;
-  block(P, x => mix(mix(c('#4d2f6c', '#cdb0c4'), c('#33235a', '#e2bfae'), smooth(900, 2300, x)), c('#9a4a78', '#f0d2c4'), cl(0.5 - LX * fs(x) * 1.6) * 0.8), { w: 2.6, tool: T.pastel, ang: 0.06, len: [20, 80] });
+  const dim = NIGHT || STORM;
+  block(P, x => { const q = mix(mix(c('#4d2f6c', '#cdb0c4'), c('#33235a', '#e2bfae'), smooth(900, 2300, x)), c('#9a4a78', '#f0d2c4'), dim ? 0 : cl(0.5 - LX * fs(x) * 1.6) * 0.8); return dim ? mix(q, BG, 0.5) : q; }, { w: 2.6, tool: T.pastel, ang: 0.06, len: [20, 80] });
   tone(P, c('#241846', '#b89cb4'), { p: 0.4, gap: 3.2, dens: () => 0.4 });
 }
 
 // ---------- Camelback ----------
-const MR = r5(D ? ['#150f27', '#1a122f', '#201638', '#271a42', '#31204d'] : ['#6a4a7c', '#96607a', '#c87a62', '#e8a47e', '#f8cea8']);
+const MR = r5({ light: ['#6a4a7c', '#96607a', '#c87a62', '#e8a47e', '#f8cea8'], golden: ['#683e78', '#a0546c', '#da7448', '#f39a5a', '#ffca8c'], dark: ['#150f27', '#1a122f', '#201638', '#271a42', '#31204d'],
+  night: ['#0c0a1c', '#100d24', '#15122c', '#1a1736', '#221e42'], monsoon: ['#121022', '#1a172e', '#24203c', '#30294a', '#463a5e'] }[M]);
 // The mountain's form: which flank a point is on (easing through zero at a summit, so no seam), and spurs that
 // run down and outward from the crest, each with a west side and an east side.
 const flank = x => Math.tanh((hgt(x + 60) - hgt(x - 60)) / 120 * 4);
@@ -105,9 +175,9 @@ function mCol(x, y) {
   return mix(col, c('#3b2760', '#ecccb8'), Math.pow(depth, 1.6) * (D ? 0.5 : 0.42));        // haze gathers at its foot
 }
 function mountain() {
-  const M = (x, y) => x > 722 && x < 2308 && y > ridge(x) && y < HZ + 26, box = [722, 350, 2308, HZ + 26];
-  block(fnReg((x, y) => M(x, y) && spur(x, y) > 0, box), mCol, { w: 2.6, g: 1, ang: Math.PI / 2 + 0.55, len: [14, 50], p: 1.15 });      // strokes run down each side of a spur
-  block(fnReg((x, y) => M(x, y) && spur(x, y) <= 0, box), mCol, { w: 2.6, g: 1, ang: Math.PI / 2 - 0.55, len: [14, 50], p: 1.15 });
+  const on = (x, y) => x > 722 && x < 2308 && y > ridge(x) && y < HZ + 26, box = [722, 350, 2308, HZ + 26];
+  block(fnReg((x, y) => on(x, y) && spur(x, y) > 0, box), mCol, { w: 2.6, g: 1, ang: Math.PI / 2 + 0.55, len: [14, 50], p: 1.15 });      // strokes run down each side of a spur
+  block(fnReg((x, y) => on(x, y) && spur(x, y) <= 0, box), mCol, { w: 2.6, g: 1, ang: Math.PI / 2 - 0.55, len: [14, 50], p: 1.15 });
   for (let i = 0; i < 120; i++) {      // gullies
     const x = R(760, 2280), h = hgt(x); if (h < 40) continue;
     const a = Math.PI / 2 + (slope(x) > 0 ? 1 : -1) * R(0.25, 0.7), y0 = ridge(x) + R(3, h * 0.3), len = R(30, h * 0.6);
@@ -123,17 +193,18 @@ function mountain() {
   }
   for (let x = 727; x < 2302; x += 6) {      // light catching the edge that faces it
     if (-LX * slope(x) < 0.05) continue;
-    stroke([[x, ridge(x) + 1.2], [x + 7, ridge(x + 7) + 1.2]], T.pp, c('#ff8a4d', '#fff2dc'), D ? 1.3 : 0.9, D ? 0.95 : 0.7, { tin: 0, tout: 0 });
-    if (D && rnd() < 0.7) stroke([[x, ridge(x) + 4.5], [x + 7, ridge(x + 7) + 4.5]], T.pp, hx('#b8503f'), 1.6, 0.45, { tin: 0, tout: 0 });
+    stroke([[x, ridge(x) + 1.2], [x + 7, ridge(x + 7) + 1.2]], T.pp, c('#ff8a4d', '#fff2dc'), M === 'dark' ? 1.3 : 0.9, M === 'dark' ? 0.95 : NIGHT ? 0.35 : STORM ? 0.5 : 0.7, { tin: 0, tout: 0 });
+    if (M === 'dark' && rnd() < 0.7) stroke([[x, ridge(x) + 4.5], [x + 7, ridge(x + 7) + 4.5]], T.pp, c('#b8503f', '#b8503f'), 1.6, 0.45, { tin: 0, tout: 0 });
   }
   for (let i = 0; i < 70; i++) { const x = R(770, 2260), y = HZ - R(4, Math.min(72, hgt(x) * 0.32)), s = R(4, 8); ln(x, y, x + R(-0.5, 0.5), y - s, T.pencil, c('#090614', '#4a5a4a'), 0.6, 0.85, { wob: 0.1 }); }   // saguaros, for scale
-  if (D) for (let x = 1236; x < 1530; x += R(12, 34)) { const y = ridge(x) + R(5, 11); haze(x, y, 6, 6, hx('#ffe6b0'), 0.35); dot(x, y, R(0.6, 1.0), hx('#fff6dc'), 1); }   // headlamps on the trail
+  if (M === 'dark') for (let x = 1236; x < 1530; x += R(12, 34)) { const y = ridge(x) + R(5, 11); haze(x, y, 6, 6, hx('#ffe6b0'), 0.35); dot(x, y, R(0.6, 1.0), hx('#fff6dc'), 1); }   // headlamps on the trail
 }
 
 // ---------- the valley ----------
+const awake = (x, y) => !NIGHT || vn(x / 9, y / 9, 97) > 0.52;      // after midnight about half the windows are dark
 function roof(r) {
   const w = r.w * r.s, h = 7 * r.s, x = r.x, y = r.y;
-  if (D) { if (r.lit) { haze(x, y, 9 * r.s, 9 * r.s, hx('#ffc070'), 0.3); block(rect(x - 2.2 * r.s, y - 2.6 * r.s, x + 2.2 * r.s, y + 2.6 * r.s), hx(pick(['#ffdc90', '#ffb060'])), { w: 0.9, single: true, ang: 0, len: [2, 6], p: 1.3, g: 0.8 }); } return; }
+  if (D) { if (r.lit && awake(x, y)) { haze(x, y, 9 * r.s, 9 * r.s, hx('#ffc070'), 0.3); block(rect(x - 2.2 * r.s, y - 2.6 * r.s, x + 2.2 * r.s, y + 2.6 * r.s), hx(pick(['#ffdc90', '#ffb060'])), { w: 0.9, single: true, ang: 0, len: [2, 6], p: 1.3, g: 0.8 }); } return; }
   block(rect(x - w / 2, y - h, x + w / 2, y), hx(['#f8f2ea', '#c87850', '#e6ccae'][r.k]), { w: 1.2, g: 0.9, single: true, ang: 0.04, len: [5, 18], p: 1.2 });
   ln(x - w / 2, y + 1, x + w / 2, y + 1, T.pencil, hx('#7a6690'), 0.6, 0.7, { wob: 0.2 });
   block(rect(x - w / 2, y + 1.5, x + w / 2, y + 1.5 + h * 0.9), hx('#e9d6c4'), { w: 1, single: true, ang: 0, len: [4, 12] });
@@ -157,7 +228,7 @@ function valley() {
   items.sort((a, b) => a[0] - b[0]); for (const it of items) it[1]();
   for (const h of L.homes) {      // homes climbing the lower slopes
     const y = HZ - 4 - h.up;
-    if (D) { if (h.lit) { haze(h.x, y, 7, 7, hx('#ffc070'), 0.3); dot(h.x, y, R(0.6, 1.1), hx(pick(['#ffe2a0', '#ffb060', '#fff2d0'])), 1); } }
+    if (D) { if (h.lit && awake(h.x, y)) { haze(h.x, y, 7, 7, hx('#ffc070'), 0.3); dot(h.x, y, R(0.6, 1.1), hx(pick(['#ffe2a0', '#ffb060', '#fff2d0'])), 1); } }
     else { ln(h.x - 4, y, h.x + 4, y, T.pp, hx(pick(['#f8f2ea', '#c87850', '#e6ccae'])), 1.2, 1, { wob: 0.2 }); ln(h.x - 4, y + 1.8, h.x + 4, y + 1.8, T.pencil, hx('#8a6f96'), 0.5, 0.6, { wob: 0.2 }); }
   }
   if (D) for (const [yy, sp] of [[826, 20], [846, 27], [868, 36], [892, 48]]) for (let x = R(sp); x < BW; x += sp * R(0.7, 1.4)) {      // street lamps
@@ -178,17 +249,17 @@ function ground() {
     mark(x, y, gs() * 0.25, R(3, 9) * (0.6 + k), R(0.7, 1.5) * (0.6 + k * 0.7), jc(mix(groundCol(x, y), light ? c('#3d2a56', '#f6dcc2') : c('#120c24', '#9a6f86'), R(0.3, 0.7)), 0.03), light ? T.pp : T.pencil);
   }
 }
-// morning only: long shadows falling west, a little toward us
+// by daylight: long shadows falling away from the sun (west in the morning, east at golden hour), a little toward us
 function shadow(x, by, h, w) {
   if (D) return;
-  const len = h * 0.85, P = [[x - w / 2, by - 2], [x + w / 2, by], [x - len + w * 0.5, by + h * 0.1 + w * 0.3], [x - len - w * 0.4, by + h * 0.1 - w * 0.1]];
+  const fx = x - LX * h * (GOLD ? 1.1 : 0.85), P = [[x - w / 2, by - 2], [x + w / 2, by], [fx + w * 0.5, by + h * 0.1 + w * 0.3], [fx - w * 0.4, by + h * 0.1 - w * 0.1]];
   tone(P, hx('#8a6a96'), { p: 0.75, gap: 1.9, ang: 0.12, len: [10, 40] }); tone(P, hx('#a8607a'), { p: 0.4, gap: 3, ang: -0.6, tool: T.pp, w: 1 });
 }
 
 // ---------- desert plants ----------
-const SAG = (D ? [[0, '#2c2a5e'], [0.12, '#110d21'], [0.5, '#16132b'], [0.72, '#21343c'], [0.9, '#b85e3c'], [1, '#ffab6c']] : [[0, '#3e5468'], [0.25, '#466a5c'], [0.5, '#64905a'], [0.72, '#9cbc70'], [0.9, '#d6d894'], [1, '#f4e8b4']]).map(([p, h]) => [p, hx(h)]);
-const PEAR = r5(D ? ['#100c1f', '#14112a', '#191a30', '#1f2638', '#b85e3c'] : ['#48685a', '#5f8a5c', '#86aa6c', '#a8c482', '#d6dca0']);
-const ROCK = r5(D ? ['#100c20', '#19122e', '#281a3e', '#3a2450', '#c0603c'] : ['#86586e', '#b46a52', '#d68a62', '#eeb088', '#fad6b4']);
+const SAG = (D ? [[0, '#2c2a5e'], [0.12, '#110d21'], [0.5, '#16132b'], [0.72, '#21343c'], [0.9, '#b85e3c'], [1, '#ffab6c']] : [[0, '#3e5468'], [0.25, '#466a5c'], [0.5, '#64905a'], [0.72, '#9cbc70'], [0.9, '#d6d894'], [1, '#f4e8b4']]).map(([p, h]) => [p, adapt(hx(h))]);
+const PEAR = r5(D ? ['#100c1f', '#14112a', '#191a30', '#1f2638', '#b85e3c'] : ['#48685a', '#5f8a5c', '#86aa6c', '#a8c482', '#d6dca0']).map(([p, q]) => [p, adapt(q)]);
+const ROCK = r5(D ? ['#100c20', '#19122e', '#281a3e', '#3a2450', '#c0603c'] : ['#86586e', '#b46a52', '#d68a62', '#eeb088', '#fad6b4']).map(([p, q]) => [p, adapt(q)]);
 const nrm = (P, i) => { const a = P[Math.max(0, i - 1)], b = P[Math.min(P.length - 1, i + 1)], tx = b[0] - a[0], ty = b[1] - a[1], l = Math.hypot(tx, ty) || 1; return [-ty / l, tx / l]; };
 // a centreline thickened into a limb with a rounded tip
 function band(P, w) {
@@ -232,7 +303,7 @@ function ocotillo(x, by, h) {
     const P = spline([[x, by], [x + Math.cos(a) * len * 0.5 - Math.sin(a) * bend, by + Math.sin(a) * len * 0.5 + Math.cos(a) * bend], [ex, ey]], false, 8);
     stroke(P, T.pp, c('#0f0a1e', '#55684a'), 1.5, 1, { tin: 0.02, tout: 0.3 }); stroke(P.map(p => [p[0] + LX * 1.1, p[1]]), T.pp, c('#c8603f', '#b9cc8c'), 0.5, 0.7, { tin: 0.1, tout: 0.3 });
     if (!D) for (let k = 0; k < 16; k++) { const p = P[2 + ((rnd() * (P.length - 3)) | 0)]; dot(p[0] + R(-2.5, 2.5), p[1] + R(-2, 2), R(0.6, 1.1), hx(pick(['#6f9a52', '#8fb866', '#4f7a48'])), 0.9, T.pp); }
-    for (let k = 0; k < 6; k++) { const t = k / 6; mark(ex - Math.cos(a) * t * 18 + gs() * 1.4, ey - Math.sin(a) * t * 18 + gs() * 1.4, a, R(5, 9), R(1.4, 2.4), hx(D ? pick(['#b8443a', '#d8603c', '#8a3040']) : pick(['#e0442c', '#f0622c', '#c8302c']))); }
+    for (let k = 0; k < 6; k++) { const t = k / 6; mark(ex - Math.cos(a) * t * 18 + gs() * 1.4, ey - Math.sin(a) * t * 18 + gs() * 1.4, a, R(5, 9), R(1.4, 2.4), adapt(hx(D ? pick(['#b8443a', '#d8603c', '#8a3040']) : pick(['#e0442c', '#f0622c', '#c8302c'])))); }
   }
 }
 function pear(x, y, s) {
@@ -242,7 +313,7 @@ function pear(x, y, s) {
     block(P, (px, py) => rampc(PEAR, cl(0.5 + ((px - cx) / (rx * s) * LV[0] + (py - cy) / (ry * s) * LV[1]) * 0.55 + (rnd() - .5) * 0.15)), { w: 1.4, g: 0.9, ang: rot + 1.4, len: [6, 22], p: 1.15 });
     edge(P, INK, { closed: true, w: 0.6, p: 0.75 });
     for (let k = 0; k < 14; k++) { const a = R(6.283), q = Math.sqrt(rnd()) * 0.85; dot(cx + Math.cos(a) * q * rx * s, cy + Math.sin(a) * q * ry * s, 0.5, c('#ffc890', '#fffaf0'), 0.6); }
-    if (rnd() < 0.7) for (let k = 0; k < 2; k++) { const a = rot - Math.PI / 2 + R(-0.7, 0.7); mark(cx + Math.cos(a) * rx * s * 0.95, cy + Math.sin(a) * ry * s * 1.02, a, 9 * s, 2.6 * s, hx(D ? pick(['#7a2a56', '#9a3a60']) : pick(['#d0407a', '#e8589a', '#b8306a']))); }
+    if (rnd() < 0.7) for (let k = 0; k < 2; k++) { const a = rot - Math.PI / 2 + R(-0.7, 0.7); mark(cx + Math.cos(a) * rx * s * 0.95, cy + Math.sin(a) * ry * s * 1.02, a, 9 * s, 2.6 * s, adapt(hx(D ? pick(['#7a2a56', '#9a3a60']) : pick(['#d0407a', '#e8589a', '#b8306a'])))); }
   }
 }
 function barrel(x, y, r) {
@@ -251,7 +322,7 @@ function barrel(x, y, r) {
   block(P, px => rampc(PEAR, cl(0.5 + (px - x) / (r * 0.82) * LX * 0.5 + (rnd() - .5) * 0.12)), { w: 1.3, g: 0.9, ang: Math.PI / 2, len: [6, 20], p: 1.15 });
   for (let k = -3; k <= 3; k++) { const u = k / 3.6; stroke(spline([[x + u * r * 0.5, y - r * 1.9], [x + u * r * 0.84, y - r], [x + u * r * 0.5, y - r * 0.08]], false, 6), T.pencil, c('#0a0716', '#2f5a48'), 0.6, 0.6); }
   edge(P, INK, { closed: true, w: 0.6, p: 0.8 });
-  for (let k = 0; k < 7; k++) mark(x + (k / 6 - .5) * r * 0.9, y - r * 1.92 + Math.abs(k - 3) * 1.2, -Math.PI / 2 + (k - 3) * 0.2, r * 0.28, r * 0.09, hx(D ? pick(['#a8843c', '#a8403a']) : pick(['#f2c230', '#e85a2c'])));
+  for (let k = 0; k < 7; k++) mark(x + (k / 6 - .5) * r * 0.9, y - r * 1.92 + Math.abs(k - 3) * 1.2, -Math.PI / 2 + (k - 3) * 0.2, r * 0.28, r * 0.09, adapt(hx(D ? pick(['#a8843c', '#a8403a']) : pick(['#f2c230', '#e85a2c']))));
 }
 // a low spreading clump, wider than it is tall
 function creosote(x, y, r) {
@@ -298,7 +369,7 @@ function plants() {
   items.sort((a, b) => a[0] - b[0]); for (const it of items) it[1]();
   for (let i = 0; i < 260; i++) {      // tufts of dry grass
     const x = R(-10, BW + 10), y = fgY(x) + 10 + Math.pow(rnd(), 0.8) * 250; if (keepClear(x, y)) continue; const k = (y - 900) / 300;
-    for (let j = 0; j < 7; j++) { const a = -Math.PI / 2 + gs() * 0.5, len = R(8, 22) * (0.6 + k); ln(x + R(-3, 3), y, x + Math.cos(a) * len, y + Math.sin(a) * len, T.pp, jc(D ? hx(x < 700 && rnd() < 0.2 ? '#b8583f' : pick(['#2c2044', '#3a2a52', '#4a3460'])) : hx(pick(['#ecd6a0', '#d2b080', '#f6e6bc'])), 0.03), R(0.5, 0.9), R(0.6, 1), { tin: 0.05, tout: 0.5, wob: 0.3, bow: gs() * 0.1 }); }
+    for (let j = 0; j < 7; j++) { const a = -Math.PI / 2 + gs() * 0.5, len = R(8, 22) * (0.6 + k); ln(x + R(-3, 3), y, x + Math.cos(a) * len, y + Math.sin(a) * len, T.pp, jc(adapt(D ? hx(x < 700 && rnd() < 0.2 ? '#b8583f' : pick(['#2c2044', '#3a2a52', '#4a3460'])) : hx(pick(['#ecd6a0', '#d2b080', '#f6e6bc']))), 0.03), R(0.5, 0.9), R(0.6, 1), { tin: 0.05, tout: 0.5, wob: 0.3, bow: gs() * 0.1 }); }
   }
 }
 
@@ -334,6 +405,6 @@ function fauna() {
 
 E.makePaper(BG);
 require('fs').mkdirSync(require('path').join(__dirname, 'out'), { recursive: true });      // masters are large and stay out of git
-run([['sky', sky], [D ? 'night' : 'morning', D ? night : morning], ['far ranges', farRanges], ['mountain', mountain], ['valley', valley], ['ground', ground], ['plants', plants], ['fauna', fauna],
+run([['sky', sky], { light: ['morning', morning], golden: ['afternoon', afternoon], dark: ['dusk', dusk], night: ['deep night', deepNight], monsoon: ['storm', storm] }[M], ['far ranges', farRanges], ['mountain', mountain], ['valley', valley], ['ground', ground], ['plants', plants], ['fauna', fauna],
   // signed above the bottom edge: on the site the footer's flowers and its javelina stand along that edge
-  ['sign', () => sign(1790, 1112, 2.0, c('#f6e6d8', '#5a3f52'))]], `out/camelback-${D ? 'dark' : 'light'}.png`, { finish: { vignette: 0.04 }, after: () => E.matte(BG, (x, y) => smooth(200, 36, y)) });
+  ['sign', () => sign(1790, 1112, 2.0, c('#f6e6d8', '#5a3f52'))]], `out/camelback-${NAME}.png`, { finish: { vignette: 0.04 }, after: () => E.matte(BG, (x, y) => smooth(200, 36, y)) });

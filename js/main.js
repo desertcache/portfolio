@@ -13,6 +13,7 @@ import { initAsk } from './ask.js';
 import { initNav, initScrollSpy, initCopyEmail, initWarp, greet } from './chrome.js';
 import { initSectionMenu } from './section-menu.js';
 import { initClock } from './clock.js';
+import { initPlate } from './plate.js';
 import { initTrails } from './trails.js';
 import { initQuietOffscreen } from './quiet.js';
 
@@ -34,6 +35,7 @@ const features = [
   ['scroll-spy', initScrollSpy],
   ['copy email', initCopyEmail],
   ['phoenix clock', initClock],
+  ['painted skyline', initPlate],
   ['wildlife', initTrails],
   ['quiet offscreen', initQuietOffscreen],
   ['orb', initOrb],

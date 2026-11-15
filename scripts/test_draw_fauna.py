@@ -30,7 +30,7 @@ def symbols(sprite: ET.Element) -> dict[str, ET.Element]:
 def test_every_animal_is_a_symbol_with_a_viewbox(built):
     sprite, _ = built
     syms = symbols(sprite)
-    assert set(syms) == {"roadrunner", "bird", "hawk"}
+    assert set(syms) == {"roadrunner", "bird", "hawk", "hummingbird", "hummingbird-wing"}
     for sid, s in syms.items():
         w, h = map(float, s.get("viewBox").split()[2:])
         assert w > 0 and h > 0, sid
@@ -162,6 +162,7 @@ def opacity(style: str | None, frame: int) -> float:
     if not m:
         return 1.0
     expr = re.sub(r"var\(--frame,\d+\)", str(frame), m.group(1)).replace("calc(", "(")
+    expr = re.sub(r"var\(--illo-far,([\d.]+)\)", r"\1", expr)     # the far legs' depth: a constant, never a pose
     return min(1.0, max(0.0, eval(expr, {"max": max, "clamp": lambda lo, v, hi: min(hi, max(lo, v))})))  # noqa: S307
 
 
@@ -173,7 +174,7 @@ def shown(symbol: ET.Element, frame: int) -> int:
     return walk(symbol, True)
 
 
-FRAMES = {"javelina": range(8), "rattlesnake": range(10), "scorpion": range(8), "toad": (0, 1, 6, 7, 8)}
+FRAMES = {"javelina": range(8), "rattlesnake": range(10), "scorpion": range(8), "toad": (0, 1, 6, 7, 8), "quail": range(8), "chick": range(8)}
 
 
 def test_every_pose_shows_and_nothing_else_does(critters):
@@ -184,7 +185,7 @@ def test_every_pose_shows_and_nothing_else_does(critters):
         for f in frames:
             assert shown(syms[name], f) > 0, (name, f)
         assert shown(syms[name], 11) == 0, name              # an undefined frame is empty, not a pile-up
-    for name in ("javelina", "rattlesnake", "scorpion"):     # every step of a gait draws the same parts...
+    for name in ("javelina", "rattlesnake", "scorpion", "quail", "chick"):     # every step of a gait draws the same parts...
         counts = [shown(syms[name], f) for f in range(df.RUN_FRAMES)]
         assert max(counts) - min(counts) <= (1 if name == "rattlesnake" else 0), (name, counts)  # ...bar a tongue
 
@@ -197,8 +198,9 @@ def test_javelina_knees_and_hocks_bend_the_right_way():
         assert math.isclose(math.dist(knee, foot), df.J_LOWER, abs_tol=1e-6)
         assert knee[0] > min(df.J_SHOULDER[0], foot[0]) - 1e-6    # a foreleg's knee comes forward
         hind, _ = df.gait_foot(k / 12, df.J_HIP[0], df.J_GROUND, df.J_STRIDE, df.J_STANCE, df.J_LIFT)
-        hock = df.solve_leg(df.J_HIP, hind, df.J_UPPER, df.J_LOWER, prefer=(-1.0, 0.0))
-        assert math.isclose(math.dist(hock, hind), df.J_LOWER, abs_tol=1e-6)
+        hock = df.solve_leg(df.J_HIP, hind, df.J_THIGH, df.J_SHANK, prefer=(-1.0, 0.0))
+        assert math.isclose(math.dist(df.J_HIP, hock), df.J_THIGH, abs_tol=1e-6)    # in reach: the hoof is where the gait put it
+        assert math.isclose(math.dist(hock, hind), df.J_SHANK, abs_tol=1e-6)
         assert hock[0] < max(df.J_HIP[0], hind[0]) + 1e-6         # a hock points back
 
 
@@ -212,9 +214,45 @@ def test_scorpion_knees_stand_up():
             assert cross * (1 if foot[0] >= hip[0] else -1) < 0, (hip, k)
 
 
+def test_the_javelina_has_a_blunt_snout_and_a_big_head():
+    # It was once a cone on stick legs and read as a shrew. The snout's flat end is the closing
+    # line of the body's outline, from its last point back to its first.
+    (x0, y0), (x1, y1) = df.J_BODY[0], df.J_BODY[-1]
+    assert abs(x0 - x1) < 2 and abs(y0 - y1) > 10                # near vertical, and tall enough to be a disc
+    length = max(p[0] for p in df.J_BODY) - min(p[0] for p in df.J_BODY)
+    assert .28 < (max(p[0] for p in df.J_BODY) - df.J_NECK[0]) / length < .4    # the head is about a third of it
+
+
+def test_ground_birds_keep_their_feet_in_reach():
+    for hip, thigh, shin, stride, stance, lift, ground in (
+        (df.Q_HIP, df.Q_THIGH, df.Q_SHIN, df.Q_STRIDE, df.Q_STANCE, df.Q_LIFT, df.Q_GROUND),
+        (df.C_HIP, df.C_THIGH, df.C_SHIN, df.C_STRIDE, df.C_STANCE, df.C_LIFT, df.C_GROUND),
+    ):
+        for k in range(12):
+            foot, _ = df.gait_foot(k / 12, hip[0], ground, stride, stance, lift)
+            heel = df.solve_leg(hip, foot, thigh, shin)
+            assert math.isclose(math.dist(hip, heel), thigh, abs_tol=1e-6)
+            assert math.isclose(math.dist(heel, foot), shin, abs_tol=1e-6)
+            cross = (foot[0] - hip[0]) * (heel[1] - hip[1]) - (foot[1] - hip[1]) * (heel[0] - hip[0])
+            assert cross > 0, k                                  # a bird's heel points back
+
+
+def test_the_hummingbird_and_its_wings_share_a_box(built):
+    # The page stacks the two drawings and beats the wings about the shoulder, so they must line up.
+    sprite, _ = built
+    syms = symbols(sprite)
+    assert syms["hummingbird"].get("viewBox") == syms["hummingbird-wing"].get("viewBox") == f"0 0 {df.HUM_W:g} {df.HUM_H:g}"
+    css = (df.ROOT / "css" / "site.css").read_text(encoding="utf-8")
+    ox, oy = df.HUM_SHOULDER[0] / df.HUM_W * 100, df.HUM_SHOULDER[1] / df.HUM_H * 100
+    assert f"transform-origin: {ox:.1f}% {oy:.1f}%" in css        # the wings turn about the shoulder
+    bx, by = df.HUM_BILL_TIP[0] / df.HUM_W * 100, df.HUM_BILL_TIP[1] / df.HUM_H * 100
+    assert f"transform: translate(-{bx:.1f}%, -{by:.1f}%)" in css   # and the bill's tip is what touches the flower
+
+
 def test_critters_stay_small(critters):
+    # Six animals. Every path repeats its style, so it compresses about six to one: 18 KB on the wire.
     sprite, _ = critters
-    assert len(ET.tostring(sprite)) < 90_000
+    assert len(ET.tostring(sprite)) < 118_000
 
 
 def test_critter_data_matches_the_drawing(critters):

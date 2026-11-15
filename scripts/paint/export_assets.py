@@ -1,6 +1,6 @@
 """Turn the two rendered masters into the files the site serves.
 
-Run after `MODE=dark S=2 node scripts/paint/camelback.js` and the same with MODE=light:
+Run after `MODE=<mode> S=2 node scripts/paint/camelback.js` for each of light, golden, dark, night and monsoon:
 
     python scripts/paint/export_assets.py      # needs Pillow
 
@@ -28,8 +28,8 @@ def save(image: Image.Image, stem: str) -> None:
 
 def main() -> None:
     ASSETS.mkdir(parents=True, exist_ok=True)
-    for mode, name in (("dark", "dusk"), ("light", "morning")):
-        master = Image.open(MASTERS / f"camelback-{mode}.png").convert("RGB")
+    for name in ("morning", "golden", "dusk", "night", "monsoon"):
+        master = Image.open(MASTERS / f"camelback-{name}.png").convert("RGB")
         for width in WIDTHS:
             save(master.resize((width, width // 2), Image.Resampling.LANCZOS), f"camelback-{name}-{width}")
         if name == "morning":

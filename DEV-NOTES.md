@@ -194,6 +194,26 @@ green; v5.3 brings the red back as Sedona rock, on purpose, with guardrails.
   and blinks and breathes at rest. A javelina trots into the footer as the
   page ends and roots about. Frame 6 is every animal's resting pose, so the
   registered `--frame` (initial 6) is right for all of them.
+- **Added 2026-11-14.** The javelina was redrawn: the first had a cone for a
+  head and single lines for legs and read as a shrew. It now has a wedge head
+  a third of its length that ends in a flat disc (the outline's closing line),
+  legs with thickness (`j_limb`: an outline left open at the top so it runs
+  into the body) and solid hooves; a test holds the snout and the head's share.
+  A Gambel's quail hurries three chicks along the bottom of How I build. The
+  chicks are separate animals on the same trail: `js/trails.js` leads the
+  first animal on a trail by scroll and has each one after it chase the spot
+  `data-gap` trail-heights behind the one ahead (`spotBehind` in
+  `js/covey.js`), each a little slower to react than the last, so the line
+  strings out on a dash, closes up at a stop, and re-forms on the other side
+  when she turns round. At rest they peck, out of step (`--i`, which is also
+  where a chick stands without the script). A trail goes live only if every
+  animal on it is known, so a stale cached `critter-data.js` leaves the covey
+  standing still, not half placed. And a hummingbird works three of the
+  ocotillo's flower spikes beside the contact heading, on wide screens: pure
+  CSS, two stacked drawings (the bird and its wings) so the wings beat by one
+  scale about the shoulder while the body holds still. Its positions are in
+  the ocotillo's own units (`--u` in `.hummer`), and a test ties the wing
+  pivot and the bill tip in the CSS to the generator's numbers.
 - **One engine:** `js/trails.js` drives every animal on a trail (gaits:
   run, dart, hop). `js/roadrunner.js` is now a one-line re-export kept only so
   a cached older `main.js` still finds it; new pure logic went into a new
@@ -277,6 +297,16 @@ python3 scripts/build_terrain.py   # needs numpy + Pillow; caches tiles in ~/.ca
   homepage: a pastel drawing of Camelback, one picture per theme (first light by day, last light
   after dark). Both `<img>`s are lazy and the theme hides one, so a visitor downloads one. It is a
   figure, not a section, so the nav and the phone menu don't list it.
+- **It keeps time.** There are five paintings of the same place: morning and golden hour on light
+  paper, dusk, the small hours and a monsoon storm on dark. The theme picks the family and the
+  clock in Phoenix picks the hour: light is morning from 3 AM to 1 PM and golden hour otherwise;
+  dark is the small hours from 10 PM to 5 AM, the storm from 3 PM to 10 PM between 15 June and
+  30 September, and dusk the rest of the time. The rule is `hourFor` in `js/hours.js` (pure, tested
+  in `tests/hours.test.mjs`); `js/plate.js` points the two `<picture>`s at the picked files once, at
+  load, before either lazy image has been fetched, so a visit still downloads one. Without JS the
+  page keeps the morning and dusk it was written with, and the test holds the HTML's words to
+  `HOURS`. `?hour=golden|night|monsoon|morning|dusk` in the address shows an hour the clock isn't
+  showing, in the theme it belongs to (the write-up links to three).
 - **It stands in for two things, on the homepage only:** the contact section's afterglow
   (`.contact:has(+ .plate)`) and the footer's flat skyline strip (`body:has(.plate) .footer::before`).
   Every other page keeps the strip.
@@ -287,14 +317,19 @@ python3 scripts/build_terrain.py   # needs numpy + Pillow; caches tiles in ~/.ca
   `camelback.js` (the scene) and `export_assets.py` (Pillow: masters to web sizes). To repaint:
 
   ```bash
-  MODE=dark  S=2 node scripts/paint/camelback.js   # about 15 s each; writes scripts/paint/out/*.png (git-ignored, 22 MB each)
-  MODE=light S=2 node scripts/paint/camelback.js
-  python scripts/paint/export_assets.py            # assets/painted/camelback-{dusk,morning}-{1200,2400}.{webp,jpg}, camelback-detail
+  for m in light golden dark night monsoon; do MODE=$m S=2 node scripts/paint/camelback.js; done
+  # about 15 s each (the storm 40 s); writes scripts/paint/out/camelback-<hour>.png (git-ignored, about 22 MB each)
+  python scripts/paint/export_assets.py            # assets/painted/camelback-<hour>-{1200,2400}.{webp,jpg}, camelback-detail
   ```
 
-  The randomness is seeded, so the same code renders the same bytes. Both modes build every position
-  (trees, roofs, shrubs) before any paint, which is what keeps the two pictures the same place: add a
-  new placement to the layout block at the top of the scene, never inside a stage.
+  The randomness is seeded, so the same code renders the same bytes. Every mode builds every position
+  (trees, roofs, shrubs) before any paint, which is what keeps the pictures the same place: add a
+  new placement to the layout block at the top of the scene, never inside a stage. A new hour is a
+  sky ramp, a stage for its sky, and a lean in `adapt()`, which every colour passes through.
+  **After any change to the scene, check the stroke counts** the script prints against these:
+  morning 113,529, golden 120,648, dusk 104,931, night 109,738, monsoon 185,209. A different count
+  in a mode you did not mean to touch is a bug (adding the later hours changed dusk by 77 strokes:
+  a helper in `mountain()` shadowed the mode variable), and `UPTO=<stage>` finds the stage.
 - **Fit.** `.plate img` is `height: clamp(280px, 50vw, 760px)` with `object-fit: cover` at
   `64% 100%`: up to 1520px wide the whole 2:1 drawing shows, wider screens crop sky, and phones crop
   the sides and keep Camelback. The file's top rows are the page colour (`#f3ebe6` and `#150f24`,
