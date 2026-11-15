@@ -183,16 +183,27 @@ test('the homepage and the Answer Finder write-up quote the same answer and phra
   assert.equal(phrasings.size, 1, `phrasing counts disagree: ${[...phrasings].join(', ')}`);
 });
 
-test('the painted skyline has a picture for each theme, and every painted file a page names exists', () => {
-  const plate = HOME.match(/<figure class="plate"[\s\S]*?<\/figure>/)?.[0] ?? '';
-  assert.match(plate, /<picture class="plate-day">/, 'the light theme\'s picture');
-  assert.match(plate, /<picture class="plate-dusk">/, 'the dark theme\'s picture');
-  // Both are lazy and one is hidden by the theme, so a visitor only ever downloads one of them.
-  assert.equal([...plate.matchAll(/<img[^>]*loading="lazy"/g)].length, 2, 'both pictures load lazily');
+test('the painting is in the hero and the contour map is at the foot, with its readouts', () => {
+  const hero = HOME.match(/<section class="hero[\s\S]*?<\/section>/)?.[0] ?? '';
+  const band = HOME.match(/<figure class="plate map-band"[\s\S]*?<\/figure>/)?.[0] ?? '';
+  // The hero: the painting, described for someone who can't see it, and a label that links to how it was made.
+  assert.match(hero, /<div class="hero-art" id="painted-skyline" role="img" aria-label="A pastel drawing of Camelback Mountain[^"]+"><\/div>/);
+  assert.match(hero, /<p class="hero-cap">[\s\S]*?<a href="work\/painted-skyline\.html">How it was painted/);
+  assert.doesNotMatch(hero, /<canvas|data-lat|data-elev|data-scale/, 'the map and its readouts left the hero');
+  // The painting is a CSS background picked before first paint, so no <img> up here can fetch the wrong hour.
+  assert.doesNotMatch(hero, /<img[^>]*assets\/painted\//);
+  // The foot: one map, with the fields js/topo.js writes to, after the last section and before the footer.
+  assert.equal([...HOME.matchAll(/<canvas class="topo" id="topo"/g)].length, 1);
+  for (const field of ['data-lat', 'data-lon', 'data-elev', 'data-place', 'data-scale', 'data-scale-label']) {
+    assert.ok(band.includes(field), `the map's legend has ${field}`);
+  }
+  assert.ok(HOME.indexOf('id="contact"') < HOME.indexOf('class="plate map-band"'), 'the map follows the contact section');
+  assert.ok(HOME.indexOf('class="plate map-band"') < HOME.indexOf('<footer'), 'and comes before the footer');
   // It is a figure, not a section: the phone menu lists one link per <section>.
-  assert.doesNotMatch(HOME, /<section[^>]*id="painted-skyline"/);
-  const named = new Set([...(HOME + read('work/painted-skyline.html')).matchAll(/assets\/painted\/[a-z0-9-]+\.(?:webp|jpg)/g)].map((m) => m[0]));
-  assert.ok(named.size >= 8, 'the plate and the write-up name their images');
+  assert.doesNotMatch(HOME, /<section[^>]*id="(?:terrain|painted-skyline)"/);
+  // Every painted file a page or the stylesheet names exists.
+  const named = new Set([...(HOME + read('work/painted-skyline.html') + read('css/site.css')).matchAll(/assets\/painted\/[a-z0-9-]+\.(?:webp|jpg)/g)].map((m) => m[0]));
+  assert.ok(named.size >= 16, 'the pages and the stylesheet name their images');
   for (const file of named) assert.ok(readFileSync(new URL(`../${file}`, import.meta.url)).length > 10_000, `${file} is missing`);
 });
 

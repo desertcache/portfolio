@@ -38,6 +38,23 @@
         root.setAttribute('data-theme', t);
         document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#150f24' : '#f3ebe6');
       } catch (e) { /* storage blocked: CSS falls back to the system theme */ }
+      // The hero's painting keeps Phoenix time (UTC-7 all year). The theme picks the paper and the
+      // clock picks the hour, here, before first paint, so CSS fetches the one right picture and
+      // nothing flashes. js/hours.js has the same rule; tests/hours.test.mjs holds the two together.
+      try {
+        var p = new Date(Date.now() - 7 * 36e5), h = p.getUTCHours(), mo = p.getUTCMonth() + 1, d = p.getUTCDate();
+        var day = h >= 3 && h < 13 ? 'morning' : 'golden';
+        var dusk = h >= 22 || h < 5 ? 'night' : h >= 15 && ((mo === 6 && d >= 15) || mo === 7 || mo === 8 || mo === 9) ? 'monsoon' : 'dusk';
+        var asked = /[?&]hour=(morning|golden|dusk|night|monsoon)(?:&|$)/.exec(location.search);
+        if (asked) { if (asked[1] === 'morning' || asked[1] === 'golden') day = asked[1]; else dusk = asked[1]; }
+        root.setAttribute('data-day', day);
+        root.setAttribute('data-dusk', dusk);
+        // start the download now; the stylesheet asks for this same file (.hero-art in site.css)
+        var art = document.createElement('link');
+        art.rel = 'preload'; art.as = 'image'; art.type = 'image/webp'; art.setAttribute('fetchpriority', 'high');
+        art.href = 'assets/painted/camelback-' + (t === 'dark' ? dusk : day) + '-' + (window.innerWidth >= 900 ? 2400 : 1200) + '.webp';
+        document.head.appendChild(art);
+      } catch (e) { /* the page keeps morning and dusk */ }
     })();
   </script>
 
@@ -45,7 +62,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preload" href="assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
-  <link rel="stylesheet" href="css/site.css?v=2026-11-14b">
+  <link rel="stylesheet" href="css/site.css?v=2026-11-14c">
   <script type="module" src="js/main.js"></script>
 
   <script type="application/ld+json">
@@ -112,10 +129,9 @@
 
   <main id="main">
     <!-- ============================== HERO ============================== -->
-    <section class="hero" id="top" aria-labelledby="hero-title">
-      <canvas class="topo" id="topo" aria-hidden="true"></canvas>
-      <div class="hero-fade" aria-hidden="true"></div>
-      <div class="thermal" aria-hidden="true"><div class="soar soar-shadow"><svg class="hawk" viewBox="0 0 132 84" focusable="false"><use href="assets/fauna.svg#hawk"/></svg></div><div class="soar"><svg class="hawk" viewBox="0 0 132 84" focusable="false"><use href="assets/fauna.svg#hawk"/></svg></div></div>
+    <section class="hero hero-painted" id="top" aria-labelledby="hero-title">
+      <div class="hero-art" id="painted-skyline" role="img" aria-label="A pastel drawing of Camelback Mountain at first light: three hot-air balloons over the valley, saguaros, a palo verde in bloom, and a quail leading her chicks."></div>
+      <p class="hero-cap"><span class="plate-day">Camelback at first light.</span><span class="plate-dusk">Camelback at last light.</span><span class="cap-more"> Drawn in pastel by Claude, in plain JavaScript, on the real ridge.<span class="plate-clock" hidden> The hour follows the clock in Phoenix.</span></span> <a href="work/painted-skyline.html">How it was painted <span aria-hidden="true">→</span></a></p>
       <div class="trail hero-trail" aria-hidden="true"><svg class="runner" viewBox="0 0 176 115" focusable="false"><use href="assets/fauna.svg#roadrunner"/></svg></div>
       <div class="bed hero-bed" aria-hidden="true"><span class="clump"><svg class="flora" viewBox="0 0 50 40" style="--h:22px" focusable="false"><use href="assets/bloom.svg#grass-b"/></svg><svg class="flora" viewBox="0 0 92 68" style="--h:38px" focusable="false"><use href="assets/bloom.svg#poppies-b"/></svg><svg class="flora" viewBox="0 0 80 62" style="--h:36px" focusable="false"><use href="assets/bloom.svg#bluebells"/></svg></span><span class="clump"><svg class="flora" viewBox="0 0 100 104" style="--h:60px" focusable="false"><use href="assets/bloom.svg#marigold"/></svg><svg class="flora" viewBox="0 0 76 78" style="--h:40px" focusable="false"><use href="assets/bloom.svg#owls-clover"/></svg></span><span class="clump"><svg class="flora" viewBox="0 0 64 62" style="--h:30px" focusable="false"><use href="assets/bloom.svg#threeawn"/></svg><svg class="flora" viewBox="0 0 112 86" style="--h:48px" focusable="false"><use href="assets/bloom.svg#chuparosa"/></svg><svg class="flora" viewBox="0 0 132 62" style="--h:32px" focusable="false"><use href="assets/bloom.svg#poppies-c"/></svg></span><span class="clump"><svg class="flora" viewBox="0 0 70 130" style="--h:72px" focusable="false"><use href="assets/bloom.svg#lupine-b"/></svg><svg class="plant" viewBox="0 0 72 52" style="--h:30px" focusable="false"><use href="assets/bloom.svg#pincushion"/></svg></span><span class="clump"><svg class="flora" viewBox="0 0 100 76" style="--h:44px" focusable="false"><use href="assets/bloom.svg#fairy-duster"/></svg><svg class="flora" viewBox="0 0 84 114" style="--h:64px" focusable="false"><use href="assets/bloom.svg#globemallow-b"/></svg><svg class="flora" viewBox="0 0 60 48" style="--h:24px" focusable="false"><use href="assets/desert.svg#grass"/></svg></span><span class="clump"><svg class="flora" viewBox="0 0 110 62" style="--h:34px" focusable="false"><use href="assets/bloom.svg#sand-verbena"/></svg><svg class="flora" viewBox="0 0 70 124" style="--h:70px" focusable="false"><use href="assets/bloom.svg#firecracker"/></svg></span></div>
       <div class="wrap hero-inner">
@@ -157,7 +173,6 @@
         <aside class="legend legend-try rise" style="--delay: .46s" aria-labelledby="try-title">
           <div class="legend-head">
             <p class="legend-title" id="try-title">Try it</p>
-            <p class="legend-coords" aria-hidden="true"><span data-lat>33.5147° N</span> <span data-lon>111.9616° W</span></p>
           </div>
           <p class="try-lede">A 4 MB model on your own device matches your question to answers I approved. Nothing is generated, so it can't make things up.</p>
           <ul class="try-asks" aria-label="Ask one of these">
@@ -166,10 +181,6 @@
             <li><button class="try-ask" type="button" data-ask="How does he use Claude Code?">How does he use Claude Code?<span class="try-ask-go" aria-hidden="true">↓</span></button></li>
           </ul>
           <p class="try-more"><a class="link-arrow" href="starship.html">Walk the ship <span class="try-meta">desktop</span> <span aria-hidden="true">→</span></a><a class="link-arrow" href="work/starship-agent-fleet.html">How it was built <span aria-hidden="true">→</span></a></p>
-          <div class="legend-foot" aria-hidden="true">
-            <span class="scale" data-scale><i></i><i></i><i></i><i></i></span><span data-scale-label>¼ mi</span>
-            <span class="legend-place"><span data-place="Phoenix, AZ">Camelback Mtn</span> <span class="legend-elev" data-elev>2,706 ft</span></span>
-          </div>
         </aside>
       </div>
     </section>
@@ -348,11 +359,11 @@
             </div>
             <div class="lab-card-body">
               <h3 class="lab-card-title"><a class="lab-card-link" href="work/painted-skyline.html">The painted skyline<span class="lab-card-go" aria-hidden="true">→</span></a></h3>
-              <p>The mountain at the foot of this page is a pastel drawing made by code: more than 100,000 strokes rubbed onto simulated paper, with no image model and no drawing library. Claude wrote the renderer and drew it at five hours of the day. The one you see depends on the theme and on the time in Phoenix.</p>
-              <p class="lab-how"><span class="lab-how-label">How it works</span>The paper is a height map. A stroke leaves pigment only where its pressure beats the paper's tooth at that pixel, so a light touch catches the peaks and lets the layer underneath show through. The ridge comes from the same elevation data as the map up top.</p>
+              <p>The mountain behind this page's headline is a pastel drawing made by code: more than 100,000 strokes rubbed onto simulated paper, with no image model and no drawing library. Claude wrote the renderer and drew it at five hours of the day. The one you see depends on the theme and on the time in Phoenix.</p>
+              <p class="lab-how"><span class="lab-how-label">How it works</span>The paper is a height map. A stroke leaves pigment only where its pressure beats the paper's tooth at that pixel, so a light touch catches the peaks and lets the layer underneath show through. The ridge comes from the same elevation data as the contour map at the foot of this page.</p>
               <ul class="tags"><li>Plain JavaScript</li><li>No image model</li><li>No dependencies</li></ul>
               <div class="lab-links">
-                <a class="link-arrow" href="#painted-skyline">See it <span aria-hidden="true">↓</span></a>
+                <a class="link-arrow" href="#top">See it <span aria-hidden="true">↑</span></a>
                 <a class="link-arrow" href="https://github.com/desertcache/portfolio/tree/main/scripts/paint" target="_blank" rel="noopener">Source <span aria-hidden="true">↗</span></a>
               </div>
             </div>
@@ -555,7 +566,7 @@
               </li>
               <li class="step reveal">
                 <span class="step-n">Skills</span>
-                <p>Work I repeat becomes a skill: a written procedure with its own checks, so every run goes the same way. Mine brief a session, run a retro, red-team a plan, <a href="work/painted-skyline.html">paint the mountain at the foot of this page</a>, and publish this site's <a href="blog/index.html">Hill Money Watch</a> digest through a script that rejects any draft that breaks the contract.</p>
+                <p>Work I repeat becomes a skill: a written procedure with its own checks, so every run goes the same way. Mine brief a session, run a retro, red-team a plan, <a href="work/painted-skyline.html">paint the mountain at the top of this page</a>, and publish this site's <a href="blog/index.html">Hill Money Watch</a> digest through a script that rejects any draft that breaks the contract.</p>
               </li>
               <li class="step reveal">
                 <span class="step-n">Hooks</span>
@@ -668,16 +679,19 @@
 
     <!-- The painted skyline: the footer's own ridge, drawn in pastel by scripts/paint/ (DEV-NOTES). One picture per
          theme; both are lazy and only the visible one is fetched. Not a <section>: it has no place in the nav. -->
-    <figure class="plate" id="painted-skyline">
-      <figcaption class="wrap plate-cap"><span class="plate-day">Camelback at first light.</span><span class="plate-dusk">Camelback at last light.</span> A pastel drawing made by Claude in plain JavaScript, on the same real ridge as the map up top. <span class="plate-clock" hidden>The hour follows the clock in Phoenix. </span><a href="work/painted-skyline.html">How it was painted <span aria-hidden="true">→</span></a></figcaption>
-      <picture class="plate-day">
-        <source type="image/webp" srcset="assets/painted/camelback-morning-1200.webp 1200w, assets/painted/camelback-morning-2400.webp 2400w" sizes="100vw">
-        <img src="assets/painted/camelback-morning-1200.jpg" srcset="assets/painted/camelback-morning-1200.jpg 1200w, assets/painted/camelback-morning-2400.jpg 2400w" sizes="100vw" width="2400" height="1200" loading="lazy" decoding="async" alt="A pastel drawing of Camelback Mountain at first light: three hot-air balloons over the valley, saguaros, a palo verde in bloom, and a quail leading her chicks.">
-      </picture>
-      <picture class="plate-dusk">
-        <source type="image/webp" srcset="assets/painted/camelback-dusk-1200.webp 1200w, assets/painted/camelback-dusk-2400.webp 2400w" sizes="100vw">
-        <img src="assets/painted/camelback-dusk-1200.jpg" srcset="assets/painted/camelback-dusk-1200.jpg 1200w, assets/painted/camelback-dusk-2400.jpg 2400w" sizes="100vw" width="2400" height="1200" loading="lazy" decoding="async" alt="A pastel drawing of Camelback Mountain at last light: the valley's lights coming on, headlamps climbing the trail, a young moon, and saguaros rimmed in orange.">
-      </picture>
+    <figure class="plate map-band" id="terrain">
+      <figcaption class="wrap plate-cap">The same ground from above: Camelback and the Phoenix Mountains, drawn live from USGS elevation data. <span class="map-hint">Move the pointer over it to read the land.</span></figcaption>
+      <div class="map-stage">
+        <canvas class="topo" id="topo" aria-hidden="true"></canvas>
+        <div class="thermal" aria-hidden="true"><div class="soar soar-shadow"><svg class="hawk" viewBox="0 0 132 84" focusable="false"><use href="assets/fauna.svg#hawk"/></svg></div><div class="soar"><svg class="hawk" viewBox="0 0 132 84" focusable="false"><use href="assets/fauna.svg#hawk"/></svg></div></div>
+        <div class="legend map-legend" aria-hidden="true">
+          <p class="legend-coords"><span data-lat>33.5147° N</span> <span data-lon>111.9616° W</span></p>
+          <div class="legend-foot">
+            <span class="scale" data-scale><i></i><i></i><i></i><i></i></span><span data-scale-label>¼ mi</span>
+            <span class="legend-place"><span data-place="Phoenix, AZ">Camelback Mtn</span> <span class="legend-elev" data-elev>2,706 ft</span></span>
+          </div>
+        </div>
+      </div>
     </figure>
   </main>
 
@@ -693,7 +707,7 @@
         <a href="arcade.html">Arcade</a>
         <a href="blog/index.html">Hill Money Watch</a>
       </nav>
-      <p class="footer-note">The contour map up top and the mountains above this footer are real: Camelback and the Phoenix Mountains, drawn from USGS elevation data. The pastel drawing follows the same ridge.</p>
+      <p class="footer-note">The pastel drawing up top and the contour map above this footer are the same real place: Camelback and the Phoenix Mountains. The map is drawn from USGS elevation data, and the drawing follows its ridge.</p>
       <p class="footer-hint"><kbd>`</kbd> warps you to the starship.</p>
     </div>
   </footer>

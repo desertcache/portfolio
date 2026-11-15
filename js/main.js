@@ -30,7 +30,15 @@ const features = [
   ['case studies', initCaseStudies],
   ['topo', () => {
     const canvas = document.getElementById('topo');
-    if (canvas instanceof HTMLCanvasElement) initTopo(canvas);
+    if (!(canvas instanceof HTMLCanvasElement)) return;
+    // The map is at the foot of the page: fetch its heightmap and start WebGL as it comes near, not at load.
+    if (!('IntersectionObserver' in window)) return initTopo(canvas);
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      io.disconnect();
+      initTopo(canvas).catch((err) => console.error('[site] topo failed:', err));
+    }, { rootMargin: '900px 0px' });
+    io.observe(canvas);
   }],
   ['scroll-spy', initScrollSpy],
   ['copy email', initCopyEmail],

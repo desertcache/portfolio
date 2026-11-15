@@ -159,8 +159,8 @@ green; v5.3 brings the red back as Sedona rock, on purpose, with guardrails.
 
 - **Who lives here:** a greater roadrunner on the hero's floor and on the
   Lab's sunset ground (in silhouette), a loose flock crossing the Lab's sky,
-  and a red-tailed hawk circling a thermal over Camelback on the hero map
-  (wide screens only; on phones the map sits behind the headline). They're
+  and a red-tailed hawk circling a thermal over Camelback on the contour map
+  (wide screens only; since 2026-11-14 the map is at the foot of the page). They're
   drawn by `scripts/draw_fauna.py` into `assets/fauna.svg`, in the plants'
   hand and colour properties, so the Lab's silhouette rule covers them too.
 - **The roadrunner is a flip-book driven by scroll.** Its symbol holds six
@@ -232,6 +232,10 @@ green; v5.3 brings the red back as Sedona rock, on purpose, with guardrails.
 
 ### The hero map is real terrain (v5.2 "Arizona", 2026-09-26)
 
+**Moved 2026-11-14:** the map is no longer the hero's background. It is the band at the foot of the
+homepage, and the hero holds the painting (see "The painted skyline"). Everything below about how
+the map is built still holds; read "the hero" as "the map's box" (`.map-stage`).
+
 The contours in the hero are Camelback Mountain and the Phoenix Mountains,
 drawn from USGS elevation data, not noise. The cursor still raises a hill,
 and the "field notes" card reads out the real coordinates and elevation
@@ -293,19 +297,26 @@ python3 scripts/build_terrain.py   # needs numpy + Pillow; caches tiles in ~/.ca
 
 ### The painted skyline (2026-11-14)
 
-- **What it is.** `<figure class="plate" id="painted-skyline">` at the end of `<main>` on the
-  homepage: a pastel drawing of Camelback, one picture per theme (first light by day, last light
-  after dark). Both `<img>`s are lazy and the theme hides one, so a visitor downloads one. It is a
-  figure, not a section, so the nav and the phone menu don't list it.
+- **What it is.** `.hero-art` (id `painted-skyline`) in the homepage hero: a pastel drawing of
+  Camelback, one of five hours of the same place. It was first a band above the footer (PR 34);
+  on 2026-11-14 it traded places with the contour map, which is now that band (see "The map at the
+  foot" below). It is a CSS background, not an `<img>`: the rule that matches is the only file
+  fetched. On a wide screen it fills the hero and `.hero-painted::before` washes page colour under
+  the text column; at 1100px and under (one column) it is a banner above the headline. Its label
+  is `.hero-cap`: top right in the sky on a wide screen, under the banner on a narrow one.
 - **It keeps time.** There are five paintings of the same place: morning and golden hour on light
   paper, dusk, the small hours and a monsoon storm on dark. The theme picks the family and the
   clock in Phoenix picks the hour: light is morning from 3 AM to 1 PM and golden hour otherwise;
   dark is the small hours from 10 PM to 5 AM, the storm from 3 PM to 10 PM between 15 June and
   30 September, and dusk the rest of the time. The rule is `hourFor` in `js/hours.js` (pure, tested
-  in `tests/hours.test.mjs`); `js/plate.js` points the two `<picture>`s at the picked files once, at
-  load, before either lazy image has been fetched, so a visit still downloads one. Without JS the
-  page keeps the morning and dusk it was written with, and the test holds the HTML's words to
-  `HOURS`. `?hour=golden|night|monsoon|morning|dusk` in the address shows an hour the clock isn't
+  in `tests/hours.test.mjs`). **The pick happens in the `<head>` script**, before first paint: it
+  sets `data-day` and `data-dusk` on `<html>`, the `.hero-art` rules in `css/site.css` draw the
+  matching file, and the script preloads that same file (1200 wide under 900px, 2400 from there:
+  keep the breakpoint the same in both places). The rule is therefore written twice, in the head
+  script and in `hours.js`; a test runs the head script in a sandbox for every hour of six days and
+  holds the two together. `js/plate.js` only does the words: the label for each theme, the line
+  about the clock, and the `aria-label`, which follows the theme switch. Without JS the page keeps
+  morning. `?hour=golden|night|monsoon|morning|dusk` in the address shows an hour the clock isn't
   showing, in the theme it belongs to (the write-up links to three).
 - **It stands in for two things, on the homepage only:** the contact section's afterglow
   (`.contact:has(+ .plate)`) and the footer's flat skyline strip (`body:has(.plate) .footer::before`).
@@ -330,13 +341,22 @@ python3 scripts/build_terrain.py   # needs numpy + Pillow; caches tiles in ~/.ca
   morning 113,529, golden 120,648, dusk 104,931, night 109,738, monsoon 185,209. A different count
   in a mode you did not mean to touch is a bug (adding the later hours changed dusk by 77 strokes:
   a helper in `mountain()` shadowed the mode variable), and `UPTO=<stage>` finds the stage.
-- **Fit.** `.plate img` is `height: clamp(280px, 50vw, 760px)` with `object-fit: cover` at
-  `64% 100%`: up to 1520px wide the whole 2:1 drawing shows, wider screens crop sky, and phones crop
-  the sides and keep Camelback. The file's top rows are the page colour (`#f3ebe6` and `#150f24`,
-  the `matte` at the end of the scene), and a CSS mask softens the top edge where sky is cropped. If
-  `--bg` changes, repaint.
+- **Fit.** `.hero-art` covers its box from `64% 100%`, so Camelback stays in view however the sides
+  are cropped (a phone's banner uses `64% 78%`, to keep the ridge and the valley). The file's top
+  rows are the page colour (`#f3ebe6` and `#150f24`, the `matte` at the end of the scene), and a CSS
+  mask softens the top edge where sky is cropped. If `--bg` changes, repaint.
+- **The map at the foot.** `<figure class="plate map-band" id="terrain">` at the end of `<main>`
+  holds the contour map that used to be the hero's background: `.map-stage` with the `#topo` canvas,
+  the hawk on its thermal, and `.map-legend`, the coordinate, elevation and scale readouts that
+  used to sit in the Try it card. `js/topo.js` finds its box with `closest('.map-stage, .hero')`
+  (`.hero` is still the share-card page, `scripts/og-card.html`) and reads `--topo-alpha` from the
+  canvas, so the band can draw the lines stronger than the faint backdrop they were. `js/main.js`
+  starts the map when it comes within 900px of the screen, so a visitor who never scrolls down
+  doesn't fetch the heightmap or open a WebGL context. The figure keeps the `plate` class, which is
+  what tells the contact section to drop its afterglow and the footer its skyline strip.
 - **Elsewhere.** The Lab's fifth card (`.lab-card-wide`, the full width of the grid, with a
-  `.paint-stage`) always shows the dusk picture, because the Lab is always dark.
+  `.paint-stage`) always shows the dusk picture, because the Lab is always dark. It is a lazy
+  `<img>`, the only painted `<img>` on the homepage.
   `work/painted-skyline.html` is the write-up. Its stills `liftoff-1600`, `first-attempt-canvas` and
   `second-attempt-paper` come from two earlier pictures of the same session; their sources are not in
   this repo. A test checks that both theme pictures are there and lazy, and that every

@@ -278,7 +278,8 @@ function legendFields(hero) {
  * @param {HTMLCanvasElement} canvas
  */
 export async function initTopo(canvas) {
-  const hero = canvas.closest('.hero');
+  // the box the map fills: the foot of the homepage, or the hero of the share-card page
+  const hero = canvas.closest('.map-stage, .hero');
   if (!(hero instanceof HTMLElement)) return;
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -328,7 +329,7 @@ export async function initTopo(canvas) {
   };
 
   function readColors() {
-    const cs = getComputedStyle(document.documentElement);
+    const cs = getComputedStyle(canvas);      // inherited from <html>, unless the map's own box says otherwise
     for (const key of /** @type {const} */ (['low', 'mid', 'high'])) {
       const rgb = hexToRgb(cs.getPropertyValue(`--topo-${key}`));
       if (rgb) s.colors[key] = rgb;

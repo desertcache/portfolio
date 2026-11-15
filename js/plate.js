@@ -1,37 +1,52 @@
 // @ts-check
-import { HOURS, hourFiles, pickHours } from './hours.js';
+import { HOURS, hourFromQuery, pickHours } from './hours.js';
+
+/** @typedef {import('./hours.js').Hour} Hour */
+/** @typedef {import('./hours.js').Family} Family */
 
 /**
- * The painted skyline keeps time. The HTML carries one picture per theme
- * (morning and dusk); this points each at the hour it is in Phoenix: golden
- * hour on a light afternoon, the small hours or a monsoon storm after dark
- * (js/hours.js has the rule). Both pictures are lazy and sit at the foot of
- * the page, so the swap lands before either has been fetched and a visitor
- * still downloads one. Without JS the page keeps morning and dusk.
+ * The hero's painting keeps time. Which of the five paintings shows is settled
+ * before first paint: the <head> script puts the hour for each theme on <html>
+ * (data-day, data-dusk) and CSS draws the matching file (.hero-art), so the
+ * right picture is the only one fetched and nothing flashes.
  *
- * It picks once, at load. Swapping a picture someone is looking at would be
- * a jolt, and a reader who stays past an hour's end loses nothing.
+ * This does the words: the caption's first sentence for each theme, the line
+ * that says the picture follows the clock (only true once a script has run),
+ * and the description a screen reader gets, which follows the theme switch.
+ * Without JS the page keeps the morning it was written with.
  */
 export function initPlate() {
-  const plate = document.getElementById('painted-skyline');
-  if (!plate) return;
+  const art = document.getElementById('painted-skyline');
+  const cap = document.querySelector('.hero-cap');
+  if (!art || !cap) return;
+  const root = document.documentElement;
   const picked = pickHours(new Date(), window.location.search);
+
+  /**
+   * What the <head> script chose is what is on screen. The same rule here only
+   * fills in if that script didn't run.
+   * @param {string | undefined} name
+   * @param {Family} family
+   * @returns {Hour}
+   */
+  const shown = (name, family) => {
+    const hour = name ? hourFromQuery(`?hour=${name}`) : null;
+    return hour && HOURS[hour].family === family ? hour : picked[family];
+  };
+  const hours = { light: shown(root.dataset.day, 'light'), dark: shown(root.dataset.dusk, 'dark') };
+  root.dataset.day = hours.light;
+  root.dataset.dusk = hours.dark;
+
   for (const [cls, family] of /** @type {const} */ ([['plate-day', 'light'], ['plate-dusk', 'dark']])) {
-    const hour = picked[family];
-    const source = plate.querySelector(`picture.${cls} source`);
-    const img = plate.querySelector(`picture.${cls} img`);
-    const lead = plate.querySelector(`.plate-cap .${cls}`);
-    if (!(source instanceof HTMLSourceElement) || !(img instanceof HTMLImageElement) || !lead) continue;
-    const files = hourFiles(hour);
-    plate.dataset[family] = hour;
-    if (img.getAttribute('src') === files.src) continue; // already the one the HTML names
-    source.srcset = files.webp;
-    img.srcset = files.jpg;
-    img.src = files.src;
-    img.alt = HOURS[hour].alt;
-    lead.textContent = HOURS[hour].lead;
+    const lead = cap.querySelector(`.${cls}`);
+    if (lead) lead.textContent = HOURS[hours[family]].lead;
   }
-  // The caption only says the picture follows the clock once it does.
-  const note = plate.querySelector('.plate-clock');
+  const note = cap.querySelector('.plate-clock');
   if (note instanceof HTMLElement) note.hidden = false;
+
+  const describe = () => {
+    art.setAttribute('aria-label', HOURS[hours[root.dataset.theme === 'dark' ? 'dark' : 'light']].alt);
+  };
+  describe();
+  document.addEventListener('sb:themechange', describe);
 }

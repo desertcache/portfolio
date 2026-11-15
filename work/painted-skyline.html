@@ -39,7 +39,7 @@
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
   <link rel="preload" href="../assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
-  <link rel="stylesheet" href="../css/site.css?v=2026-11-14b">
+  <link rel="stylesheet" href="../css/site.css?v=2026-11-14c">
   <link rel="stylesheet" href="../blog/blog.css?v=2026-09-26">
   <script type="module" src="../js/blog.js"></script>
 </head>
@@ -79,7 +79,7 @@
       <header class="post-head">
         <a class="eyebrow post-back" href="../index.html#lab"><span class="eyebrow-num">Build note</span>Drawing with code</a>
         <h1 class="post-title">A mountain drawn by code, one stroke at a time</h1>
-        <p class="post-lede">Scroll to the foot of the homepage and Camelback is there in pastel, at the hour it is in Phoenix: first light or golden hour in the light theme, and last light, the small hours or a monsoon storm in the dark one. No image model made it, and no drawing library was used. Claude wrote a small renderer that rubs pigment onto simulated paper, then used it to draw the picture. This is how it works, who did what, and what went wrong along the way.</p>
+        <p class="post-lede">Open the homepage and Camelback is there in pastel behind the headline, at the hour it is in Phoenix: first light or golden hour in the light theme, and last light, the small hours or a monsoon storm in the dark one. No image model made it, and no drawing library was used. Claude wrote a small renderer that rubs pigment onto simulated paper, then used it to draw the picture. This is how it works, who did what, and what went wrong along the way.</p>
         <p class="post-meta"><time datetime="2026-11-14">November 2026</time><span>Samuel Bates</span><span id="read-time" hidden></span></p>
       </header>
 
@@ -140,7 +140,7 @@
         <p>The code that describes the scene is short. The mountain is one function that shades the spurs running down from its crest. A saguaro is a centre line thickened into a limb. The valley's trees are one function called a few hundred times. The strokes come from loops: 104,931 of them in the dusk drawing and 113,529 in the morning one, each drawing taking about 15 seconds at 4800 by 2400 pixels. It needs only Node to run, with nothing installed, and it writes the PNG file itself.</p>
 
         <h2>The ridge is real</h2>
-        <p>The first version of this mountain was drawn from memory, as a couple of dozen points, and it looked plausible. It was also wrong, and this site already knew better: the contour map in the hero and the skyline strip in the footer are both built from elevation data. Claude found that while reading the site's notes, threw its own ridge away, and redrew the mountain from the same skyline file the footer uses. The painted ridge is now that ridge, with the Phoenix Mountains to the west where they belong.</p>
+        <p>The first version of this mountain was drawn from memory, as a couple of dozen points, and it looked plausible. It was also wrong, and this site already knew better: its contour map and the skyline strip in its footer are both built from elevation data. Claude found that while reading the site's notes, threw its own ridge away, and redrew the mountain from the same skyline file the footer uses. The painted ridge is now that ridge, with the Phoenix Mountains to the west where they belong.</p>
 
         <h2>One place, five hours</h2>
         <p>The site has a light theme and a dark one, so the drawing began as two times of day. Every position is decided once, before any paint, so every version shares one place: the same saguaros, the same palms, the same patches of scrub. Then the light changes sides.</p>
@@ -173,7 +173,7 @@
           <figcaption id="hours-cap"><span class="fig">Fig. 3</span> The three hours added later. Nothing in the layout moved. The storm is the busiest of the five, and most of its strokes are cloud.</figcaption>
         </figure>
         <p>The new hours are less three new drawings than the same drawing told a different time. Every colour in the scene passes through one small function that leans it toward the hour: warmer, with violet in the shadows, for the afternoon; blue and dim for starlight; cold and pale for a sky lit by lightning. Then each hour paints its own sky and decides who is out. At golden hour the quail are still crossing the gravel. After midnight the headlamps are off the trail.</p>
-        <p>The top of each picture fades to exactly the page's background colour, so it has no edge. Switch the theme, top right, and the family changes. To see an hour the clock isn't showing, ask for it by name: <a href="../index.html?hour=monsoon#painted-skyline">the storm</a> and <a href="../index.html?hour=night#painted-skyline">the small hours</a> in the dark theme, <a href="../index.html?hour=golden#painted-skyline">golden hour</a> in the light one.</p>
+        <p>The top of each picture fades to exactly the page's background colour, so it has no edge. Switch the theme, top right, and the family changes. To see an hour the clock isn't showing, ask for it by name: <a href="../index.html?hour=monsoon">the storm</a> and <a href="../index.html?hour=night">the small hours</a> in the dark theme, <a href="../index.html?hour=golden">golden hour</a> in the light one.</p>
 
         <h2>What went wrong</h2>
         <p>The first picture of the session was made a different way, with the browser's canvas. Its sky and its storm cloud worked. Its foreground looked like clip art, because a clean filled shape is exactly what canvas is good at. The renderer above exists because of that failure.</p>
@@ -235,7 +235,7 @@
         <h2>Links</h2>
         <ul>
           <li><a href="https://github.com/desertcache/portfolio/tree/main/scripts/paint" target="_blank" rel="noopener">The renderer, its helpers and the scene</a> (scripts/paint in this site's repository)</li>
-          <li><a href="../index.html#painted-skyline">The drawing in place</a>, at the foot of the homepage</li>
+          <li><a href="../index.html#top">The drawing in place</a>, at the top of the homepage</li>
           <li><a href="../index.html#build">How I build</a>: the skills, hooks and memory the session ran in</li>
         </ul>
       </div>
