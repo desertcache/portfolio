@@ -95,10 +95,10 @@
             <p class="arch-where">In the browser</p>
             <div class="arch-box">
               <p class="arch-name">Support workspace<span>React + TypeScript</span></p>
-              <ul class="arch-parts"><li>Case context</li><li>Copilot</li><li>Other teams' agents, as panels</li></ul>
+              <ul class="arch-parts"><li>Case context</li><li>Copilot</li></ul>
             </div>
           </div>
-          <p class="arch-link" aria-hidden="true">every call goes through the backend</p>
+          <p class="arch-link" aria-hidden="true">model calls go through the backend</p>
           <div class="arch-tier">
             <p class="arch-where">On the server</p>
             <div class="arch-box">
@@ -106,29 +106,28 @@
               <p class="arch-what">One service between the workspace and everything it needs.</p>
             </div>
           </div>
-          <p class="arch-link" aria-hidden="true">retrieval, model calls and case data</p>
+          <p class="arch-link" aria-hidden="true">model calls and case data</p>
           <div class="arch-tier arch-tier-3">
-            <div class="arch-box">
-              <p class="arch-name">Playbook retrieval</p>
-              <p class="arch-what">Returns the matching sections and where each one came from.</p>
-            </div>
             <div class="arch-box">
               <p class="arch-name">Company AI gateway</p>
               <p class="arch-what">Keys, logging and model changes in one place, with a frontier model behind it.</p>
             </div>
             <div class="arch-box">
-              <p class="arch-name">Internal data services</p>
-              <p class="arch-what">Store status, menu sync jobs, integration health, account history, past cases.</p>
+              <p class="arch-name">Store and integration data</p>
+              <p class="arch-what">Store status, menu sync jobs, integration health.</p>
+            </div>
+            <div class="arch-box">
+              <p class="arch-name">Account and case history</p>
+              <p class="arch-what">Account history and past cases.</p>
             </div>
           </div>
-          <figcaption id="arch-cap"><span class="fig">Fig. 1</span>How the pieces fit. The browser never calls the model or reads the playbook directly: every call goes through the backend, and retrieval returns each section with its source.</figcaption>
+          <figcaption id="arch-cap"><span class="fig">Fig. 1</span>How the pieces fit. The browser never calls the model directly: model calls go through the backend. The copilot's keyword retrieval over the support playbook returns each section with its source.</figcaption>
         </figure>
         <ul>
-          <li><strong>A browser app and a backend-for-frontend.</strong> The workspace is a React and TypeScript app. A small Node service sits between it and everything else: the company's AI gateway, the internal data services, and the playbook.</li>
-          <li><strong>Retrieval lives on the server.</strong> The playbook never ships to the browser. It sits behind a retrieval endpoint in the backend, which returns the matching sections with their provenance.</li>
+          <li><strong>A browser app and a backend-for-frontend.</strong> The workspace is a React and TypeScript app. A small Node service sits between it and everything else: the company's AI gateway and the internal data services.</li>
+          <li><strong>Keyword retrieval over the support playbook.</strong> Each question is matched against the playbook, and retrieval returns the matching sections with their provenance.</li>
           <li><strong>Provenance comes from retrieval, not from the model.</strong> Every grounded answer cites the playbook sections that retrieval returned, so the model never gets to invent a citation.</li>
           <li><strong>The model runs through the company gateway.</strong> One place for keys, logging and model changes. Before switching models I prove the route with a few matched requests through the real gateway: a control, the new setting, and one that should fail.</li>
-          <li><strong>Other teams' agents plug in as panels.</strong> The workspace became the place agents already are, so other teams embed their own AI agents in it behind the same access model instead of shipping another tab.</li>
         </ul>
 
         <h2>How I measured it</h2>
@@ -140,7 +139,7 @@
 
         <h2>Rolling it out to an outsourced team</h2>
         <p>The first outsourced support team to work inside the tool could not get in, and every failure looked like the same generic error. I proved access one layer at a time: identity, device and network trust, application permissions, and finally an internal call that was blocked and rendered as a network error. Each layer got its own check so the next cohort would not repeat the hunt.</p>
-        <p>Training came from one content module that generates the slide deck, the guides and the reference docs, plus a verifier that checks every generated copy. One rule came out of it: a fix is done only when every copy has been fetched back from where people actually read it and checked. Now I coach the team's live cases against one success metric: the share of cases resolved within a set time.</p>
+        <p>Training came from one content module that generates the slide deck, the guides and the reference docs, plus a verifier that checks every generated copy. One rule came out of it: a fix is done only when every copy has been fetched back from where people actually read it and checked. I built the measurement that scored the pilot. When the team took over a queue's full web volume, I handed operations to the in-house team.</p>
         <p>I took that team live, the second outsourced support team I have stood up. The first carried a partner API migration.</p>
 
         <h2>What broke, and the fix</h2>
@@ -148,7 +147,6 @@
           <thead><tr><th>What we saw</th><th>Cause</th><th>Fix</th></tr></thead>
           <tbody>
             <tr><td data-label="What we saw">The copilot vanished after a refactor</td><td data-label="Cause">Its panel's wiring went out with an export that looked unused</td><td data-label="Fix">Mounted it again and added a test</td></tr>
-            <tr><td data-label="What we saw">An embedded agent answered "Request failed"</td><td data-label="Cause">The MCP SDK's default 60-second request timeout, never set</td><td data-label="Fix">Set the ceiling explicitly</td></tr>
             <tr><td data-label="What we saw">The outsourced team saw a "network error"</td><td data-label="Cause">An internal call was blocked, and the app rendered the block as a network failure</td><td data-label="Fix">Traced it layer by layer; the real error now shows</td></tr>
             <tr><td data-label="What we saw">An AI code reviewer cited a test file that doesn't exist</td><td data-label="Cause">Two AI reviewers invented the same fixture</td><td data-label="Fix">Checked all 21 review threads against the code: 20 were real, 1 was invented</td></tr>
           </tbody>
@@ -165,8 +163,11 @@
         <ul>
           <li><strong>"The mutation exists" is not "the agent can do it."</strong> Before promising what a copilot can resolve, list the writes it can actually reach from the UI.</li>
           <li><strong>Two agreeing documents are one source.</strong> When the runbook and the official guide agree, load the live page before trusting either.</li>
-          <li><strong>Put the corpus where you can measure it.</strong> Server-side retrieval is what made honest measurement and honest citations possible.</li>
+          <li><strong>Make retrieval return its sources.</strong> Retrieval that returns the sections it used is what made honest measurement and honest citations possible.</li>
         </ul>
+
+        <h2>Since then (November 2026)</h2>
+        <p>The step-by-step case view is now every agent's default. The copilot calls tools against live internal data, bounded by time and permission. Its backend checks authorization on the server: shadow mode first, then enforced. The outsourced team took over a queue's full web volume, and operations moved to the in-house team. Two honest limits: timeouts, tool loops and permission failures degrade to a clear message, but there is no model failover yet, and I still release and deploy the app and its backend myself.</p>
       </div>
 
       <nav class="cs-nav edition-nav" aria-label="More work">
