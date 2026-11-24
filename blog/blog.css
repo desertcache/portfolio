@@ -377,3 +377,11 @@ html:not(.js) .archive-fallback { display: block; }
   .edition-nav, .ticker-band { display: none !important; }
   .post { padding-top: 24px; }
 }
+
+/* ---------- 5. Media in a work sample (work/animal-shelter-intake.html) ----------
+   site.css sizes only images inside a .duo figure. A video there needs the same
+   treatment, or it keeps its 720px height attribute at any width. A tall app
+   screenshot can sit in the reading column instead of the wide lane, so one
+   screen of an app doesn't fill two screens of the page. */
+.duo-item video { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--bg-tint); }
+.post-body > .duo.duo-narrow { width: min(100%, var(--measure)); }

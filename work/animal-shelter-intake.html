@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>I built an animal shelter's intake form twice · Samuel Bates</title>
+  <meta name="description" content="A volunteer build for Sun Valley Animal Shelter in Glendale, Arizona: a free tablet intake form, the first version I got wrong, and the screen share that fixed it.">
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="https://desertcache.github.io/portfolio/work/animal-shelter-intake.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Samuel Bates">
+  <meta property="og:title" content="I built an animal shelter's intake form twice · Samuel Bates">
+  <meta property="og:description" content="A volunteer build for Sun Valley Animal Shelter in Glendale, Arizona: a free tablet intake form, the first version I got wrong, and the screen share that fixed it.">
+  <meta property="og:url" content="https://desertcache.github.io/portfolio/work/animal-shelter-intake.html">
+  <meta property="og:image" content="https://desertcache.github.io/portfolio/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Samuel Bates, AI Solutions Manager: Most AI dies in the demo. I build the kind that ships.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#f3ebe6">
+
+  <script>
+    // Same as every page: pick the theme before first paint and flag that JS is on.
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      setTimeout(function () { if (!root.classList.contains('js-ready')) root.classList.remove('js'); }, 4000);
+      try {
+        var t = localStorage.getItem('sb-theme');
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', t);
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#150f24' : '#f3ebe6');
+      } catch (e) { /* storage blocked: CSS falls back to the system theme */ }
+    })();
+  </script>
+
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="preload" href="../assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
+  <link rel="stylesheet" href="../css/site.css?v=2026-11-14c">
+  <link rel="stylesheet" href="../blog/blog.css?v=2026-11-23">
+  <script type="module" src="../js/blog.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="../index.html" aria-label="Samuel Bates, home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <path d="M6.2 17.8C5.2 11.6 9.4 6.1 15.6 5.6 21.9 5.1 27.2 9.2 26.8 15.2 26.4 20.4 23.6 22.1 20.1 24.6 16.2 27.4 7.3 25.1 6.2 17.8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M11.4 15.9C11.1 12.2 13.9 9.6 17.4 9.5 21 9.4 23.1 11.9 22.6 15 22.1 18.2 19.8 19.2 17.2 20.1 14.2 21.1 11.7 19.2 11.4 15.9Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <circle cx="17.6" cy="14.7" r="2.6" class="brand-dot"/>
+        </svg>
+        <span class="brand-name">Samuel Bates</span>
+      </a>
+      <nav class="nav-links" aria-label="Sections">
+        <a href="../index.html#work" aria-current="true">Work</a>
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#lab">Lab</a>
+        <a href="../index.html#contact">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.2 14.6A8.3 8.3 0 0 1 9.4 3.8a8.3 8.3 0 1 0 10.8 10.8Z"/></svg>
+        </button>
+        <a class="btn btn-ghost btn-sm nav-cv" href="../Samuel_Bates_CV.pdf" target="_blank" rel="noopener">Résumé</a>
+        <a class="btn btn-solid btn-sm" href="mailto:batessambates@gmail.com">Get in touch</a>
+      </div>
+    </div>
+    <div class="nav-progress" aria-hidden="true"></div>
+  </header>
+
+  <main id="main">
+    <article class="post research">
+      <header class="post-head">
+        <a class="eyebrow post-back" href="../index.html#work"><span class="eyebrow-num">Work sample</span>Volunteer build</a>
+        <h1 class="post-title">I built an animal shelter's intake form twice</h1>
+        <p class="post-lede">Staff at Sun Valley Animal Shelter, a small nonprofit in Glendale, Arizona, wrote animal intakes on paper, then typed them again into PetPoint, their records system. As a volunteer in early 2026, I built them a tablet form with AI coding tools, on nights and weekends. In early testing with staff, it saved about 20 minutes per animal. The first version was wrong, and one screen share showed me why.</p>
+        <p class="post-meta"><time datetime="2026-03">January to March 2026</time><span>Samuel Bates, volunteer</span><span id="read-time" hidden></span></p>
+      </header>
+
+      <div class="post-body">
+        <figure class="duo" aria-labelledby="forms-cap">
+          <div class="duo-pair duo-three">
+            <div class="duo-item">
+              <picture>
+                <source srcset="../assets/shelter/paper-form.webp" type="image/webp">
+                <img src="../assets/shelter/paper-form.jpg" width="493" height="736" decoding="async" alt="A photo of one of the shelter's blank paper forms, the Dog Intake Form: boxes for name, sex, tag, date in, birth date, microchip, breed, description, source, status and weight, a vaccination history grid, and ruled lines for exam notes.">
+              </picture>
+              <p class="duo-label"><b>A paper form</b></p>
+            </div>
+            <div class="duo-item">
+              <picture>
+                <source srcset="../assets/shelter/intake-v1.webp" type="image/webp">
+                <img src="../assets/shelter/intake-v1.jpg" width="390" height="582" decoding="async" alt="The first version on a phone: the end of its basic information section, then a Vaccinations section asking for DHPP dose dates and lot numbers, copied from the paper form.">
+              </picture>
+              <p class="duo-label"><b>Version one</b></p>
+            </div>
+            <div class="duo-item">
+              <picture>
+                <source srcset="../assets/shelter/intake-v2.webp" type="image/webp">
+                <img src="../assets/shelter/intake-v2.jpg" width="1170" height="1746" decoding="async" alt="The second version on a phone with sample data: a Person / Surrenderer section with first and last name, ID type, number and issuer, phone, street address, city and jurisdiction.">
+              </picture>
+              <p class="duo-label"><b>Version two</b></p>
+            </div>
+          </div>
+          <figcaption id="forms-cap"><span class="fig">Fig. 1</span> One of the shelter's paper forms, the first version that copied it, and the version rebuilt after watching the work. Sample data.</figcaption>
+        </figure>
+
+        <h2>The problem</h2>
+        <p>Sun Valley had been taking in dogs and cats for more than 30 years and ran on donations. When an animal arrived, staff filled out a paper form by hand. Later the same details were typed into PetPoint.</p>
+        <p>PetPoint has no API for adding records. I asked its support team to be sure. Scripting its web pages was possible but fragile, so staff would still copy the answers in, and the job became making that copy as quick as possible.</p>
+
+        <h2>The first version was wrong</h2>
+        <p>I built the first version from their paper forms, including the sections for vaccinations, treatments and tests.</p>
+        <p>At a demo, the operations manager mentioned that not everything gets entered at the same time. So I asked to watch. She shared her screen and walked me through the three kinds of intake she handles (strays, owner surrenders and returns) in 22 minutes. I had read the whole paper form as intake. It wasn't:</p>
+        <ul>
+          <li>About 60% of my form was medical sections. Another staff member enters those later, on a different screen.</li>
+          <li>Surrenders and returns start with a person, the one bringing the animal in. That lived on separate surrender forms I hadn't seen, so my form had no place for them.</li>
+          <li>Six details she entered every time were missing: size, bite status, declawed, condition, medical status and temperament.</li>
+        </ul>
+        <p>I rebuilt it that week: medical out, the person in, and at least 15 fields added. Seven days after that call, it was running at the shelter.</p>
+
+        <h2>What went in at the shelter</h2>
+        <p>The form ran on the shelter's own PC, and tablets reached it over the building's WiFi. No subscription, no monthly bill. Staff could start it by double-clicking a paw-print icon on the desktop.</p>
+        <p>A finished intake opens in a copy helper that groups the fields in the order of PetPoint's screens, so entering it is a short run of copy and paste.</p>
+
+        <figure class="duo duo-narrow" aria-labelledby="helper-cap">
+          <div class="duo-pair duo-one">
+            <div class="duo-item">
+              <picture>
+                <source srcset="../assets/shelter/copy-helper.webp" type="image/webp">
+                <img src="../assets/shelter/copy-helper.jpg" width="1200" height="1551" loading="lazy" decoding="async" alt="The copy helper for a sample intake, a dog named Biscuit: a Copy All Fields button, then one row per field to tap and copy, grouped under Intake Record and then Person / Surrenderer.">
+              </picture>
+            </div>
+          </div>
+          <figcaption id="helper-cap"><span class="fig">Fig. 2</span> The copy helper, in PetPoint's screen order. Sample data.</figcaption>
+        </figure>
+
+        <p>It went in on February 15, 2026.</p>
+
+        <h2>The website</h2>
+        <p>The old site's adoption pages showed no animals. I rebuilt it and kept it on WordPress so the staff could keep editing it themselves. The new homepage showed the shelter's real adoptable dogs and cats, live. The donate button had been locked at $25, so I fixed it to let donors choose an amount.</p>
+
+        <figure class="duo" aria-labelledby="site-cap">
+          <div class="duo-pair duo-one">
+            <div class="duo-item">
+              <video controls muted playsinline preload="none" poster="../assets/shelter/website-poster.jpg" width="1260" height="612">
+                <source src="../assets/shelter/website-walkthrough.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+          <figcaption id="site-cap"><span class="fig">Fig. 3</span> The rebuilt homepage, with the shelter's adoptable dogs and cats.</figcaption>
+        </figure>
+
+        <h2>How it ended</h2>
+        <p>About six weeks after the form went in, Sun Valley closed for lack of funding. The director asked for a closing notice on March 28. I posted it the next day. Another rescue was stepping in to continue the work.</p>
+        <p>I'd do it again.</p>
+
+        <h2>What I took from it</h2>
+        <ul>
+          <li><strong>Watch the work before building.</strong> I read the paper form as the whole process. It wasn't.</li>
+          <li><strong>Fit what they already use.</strong> PetPoint and WordPress were staying, so what I built had to work with both.</li>
+        </ul>
+        <p>Built as a volunteer, on nights and weekends, with AI coding tools.</p>
+      </div>
+
+      <nav class="cs-nav edition-nav" aria-label="More work">
+        <a href="../index.html#work"><span class="cs-nav-k">Work</span><span class="cs-nav-t">All selected work</span></a>
+      </nav>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p class="footer-copy">© 2026 Samuel Bates. Built in Phoenix with HTML, CSS, and a little JavaScript. No framework.</p>
+    </div>
+  </footer>
+</body>
+</html>
