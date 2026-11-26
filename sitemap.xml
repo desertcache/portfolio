@@ -3,7 +3,8 @@
      stay out on purpose. Search engines only read robots.txt at the host root, which this
      project site doesn't own, so submit this file in Search Console instead. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://desertcache.github.io/portfolio/</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://desertcache.github.io/portfolio/</loc><lastmod>2026-11-25</lastmod></url>
+  <url><loc>https://desertcache.github.io/portfolio/last-invention/</loc><lastmod>2026-11-25</lastmod></url>
   <url><loc>https://desertcache.github.io/portfolio/work/painted-skyline.html</loc><lastmod>2026-11-14</lastmod></url>
   <url><loc>https://desertcache.github.io/portfolio/work/answer-finder.html</loc><lastmod>2026-10-08</lastmod></url>
   <url><loc>https://desertcache.github.io/portfolio/work/starship-agent-fleet.html</loc><lastmod>2026-10-08</lastmod></url>

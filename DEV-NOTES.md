@@ -651,6 +651,38 @@ along its floor. `js/page.js` is their script entry (theme toggle, nav).
   you board; this page is the dock. Touch-only or narrow screens get the
   poster and a note.
 
+## The Last Invention: a talk in the Lab (2026-11-25)
+
+A 25-slide presentation on AI and the intelligence explosion that Claude Opus 5.5 wrote, designed and
+coded in one Claude Code session from a one-paragraph prompt. The homepage shows it as a second
+`.lab-feature` under the Starship (same classes; an inline `margin-top` spaces the two, so `site.css`
+and its `?v=` did not change). The poster opens `last-invention/`, the talk itself, full screen.
+
+- **It is built, not hand-edited.** The source is `scripts/last-invention/src/` (the talk exactly as it
+  was made: `engine.js` is the WebGL2 particle engine, `formations.js` the shapes, `charts.js` the canvas
+  charts, `slides.js` what each slide does, `deck.js` navigation, `audio.js` the synthesized score).
+  `node scripts/last-invention/build.js` inlines all of it into `last-invention/index.html`.
+  `tests/last-invention.test.mjs` fails if the page is older than its source.
+- **It wears the site's type.** `scripts/last-invention/portfolio.css` swaps the talk's Google Fonts for
+  the files in `assets/fonts`. `"TLI Display"` is Archivo declared at one width (125%): a face declared
+  at one width is drawn at that width whatever the element asks for, so every display rule and the
+  canvas text get Archivo Expanded without a `font-stretch` of their own (the canvas reads the families
+  from `window.TLI.FONTS`, which the build sets). `"TLI Text"` is Archivo at 100%, roman and italic;
+  the act numerals are Martian Mono. It preloads `archivo-latin.woff2` at low priority like every page.
+- **It is the one page without the site's chrome.** It is a full-screen show with its own look, so it
+  does not load `css/site.css`; the HUD's first link goes back to the Lab. It runs WebGL only on its
+  own page, so the homepage pays nothing for it.
+- **The poster and the link preview** (`assets/last-invention-poster.*`, `assets/og-last-invention.jpg`)
+  are stills of the real title slide: headless Chromium at 1280x720 (software WebGL is fine for a still),
+  the mouse held at the centre (the camera leans toward the pointer), the HUD hidden, and
+  `TLI.engine.advance(8)` to settle the particles. For the poster, `TLI.textSpecs.title.y = -1.5` and
+  `maxW = 6.3` put a smaller title in the lower third: the poster's bar covers the top and the play
+  button the middle, and on a phone the two leave no room above the button. The preview is a 1200x630
+  centre crop of the plain title frame (title centred, nothing else on screen), as JPEG
+  (the star noise makes a PNG about ten times larger).
+- **Keys:** arrows, click or Page Down to move; F full screen, M sound, N speaker notes, O all slides.
+  The slide id is in the hash (`last-invention/#horizon`), so a link can open on any slide.
+
 ## The blog does not update itself (2026-08-15, updated 2026-09-23)
 
 There is **no automation**. Editions are written and published by the
