@@ -91,7 +91,7 @@ test('the blog pages and the posts index show no em dash anywhere a reader looks
 });
 
 test('the side pages and the 404 page show no em dash anywhere a reader looks', () => {
-  for (const path of ['arcade.html', 'starship.html', 'skincare.html', '404.html']) {
+  for (const path of ['arcade.html', 'starship.html', 'skincare.html', '404.html', 'last-invention/index.html']) {
     const text = readerText(read(path));
     const i = text.indexOf('—');
     assert.equal(i, -1, `${path}: em dash in "${text.slice(Math.max(0, i - 40), i + 40).replace(/\s+/g, ' ')}"`);
@@ -102,7 +102,7 @@ test('every page a link can be pasted from shows a link preview', () => {
   // People get sent straight to the work samples; a pasted link with no card looks
   // broken in Slack, LinkedIn and iMessage.
   const dir = (d) => readdirSync(new URL(`../${d}/`, import.meta.url)).filter((f) => f.endsWith('.html')).map((f) => `${d}/${f}`);
-  for (const path of ['index.html', 'arcade.html', 'starship.html', 'skincare.html', ...WORK_SAMPLES, 'blog/index.html', ...dir('blog/posts'), ...dir('blog/research')]) {
+  for (const path of ['index.html', 'arcade.html', 'starship.html', 'skincare.html', 'last-invention/index.html', ...WORK_SAMPLES, 'blog/index.html', ...dir('blog/posts'), ...dir('blog/research')]) {
     const html = read(path);
     for (const tag of ['og:title', 'og:description', 'og:image', 'og:url']) {
       assert.match(html, new RegExp(`<meta\\s+property="${tag}"\\s+content="[^"]+"`), `${path} has no ${tag}`);
@@ -122,7 +122,7 @@ test('fonts are self-hosted: no page waits on Google Fonts, and every preload po
   // The Google stylesheet blocked first paint on every page (the 2026-10-07 audit measured
   // seconds on a cold phone). The faces live in css/site.css and assets/fonts/.
   const dir = (d) => readdirSync(new URL(`../${d}/`, import.meta.url)).filter((f) => f.endsWith('.html')).map((f) => `${d}/${f}`);
-  const pages = ['index.html', 'arcade.html', 'starship.html', 'skincare.html', '404.html', ...WORK_SAMPLES,
+  const pages = ['index.html', 'arcade.html', 'starship.html', 'skincare.html', '404.html', 'last-invention/index.html', ...WORK_SAMPLES,
     'blog/index.html', 'blog/_post.template.html', ...dir('blog/posts'), ...dir('blog/research')];
   for (const path of pages) {
     const html = read(path);

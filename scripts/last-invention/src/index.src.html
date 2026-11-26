@@ -1,0 +1,449 @@
+<title>The Last Invention</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="A presentation in five acts on artificial intelligence and the intelligence explosion.">
+<meta name="theme-color" content="#03040a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martian+Mono:wdth,wght@75..112.5,200..700&family=Newsreader:ital,opsz,wght@0,6..72,200..700;1,6..72,200..700&family=Unbounded:wght@200..900&display=swap">
+<link rel="stylesheet" href="deck.css" data-inline>
+<!--@@BODY@@-->
+<canvas id="gl" aria-hidden="true"></canvas>
+
+<main id="stage">
+
+  <!-- ============ PROLOGUE ============ -->
+  <section class="slide" id="title" data-act="0" data-title="The Last Invention">
+    <div class="wrap lay-title">
+      <p class="eyebrow title-eyebrow rv" style="--d:300">A talk in five acts <span class="dim">· November 2026</span></p>
+      <h1 class="sr-only">The Last Invention</h1>
+      <p class="title-fallback" aria-hidden="true">THE LAST INVENTION</p>
+      <div class="title-sub">
+        <p class="lead rv" style="--d:1700">Artificial intelligence, recursive self-improvement, and the decade everything changes.</p>
+        <p class="label kbd-hint rv-fade" style="--d:2600"><span><kbd>→</kbd> next</span><span><kbd>F</kbd> full screen</span><span><kbd>M</kbd> sound</span><span><kbd>N</kbd> notes</span><span><kbd>O</kbd> all slides</span></p>
+      </div>
+    </div>
+    <aside class="notes">Let the title assemble out of the point of light. Then: this is a talk about the most important thing happening in the world right now, and why it is about to move much faster than intuition says.</aside>
+  </section>
+
+  <section class="slide" id="hook" data-act="0" data-title="300,000 years">
+    <div class="wrap lay-center">
+      <p class="hook-line split" data-split>For 300,000 years, the most intelligent thing on Earth has been <em>us</em>.</p>
+      <p class="hook-2" data-step="1">Within a decade, that stops being true.</p>
+    </div>
+    <aside class="notes">Pause after the first line. Every idea, every invention, every work of art in history came out of one kind of brain. That point of light is all of it. Then click, and watch what happens to it.</aside>
+  </section>
+
+  <!-- ============ ACT I · THE CURVE ============ -->
+  <section class="slide" id="act-1" data-act="1" data-title="The Curve">
+    <div class="wrap lay-act">
+      <div class="numeral rv-fade" aria-hidden="true">I</div>
+      <div class="act-text">
+        <p class="eyebrow rv" style="--d:100">Act one</p>
+        <h2 class="act-name split" data-split>The Curve</h2>
+        <div class="rule"></div>
+        <p class="act-line rv" style="--d:900">Why progress feels slow, right up until the moment it doesn't.</p>
+      </div>
+    </div>
+    <aside class="notes">Act one is about shape. Exponential curves fool human intuition in one specific way: the early part looks flat, so we learn to expect flat.</aside>
+  </section>
+
+  <section class="slide" id="intervals" data-act="1" data-title="The gaps keep shrinking">
+    <div class="wrap lay-zoom">
+      <div class="stack-tight">
+        <p class="eyebrow rv">Zooming toward today, ten times closer at each step</p>
+        <h2 class="display h2 rv" style="--d:120">The gaps between revolutions keep shrinking</h2>
+      </div>
+      <div class="viz rv-fade" style="--d:200"><canvas id="cv-zoom" role="img" aria-label="A timeline zooming from the Big Bang to today, ten times closer at each step, with a revolution at every scale"></canvas></div>
+      <p class="lead zoom-foot" data-step="1">Every zoom lands ten times closer to today, and the story never thins out. Each revolution arrives faster than the one before.</p>
+    </div>
+    <aside class="notes">Watch the window shrink ten times at each step, from the Big Bang to this year. At every scale there is a revolution on screen. The density of world-changing events keeps climbing as we approach the present. AI is the newest point on that line, and the gaps are now measured in months.</aside>
+  </section>
+
+  <section class="slide" id="compute" data-act="1" data-title="The fuel: compute">
+    <div class="wrap lay-split">
+      <div class="stack">
+        <p class="eyebrow rv">The fuel</p>
+        <h2 class="display h2 rv" style="--d:100">Compute used to train frontier AI</h2>
+        <p class="body rv" style="--d:220">Log scale: each gridline is ten times the one below. A straight line means steady exponential growth of about <b>5× a year</b>, and <b>2 billion×</b> since AlexNet in 2012.</p>
+        <div class="callout" data-step="1">Same data on a linear scale, the way the world experiences it. GPT-3, the model that stunned everyone in 2020, used about <b>1/3,000th</b> of today's frontier run. It rounds to zero.</div>
+        <p class="source rv" style="--d:420">Training compute in FLOP. Data: Epoch AI notable-models database, approximate. The GPT-6 Astra estimate is a floor.</p>
+      </div>
+      <div class="viz rv-fade" style="--d:200"><canvas id="cv-compute" role="img" aria-label="Training compute of frontier AI models from 2012 to 2026, first on a log scale, then on a linear scale"></canvas></div>
+    </div>
+    <aside class="notes">On a log chart it looks calm: five times more compute every year, two billion times more since AlexNet. Click to switch to a linear scale. That is what the same numbers feel like in the real world. GPT-3 used about a three-thousandth of the compute of the newest frontier run.</aside>
+  </section>
+
+  <section class="slide" id="buildout" data-act="1" data-title="The bet">
+    <div class="wrap lay-split">
+      <div class="stack">
+        <p class="eyebrow rv">The bet</p>
+        <h2 class="display h2 rv" style="--d:100">The largest construction project in human history</h2>
+        <p class="body rv" style="--d:220">Four companies plan to spend about <b>$720 billion</b> on AI infrastructure in 2026. That is more than two Apollo programs, in one year.</p>
+        <p class="body rv" style="--d:320">The people with the best view of where this goes are placing the biggest bet in history on it.</p>
+        <p class="source rv" style="--d:420">2026 capital-spending guidance for Alphabet, Amazon, Microsoft and Meta, approximate. Apollo: The Planetary Society, 2025 dollars. Manhattan Project: about $2B in 1945, CPI-adjusted.</p>
+      </div>
+      <div class="viz rv-fade" style="--d:200"><canvas id="cv-capex" role="img" aria-label="Bar chart: Manhattan Project about 35 billion dollars, Apollo about 309 billion, AI infrastructure in 2026 alone about 720 billion"></canvas></div>
+    </div>
+    <aside class="notes">Follow the money. About 720 billion dollars from four companies in a single year, more than two Apollo programs. These are the people with the most information, and this is how much they are willing to bet.</aside>
+  </section>
+
+  <section class="slide" id="ladder" data-act="1" data-title="Seven years, one staircase">
+    <div class="wrap lay-ladder">
+      <div class="stack-tight">
+        <p class="eyebrow rv">What it can do</p>
+        <h2 class="display h2 rv" style="--d:100">Seven years, one staircase</h2>
+      </div>
+      <div class="stairs">
+        <div class="stair rv" style="--k:0; --d:300"><div class="yr">2019</div><div class="what">Writes a coherent paragraph</div><div class="who">GPT-2</div></div>
+        <div class="stair rv" style="--k:1; --d:460"><div class="yr">2020</div><div class="what">Writes essays and simple code</div><div class="who">GPT-3</div></div>
+        <div class="stair rv" style="--k:2; --d:620"><div class="yr">2022</div><div class="what">Reaches 100 million people in two months</div><div class="who">ChatGPT</div></div>
+        <div class="stair rv" style="--k:3; --d:780"><div class="yr">2023</div><div class="what">Passes the bar exam</div><div class="who">GPT-4</div></div>
+        <div class="stair rv" style="--k:4; --d:940"><div class="yr">2024</div><div class="what">Reasons through PhD-level science questions</div><div class="who">o1</div></div>
+        <div class="stair rv" style="--k:5; --d:1100"><div class="yr">2025</div><div class="what">Gold medal at the International Math Olympiad</div><div class="who">OpenAI · DeepMind</div></div>
+        <div class="stair now rv" style="--k:6; --d:1260"><div class="yr">2026</div><div class="what">Settles math problems that stood open for decades</div><div class="who">Erdős problems</div></div>
+      </div>
+    </div>
+    <aside class="notes">Seven years, from writing a paragraph to settling open problems in mathematics. Every one of these steps arrived earlier than most experts predicted. ChatGPT now has around 900 million weekly users.</aside>
+  </section>
+
+  <section class="slide" id="horizon" data-act="1" data-title="How long can AI work alone?">
+    <div class="wrap lay-split">
+      <div class="stack">
+        <p class="eyebrow rv">The cleanest trend in AI</p>
+        <h2 class="display h2 rv" style="--d:100">How long can AI work on its own?</h2>
+        <p class="body rv" style="--d:220">The length of task, in skilled-human time, that AI agents finish half the time. In 2019, two seconds. Now about <b>40 hours</b>: a full work week.</p>
+        <div class="callout rv" style="--d:340">The doubling time is shrinking too. It was measured at <b>about 7 months</b> in early 2025. Now it is <b>about 3.6</b>.</div>
+        <div class="callout" data-step="1">If the recent trend holds: a work-month of tasks by <b data-proj="month">2027</b>, and a work-year by <b data-proj="year">2028</b>.</div>
+        <p class="source rv" style="--d:440">Data: METR time-horizon measurements, approximate. Points above about 16 hours carry very wide error bars.</p>
+      </div>
+      <div class="viz rv-fade" style="--d:200"><canvas id="cv-horizon" role="img" aria-label="AI task time horizons from 2 seconds in 2019 to about 40 hours in 2026, on a log scale, with a projection"></canvas></div>
+    </div>
+    <aside class="notes">This is METR's measurement: how long a task, in human time, an AI agent can complete on its own about half the time. Two seconds in 2019. About forty hours now. The doubling time itself has roughly halved. Click to project the trend forward. The error bars at the top are wide, but the direction is not in doubt.</aside>
+  </section>
+
+  <section class="slide" id="anchored" data-act="1" data-title="Even the experts are anchored">
+    <div class="wrap lay-anchored">
+      <div class="stack-tight">
+        <p class="eyebrow rv">Why we keep getting surprised</p>
+        <h2 class="display h2 rv" style="--d:100">Even the experts are anchored</h2>
+      </div>
+      <div class="exhibits">
+        <div class="exhibit rv" style="--d:300">
+          <p class="label">Exhibit A · 2021 forecasting contest</p>
+          <p>Professional forecasters predicted how well AI would score on a hard competition-math benchmark (MATH) by mid-2022.</p>
+          <div class="bars">
+            <div class="bar pred"><span class="v"><span data-count="12.7" data-dec="1">0</span>%</span><div class="fill" style="--h:25%"></div><span class="k">Predicted</span></div>
+            <div class="bar act"><span class="v hot"><span data-count="50.3" data-dec="1">0</span>%</span><div class="fill" style="--h:100%"></div><span class="k">Actual</span></div>
+          </div>
+        </div>
+        <div class="exhibit rv" style="--d:500">
+          <p class="label">Exhibit B · Surveys of AI researchers</p>
+          <p>Median forecast for human-level machine intelligence, from thousands of researchers. One year later it moved 13 years closer.</p>
+          <div class="shift">
+            <div class="shift-track">
+              <div class="shift-arrow"></div>
+              <div class="shift-dot old"><span>2060</span></div>
+              <div class="shift-dot new"><span class="accent">2047</span></div>
+            </div>
+            <div class="shift-scale label"><span>2040</span><span>2050</span><span>2060</span><span>2070</span></div>
+            <p class="label">○ 2022 survey <span class="accent">&nbsp; ● 2023 survey</span></p>
+          </div>
+        </div>
+      </div>
+      <p class="lead rv" style="--d:800">Every miss points the same way. The future keeps arriving early.</p>
+    </div>
+    <aside class="notes">This is the anchoring problem. Forecasters predicted 12.7 percent; the real number was 50.3. Researchers moved their estimate for human-level AI 13 years closer in a single year. When every miss points the same direction, the method is biased, and the bias is toward the present.</aside>
+  </section>
+
+  <!-- ============ ACT II · THE LOOP ============ -->
+  <section class="slide" id="act-2" data-act="2" data-title="The Loop">
+    <div class="wrap lay-act">
+      <div class="numeral rv-fade" aria-hidden="true">II</div>
+      <div class="act-text">
+        <p class="eyebrow rv" style="--d:100">Act two</p>
+        <h2 class="act-name split" data-split>The Loop</h2>
+        <div class="rule"></div>
+        <p class="act-line rv" style="--d:900">What happens when AI starts building AI.</p>
+      </div>
+    </div>
+    <aside class="notes">Act two is about why this does not simply continue. It accelerates, and the reason is a loop.</aside>
+  </section>
+
+  <section class="slide" id="last-invention" data-act="2" data-title="The last invention">
+    <div class="wrap lay-quote">
+      <blockquote class="quote split" data-split><span class="mark">“</span>The first ultraintelligent machine is the last invention that man need ever make.<span class="mark">”</span></blockquote>
+      <div class="quote-by rv" style="--d:1900">
+        <span class="who">I. J. Good · 1965</span>
+        <span class="label">Codebreaker beside Alan Turing at Bletchley Park. Later an adviser to Stanley Kubrick on <i>2001: A Space Odyssey</i>.</span>
+      </div>
+      <p class="body quote-ctx rv" style="--d:2300">Good named the idea an <em>intelligence explosion</em>: a machine smart enough to design a better machine, which designs a better one still.</p>
+    </div>
+    <aside class="notes">I. J. Good wrote this in 1965. He worked with Turing on breaking Enigma, and later advised Kubrick on HAL. His point: a machine that can improve machines starts a chain reaction. He called it an intelligence explosion. Remember the quote; it has a second half.</aside>
+  </section>
+
+  <section class="slide" id="loop" data-act="2" data-title="The recursive loop">
+    <div class="wrap lay-loop">
+      <div class="stack">
+        <p class="eyebrow rv">The engine of the explosion</p>
+        <h2 class="display h2 rv" style="--d:100">Each generation builds the next one faster</h2>
+        <ol class="gens">
+          <li data-step="1"><b>Gen 1</b><span>18 months</span></li>
+          <li data-step="2"><b>Gen 2</b><span>9 months</span></li>
+          <li data-step="3"><b>Gen 3</b><span>4.5 months</span></li>
+          <li data-step="4"><b>Gen 4</b><span>10 weeks</span></li>
+          <li data-step="5"><b>Gen 5 … ∞</b><span>5 weeks, 2.5 weeks, days, hours</span></li>
+        </ol>
+        <p class="body" data-step="6">The real world adds friction: chips, power, experiments. How hard those limits bind is the trillion-dollar question.</p>
+      </div>
+      <div class="viz rv-fade" style="--d:200"><canvas id="cv-loop" role="img" aria-label="A loop: AI systems do AI research, which produces better algorithms and chips, which produce smarter AI systems"></canvas></div>
+      <div class="zeno rv" style="--d:500">
+        <div class="zeno-bar" id="zeno-bar"></div>
+        <div class="zeno-scale label"><span>0</span><span>18 months</span><span>36 months</span></div>
+        <p class="zeno-final" data-step="5">Infinite generations. <span class="hot">Finite time.</span></p>
+      </div>
+    </div>
+    <aside class="notes">Click through the generations. If every AI generation makes the next one twice as fast to build, the series converges: infinitely many generations in about three years. That is the mathematical heart of the intelligence explosion. Physical limits like chips, power and experiments slow it down. Nobody knows by how much.</aside>
+  </section>
+
+  <section class="slide" id="engines" data-act="2" data-title="Three engines">
+    <div class="wrap lay-engines">
+      <div class="stack-tight">
+        <p class="eyebrow rv">Why the loop is already spinning</p>
+        <h2 class="display h2 rv" style="--d:100">Three engines, multiplying</h2>
+      </div>
+      <div class="engines">
+        <div class="engine rv" style="--d:300"><div class="big">×<span data-count="5">0</span><small>a year</small></div><h3>Compute</h3><p>More chips, bigger data centers. Frontier training runs have grown about five times a year since 2020.</p></div>
+        <div class="engine rv" style="--d:500"><div class="big">×<span data-count="3">0</span><small>a year</small></div><h3>Algorithms</h3><p>Better methods reach the same result with less compute. The compute needed halves roughly every eight months.</p></div>
+        <div class="engine third rv" style="--d:700"><div class="big"><span data-count="26">0</span><small>% of R&amp;D</small></div><h3>Automation</h3><p>AI doing the research itself. Anthropic says its models led 26% of its R&amp;D by August 2026, up from near zero in January. OpenAI's stated target for an automated AI researcher: March 2028.</p></div>
+      </div>
+      <div class="result rv" style="--d:1000"><span class="label">Compute × algorithms</span><span class="num">≈ ×15 a year</span><span class="body">before counting the third engine. The third engine is the loop.</span></div>
+    </div>
+    <aside class="notes">Three engines multiply. Compute grows about five times a year. Algorithms make that compute about three times more useful each year. Together that is roughly fifteen times more effective compute every year. And the third engine has just switched on: AI doing the research itself. Source notes: Epoch AI for compute and algorithms; lab statements reported by METR in November 2026.</aside>
+  </section>
+
+  <section class="slide" id="geniuses" data-act="2" data-title="A country of geniuses">
+    <div class="wrap lay-geniuses">
+      <div class="stack-tight">
+        <p class="g-quote split" data-split>“A country of geniuses in a datacenter.”</p>
+        <p class="label rv" style="--d:1300">Dario Amodei, <i>Machines of Loving Grace</i>, 2024</p>
+      </div>
+      <div></div>
+      <div class="g-compare" data-step="3">
+        <div class="row"><span class="label">AI research workforce</span><b class="accent">50 million</b><span class="body">researcher-years of work every year: one million copies at 50× human speed</span></div>
+        <div class="row"><span class="label">Every human researcher on Earth</span><b>8.9 million</b><span class="body">full-time equivalent (UNESCO)</span></div>
+      </div>
+      <div class="g-steps">
+        <div class="g-step rv" style="--d:600"><span class="n">1</span><p>One AI as capable as a top researcher.</p></div>
+        <div class="g-step" data-step="1"><span class="n">1,000</span><p>Copies. Once a model is trained, running more of it is cheap.</p></div>
+        <div class="g-step" data-step="2"><span class="n hot">1,000,000</span><p>Copies, each thinking 10–100× faster than a person, around the clock, sharing everything they learn.</p></div>
+      </div>
+    </div>
+    <aside class="notes">Start with one AI as good as a top researcher. Click: a thousand copies, because running a trained model is cheap. Click: a million copies, running many times faster than a person. Click: the comparison. That is more research effort every year than every human scientist alive.</aside>
+  </section>
+
+  <!-- ============ ACT III · DETONATION ============ -->
+  <section class="slide" id="act-3" data-act="3" data-title="Detonation">
+    <div class="wrap lay-act">
+      <div class="numeral rv-fade" aria-hidden="true">III</div>
+      <div class="act-text">
+        <p class="eyebrow rv" style="--d:100">Act three</p>
+        <h2 class="act-name"><span class="glitch" data-text="Detonation">Detonation</span></h2>
+        <div class="rule"></div>
+        <p class="act-line rv" style="--d:900">When the loop closes, everything moves at once.</p>
+      </div>
+    </div>
+    <aside class="notes">Act three: what happens when the loop closes. Everything starts moving at once.</aside>
+  </section>
+
+  <section class="slide" id="decade" data-act="3" data-title="The next ten years">
+    <div class="wrap lay-decade">
+      <div class="stack-tight">
+        <p class="eyebrow rv">Forecast</p>
+        <h2 class="display h2 rv" style="--d:100">The next ten years</h2>
+      </div>
+      <div class="track">
+        <div class="yr-node now on rv" style="--d:300"><span class="y">2026</span><span class="dot"></span><p>Agents take on week-long tasks. AI leads a quarter of the R&amp;D at a frontier lab.</p><span class="tag">Happening now</span></div>
+        <div class="yr-node" data-step="1"><span class="y">2027</span><span class="dot"></span><p>Month-long projects. Most AI engineering is done by AI.</p><span class="tag">Trend</span></div>
+        <div class="yr-node" data-step="2"><span class="y">2028</span><span class="dot"></span><p>Automated AI researchers. The loop closes.</p><span class="tag">Lab target</span></div>
+        <div class="yr-node" data-step="3"><span class="y">2029</span><span class="dot"></span><p>Superintelligence: better than the best humans at nearly every cognitive task.</p><span class="tag">Forecast</span></div>
+        <div class="yr-node" data-step="4"><span class="y">2030</span><span class="dot"></span><p>Robots building robots. World growth passes 10% a year.</p><span class="tag">Forecast</span></div>
+        <div class="yr-node" data-step="5"><span class="y">2032</span><span class="dot"></span><p>Biology at software speed. Most diseases become engineering problems.</p><span class="tag">Forecast</span></div>
+        <div class="yr-node" data-step="6"><span class="y">2035</span><span class="dot"></span><p>Energy and materials abundance. Industry starts to leave Earth.</p><span class="tag">Forecast</span></div>
+      </div>
+    </div>
+    <aside class="notes">Click year by year. 2026 is what labs are reporting now, 2027 is the time-horizon trend, 2028 is OpenAI's own stated target. The rest is the forecast if the trend lines hold: aggressive, but each step follows from the one before it.</aside>
+  </section>
+
+  <section class="slide" id="biology" data-act="3" data-title="Science at software speed">
+    <div class="wrap lay-split text-only">
+      <div class="stack">
+        <p class="eyebrow rv">Science at software speed</p>
+        <h2 class="display h2 rv" style="--d:100">A century of biology in a decade</h2>
+        <div class="vs rv" style="--d:260">
+          <div class="stat"><span class="big"><span data-count="250441">0</span></span><span class="cap">protein structures solved by experiment, over about 55 years</span></div>
+          <div class="stat"><span class="big hot"><span data-count="214">0</span>M</span><span class="cap">structures predicted by AlphaFold, in about a year. Nobel Prize in Chemistry, 2024.</span></div>
+        </div>
+        <p class="body rv" style="--d:460">Dario Amodei's bet: AI compresses 50–100 years of biological progress into 5–10.</p>
+        <div class="targets rv" style="--d:620"><span>Cancer</span><span>Alzheimer's</span><span>Infectious disease</span><span>Genetic disorders</span><span class="big-one">Aging itself</span></div>
+        <p class="source rv" style="--d:720">Protein Data Bank, March 2026. AlphaFold Protein Structure Database.</p>
+      </div>
+      <div></div>
+    </div>
+    <aside class="notes">AlphaFold is the preview. Experimental biology solved about 250,000 protein structures in 55 years; AlphaFold predicted more than 200 million in about a year, and its creators won a Nobel Prize. Now imagine a country of geniuses pointed at disease.</aside>
+  </section>
+
+  <section class="slide" id="economy" data-act="3" data-title="The economy goes vertical">
+    <div class="wrap lay-split">
+      <div class="stack">
+        <p class="eyebrow rv">The economy goes vertical</p>
+        <h2 class="display h2 rv" style="--d:100">Every era doubles faster than the last</h2>
+        <div class="modes rv" style="--d:260">
+          <div class="mode"><span class="m">Foraging</span><span class="t">224,000 years</span></div>
+          <div class="mode"><span class="m">Farming</span><span class="t">909 years</span></div>
+          <div class="mode"><span class="m">Industry</span><span class="t">6.3 years</span></div>
+          <div class="mode next" data-step="1"><span class="m">Next</span><span class="t">Weeks?</span></div>
+        </div>
+        <p class="body" data-step="1">Each era grew 150 to 250 times faster than the one before. One more jump and the world economy doubles in weeks. Even 30% growth a year, a scenario economists who model AI take seriously, doubles it every 2.6 years.</p>
+        <p class="source rv" style="--d:420">Doubling times of the world economy: R. Hanson, 2000. Explosive growth: T. Davidson, Open Philanthropy, 2021. GDP: Maddison Project, approximate.</p>
+      </div>
+      <div class="viz rv-fade" style="--d:200"><canvas id="cv-gdp" role="img" aria-label="World GDP from 1500 to 2025, nearly flat for centuries, then rising steeply, with a 3 percent and a 30 percent projection"></canvas></div>
+    </div>
+    <aside class="notes">Robin Hanson fit the whole history of the world economy to a few growth modes. Foragers doubled every 224,000 years, farmers every 909, industry every 6.3. Click: each jump was 150 to 250 times faster. One more jump means doubling in weeks. Even the explosive-growth case economists study, 30 percent a year, is unlike anything in history.</aside>
+  </section>
+
+  <section class="slide" id="robots" data-act="3" data-title="Robots that build robots">
+    <div class="wrap lay-robots">
+      <div class="stack-tight">
+        <p class="eyebrow rv">The physical world joins the loop</p>
+        <h2 class="display h2 rv" style="--d:100">Robots that build robots</h2>
+      </div>
+      <div></div>
+      <div class="stack-tight">
+        <div class="robot-count rv" style="--d:200"><span class="num" id="robot-n">1</span><span class="label" id="robot-gen">Year 0</span></div>
+        <p class="body rv" style="--d:320">Once AI can design robots and run factories, factories start building more factories. A fleet that doubles every year grows a thousandfold in a decade.</p>
+      </div>
+    </div>
+    <aside class="notes">Watch the robots replicate. A fleet that doubles every year is a thousand times bigger in ten years. Physical industry starts to grow the way software does.</aside>
+  </section>
+
+  <section class="slide" id="sun" data-act="3" data-title="The last bottleneck">
+    <div class="wrap lay-split text-only">
+      <div class="stack">
+        <p class="eyebrow rv">The last bottleneck is energy</p>
+        <h2 class="display h2 rv" style="--d:100">The sun puts out 20 trillion times what our civilization uses</h2>
+        <div class="vs rv" style="--d:260">
+          <div class="stat"><span class="big">~19<small> TW</small></span><span class="cap">All of humanity's power use, every source combined</span></div>
+          <div class="stat"><span class="big hot">3.8×10<sup>26</sup><small> W</small></span><span class="cap">The sun's output</span></div>
+        </div>
+        <p class="body rv" style="--d:460">Once thinking is cheap, the limits become physical: energy, materials, room to build. Superintelligence will work on all three.</p>
+      </div>
+      <div></div>
+    </div>
+    <aside class="notes">Once thinking is nearly free, the bottlenecks become physics. The sun puts out about 20 trillion times what we use. Energy becomes the main constraint, and then the target.</aside>
+  </section>
+
+  <!-- ============ ACT IV · THE FORK ============ -->
+  <section class="slide" id="act-4" data-act="4" data-title="The Fork">
+    <div class="wrap lay-act">
+      <div class="numeral rv-fade" aria-hidden="true">IV</div>
+      <div class="act-text">
+        <p class="eyebrow rv" style="--d:100">Act four</p>
+        <h2 class="act-name split" data-split>The Fork</h2>
+        <div class="rule"></div>
+        <blockquote class="act-quote rv" style="--d:1000">“…provided that the machine is docile enough to tell us how to keep it under control.”<cite class="label">I. J. Good, the next line, 1965</cite></blockquote>
+      </div>
+    </div>
+    <aside class="notes">Act four. Good's quote had a second half, and it is the part that matters most. Everything depends on keeping control.</aside>
+  </section>
+
+  <section class="slide" id="futures" data-act="4" data-title="Two futures">
+    <div class="wrap lay-futures">
+      <div class="stack-tight">
+        <p class="eyebrow rv">What is at stake</p>
+        <h2 class="display h2 rv" style="--d:100">Same technology. Two futures.</h2>
+      </div>
+      <div></div>
+      <div class="futures">
+        <div class="future good rv" style="--d:400"><h3>Flourishing</h3><p>Disease, poverty and drudgery end. Abundance and exploration. Lives longer and richer than we can picture.</p></div>
+        <div class="tasks rv" style="--d:700">
+          <span class="label">The work that decides which one</span>
+          <div><b>Alignment</b><span>Make sure it wants what we want.</span></div>
+          <div><b>Control</b><span>Keep the power to check it and correct it.</span></div>
+          <div><b>Governance</b><span>Make sure no single group holds all the keys.</span></div>
+        </div>
+        <div class="future bad rv" style="--d:550"><h3>Catastrophe</h3><p>Systems we cannot correct. Weapons anyone can build. Power concentrated in a few hands.</p></div>
+      </div>
+    </div>
+    <aside class="notes">Same technology, two outcomes. The difference comes down to three pieces of work: alignment, control and governance. These get decided in the next few years, and most people do not know the decisions are being made.</aside>
+  </section>
+
+  <!-- ============ ACT V · YOU ARE HERE ============ -->
+  <section class="slide" id="here" data-act="5" data-title="You are here">
+    <div class="wrap lay-act">
+      <div class="numeral rv-fade" aria-hidden="true">V</div>
+      <div class="act-text">
+        <p class="eyebrow rv" style="--d:100">Act five</p>
+        <h2 class="act-name split" data-split>You are here</h2>
+        <div class="rule"></div>
+        <p class="act-line rv" style="--d:900">Not watching the curve. Standing on it, right where it bends.</p>
+      </div>
+    </div>
+    <div class="here-marker" id="here-marker" aria-hidden="true"><span class="tag">You are here</span></div>
+    <aside class="notes">Act five. Here is the curve we started with, and here is where we are on it: right at the bend.</aside>
+  </section>
+
+  <section class="slide" id="made" data-act="5" data-title="One more thing">
+    <div class="wrap lay-made">
+      <div class="made-panel">
+        <p class="eyebrow rv">One more thing</p>
+        <div class="made-lines">
+          <p class="ln rv" style="--d:200">Every word in this talk. Every chart. The particle engine, the transitions, the soundtrack.</p>
+          <p class="ln" data-step="1"><b data-lines>4,000</b> lines of code, written by an AI in a single session, from a one-paragraph request.</p>
+          <p class="ln" data-step="2">METR measures the model that wrote it at a <b>39-hour</b> time horizon: roughly a human work week. <span class="source">(METR, Nov 2026; 95% interval 12 to 1,253 hours)</span></p>
+          <p class="ln punch" data-step="3">This is the slow part of the curve.</p>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">One more thing. Click through. Every pixel of this talk was written by an AI, in one session, from a single paragraph. METR measures that model at about a work week of autonomous work. And this is the slow part of the curve.</aside>
+  </section>
+
+  <section class="slide" id="finale" data-act="5" data-title="The steep part">
+    <div class="wrap lay-finale">
+      <p class="finale-title rv" style="--d:600">The Last Invention</p>
+      <p class="finale-big split" data-split style="--d:900">The steep part starts now.</p>
+      <div class="finale-credit rv-fade" style="--d:2600">
+        <p class="label">Written, designed and coded by Claude Opus 5.5 · November 2026</p>
+        <p class="label"><kbd>Home</kbd> to start again</p>
+      </div>
+    </div>
+    <aside class="notes">Thank you. The steep part starts now.</aside>
+  </section>
+</main>
+
+<header class="hud hud-top">
+  <div class="hud-act"><span class="a" id="hud-act">Prologue</span><span class="sep"></span><span class="t" id="hud-title">The Last Invention</span></div>
+  <div class="hud-controls">
+    <button id="btn-sound" type="button" aria-pressed="false" title="Sound (M)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11"/></svg><span class="lbl">Sound</span></button>
+    <button id="btn-notes" type="button" aria-pressed="false" title="Speaker notes (N)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M8.5 9h7M8.5 12.5h7M8.5 16h4"/></svg><span class="lbl">Notes</span></button>
+    <button id="btn-overview" type="button" aria-pressed="false" title="All slides (O)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.2"/></svg><span class="lbl">Slides</span></button>
+    <button id="btn-full" type="button" title="Full screen (F)" aria-label="Full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+  </div>
+</header>
+
+<footer class="hud hud-bottom">
+  <nav class="ticks" id="ticks" aria-label="Slides"></nav>
+  <div class="count"><span class="step-pips" id="pips" aria-hidden="true"></span><b id="count-cur">01</b> / <span id="count-total">25</span></div>
+</footer>
+
+<div class="panel" id="notes" hidden><h4>Speaker notes</h4><p id="notes-text"></p></div>
+<div class="panel" id="overview" hidden role="dialog" aria-modal="true" aria-label="All slides">
+  <div class="ov-grid" id="ov-grid"></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="engine.js" data-inline></script>
+<script src="formations.js" data-inline></script>
+<script src="charts.js" data-inline></script>
+<script src="audio.js" data-inline></script>
+<script src="slides.js" data-inline></script>
+<script src="deck.js" data-inline></script>
